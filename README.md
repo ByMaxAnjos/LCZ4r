@@ -66,7 +66,7 @@ This function calculates the LCZ area like this:
 
 ```{r setup, include=TRUE}
 #Apply the function
-LCZarea <- calLCZarea(lcz_map, iplot = TRUE)
+LCZarea <- LCZarea(lcz_map, iplot = TRUE)
 LCZarea
 
 ```
