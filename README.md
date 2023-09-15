@@ -44,7 +44,8 @@ lcz_map <- getLCZmap(city="Berlin")
 plotLCZmap(lcz_map)
 
 ```
-<img width="1217" alt="Screenshot 2023-08-13 at 18 27 13" src="https://github.com/ByMaxAnjos/Urban-Heat-Islands/assets/94705218/b9c69544-205e-4c0c-a9e4-3a2591f9aeeb">
+<img width="1217" alt="Screenshot 2023-08-13 at 18 27 13" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/6ca761e5-5fd4-4148-9a6f-c22b5306c10b">
+
 
 ## Hands-on 34 LCZ parameters
 
@@ -56,8 +57,8 @@ This nice function gets all LCZ parameters (including, min, max, and mean) from 
 LCZpar <- getLCZparameters(lcz_map, iStack = TRUE)
 
 ```
+<img width="1439" alt="Screenshot 2023-08-13 at 19 19 06" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/e9006776-a336-4303-bc35-f787090a1caf">
 
-<img width="1439" alt="Screenshot 2023-08-13 at 19 19 06" src="https://github.com/ByMaxAnjos/Urban-Heat-Islands/assets/94705218/2f7c2bb0-547f-4a82-99d0-97d87cddbbf6">
 
 ## Calculate the LCZ area
 
@@ -69,7 +70,8 @@ LCZarea <- calLCZarea(lcz_map, iplot = TRUE)
 LCZarea
 
 ```
-<img width="1440" alt="Screenshot 2023-08-13 at 19 24 47" src="https://github.com/ByMaxAnjos/Urban-Heat-Islands/assets/94705218/dd5ff7f8-4bce-41e3-a841-6f72ca7bb7ba">
+<img width="1440" alt="Screenshot 2023-08-13 at 19 24 47" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/2f2fcd9f-1744-47a9-850a-5ad0630aae3b">
+
 
 ## UHI analysis
 
@@ -85,18 +87,18 @@ The following dataframe is presented as follows:
 ```{r setup, include=TRUE}
 air_UCON %>% head(10)
 ```
-<img src="https://user-images.githubusercontent.com/94705218/235909499-82427b94-5f35-4e58-b08b-0418d6fb4f44.png" alt="Screenshot 2023-05-03 at 08 57 51" width="691"/>
 
 ## Calculate thermal anomaly between LCZ
 
-<img width="1440" alt="Screenshot 2023-08-19 at 13 44 11" src="https://github.com/ByMaxAnjos/Urban-Heat-Islands/assets/94705218/e641827f-da32-473b-bb4d-1861337ecb47">
+<img width="1440" alt="Screenshot 2023-08-19 at 13 44 11" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/3594539f-0cfd-4671-9a1f-fc65375bc442">
 
 
 ## Interpolate air temperature with LCZ
 
 it's coming soon... but have look at this:
 
-<img width="1367" alt="Screenshot 2023-08-13 at 19 33 02" src="https://github.com/ByMaxAnjos/Urban-Heat-Islands/assets/94705218/7fbd74c3-bf91-4c0e-b273-9d5103313966">
+<img width="1367" alt="Screenshot 2023-08-13 at 19 33 02" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/ecc209b1-0ef5-4554-a141-3feb26d0a623">
+
 
 ## Calculate UHI intensity
 
