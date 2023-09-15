@@ -1,13 +1,14 @@
 
 #' Get LCZ parameters
 #'
-#' @param lcz_map
-#' @param iStack
+#' @param lcz_map lcz map .tiff format
+#' @param iStack  all parameters in raster stack
 #'
-#' @return
+#' @return 34 LCZ-related parameters at raster.tiff format
 #' @export
 #'
-#' @examples
+#' @examples my_par <- getLCZparametes(lcz_map)
+
 getLCZparameters <- function(lcz_map, iStack = TRUE) {
   #lcz.id <- c(seq(1, 10, 1), seq(101, 107))
   lcz <- c(seq(1, 10, 1), seq(11, 17))

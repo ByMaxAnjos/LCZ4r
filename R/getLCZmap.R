@@ -1,14 +1,16 @@
 
 #' Get your LCZ map
 #'
-#' @param city
-#' @param roi
-#' @param isave
+#' @param city name your city
+#' @param roi or use region of interest at ESRI shapefile format
+#' @param isave if you want to save the map.tiff into you machine
 #'
-#' @return
+#' @return a raster.tiff with the LCZ classes
 #' @export
 #'
-#' @examples
+#' @examples myLczmap <- getLCZmap(city = "Berlin")
+
+
 getLCZmap <- function(city=NULL, roi = NULL, isave = TRUE) {
   # Validate inputs
   if (is.null(city) & is.null(roi)) {
