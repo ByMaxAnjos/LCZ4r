@@ -1,4 +1,14 @@
 
+#' Get your LCZ map
+#'
+#' @param city
+#' @param roi
+#' @param isave
+#'
+#' @return
+#' @export
+#'
+#' @examples
 getLCZmap <- function(city=NULL, roi = NULL, isave = TRUE) {
   # Validate inputs
   if (is.null(city) & is.null(roi)) {

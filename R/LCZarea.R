@@ -10,7 +10,6 @@
 #' @examples
 #' myLCZarea <- LCZarea(map, iplot = TRUE)
 #'
-#'
 LCZarea <- function(lcz_map, iplot=TRUE){
   suppressMessages(sf_use_s2(TRUE))
   imap <- lcz_map %>%

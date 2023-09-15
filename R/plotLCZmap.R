@@ -1,4 +1,12 @@
 
+#' Plot your LCZ map
+#'
+#' @param x
+#'
+#' @return
+#' @export
+#'
+#' @examples
 plotLCZmap <- function(x) {
 
   lcz_map <- x

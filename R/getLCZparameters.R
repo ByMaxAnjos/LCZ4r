@@ -1,4 +1,13 @@
 
+#' Get LCZ parameters
+#'
+#' @param lcz_map
+#' @param iStack
+#'
+#' @return
+#' @export
+#'
+#' @examples
 getLCZparameters <- function(lcz_map, iStack = TRUE) {
   #lcz.id <- c(seq(1, 10, 1), seq(101, 107))
   lcz <- c(seq(1, 10, 1), seq(11, 17))
