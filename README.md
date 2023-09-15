@@ -2,9 +2,9 @@
 
 ## Introduction
 
-As part of **Zoom City Carbon Model (ZCCM)**, we present the **ZCCM::UHI**, a set of R functions which models Urban Heat Island at high-definition using Local Climate Zone classification and local air temperature readings.
+As part of **Zoom City Carbon Model (ZCCM)**, we present the **LCZ4r**, a set of R functions which models Urban Heat Island at high-definition using Local Climate Zone classification and local air temperature readings.
 
-Please note that **ZCCM::UHI** is currently undergoing peer-review, and caution is advised when interpreting its outcomes. Our methodology is based on Anjos, M.; Meier, F. City Carbon Budget and hourly net CO2 fluxes at 0.00025º resolution (30-meter grid cell) for informed climate action(in preparation).
+Please note that **LCZ4r package R** is currently undergoing develop, and caution is advised when interpreting its outcomes. Our methodology is based on Anjos M., Madeiros D, Meier F, Castelhano F. Tools for Urban Heat Islands and Local Climate Zones Analysis in R(in preparation).
 
 ### People
 
@@ -20,9 +20,19 @@ This project is was financed in part by the Coordenação de Aperfeiçoamento de
 
 ### Contact
 
-Please feel free to contact us if you have any questions or suggestions by emailing [maxanjos\@campus.ul.pt](mailto:maxanjos@campus.ul.pt). If you are interested in contributing to the development of the model, we welcome you to join our team.
+Please feel free to contact us if you have any questions or suggestions by emailing [maxanjos\@campus.ul.pt](mailto:maxanjos@campus.ul.pt). If you are interested in contributing to the development of this R package, we welcome you to join our team.
 
 Happy coding!
+
+## Install 
+
+To install LCZ4r:
+
+```{r setup, include=TRUE}
+#Apply the function
+devtools::install_github("ByMaxAnjos/LCZ4r")
+
+```
 
 ## Get your LCZ map
 
