@@ -1,15 +1,15 @@
 
 #' Plot your LCZ map
 #'
-#' @param x
+#' @param lcz map generate by getLCZmap() function
 #'
-#' @return
-#' @export
+#' @return plot with colored LCZ
+#' @export plot in ggplot format
 #'
-#' @examples
+#' @examples myplot <- plotLCZmap(lcz_map)
 plotLCZmap <- function(x) {
 
-  lcz_map <- x
+  lcz_map <- raster::raster(x)
   lczClass <- raster::ratify(lcz_map)
   rat <- raster::levels(lczClass)[[1]]
   ID <- c(seq(1, 10, 1), seq(11, 17)) %>% as_tibble() %>% set_names("ID")
