@@ -7,25 +7,24 @@
 #'
 #' @param city The name of your city or the area you want to focus on. It is based on Open Street Map project.
 #' @param roi Optionally, you can provide a Region of Interest (ROI) in ESRI shapefile format to clip the LCZ map.
-#' @param isave Set to TRUE if you want to save the resulting map as a raster.tiff file on your local machine.
-#'
+#' @param isave_map Set to TRUE if you want to save the your clipped resulting map as a raster.tiff file on your local machine.
+#' @param isave_global Set to TRUE if you want to save the global resulting map as a raster.tiff file on your local machine.
 #' @return A Terra raster.tiff file containing the LCZ classes for your specified area.
 #'
 #' @export
 #'
 #' @examples
-#' #For city
-#' myLczmap <- getLCZmap(city = "Berlin", roi = NULL, isave = TRUE)
+#' For city
+#' myLczmap <- getLCZmap(city = "Berlin", roi = NULL, isave_map = TRUE, isave_global = TRUE)
 #'
-#' #For neighborhood.
-#' myLczmap <- getLCZmap(city = "Berlin, Mitte", roi = NULL, isave = TRUE)
+#' For neighborhood.
+#' myLczmap <- getLCZmap(city = "Berlin, Mitte", roi = NULL, isave_map = TRUE, isave_global = TRUE)
 #'
-#' # Get LCZ map for a custom region of interest
+#' Get LCZ map for a custom region of interest
 #' custom_roi <- st_read("custom_roi.shp")
-#' roi_lcz <- getLCZmap(roi = custom_roi, isave = TRUE)
-#'
-#' @export
-getLCZmap <- function(city=NULL, roi = NULL, isave = TRUE) {
+#' roi_lcz <- getLCZmap(roi = custom_roi, isave_map = TRUE, isave_global = TRUE)
+
+getLCZmap <- function(city=NULL, roi = NULL, isave_map = TRUE, isave_global = TRUE) {
   # Validate inputs
   if (is.null(city) & is.null(roi)) {
     stop("Error: provide either a city name or a roi polygon")
@@ -36,7 +35,6 @@ getLCZmap <- function(city=NULL, roi = NULL, isave = TRUE) {
   }
 
   if(!is.null(city)) {
-
     # Get study area polygon from OpenStreetMap data
     shp_verify <- osmdata::getbb(city, format_out = "sf_polygon", limit = 1)
 
@@ -70,9 +68,10 @@ getLCZmap <- function(city=NULL, roi = NULL, isave = TRUE) {
     lcz_ras <- terra::crop(lcz_download, terra::ext(roi_crs))
     lcz_ras <- terra::mask(lcz_ras, terra::vect(roi_crs))
     names(lcz_ras) <- "lcz"
+
     return(lcz_ras)
 
-    if(isave==TRUE){
+    if(isave_map==TRUE){
 
       # Create a folder name using paste0
       folder <- paste0("LCZ4r_output/")
@@ -83,10 +82,27 @@ getLCZmap <- function(city=NULL, roi = NULL, isave = TRUE) {
         dir.create(folder)
       }
 
-      file <- paste0(getwd(),folder,"lcz_map.tif")
+      file <- paste0(folder,"lcz_map.tif")
+
+      raster::writeRaster(lcz_ras, file, format="GTiff", overwrite = TRUE)
+    }
+
+    if(isave_global==TRUE){
+
+      # Create a folder name using paste0
+      folder <- paste0("LCZ4r_output/")
+
+      # Check if the folder exists
+      if (!dir.exists(folder)) {
+        # Create the folder if it does not exist
+        dir.create(folder)
+      }
+
+      file <- paste0(folder,"lcz_globalmap.tif")
 
       raster::writeRaster(lcz_download, file, format="GTiff", overwrite = TRUE)
     }
+
   }
 
 }

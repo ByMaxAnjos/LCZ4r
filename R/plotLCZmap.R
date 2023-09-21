@@ -22,7 +22,6 @@
 
 
 plotLCZmap <- function(x, legend = "name") {
-
   lcz_map <- raster::raster(x)
   lczClass <- raster::ratify(lcz_map)
   rat <- raster::levels(lczClass)[[1]]
