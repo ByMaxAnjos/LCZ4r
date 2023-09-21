@@ -13,6 +13,10 @@
 #'
 #' @export
 #'
+#' @import osmdata
+#' @import terra
+#' @import sf
+#'
 #' @examples
 #' For city
 #' myLczmap <- getLCZmap(city = "Berlin", roi = NULL, isave_map = TRUE, isave_global = TRUE)
@@ -23,20 +27,23 @@
 #' Get LCZ map for a custom region of interest
 #' custom_roi <- st_read("custom_roi.shp")
 #' roi_lcz <- getLCZmap(roi = custom_roi, isave_map = TRUE, isave_global = TRUE)
+#'
+#' For National scale
+#' myLczmap <- getLCZmap(city = "Brazil", roi = NULL, isave_map = TRUE, isave_global = TRUE)
 
-getLCZmap <- function(city=NULL, roi = NULL, isave_map = TRUE, isave_global = TRUE) {
+getLCZmap <- function(city=NULL, roi = NULL, isave_map = TRUE, isave_global = FALSE) {
   # Validate inputs
-  if (is.null(city) & is.null(roi)) {
+  if (is.null({{city}}) & is.null(roi)) {
     stop("Error: provide either a city name or a roi polygon")
-  } else if (!is.null(city) & !is.character(city)) {
+  } else if (!is.null({{city}}) & !is.character({{city}})) {
     stop("Error: city input must be a character string")
   } else if (!is.null(roi) & !inherits(roi, "sf")) {
     stop("Error: ROI input must be a polygon object of class sf")
   }
 
-  if(!is.null(city)) {
+  if(!is.null({{city}})) {
     # Get study area polygon from OpenStreetMap data
-    shp_verify <- osmdata::getbb(city, format_out = "sf_polygon", limit = 1)
+    shp_verify <- osmdata::getbb({{city}}, format_out = "sf_polygon", limit = 1)
 
     # Check if polygon was obtained successfully
     if(!is.null(shp_verify$geometry) & !inherits(shp_verify, "list")) {
@@ -57,11 +64,12 @@ getLCZmap <- function(city=NULL, roi = NULL, isave_map = TRUE, isave_global = TR
     lcz_ras <- terra::mask(lcz_ras, terra::vect(study_area))
     names(lcz_ras) <- "lcz"
     return(lcz_ras)
+
   } else {
     # Download the LCZ global map from https://zenodo.org/record/6364594/files/lcz_filter_v1.tif?download=1
     lcz_url <- "https://zenodo.org/record/6364594/files/lcz_filter_v1.tif?download=1"
     lcz_download <- terra::rast(paste0("/vsicurl/", lcz_url))
-    roi_crs <- roi %>%
+    roi_crs <- {{roi}} %>%
       sf::st_as_sf() %>%
       sf::st_make_valid() %>%
       sf::st_transform(crs = "+proj=longlat +datum=WGS84 +no_defs")
@@ -70,39 +78,38 @@ getLCZmap <- function(city=NULL, roi = NULL, isave_map = TRUE, isave_global = TR
     names(lcz_ras) <- "lcz"
 
     return(lcz_ras)
+  }
 
-    if(isave_map==TRUE){
+  if(isave_map==TRUE){
 
-      # Create a folder name using paste0
-      folder <- paste0("LCZ4r_output/")
+    # Create a folder name using paste0
+    folder <- paste0("LCZ4r_output/")
 
-      # Check if the folder exists
-      if (!dir.exists(folder)) {
-        # Create the folder if it does not exist
-        dir.create(folder)
-      }
-
-      file <- paste0(folder,"lcz_map.tif")
-
-      raster::writeRaster(lcz_ras, file, format="GTiff", overwrite = TRUE)
+    # Check if the folder exists
+    if (!dir.exists(folder)) {
+      # Create the folder if it does not exist
+      dir.create(folder)
     }
 
-    if(isave_global==TRUE){
+    file <- paste0(folder,"lcz_map.tif")
 
-      # Create a folder name using paste0
-      folder <- paste0("LCZ4r_output/")
+    terra::writeRaster(lcz_ras, file, format="GTiff", overwrite = TRUE)
+  }
 
-      # Check if the folder exists
-      if (!dir.exists(folder)) {
-        # Create the folder if it does not exist
-        dir.create(folder)
-      }
+  if(isave_global==TRUE){
 
-      file <- paste0(folder,"lcz_globalmap.tif")
+    # Create a folder name using paste0
+    folder <- paste0("LCZ4r_output/")
 
-      raster::writeRaster(lcz_download, file, format="GTiff", overwrite = TRUE)
+    # Check if the folder exists
+    if (!dir.exists(folder)) {
+      # Create the folder if it does not exist
+      dir.create(folder)
     }
 
+    file <- paste0(folder,"lcz_globalmap.tif")
+
+    terra::writeRaster(lcz_download, file, format="GTiff", overwrite = TRUE)
   }
 
 }

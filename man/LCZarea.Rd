@@ -2,18 +2,20 @@
 % Please edit documentation in R/LCZarea.R
 \name{LCZarea}
 \alias{LCZarea}
-\title{Calculate LCZ class areas}
+\title{Calculate LCZ Class Areas}
 \usage{
-LCZarea(lcz_map, iplot = TRUE)
+LCZarea(lcz_map = NULL, iplot = TRUE)
 }
 \arguments{
-\item{iplot}{}
+\item{lcz_map}{A raster Spatraster layer containing LCZ classes.}
+
+\item{iplot}{Logical, indicating whether to create a plot (default is TRUE).}
 }
 \value{
-areas em percentage and km2
+A summary table of LCZ class areas if iplot is FALSE, otherwise, a bar plot.
 }
 \description{
-Calculate LCZ class areas
+This function calculates the areas of LCZ (Local Climate Zones) classes in both percentage and square kilometers.
 }
 \examples{
 myLCZarea <- LCZarea(map, iplot = TRUE)

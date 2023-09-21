@@ -4,7 +4,7 @@
 \alias{getLCZmap}
 \title{Get LCZ Map for Your Area}
 \usage{
-getLCZmap(city = NULL, roi = NULL, isave_map = TRUE, isave_global = TRUE)
+getLCZmap(city = NULL, roi = NULL, isave_map = TRUE, isave_global = FALSE)
 }
 \arguments{
 \item{city}{The name of your city or the area you want to focus on. It is based on Open Street Map project.}
@@ -33,4 +33,7 @@ myLczmap <- getLCZmap(city = "Berlin, Mitte", roi = NULL, isave_map = TRUE, isav
 Get LCZ map for a custom region of interest
 custom_roi <- st_read("custom_roi.shp")
 roi_lcz <- getLCZmap(roi = custom_roi, isave_map = TRUE, isave_global = TRUE)
+
+For National scale
+myLczmap <- getLCZmap(city = "Brazil", roi = NULL, isave_map = TRUE, isave_global = TRUE)
 }
