@@ -2,13 +2,35 @@
 % Please edit documentation in R/plotLCZmap.R
 \name{plotLCZmap}
 \alias{plotLCZmap}
-\title{Plot your LCZ map}
+\title{Plot LCZ Map}
 \usage{
-plotLCZmap(x)
+plotLCZmap(x, legend = "name")
 }
 \arguments{
-\item{x}{}
+\item{x}{The LCZ map in SpatRaster format.}
+
+\item{legend}{Specify whether to include a legend. Set to "code" to show LCZ codes in the legend.}
+}
+\value{
+A plot of the LCZ map.
 }
 \description{
-Plot your LCZ map
+This function plots the classes of an LCZ (Local Climate Zone) map represented as a SpatRaster object.
+You can obtain the LCZ map using the getLCZmap() function.
 }
+\examples{
+myLCZmap <- getLCZmap(city = "Berlin")
+plotLCZmap(x = myLCZmap, legend = "code")
+
+}
+\seealso{
+See the documentation for getLCZmap() to obtain an LCZ map.
+}
+\keyword{Climate}
+\keyword{LCZ,}
+\keyword{Local}
+\keyword{Zone,}
+\keyword{analysis}
+\keyword{climate,}
+\keyword{spatial}
+\keyword{urban}

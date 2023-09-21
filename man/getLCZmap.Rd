@@ -2,23 +2,34 @@
 % Please edit documentation in R/getLCZmap.R
 \name{getLCZmap}
 \alias{getLCZmap}
-\title{Get your LCZ map}
+\title{Get LCZ Map for Your Area}
 \usage{
 getLCZmap(city = NULL, roi = NULL, isave = TRUE)
 }
 \arguments{
-\item{city}{name your city}
+\item{city}{The name of your city or the area you want to focus on. It is based on Open Street Map project.}
 
-\item{roi}{or use region of interest at ESRI shapefile format}
+\item{roi}{Optionally, you can provide a Region of Interest (ROI) in ESRI shapefile format to clip the LCZ map.}
 
-\item{isave}{if you want to save the map.tiff into you machine}
+\item{isave}{Set to TRUE if you want to save the resulting map as a raster.tiff file on your local machine.}
 }
 \value{
-a raster.tiff with the LCZ classes
+A Terra raster.tiff file containing the LCZ classes for your specified area.
 }
 \description{
-Get your LCZ map
+This function imports the LCZ (Local Climate Zone) global mapping dataset
+performed by Demuzere et al. (2022), available at https://doi.org/10.5194/essd-14-3835-2022.
+It automatically clips the LCZ map to your specified area of interest, which can be a city, state, region, or neighborhood.
 }
 \examples{
-myLczmap <- getLCZmap(city = "Berlin")
+#For city
+myLczmap <- getLCZmap(city = "Berlin", roi = NULL, isave = TRUE)
+
+#For neighborhood.
+myLczmap <- getLCZmap(city = "Berlin, Mitte", roi = NULL, isave = TRUE)
+
+# Get LCZ map for a custom region of interest
+custom_roi <- st_read("custom_roi.shp")
+roi_lcz <- getLCZmap(roi = custom_roi, isave = TRUE)
+
 }
