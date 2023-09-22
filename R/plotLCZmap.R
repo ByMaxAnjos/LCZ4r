@@ -82,7 +82,7 @@ my_plot <-
   ggplot2::theme(plot.title = ggplot2::element_text(color = "#3f1651", size = 18, face = "bold"),
           plot.subtitle = ggplot2::element_text(color = "#3f1651", size = 18),
           plot.background = ggplot2::element_rect(fill = "white"),
-          legend.title = element_text(size = 16, color = "black", face = "bold"),
+          legend.title = ggplot2::element_text(size = 16, color = "black", face = "bold"),
           legend.text = ggplot2::element_text(size = 16, color = "black"),
           plot.caption = ggplot2::element_text(colour = "grey60", size = 9), # move caption to the left
           axis.line = ggplot2::element_blank(),
