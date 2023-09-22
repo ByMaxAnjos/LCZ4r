@@ -2,21 +2,58 @@
 % Please edit documentation in R/getLCZparameters.R
 \name{getLCZparameters}
 \alias{getLCZparameters}
-\title{Get LCZ parameters}
+\title{Get LCZ Parameters from LCZ Stewart and Oke (2012)}
 \usage{
-getLCZparameters(lcz_map, iStack = TRUE)
+getLCZparameters(
+  x,
+  iSelect = NULL,
+  iShp = FALSE,
+  iStack = FALSE,
+  isave = FALSE
+)
 }
 \arguments{
-\item{lcz_map}{lcz map .tiff format}
+\item{x}{A LCZ map in .tiff format SpatRaster object containing LCZ classes.}
 
-\item{iStack}{all parameters in raster stack}
+\item{iSelect}{Character vector. Specify one or more parameter names to retrieve specific
+parameters. For example, "SVF.min" to get the minimum Sky View Factor,
+or c("SVF.min", "veg.frac.max") to select multiple parameters.}
+
+\item{iShp}{Logical. If TRUE, returns all parameters as an ESRI shapefile.}
+
+\item{iStack}{Logical. If TRUE, returns all parameters as a raster stack.
+If FALSE, returns a list of individual parameter rasters.}
+
+\item{isave}{Set to TRUE if you want to save the your clipped resulting map as a raster.tiff or .shp file on your local machine.}
 }
 \value{
-34 LCZ-related parameters at raster.tiff format
+If 'iStack' is TRUE, it returns a raster stack containing 34 LCZ-related parameters.
+        If 'iStack' is FALSE, it returns a list of individual parameter rasters.
+        If 'iShp' is TRUE, it returns an ESRI shapefile containing all parameters.
+        If 'iSelect' is specified, it returns the selected parameter(s) as a raster(s).
 }
 \description{
-Get LCZ parameters
+This function extracts 34 Local Climate Zone (LCZ) parameters based on the classification
+scheme developed by Stewart and Oke (2012). LCZs provide valuable information about urban
+morphology and are useful for urban climate and environmental studies.
 }
 \examples{
-my_par <- getLCZparametes(lcz_map)
+# Load the LCZ map
+lcz_map <- raster::raster("path/to/lcz_map.tif")
+
+# Get LCZ parameters as a raster stack
+lcz_params_stack <- getLCZparameters(lcz_map, iStack = TRUE)
+
+# Get LCZ parameters as a list of individual parameter rasters
+lcz_params_list <- getLCZparameters(lcz_map, iStack = FALSE)
+
+# Access individual parameters from the list
+specific_param <- lcz_params_list$parameter_name
+
+# Plot a specific parameter
+plot(specific_param, main = "LCZ Parameter: Parameter Name")
+
+# Get specific parameters as a raster or shapefile
+selected_params <- getLCZparameters(lcz_map, iSelect = c("SVF.min", "veg.frac.max"), iShp = TRUE)
+
 }

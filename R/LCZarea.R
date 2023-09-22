@@ -28,7 +28,7 @@ LCZarea <- function(x, iplot=TRUE, isave=TRUE){
   lcz_areas_df <- base::data.frame(LCZ = terra::values(x), Area_Km2 = terra::values(lcz_area)) %>%
     stats::na.omit() %>%
     dplyr::group_by(lcz) %>%
-    dplyr::summarise(area_km2 = round(sum(area),digits = 2)) %>%
+    dplyr::summarise(area_km2 = base::round(base::sum(area),digits = 2)) %>%
     dplyr::mutate(lcz = base::as.factor(lcz))
 
   summary_resul <- dplyr::inner_join(freq_df, lcz_areas_df, by="lcz") %>%
@@ -68,7 +68,7 @@ LCZarea <- function(x, iplot=TRUE, isave=TRUE){
     # Create the ggplot
 
     graph <-
-      ggplot2::ggplot(lcz_df, aes(x = factor(lcz), y = area_km2,  fill = factor(lcz))) +
+      ggplot2::ggplot(lcz_df, ggplot2::aes(x = factor(lcz), y = area_km2,  fill = factor(lcz))) +
       ggplot2::geom_bar(stat = "identity") +
       ggplot2::scale_fill_manual(values = color_values, name = "LCZ class",
                                  labels = lcz.lables,

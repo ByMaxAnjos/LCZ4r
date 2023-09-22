@@ -65,7 +65,7 @@ plotLCZmap <- function(x, isubtitle = "", isave = TRUE, legend = "name") {
 my_plot <-
   ggplot2::ggplot() +
     # Add the raster layer
-    ggplot2::geom_raster(aes(x = x, y = y, fill = base::as.factor(class)),
+    ggplot2::geom_raster(ggplot2::aes(x = x, y = y, fill = base::as.factor(class)),
                          data = terra::as.data.frame(lcz_map, xy=TRUE) %>% tidyr::drop_na(),
                          interpolate = TRUE) +
     # Set the color palette to a qualitative one and add labels, title and legend.hist
@@ -110,7 +110,7 @@ my_plot <-
     base::dir.create(folder)
   }
 
-  file <- base::paste0(folder,"lcz_plot.png")
+  file <- base::paste0(folder,"lcz_PlotMap.png")
   ggplot2::ggsave(file, my_plot, height = 7, width = 10, units="in", dpi=300)
 
 }
