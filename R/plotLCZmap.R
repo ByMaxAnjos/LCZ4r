@@ -79,7 +79,7 @@ my_plot <-
                   subtitle = isubtitle,
       caption = "• Source:LCZ4r, https://github.com/ByMaxAnjos/LCZ4r\nData:Demuzere et al.(2022), https://doi.org/10.5194/essd-14-3835-2022") +
     ggplot2::theme_void() +
-    theme(plot.title = ggplot2::element_text(color = "#3f1651", size = 18, face = "bold"),
+  ggplot2::theme(plot.title = ggplot2::element_text(color = "#3f1651", size = 18, face = "bold"),
           plot.subtitle = ggplot2::element_text(color = "#3f1651", size = 18),
           plot.background = ggplot2::element_rect(fill = "white"),
           legend.title = element_text(size = 16, color = "black", face = "bold"),
