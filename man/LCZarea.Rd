@@ -4,12 +4,14 @@
 \alias{LCZarea}
 \title{Calculate LCZ Class Areas}
 \usage{
-LCZarea(lcz_map = NULL, iplot = TRUE)
+LCZarea(x, iplot = TRUE, isave = TRUE)
 }
 \arguments{
-\item{lcz_map}{A raster Spatraster layer containing LCZ classes.}
+\item{x}{A raster SpatRaster layer containing LCZ classes.}
 
 \item{iplot}{Logical, indicating whether to create a plot (default is TRUE).}
+
+\item{isave}{Save the plot into your directory.}
 }
 \value{
 A summary table of LCZ class areas if iplot is FALSE, otherwise, a bar plot.
@@ -18,6 +20,10 @@ A summary table of LCZ class areas if iplot is FALSE, otherwise, a bar plot.
 This function calculates the areas of LCZ (Local Climate Zones) classes in both percentage and square kilometers.
 }
 \examples{
-myLCZarea <- LCZarea(map, iplot = TRUE)
 
+myLCZarea <- LCZarea(lcz_map, iplot = TRUE, isave=TRUE)
+
+}
+\seealso{
+See the documentation for getLCZmap() to obtain an LCZ map.
 }

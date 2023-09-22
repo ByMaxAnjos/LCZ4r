@@ -13,10 +13,6 @@
 #'
 #' @export
 #'
-#' @import osmdata
-#' @import terra
-#' @import sf
-#'
 #' @examples
 #' For city
 #' myLczmap <- getLCZmap(city = "Berlin", roi = NULL, isave_map = TRUE, isave_global = TRUE)
@@ -59,57 +55,90 @@ getLCZmap <- function(city=NULL, roi = NULL, isave_map = TRUE, isave_global = FA
     }
     # Download the LCZ global map
     lcz_url <- "https://zenodo.org/record/6364594/files/lcz_filter_v1.tif?download=1"
-    lcz_download <- terra::rast(paste0("/vsicurl/", lcz_url))
+    lcz_download <- terra::rast(base::paste0("/vsicurl/", lcz_url))
     lcz_ras <- terra::crop(lcz_download, terra::ext(study_area))
     lcz_ras <- terra::mask(lcz_ras, terra::vect(study_area))
-    names(lcz_ras) <- "lcz"
+    base::names(lcz_ras) <- "lcz"
+
+    if(isave_map==TRUE){
+
+      # Create a folder name using paste0
+      folder <- base::paste0("LCZ4r_output/")
+
+      # Check if the folder exists
+      if (!dir.exists(folder)) {
+        # Create the folder if it does not exist
+        base::dir.create(folder)
+      }
+
+      file <- base::paste0(folder,"lcz_map.tif")
+
+      terra::writeRaster(lcz_ras, file, overwrite = TRUE)
+    }
+
+    if(isave_global==TRUE){
+
+      # Create a folder name using paste0
+      folder <- base::paste0("LCZ4r_output/")
+
+      # Check if the folder exists
+      if (!base::dir.exists(folder)) {
+        # Create the folder if it does not exist
+        base::dir.create(folder)
+      }
+
+      file <- base::paste0(folder,"lcz_globalmap.tif")
+
+      terra::writeRaster(lcz_download, file, overwrite = TRUE)
+    }
+
     return(lcz_ras)
 
   } else {
     # Download the LCZ global map from https://zenodo.org/record/6364594/files/lcz_filter_v1.tif?download=1
     lcz_url <- "https://zenodo.org/record/6364594/files/lcz_filter_v1.tif?download=1"
-    lcz_download <- terra::rast(paste0("/vsicurl/", lcz_url))
+    lcz_download <- terra::rast(base::paste0("/vsicurl/", lcz_url))
     roi_crs <- {{roi}} %>%
       sf::st_as_sf() %>%
       sf::st_make_valid() %>%
       sf::st_transform(crs = "+proj=longlat +datum=WGS84 +no_defs")
     lcz_ras <- terra::crop(lcz_download, terra::ext(roi_crs))
     lcz_ras <- terra::mask(lcz_ras, terra::vect(roi_crs))
-    names(lcz_ras) <- "lcz"
+    base::names(lcz_ras) <- "lcz"
+
+    if(isave_map==TRUE){
+
+      # Create a folder name using paste0
+      folder <- base::paste0("LCZ4r_output/")
+
+      # Check if the folder exists
+      if (!dir.exists(folder)) {
+        # Create the folder if it does not exist
+        base::dir.create(folder)
+      }
+
+      file <- base::paste0(folder,"lcz_map.tif")
+
+      terra::writeRaster(lcz_ras, file, overwrite = TRUE)
+    }
+
+    if(isave_global==TRUE){
+
+      # Create a folder name using paste0
+      folder <- base::paste0("LCZ4r_output/")
+
+      # Check if the folder exists
+      if (!base::dir.exists(folder)) {
+        # Create the folder if it does not exist
+        base::dir.create(folder)
+      }
+
+      file <- base::paste0(folder,"lcz_globalmap.tif")
+
+      terra::writeRaster(lcz_download, file, overwrite = TRUE)
+    }
 
     return(lcz_ras)
-  }
-
-  if(isave_map==TRUE){
-
-    # Create a folder name using paste0
-    folder <- paste0("LCZ4r_output/")
-
-    # Check if the folder exists
-    if (!dir.exists(folder)) {
-      # Create the folder if it does not exist
-      dir.create(folder)
-    }
-
-    file <- paste0(folder,"lcz_map.tif")
-
-    terra::writeRaster(lcz_ras, file, format="GTiff", overwrite = TRUE)
-  }
-
-  if(isave_global==TRUE){
-
-    # Create a folder name using paste0
-    folder <- paste0("LCZ4r_output/")
-
-    # Check if the folder exists
-    if (!dir.exists(folder)) {
-      # Create the folder if it does not exist
-      dir.create(folder)
-    }
-
-    file <- paste0(folder,"lcz_globalmap.tif")
-
-    terra::writeRaster(lcz_download, file, format="GTiff", overwrite = TRUE)
   }
 
 }

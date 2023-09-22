@@ -4,10 +4,14 @@
 \alias{plotLCZmap}
 \title{Plot LCZ Map}
 \usage{
-plotLCZmap(x, legend = "name")
+plotLCZmap(x, isubtitle = "", isave = TRUE, legend = "name")
 }
 \arguments{
 \item{x}{The LCZ map in SpatRaster format.}
+
+\item{isubtitle}{Specify your name area}
+
+\item{isave}{Save the plot into your directory.}
 
 \item{legend}{Specify whether to include a legend. Set to "code" to show LCZ codes in the legend.}
 }
@@ -16,11 +20,11 @@ A plot of the LCZ map.
 }
 \description{
 This function plots the classes of an LCZ (Local Climate Zone) map represented as a SpatRaster object.
-You can obtain the LCZ map using the getLCZmap() function.
 }
 \examples{
 myLCZmap <- getLCZmap(city = "Berlin")
-plotLCZmap(x = myLCZmap, legend = "code")
+
+plotLCZmap(x = myLCZmap, legend = "name")
 
 }
 \seealso{
