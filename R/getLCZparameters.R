@@ -42,7 +42,7 @@
 #'
 #' @importFrom rlang .data
 
-getLCZparameters <- function(x,  iSelect = NULL, iShp = FALSE, iStack = FALSE, isave = FALSE) {
+getLCZparameters <- function(x,  iSelect = NULL, iShp = TRUE, iStack = FALSE, isave = FALSE) {
 
   lcz.name <- c("Compact highrise", "Compact midrise", "Compact lowrise", "Open highrise",
                 "Open midrise", "Open lowrise", "Lightweight low-rise", "Large lowrise",
@@ -142,29 +142,18 @@ getLCZparameters <- function(x,  iSelect = NULL, iShp = FALSE, iStack = FALSE, i
 
   if(iStack==TRUE){
 
-      # Remove the 'lcz' column from lcz_result
-      lcz_df_pre <- dplyr::select(lcz_result)
-
       # Initialize a list to store rasterized and resampled maps
-      ras_map <- list()
-      # Loop through columns of lcz_result
-      for (i in 1:ncol(lcz_df_pre)) {
-        # Rasterize the column and convert it to a raster
-        ras <- stars::st_rasterize(lcz_df_pre[, i])
-        # Add the raster to the list
-        ras_map[[i]] <- ras
-      }
 
-      # Convert stars Rasters to terra Rasters
-      terra_rasters <- base::lapply(ras_map, function(stars_raster) {
-        terra::rast(stars_raster) %>% raster::raster()
-      })
+    ras <- base::lapply(1:ncol(lcz_result), FUN = function(i) {
+      ras_select <- stars::st_rasterize(lcz_result[, i]) %>%
+        terra::rast() %>%
+        raster::raster()})
 
       # Create a raster stack from the list of rasters
-      ras_stack <- raster::stack(terra_rasters)
+      ras_stack <- raster::stack(ras)[[-35]]
 
       # Set names for the layers in the raster stack
-      base::names(ras_stack) <- base::colnames(lcz_df_pre)[1:ncol(lcz_df_pre)-1]
+      base::names(ras_stack) <- base::colnames(lcz_result)[1:ncol(lcz_result)-1]
 
     if(isave==TRUE){
 
@@ -194,7 +183,7 @@ getLCZparameters <- function(x,  iSelect = NULL, iShp = FALSE, iStack = FALSE, i
       lcz_df_pre <- lcz_result %>%
         dplyr::select({{iSelect}})
 
-      ras_select <- lapply(2:ncol(lcz_df_pre)-1, FUN = function(i) {
+      ras_select <- base::lapply(2:ncol(lcz_df_pre)-1, FUN = function(i) {
         ras_select <- stars::st_rasterize(lcz_df_pre[, i]) %>%
           terra::rast() %>%
           raster::raster()})

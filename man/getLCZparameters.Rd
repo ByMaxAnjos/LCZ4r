@@ -4,13 +4,7 @@
 \alias{getLCZparameters}
 \title{Get LCZ Parameters from LCZ Stewart and Oke (2012)}
 \usage{
-getLCZparameters(
-  x,
-  iSelect = NULL,
-  iShp = FALSE,
-  iStack = FALSE,
-  isave = FALSE
-)
+getLCZparameters(x, iSelect = NULL, iShp = TRUE, iStack = FALSE, isave = FALSE)
 }
 \arguments{
 \item{x}{A LCZ map in .tiff format SpatRaster object containing LCZ classes.}
