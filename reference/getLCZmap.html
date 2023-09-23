@@ -78,7 +78,18 @@ It automatically clips the LCZ map to your specified area of interest, which can
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Load the LCZ map</span></span></span>
+<span class="r-in"><span><span class="co">#my_lcz_city &lt;- getLCZmap(city = "ExampleCity")</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#Get LCZ map for a custom region of interest</span></span></span>
+<span class="r-in"><span><span class="co">#custom_roi &lt;- sf::st_read("custom_roi.shp")</span></span></span>
+<span class="r-in"><span><span class="co">#roi_lcz &lt;- getLCZmap(roi = custom_roi, isave_map = TRUE, isave_global = TRUE)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#For National scale</span></span></span>
+<span class="r-in"><span><span class="co">#my_lcz_country &lt;- getLCZmap(city = "Brazil", roi = NULL, isave_map = TRUE, isave_global = TRUE)</span></span></span>
+<span class="r-in"></span>
+</code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>

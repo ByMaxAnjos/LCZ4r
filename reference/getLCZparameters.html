@@ -95,38 +95,24 @@ If FALSE, returns a list of individual parameter rasters.</p></dd>
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># Load the LCZ map</span></span></span>
-<span class="r-in"><span><span class="va">lcz_map</span> <span class="op">&lt;-</span> <span class="fu">raster</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/raster/man/raster.html" class="external-link">raster</a></span><span class="op">(</span><span class="st">"path/to/lcz_map.tif"</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The legacy packages maptools, rgdal, and rgeos, underpinning the sp package,</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> which was just loaded, will retire in October 2023.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Please refer to R-spatial evolution reports for details, especially</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> https://r-spatial.org/r/2023/05/15/evolution4.html.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> It may be desirable to make the sf package available;</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> package maintainers should consider adding sf to Suggests:.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The sp package is now running under evolution status 2</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>      (status 2 uses the sf package in place of rgdal)</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>path/to/lcz_map.tif: No such file or directory (GDAL error 4)</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in .rasterObjectFromFile(x, band = band, objecttype = "RasterLayer",     ...):</span> Cannot create a RasterLayer object from this file. (file does not exist)</span>
+<span class="r-in"><span><span class="co">#lcz_map &lt;- raster::raster("path/to/lcz_map.tif")</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Get LCZ parameters as a raster stack</span></span></span>
-<span class="r-in"><span><span class="va">lcz_params_stack</span> <span class="op">&lt;-</span> <span class="fu">getLCZparameters</span><span class="op">(</span><span class="va">lcz_map</span>, iStack <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'lcz_map' not found</span>
+<span class="r-in"><span><span class="co">#lcz_params_stack &lt;- getLCZparameters(lcz_map, iStack = TRUE)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Get LCZ parameters as a list of individual parameter rasters</span></span></span>
-<span class="r-in"><span><span class="va">lcz_params_list</span> <span class="op">&lt;-</span> <span class="fu">getLCZparameters</span><span class="op">(</span><span class="va">lcz_map</span>, iStack <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'lcz_map' not found</span>
+<span class="r-in"><span><span class="co">#lcz_params_list &lt;- getLCZparameters(lcz_map, iStack = FALSE)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Access individual parameters from the list</span></span></span>
-<span class="r-in"><span><span class="va">specific_param</span> <span class="op">&lt;-</span> <span class="va">lcz_params_list</span><span class="op">$</span><span class="va">parameter_name</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'lcz_params_list' not found</span>
+<span class="r-in"><span><span class="co">#specific_param &lt;- lcz_params_list$parameter_name</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Plot a specific parameter</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">specific_param</span>, main <span class="op">=</span> <span class="st">"LCZ Parameter: Parameter Name"</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'specific_param' not found</span>
+<span class="r-in"><span><span class="co">#plot(specific_param, main = "LCZ Parameter: Parameter Name")</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Get specific parameters as a raster or shapefile</span></span></span>
-<span class="r-in"><span><span class="va">selected_params</span> <span class="op">&lt;-</span> <span class="fu">getLCZparameters</span><span class="op">(</span><span class="va">lcz_map</span>, iSelect <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SVF.min"</span>, <span class="st">"veg.frac.max"</span><span class="op">)</span>, iShp <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'lcz_map' not found</span>
+<span class="r-in"><span><span class="co">#selected_params &lt;- getLCZparameters(lcz_map, iSelect = c("SVF.min", "veg.frac.max"), iShp = TRUE)</span></span></span>
 <span class="r-in"><span></span></span>
+<span class="r-in"></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
