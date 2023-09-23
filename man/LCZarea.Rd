@@ -4,7 +4,7 @@
 \alias{LCZarea}
 \title{Calculate LCZ Class Areas}
 \usage{
-LCZarea(x, iplot = TRUE, isave = TRUE)
+LCZarea(x, iplot = FALSE, isave = FALSE)
 }
 \arguments{
 \item{x}{A raster SpatRaster layer containing LCZ classes.}

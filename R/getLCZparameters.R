@@ -143,7 +143,7 @@ getLCZparameters <- function(x,  iSelect = NULL, iShp = FALSE, iStack = FALSE, i
   if(iStack==TRUE){
 
       # Remove the 'lcz' column from lcz_result
-      lcz_df_pre <- dplyr::select(lcz_result, -.data$lcz)
+      lcz_df_pre <- dplyr::select(lcz_result)
 
       # Initialize a list to store rasterized and resampled maps
       ras_map <- list()

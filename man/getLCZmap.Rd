@@ -4,7 +4,7 @@
 \alias{getLCZmap}
 \title{Get LCZ Map for Your Area}
 \usage{
-getLCZmap(city = NULL, roi = NULL, isave_map = TRUE, isave_global = FALSE)
+getLCZmap(city = NULL, roi = NULL, isave_map = FALSE, isave_global = FALSE)
 }
 \arguments{
 \item{city}{The name of your city or the area you want to focus on. It is based on Open Street Map project.}

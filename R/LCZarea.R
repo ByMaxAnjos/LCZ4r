@@ -21,7 +21,7 @@
 #' @seealso
 #' See the documentation for getLCZmap() to obtain an LCZ map.
 
-LCZarea <- function(x, iplot=TRUE, isave=TRUE){
+LCZarea <- function(x, iplot=FALSE, isave=FALSE){
 
     freq_df <- tibble::as_tibble(terra::freq({{x}}, bylayer=FALSE, usenames=TRUE)) %>%
     purrr::set_names(c("lcz", "count")) %>%

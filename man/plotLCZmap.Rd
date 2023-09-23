@@ -4,7 +4,7 @@
 \alias{plotLCZmap}
 \title{Plot LCZ Map}
 \usage{
-plotLCZmap(x, isubtitle = "", isave = TRUE, legend = "name")
+plotLCZmap(x, isubtitle = "", isave = FALSE, legend = "name")
 }
 \arguments{
 \item{x}{The LCZ map in SpatRaster format.}

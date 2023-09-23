@@ -24,7 +24,7 @@
 #' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis
 
 
-plotLCZmap <- function(x, isubtitle = "", isave = TRUE, legend = "name") {
+plotLCZmap <- function(x, isubtitle = "", isave = FALSE, legend = "name") {
   lcz_map <- raster::raster({{x}})
   lczClass <- raster::ratify(lcz_map)
   rat <- raster::levels(lczClass)[[1]]

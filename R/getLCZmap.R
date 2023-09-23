@@ -25,7 +25,7 @@
 #' #For National scale
 #' #my_lcz_country <- getLCZmap(city = "Brazil", roi = NULL, isave_map = TRUE, isave_global = TRUE)
 
-getLCZmap <- function(city=NULL, roi = NULL, isave_map = TRUE, isave_global = FALSE) {
+getLCZmap <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_global = FALSE) {
 
   # Validate inputs
   if (is.null(city) & is.null(roi)) {
