@@ -13,9 +13,10 @@
 #' @export
 #'
 #' @examples
-#' myLCZmap <- getLCZmap(city = "Berlin")
 #'
-#' plotLCZmap(x = myLCZmap, legend = "name")
+#' #myplot <- plotLCZmap(x = myLCZmap, legend = "name")
+#'
+#' @importFrom rlang .data
 #'
 #' @seealso
 #' See the documentation for getLCZmap() to obtain an LCZ map.
@@ -51,8 +52,8 @@ plotLCZmap <- function(x, isubtitle = "", isave = TRUE, legend = "name") {
 
   # Define qualitative palette
   color_values <- lcz_df %>%
-    dplyr::select(ID, lcz.col) %>%
-    dplyr::pull(lcz.col, ID)
+    dplyr::select(.data$ID, lcz.col) %>%
+    dplyr::pull(.data$lcz.col, .data$ID)
 
   # Define LCZ labels
   if(legend == "code") {
@@ -62,12 +63,14 @@ plotLCZmap <- function(x, isubtitle = "", isave = TRUE, legend = "name") {
   }
 
   # ggplot using the same data
-my_plot <-
+dataPlot <- terra::as.data.frame(lcz_map, xy=TRUE) %>%
+  tidyr::drop_na()
+
+  my_plot <-
   ggplot2::ggplot() +
     # Add the raster layer
-    ggplot2::geom_raster(ggplot2::aes(x = x, y = y, fill = base::as.factor(class)),
-                         data = terra::as.data.frame(lcz_map, xy=TRUE) %>% tidyr::drop_na(),
-                         interpolate = TRUE) +
+    ggplot2::geom_raster(ggplot2::aes(x = x, y = .data$y, fill = base::as.factor(class)),
+                         data = dataPlot, interpolate = TRUE) +
     # Set the color palette to a qualitative one and add labels, title and legend.hist
     ggplot2::scale_fill_manual(values = color_values, name = "LCZ class",
                                labels = lcz.lables,
@@ -77,7 +80,7 @@ my_plot <-
     #ggplot2::coord_equal() +
     ggplot2::labs(title = "Local Climate Zones",
                   subtitle = isubtitle,
-      caption = "• Source:LCZ4r, https://github.com/ByMaxAnjos/LCZ4r\nData:Demuzere et al.(2022), https://doi.org/10.5194/essd-14-3835-2022") +
+      caption = "Source:LCZ4r, https://github.com/ByMaxAnjos/LCZ4r\nData:Demuzere et al.(2022), https://doi.org/10.5194/essd-14-3835-2022") +
     ggplot2::theme_void() +
   ggplot2::theme(plot.title = ggplot2::element_text(color = "#3f1651", size = 18, face = "bold"),
           plot.subtitle = ggplot2::element_text(color = "#3f1651", size = 18),

@@ -18,7 +18,12 @@ Imports:
     magrittr,
     osmdata,
     raster,
+    rlang,
     sf,
     stars,
-    terra
+    terra,
+    ggplot2,
+    purrr,
+    tibble,
+    tidyr
 URL: https://bymaxanjos.github.io/LCZ4r/

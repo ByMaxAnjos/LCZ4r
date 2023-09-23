@@ -22,9 +22,8 @@ A plot of the LCZ map.
 This function plots the classes of an LCZ (Local Climate Zone) map represented as a SpatRaster object.
 }
 \examples{
-myLCZmap <- getLCZmap(city = "Berlin")
 
-plotLCZmap(x = myLCZmap, legend = "name")
+#myplot <- plotLCZmap(x = myLCZmap, legend = "name")
 
 }
 \seealso{

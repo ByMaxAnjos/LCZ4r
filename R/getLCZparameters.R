@@ -23,23 +23,24 @@
 #'
 #' @examples
 #' # Load the LCZ map
-#' lcz_map <- raster::raster("path/to/lcz_map.tif")
+#' #lcz_map <- raster::raster("path/to/lcz_map.tif")
 #'
 #' # Get LCZ parameters as a raster stack
-#' lcz_params_stack <- getLCZparameters(lcz_map, iStack = TRUE)
+#' #lcz_params_stack <- getLCZparameters(lcz_map, iStack = TRUE)
 #'
 #' # Get LCZ parameters as a list of individual parameter rasters
-#' lcz_params_list <- getLCZparameters(lcz_map, iStack = FALSE)
+#' #lcz_params_list <- getLCZparameters(lcz_map, iStack = FALSE)
 #'
 #' # Access individual parameters from the list
-#' specific_param <- lcz_params_list$parameter_name
+#' #specific_param <- lcz_params_list$parameter_name
 #'
 #' # Plot a specific parameter
-#' plot(specific_param, main = "LCZ Parameter: Parameter Name")
+#' #plot(specific_param, main = "LCZ Parameter: Parameter Name")
 #'
 #' # Get specific parameters as a raster or shapefile
-#' selected_params <- getLCZparameters(lcz_map, iSelect = c("SVF.min", "veg.frac.max"), iShp = TRUE)
+#' #selected_params <- getLCZparameters(lcz_map, iSelect = c("SVF.min", "veg.frac.max"), iShp = TRUE)
 #'
+#' @importFrom rlang .data
 
 getLCZparameters <- function(x,  iSelect = NULL, iShp = FALSE, iStack = FALSE, isave = FALSE) {
 
@@ -115,7 +116,7 @@ getLCZparameters <- function(x,  iSelect = NULL, iShp = FALSE, iStack = FALSE, i
   lcz_shp <- terra::as.polygons({{x}}) %>%
     sf::st_as_sf()
   lcz_result <- dplyr::inner_join(lcz_shp, lcz.df, by="lcz") %>%
-    dplyr::select(-lcz.code, -lcz.name, -lcz.col)
+    dplyr::select(-.data$lcz.code, -lcz.name, -lcz.col)
 
   if(iShp==TRUE) {
 
@@ -141,10 +142,8 @@ getLCZparameters <- function(x,  iSelect = NULL, iShp = FALSE, iStack = FALSE, i
 
   if(iStack==TRUE){
 
-    my_stack <- function(lcz_result, x) {
-
       # Remove the 'lcz' column from lcz_result
-      lcz_df_pre <- dplyr::select(lcz_result, -lcz)
+      lcz_df_pre <- dplyr::select(lcz_result, -.data$lcz)
 
       # Initialize a list to store rasterized and resampled maps
       ras_map <- list()
@@ -166,9 +165,6 @@ getLCZparameters <- function(x,  iSelect = NULL, iShp = FALSE, iStack = FALSE, i
 
       # Set names for the layers in the raster stack
       base::names(ras_stack) <- base::colnames(lcz_df_pre)[1:ncol(lcz_df_pre)-1]
-
-      return(ras_stack)
-    }
 
     if(isave==TRUE){
 
@@ -196,7 +192,7 @@ getLCZparameters <- function(x,  iSelect = NULL, iShp = FALSE, iStack = FALSE, i
 
       # Remove the 'lcz' column from lcz_result
       lcz_df_pre <- lcz_result %>%
-        dplyr::select({{iSelect}}, geometry)
+        dplyr::select({{iSelect}})
 
       ras_select <- lapply(2:ncol(lcz_df_pre)-1, FUN = function(i) {
         ras_select <- stars::st_rasterize(lcz_df_pre[, i]) %>%
@@ -231,7 +227,7 @@ getLCZparameters <- function(x,  iSelect = NULL, iShp = FALSE, iStack = FALSE, i
 
       # Remove the 'lcz' column from lcz_result
       lcz_df_pre <- lcz_result %>%
-        dplyr::select({{iSelect}}, geometry)
+        dplyr::select({{iSelect}})
 
       ras_select <- stars::st_rasterize(lcz_df_pre)
       ras_select_raster <- raster::raster(terra::rast(ras_select))

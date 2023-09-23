@@ -39,21 +39,21 @@ morphology and are useful for urban climate and environmental studies.
 }
 \examples{
 # Load the LCZ map
-lcz_map <- raster::raster("path/to/lcz_map.tif")
+#lcz_map <- raster::raster("path/to/lcz_map.tif")
 
 # Get LCZ parameters as a raster stack
-lcz_params_stack <- getLCZparameters(lcz_map, iStack = TRUE)
+#lcz_params_stack <- getLCZparameters(lcz_map, iStack = TRUE)
 
 # Get LCZ parameters as a list of individual parameter rasters
-lcz_params_list <- getLCZparameters(lcz_map, iStack = FALSE)
+#lcz_params_list <- getLCZparameters(lcz_map, iStack = FALSE)
 
 # Access individual parameters from the list
-specific_param <- lcz_params_list$parameter_name
+#specific_param <- lcz_params_list$parameter_name
 
 # Plot a specific parameter
-plot(specific_param, main = "LCZ Parameter: Parameter Name")
+#plot(specific_param, main = "LCZ Parameter: Parameter Name")
 
 # Get specific parameters as a raster or shapefile
-selected_params <- getLCZparameters(lcz_map, iSelect = c("SVF.min", "veg.frac.max"), iShp = TRUE)
+#selected_params <- getLCZparameters(lcz_map, iSelect = c("SVF.min", "veg.frac.max"), iShp = TRUE)
 
 }

@@ -21,7 +21,8 @@ This function calculates the areas of LCZ (Local Climate Zones) classes in both 
 }
 \examples{
 
-myLCZarea <- LCZarea(lcz_map, iplot = TRUE, isave=TRUE)
+#Calcute the LCZarea
+#my_lcz_area <- LCZarea(x= my_lcz_map, iplot = TRUE, isave = TRUE)
 
 }
 \seealso{

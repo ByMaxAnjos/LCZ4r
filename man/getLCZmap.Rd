@@ -24,16 +24,14 @@ performed by Demuzere et al. (2022), available at https://doi.org/10.5194/essd-1
 It automatically clips the LCZ map to your specified area of interest, which can be a city, state, region, or neighborhood.
 }
 \examples{
-For city
-myLczmap <- getLCZmap(city = "Berlin", roi = NULL, isave_map = TRUE, isave_global = TRUE)
 
-For neighborhood.
-myLczmap <- getLCZmap(city = "Berlin, Mitte", roi = NULL, isave_map = TRUE, isave_global = TRUE)
+# Load the LCZ map
+#my_lcz_city <- getLCZmap(city = "ExampleCity")
 
-Get LCZ map for a custom region of interest
-custom_roi <- st_read("custom_roi.shp")
-roi_lcz <- getLCZmap(roi = custom_roi, isave_map = TRUE, isave_global = TRUE)
+#Get LCZ map for a custom region of interest
+#custom_roi <- sf::st_read("custom_roi.shp")
+#roi_lcz <- getLCZmap(roi = custom_roi, isave_map = TRUE, isave_global = TRUE)
 
-For National scale
-myLczmap <- getLCZmap(city = "Brazil", roi = NULL, isave_map = TRUE, isave_global = TRUE)
+#For National scale
+#my_lcz_country <- getLCZmap(city = "Brazil", roi = NULL, isave_map = TRUE, isave_global = TRUE)
 }

@@ -13,26 +13,30 @@
 #'
 #' @examples
 #'
-#' myLCZarea <- LCZarea(lcz_map, iplot = TRUE, isave=TRUE)
+#' #Calcute the LCZarea
+#' #my_lcz_area <- LCZarea(x= my_lcz_map, iplot = TRUE, isave = TRUE)
+#'
+#' @importFrom rlang .data
 #'
 #' @seealso
 #' See the documentation for getLCZmap() to obtain an LCZ map.
 
 LCZarea <- function(x, iplot=TRUE, isave=TRUE){
+
     freq_df <- tibble::as_tibble(terra::freq({{x}}, bylayer=FALSE, usenames=TRUE)) %>%
     purrr::set_names(c("lcz", "count")) %>%
     dplyr::mutate(lcz = base::as.factor(lcz))
 
-  lcz_area <- terra::cellSize(x, unit = "km")
+   lcz_area <- terra::cellSize({{x}}, unit = "km")
 
-  lcz_areas_df <- base::data.frame(LCZ = terra::values(x), Area_Km2 = terra::values(lcz_area)) %>%
+  lcz_areas_df <- base::data.frame(LCZ = terra::values({{x}}), Area_Km2 = terra::values(lcz_area)) %>%
     stats::na.omit() %>%
     dplyr::group_by(lcz) %>%
-    dplyr::summarise(area_km2 = base::round(base::sum(area),digits = 2)) %>%
+    dplyr::summarise(area_km2 = base::round(base::sum(.data$area),digits = 2)) %>%
     dplyr::mutate(lcz = base::as.factor(lcz))
 
   summary_resul <- dplyr::inner_join(freq_df, lcz_areas_df, by="lcz") %>%
-    dplyr::mutate(area_perc = base::round(area_km2/sum(area_km2)*100, digits = 2))
+    dplyr::mutate(area_perc = base::round(.data$area_km2/sum(.data$area_km2)*100, digits = 2))
 
   if(iplot == TRUE) {
 
@@ -53,7 +57,7 @@ LCZarea <- function(x, iplot=TRUE, isave=TRUE){
       purrr::set_names("lcz.col")
 
     lcz_df <- dplyr::bind_cols(lcz, lcz.name, lcz.col) %>%
-      dplyr::mutate(lcz = ID) %>%
+      dplyr::mutate(lcz = .data$ID) %>%
       dplyr::mutate(lcz = base::as.factor(lcz)) %>%
       dplyr::inner_join(summary_resul, by = "lcz")
 
@@ -68,7 +72,7 @@ LCZarea <- function(x, iplot=TRUE, isave=TRUE){
     # Create the ggplot
 
     graph <-
-      ggplot2::ggplot(lcz_df, ggplot2::aes(x = factor(lcz), y = area_km2,  fill = factor(lcz))) +
+      ggplot2::ggplot(lcz_df, ggplot2::aes(x = factor(lcz), y = .data$area_km2,  fill = factor(lcz))) +
       ggplot2::geom_bar(stat = "identity") +
       ggplot2::scale_fill_manual(values = color_values, name = "LCZ class",
                                  labels = lcz.lables,
@@ -81,7 +85,7 @@ LCZarea <- function(x, iplot=TRUE, isave=TRUE){
            y = "Area [square kilometer]",
            fill = "LCZ") +
       ggplot2::theme_bw() +
-      ggplot2::labs(caption = "• Source:LCZ4r, https://github.com/ByMaxAnjos/LCZ4r\nData:Demuzere et al.(2022), https://doi.org/10.5194/essd-14-3835-2022") +
+      ggplot2::labs(caption = "Source:LCZ4r, https://github.com/ByMaxAnjos/LCZ4r\nData:Demuzere et al.(2022), https://doi.org/10.5194/essd-14-3835-2022") +
       ggplot2::theme(
         axis.text.x = ggplot2::element_text(size = 17),
         axis.title.x =ggplot2::element_text(size = 17),

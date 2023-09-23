@@ -14,30 +14,29 @@
 #' @export
 #'
 #' @examples
-#' For city
-#' myLczmap <- getLCZmap(city = "Berlin", roi = NULL, isave_map = TRUE, isave_global = TRUE)
 #'
-#' For neighborhood.
-#' myLczmap <- getLCZmap(city = "Berlin, Mitte", roi = NULL, isave_map = TRUE, isave_global = TRUE)
+#' # Load the LCZ map
+#' #my_lcz_city <- getLCZmap(city = "ExampleCity")
 #'
-#' Get LCZ map for a custom region of interest
-#' custom_roi <- st_read("custom_roi.shp")
-#' roi_lcz <- getLCZmap(roi = custom_roi, isave_map = TRUE, isave_global = TRUE)
+#' #Get LCZ map for a custom region of interest
+#' #custom_roi <- sf::st_read("custom_roi.shp")
+#' #roi_lcz <- getLCZmap(roi = custom_roi, isave_map = TRUE, isave_global = TRUE)
 #'
-#' For National scale
-#' myLczmap <- getLCZmap(city = "Brazil", roi = NULL, isave_map = TRUE, isave_global = TRUE)
+#' #For National scale
+#' #my_lcz_country <- getLCZmap(city = "Brazil", roi = NULL, isave_map = TRUE, isave_global = TRUE)
 
 getLCZmap <- function(city=NULL, roi = NULL, isave_map = TRUE, isave_global = FALSE) {
+
   # Validate inputs
-  if (is.null({{city}}) & is.null(roi)) {
+  if (is.null(city) & is.null(roi)) {
     stop("Error: provide either a city name or a roi polygon")
-  } else if (!is.null({{city}}) & !is.character({{city}})) {
+  } else if (!is.null(city) & !is.character(city)) {
     stop("Error: city input must be a character string")
   } else if (!is.null(roi) & !inherits(roi, "sf")) {
     stop("Error: ROI input must be a polygon object of class sf")
   }
 
-  if(!is.null({{city}})) {
+  if(!is.null(city)) {
     # Get study area polygon from OpenStreetMap data
     shp_verify <- osmdata::getbb({{city}}, format_out = "sf_polygon", limit = 1)
 
@@ -98,7 +97,7 @@ getLCZmap <- function(city=NULL, roi = NULL, isave_map = TRUE, isave_global = FA
     # Download the LCZ global map from https://zenodo.org/record/6364594/files/lcz_filter_v1.tif?download=1
     lcz_url <- "https://zenodo.org/record/6364594/files/lcz_filter_v1.tif?download=1"
     lcz_download <- terra::rast(base::paste0("/vsicurl/", lcz_url))
-    roi_crs <- {{roi}} %>%
+    roi_crs <- roi %>%
       sf::st_as_sf() %>%
       sf::st_make_valid() %>%
       sf::st_transform(crs = "+proj=longlat +datum=WGS84 +no_defs")
