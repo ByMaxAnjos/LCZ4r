@@ -4,7 +4,7 @@
 \alias{getLCZparameters}
 \title{Get LCZ Parameters from LCZ Stewart and Oke (2012)}
 \usage{
-getLCZparameters(x, iSelect = NULL, iShp = TRUE, iStack = FALSE, isave = FALSE)
+getLCZparameters(x, iSelect = NULL, iStack = TRUE, iShp = FALSE, isave = FALSE)
 }
 \arguments{
 \item{x}{A LCZ map in .tiff format SpatRaster object containing LCZ classes.}
@@ -13,10 +13,10 @@ getLCZparameters(x, iSelect = NULL, iShp = TRUE, iStack = FALSE, isave = FALSE)
 parameters. For example, "SVF.min" to get the minimum Sky View Factor,
 or c("SVF.min", "veg.frac.max") to select multiple parameters.}
 
-\item{iShp}{Logical. If TRUE, returns all parameters as an ESRI shapefile.}
-
 \item{iStack}{Logical. If TRUE, returns all parameters as a raster stack.
 If FALSE, returns a list of individual parameter rasters.}
+
+\item{iShp}{Logical. If TRUE, returns all parameters as an ESRI shapefile.}
 
 \item{isave}{Set to TRUE if you want to save the your clipped resulting map as a raster.tiff or .shp file on your local machine.}
 }

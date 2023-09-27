@@ -42,7 +42,7 @@
 #'
 #' @importFrom rlang .data
 
-getLCZparameters <- function(x,  iSelect = NULL, iShp = TRUE, iStack = FALSE, isave = FALSE) {
+getLCZparameters <- function(x,  iSelect = NULL, iStack = TRUE, iShp = FALSE, isave = FALSE) {
 
   lcz.name <- c("Compact highrise", "Compact midrise", "Compact lowrise", "Open highrise",
                 "Open midrise", "Open lowrise", "Lightweight low-rise", "Large lowrise",
@@ -97,7 +97,7 @@ getLCZparameters <- function(x,  iSelect = NULL, iShp = TRUE, iStack = FALSE, is
   }
 
   # Calculate z0 values
-  lcz.df$z0 <- sapply(lcz.df$lcz.code, calculate_z0)
+  lcz.df$z0 <- base::sapply(lcz.df$lcz.code, calculate_z0)
 
   # Calculate mean values for parameters
   lcz.df$SVF.mean <- (lcz.df$SVF.min + lcz.df$SVF.max) / 2
@@ -110,6 +110,7 @@ getLCZparameters <- function(x,  iSelect = NULL, iShp = TRUE, iStack = FALSE, is
   lcz.df$terra.roug.mean <- (lcz.df$terra.roug.min + lcz.df$terra.roug.max) / 2
   lcz.df$surf.admit.mean <- (lcz.df$surf.admit.min + lcz.df$surf.admit.max) / 2
   lcz.df$surf.albedo.mean <- (lcz.df$surf.albedo.min + lcz.df$surf.albedo.max) / 2
+  lcz.df$antrop.heat.mean <- (lcz.df$antrop.heat.min + lcz.df$antrop.heat.max) / 2
 
   #Pbase::reprocessing raster
   base::names(x) <- "lcz"
@@ -120,22 +121,33 @@ getLCZparameters <- function(x,  iSelect = NULL, iShp = TRUE, iStack = FALSE, is
 
   if(iShp==TRUE) {
 
-    # if(isave==TRUE){
-    #
-    #   lcz_result_named <- lcz_result %>% janitor::clean_names()
-    #   # Create a folder name using paste0
-    #   folder <- base::paste0("LCZ4r_output/")
-    #
-    #   # Check if the folder exists
-    #   if (!dir.exists(folder)) {
-    #     # Create the folder if it does not exist
-    #     base::dir.create(folder)
-    #   }
-    #
-    #   file <- base::paste0(folder,"lcz_par.shp")
-    #
-    #   sf::st_write(lcz_result_named, file,  append = FALSE)
-    # }
+    if(isave==TRUE){
+
+      string_list <- c(
+        "lcz_class", "svf_min", "svf_max", "aspect_min", "aspect_max", "build_min",
+        "build_max", "imper_min", "imper_max", "pervi_max", "pervi_min", "tree_min",
+        "tree_max", "height_min", "height_max", "terra_min", "terra_max", "admit_min",
+        "admit_max", "albed_min", "albed_max", "anthr_min", "anthr_max", "z0",
+        "svf_mean", "aspect_mean", "build_mean", "imper_mean", "pervi_mean", "tree_mean",
+        "height_mean", "terra_mean", "admit_mean", "albed_mean", "anthr_mean", "geometry"
+      )
+
+      base::names(lcz_result) <- string_list
+
+      # Create a folder name using paste0
+      folder <- base::paste0("LCZ4r_output/")
+
+      # Check if the folder exists
+      if (!dir.exists(folder)) {
+        # Create the folder if it does not exist
+        base::dir.create(folder)
+      }
+
+      file <- base::paste0(folder,"lcz_par.shp")
+
+      sf::st_write(lcz_result, file,  append = FALSE)
+
+    }
 
       return(lcz_result)
   }
@@ -150,7 +162,7 @@ getLCZparameters <- function(x,  iSelect = NULL, iShp = TRUE, iStack = FALSE, is
         raster::raster()})
 
       # Create a raster stack from the list of rasters
-      ras_stack <- raster::stack(ras)[[-35]]
+      ras_stack <- raster::stack(ras)[[-36]]
 
       # Set names for the layers in the raster stack
       base::names(ras_stack) <- base::colnames(lcz_result)[1:ncol(lcz_result)-1]

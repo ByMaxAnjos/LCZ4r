@@ -70,20 +70,18 @@ dataPlot <- terra::as.data.frame(lcz_map, xy=TRUE) %>%
   ggplot2::ggplot() +
     # Add the raster layer
     ggplot2::geom_raster(ggplot2::aes(x = x, y = .data$y, fill = base::as.factor(class)),
-                         data = dataPlot, interpolate = TRUE) +
+                         data = dataPlot,  inherit.aes = FALSE) +
     # Set the color palette to a qualitative one and add labels, title and legend.hist
     ggplot2::scale_fill_manual(values = color_values, name = "LCZ class",
                                labels = lcz.lables,
                                guide = ggplot2::guide_legend(reverse = FALSE,
                                                              title.position = "top")) +
-    # Add layout elements
-    #ggplot2::coord_equal() +
     ggplot2::labs(title = "Local Climate Zones",
                   subtitle = isubtitle,
       caption = "Source:LCZ4r, https://github.com/ByMaxAnjos/LCZ4r\nData:Demuzere et al.(2022), https://doi.org/10.5194/essd-14-3835-2022") +
     ggplot2::theme_void() +
-  ggplot2::theme(plot.title = ggplot2::element_text(color = "#3f1651", size = 18, face = "bold"),
-          plot.subtitle = ggplot2::element_text(color = "#3f1651", size = 18),
+    ggplot2::theme(plot.title = ggplot2::element_text(color = "#3f1651", size = 18, face = "bold", hjust = 0.5),
+          plot.subtitle = ggplot2::element_text(color = "#3f1651", size = 18, hjust = 0.5),
           plot.background = ggplot2::element_rect(fill = "white"),
           legend.title = ggplot2::element_text(size = 16, color = "black", face = "bold"),
           legend.text = ggplot2::element_text(size = 16, color = "black"),
@@ -94,7 +92,7 @@ dataPlot <- terra::as.data.frame(lcz_map, xy=TRUE) %>%
           axis.ticks = ggplot2::element_blank(),
           #panel.grid.major = ggplot2::element_line(color = "white", size = 0.3),
           #panel.grid.minor = ggplot2::element_line(color = "white", size = 0.3),
-          plot.margin = ggplot2::margin(1, 1, 1, 1))
+           )
 
     # ggplot2::coord_sf(crs = "+proj=longlat +datum=WGS84 +no_defs") +
     # ggspatial::annotation_scale(plot_unit = "m", bar_cols = c("grey40", "grey80"), colour = "white") +
