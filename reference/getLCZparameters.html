@@ -54,7 +54,7 @@ morphology and are useful for urban climate and environmental studies.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">getLCZparameters</span><span class="op">(</span><span class="va">x</span>, iSelect <span class="op">=</span> <span class="cn">NULL</span>, iShp <span class="op">=</span> <span class="cn">TRUE</span>, iStack <span class="op">=</span> <span class="cn">FALSE</span>, isave <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">getLCZparameters</span><span class="op">(</span><span class="va">x</span>, iSelect <span class="op">=</span> <span class="cn">NULL</span>, iStack <span class="op">=</span> <span class="cn">TRUE</span>, iShp <span class="op">=</span> <span class="cn">FALSE</span>, isave <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -69,13 +69,13 @@ parameters. For example, "SVF.min" to get the minimum Sky View Factor,
 or c("SVF.min", "veg.frac.max") to select multiple parameters.</p></dd>
 
 
-<dt>iShp</dt>
-<dd><p>Logical. If TRUE, returns all parameters as an ESRI shapefile.</p></dd>
-
-
 <dt>iStack</dt>
 <dd><p>Logical. If TRUE, returns all parameters as a raster stack.
 If FALSE, returns a list of individual parameter rasters.</p></dd>
+
+
+<dt>iShp</dt>
+<dd><p>Logical. If TRUE, returns all parameters as an ESRI shapefile.</p></dd>
 
 
 <dt>isave</dt>
