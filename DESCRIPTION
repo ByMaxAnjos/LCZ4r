@@ -32,4 +32,7 @@ Imports:
     purrr,
     tibble,
     tidyr
-
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
