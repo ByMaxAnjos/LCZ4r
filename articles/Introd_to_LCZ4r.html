@@ -144,6 +144,40 @@ global LCZ mapping.</p>
 <p>This nice function gets all LCZ parameters (including, min, max, and
 mean) from Stewart and Oke (2012) and converts them to shapefile or
 raster stack.</p>
+<table class="table">
+<colgroup>
+<col width="30%">
+<col width="22%">
+<col width="32%">
+<col width="15%">
+</colgroup>
+<thead><tr class="header">
+<th>ID</th>
+<th>parameter</th>
+<th>description</th>
+<th>unit</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>SVF.min</td>
+<td>Sky View Factor</td>
+<td>Minimum Sky View Factor</td>
+<td>[0-1]</td>
+</tr>
+<tr class="even">
+<td>SVF.max</td>
+<td>Sky View Factor</td>
+<td>Maximum Sky View Factor</td>
+<td>[0-1]</td>
+</tr>
+<tr class="odd">
+<td>SVF.mean</td>
+<td>Sky View Factor</td>
+<td>Mean Sky View Factor</td>
+<td>[0-1]</td>
+</tr>
+</tbody>
+</table>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">LCZpar</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getLCZparameters.html">getLCZparameters</a></span><span class="op">(</span><span class="va">lcz_map</span>, iStack <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
