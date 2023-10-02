@@ -12,15 +12,8 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>",
-  eval = identical(tolower(Sys.getenv("NOT_CRAN")), "true"),
-  out.width = "100%"
+  comment = "#>"
 )
-
-```
-
-```{r, message = FALSE, eval = FALSE}
-library(LCZ4r)
 
 ```
 
@@ -39,9 +32,11 @@ To install LCZ4r, use the development version with latest features
 ```{r, message = FALSE, eval = FALSE}
 
 devtools::install_github("ByMaxAnjos/LCZ4r")
-library(LCZ4r)
 
+library(LCZ4r)
 ```
+
+
 ## Overview of the package
 
 The **LCZ4r** package includes 5 functions:
@@ -64,6 +59,7 @@ lcz_map <- getLCZmap(city="Berlin")
 plotLCZmap(lcz_map)
 
 ```
+
 <img width="1217" alt="Screenshot 2023-08-13 at 18 27 13" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/6ca761e5-5fd4-4148-9a6f-c22b5306c10b">
 
 This nice function gets all LCZ parameters (including, min, max, and mean) from Stewart and Oke (2012) and converts them to shapefile or raster stack.
@@ -73,6 +69,7 @@ This nice function gets all LCZ parameters (including, min, max, and mean) from 
 LCZpar <- getLCZparameters(lcz_map, iStack = TRUE)
 
 ```
+
 <img width="1439" alt="Screenshot 2023-08-13 at 19 19 06" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/e9006776-a336-4303-bc35-f787090a1caf">
 
 
@@ -81,9 +78,11 @@ This function calculates the LCZ area like this:
 ```{r, message = FALSE, eval = FALSE}
 
 LCZarea <- LCZarea(lcz_map, iplot = TRUE)
+
 LCZarea
 
 ```
+
 <img width="1440" alt="Screenshot 2023-08-13 at 19 24 47" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/2f2fcd9f-1744-47a9-850a-5ad0630aae3b">
 
 
