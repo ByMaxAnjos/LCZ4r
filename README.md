@@ -2,6 +2,8 @@
 
 ## Introduction
 
+<img align="right" src="https://github.com/ByMaxAnjos/LCZ4r/blob/main/inst/figures/logo.png?raw=true" alt="logo" width="140"> 
+
 As part of **Zoom City Carbon Model (ZCCM)**, we present the **LCZ4r**, a set of R functions which models Urban Heat Island at high-definition using Local Climate Zone classification and local air temperature readings.
 
 Please note that [LCZ4r package R](https://bymaxanjos.github.io/LCZ4r/) is currently undergoing develop, and caution is advised when interpreting its outcomes. Our methodology is based on Anjos M., Madeiros D, Meier F, Castelhano F. Tools for Urban Heat Islands and Local Climate Zones Analysis in R(in preparation).
@@ -10,46 +12,51 @@ Happy coding!
 
 ## Install 
 
-To install LCZ4r:
+To install LCZ4r use the development version with latest features
 
 ```{r setup, include=TRUE}
-#Apply the function
+
 devtools::install_github("ByMaxAnjos/LCZ4r")
+library(LCZ4r)
 
 ```
+## Overview of the package
+The **LCZ4r** package includes 5 functions:
 
-## Get your LCZ map
+- `getLCZmap()` - Get you LCZ map
+- `plotLCZmap()` - Plot you LCZ map
+- `LCZarea()` - Caculate the LCZ area
+- `getLCZparameters()` - Get LCZ parameters
+- `plotLCZparameters()` - Plot LCZ parameters
+
+
+## Basic Usage
 
 This function gets LCZ for a specified region of interest (ROI) using global LCZ mapping.
 
 ```{r setup, include=TRUE}
-#Apply the function
+
 lcz_map <- getLCZmap(city="Berlin")
+
 plotLCZmap(lcz_map)
 
 ```
 <img width="1217" alt="Screenshot 2023-08-13 at 18 27 13" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/6ca761e5-5fd4-4148-9a6f-c22b5306c10b">
 
-
-## Hands-on 34 LCZ parameters
-
 This nice function gets all LCZ parameters (including, min, max, and mean) from Stewart and Oke (2012) and converts them to shapefile or raster stack.
 
 ```{r setup, include=TRUE}
 
-#Apply the function
 LCZpar <- getLCZparameters(lcz_map, iStack = TRUE)
 
 ```
 <img width="1439" alt="Screenshot 2023-08-13 at 19 19 06" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/e9006776-a336-4303-bc35-f787090a1caf">
 
 
-## Calculate the LCZ area
-
 This function calculates the LCZ area like this:
 
 ```{r setup, include=TRUE}
-#Apply the function
+
 LCZarea <- LCZarea(lcz_map, iplot = TRUE)
 LCZarea
 
