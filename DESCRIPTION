@@ -3,7 +3,8 @@ Type: Package
 Title: Tools for Local Climate Zones and Urban Heat Island Analysis
 Version: 0.1.0
 Authors@R: c(
-    person("Max", "Anjos", , "maxanjos@campus.ul.pt", role = c("aut", "cre"))
+    person("Max", "Anjos", , "maxanjos@campus.ul.pt", role = c("aut", "cre"),
+    comment = c(ORCID = "0000-0001-6394-1324"))
   )
 Maintainer: Max Anjos <maxanjos@campus.ul.pt>
 Description: LCZ4r is a comprehensive R package designed for creating, analyzing,
