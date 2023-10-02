@@ -1,4 +1,14 @@
-url: https://bymaxanjos.github.io/LCZ4r/
-template:
-  bootstrap: 5
+comment: false
 
+coverage:
+  status:
+    project:
+      default:
+        target: auto
+        threshold: 1%
+        informational: true
+    patch:
+      default:
+        target: auto
+        threshold: 1%
+        informational: true
