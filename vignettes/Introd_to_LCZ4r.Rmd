@@ -31,7 +31,7 @@ Happy coding!
 
 To install LCZ4r, use the development version with latest features
 
-```{r, echo = FALSE}
+```{r, message = FALSE, eval = FALSE}
 
 devtools::install_github("ByMaxAnjos/LCZ4r")
 
@@ -54,7 +54,7 @@ The **LCZ4r** package includes 5 functions:
 
 This function gets LCZ for a specified region of interest (ROI) using global LCZ mapping.
 
-```{r, echo = FALSE}
+```{r, message = FALSE, eval = FALSE}
 
 lcz_map <- getLCZmap(city="Berlin")
 
@@ -66,7 +66,7 @@ plotLCZmap(lcz_map)
 
 This nice function gets all LCZ parameters (including, min, max, and mean) from Stewart and Oke (2012) and converts them to shapefile or raster stack.
 
-```{r, echo = FALSE}
+```{r, message = FALSE, eval = FALSE}
 
 LCZpar <- getLCZparameters(lcz_map, iStack = TRUE)
 
@@ -77,7 +77,7 @@ LCZpar <- getLCZparameters(lcz_map, iStack = TRUE)
 
 This function calculates the LCZ area like this:
 
-```{r, echo = FALSE}
+```{r, message = FALSE, eval = FALSE}
 
 LCZarea <- LCZarea(lcz_map, iplot = TRUE)
 
