@@ -64,7 +64,16 @@ plotLCZmap(lcz_map)
 
 <img width="1217" alt="Screenshot 2023-08-13 at 18 27 13" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/6ca761e5-5fd4-4148-9a6f-c22b5306c10b">
 
+
 This nice function gets all LCZ parameters (including, min, max, and mean) from Stewart and Oke (2012) and converts them to shapefile or raster stack.
+
+
+|    ID	   |    parameter   |     description   | unit |
+|------------------|-------------|-------------------|---------|
+| SVF.min	       | Sky View Factor        | Minimum Sky View Factor |[0-1] |
+| SVF.max	     | Sky View Factor      | Maximum Sky View Factor |[0-1] |
+| SVF.mean	     | Sky View Factor      | Mean Sky View Factor |[0-1] |
+
 
 ```{r, message = FALSE, eval = FALSE}
 
