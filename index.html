@@ -78,6 +78,7 @@
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
+<p><img align="right" src="https://github.com/ByMaxAnjos/LCZ4r/blob/main/inst/figures/logo.png?raw=true" alt="logo" width="140"></p>
 <p>As part of <strong>Zoom City Carbon Model (ZCCM)</strong>, we present the <strong>LCZ4r</strong>, a set of R functions which models Urban Heat Island at high-definition using Local Climate Zone classification and local air temperature readings.</p>
 <p>Please note that <a href="https://bymaxanjos.github.io/LCZ4r/">LCZ4r package R</a> is currently undergoing develop, and caution is advised when interpreting its outcomes. Our methodology is based on Anjos M., Madeiros D, Meier F, Castelhano F. Tools for Urban Heat Islands and Local Climate Zones Analysis in R(in preparation).</p>
 <p>Happy coding!</p>
@@ -85,35 +86,40 @@
 <div class="section level2">
 <h2 id="install">Install<a class="anchor" aria-label="anchor" href="#install"></a>
 </h2>
-<p>To install LCZ4r:</p>
-<p>```{r setup, include=TRUE} #Apply the function devtools::install_github(“ByMaxAnjos/LCZ4r”)</p>
-<pre><code>
-## Get your LCZ map
+<p>To install LCZ4r use the development version with latest features</p>
+<p>```{r setup, include=TRUE}</p>
+<p>devtools::install_github(“ByMaxAnjos/LCZ4r”) library(LCZ4r)</p>
+<pre><code>## Overview of the package
+The **LCZ4r** package includes 5 functions:
+
+- `getLCZmap()` - Get you LCZ map
+- `plotLCZmap()` - Plot you LCZ map
+- `LCZarea()` - Caculate the LCZ area
+- `getLCZparameters()` - Get LCZ parameters
+- `plotLCZparameters()` - Plot LCZ parameters
+
+
+## Basic Usage
 
 This function gets LCZ for a specified region of interest (ROI) using global LCZ mapping.
 
 ```{r setup, include=TRUE}
-#Apply the function
+
 lcz_map &lt;- getLCZmap(city="Berlin")
+
 plotLCZmap(lcz_map)
 </code></pre>
 <p><img width="1217" alt="Screenshot 2023-08-13 at 18 27 13" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/6ca761e5-5fd4-4148-9a6f-c22b5306c10b"></p>
-</div>
-<div class="section level2">
-<h2 id="hands-on-34-lcz-parameters">Hands-on 34 LCZ parameters<a class="anchor" aria-label="anchor" href="#hands-on-34-lcz-parameters"></a>
-</h2>
 <p>This nice function gets all LCZ parameters (including, min, max, and mean) from Stewart and Oke (2012) and converts them to shapefile or raster stack.</p>
 <p>```{r setup, include=TRUE}</p>
-<p>#Apply the function LCZpar &lt;- getLCZparameters(lcz_map, iStack = TRUE)</p>
+<p>LCZpar &lt;- getLCZparameters(lcz_map, iStack = TRUE)</p>
 <pre><code>&lt;img width="1439" alt="Screenshot 2023-08-13 at 19 19 06" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/e9006776-a336-4303-bc35-f787090a1caf"&gt;
 
-
-## Calculate the LCZ area
 
 This function calculates the LCZ area like this:
 
 ```{r setup, include=TRUE}
-#Apply the function
+
 LCZarea &lt;- LCZarea(lcz_map, iplot = TRUE)
 LCZarea
 </code></pre>
