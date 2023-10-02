@@ -3,7 +3,7 @@ pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   Introd_to_LCZ4r: Introd_to_LCZ4r.html
-last_built: 2023-10-02T15:50Z
+last_built: 2023-10-02T16:01Z
 urls:
   reference: https://bymaxanjos.github.io/LCZ4r/reference
   article: https://bymaxanjos.github.io/LCZ4r/articles

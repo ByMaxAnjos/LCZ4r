@@ -85,8 +85,6 @@
 
     
     
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bymaxanjos.github.io/LCZ4r/">LCZ4r</a></span><span class="op">)</span></span></code></pre></div>
 <p>This vignette introduces the <strong><code>LCZ4r</code></strong>
 package.</p>
 <p>As part of Zoom City Carbon Model (ZCCM), we present the
@@ -101,9 +99,10 @@ develop, and caution is advised when interpreting its outcomes.</p>
 </h2>
 <p>To install LCZ4r, use the development version with latest
 features</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"ByMaxAnjos/LCZ4r"</span><span class="op">)</span></span>
+<span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bymaxanjos.github.io/LCZ4r/">LCZ4r</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -128,7 +127,7 @@ features</p>
 </h2>
 <p>This function gets LCZ for a specified region of interest (ROI) using
 global LCZ mapping.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">lcz_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getLCZmap.html">getLCZmap</a></span><span class="op">(</span>city<span class="op">=</span><span class="st">"Berlin"</span><span class="op">)</span></span>
 <span></span>
@@ -137,14 +136,15 @@ global LCZ mapping.</p>
 <p>This nice function gets all LCZ parameters (including, min, max, and
 mean) from Stewart and Oke (2012) and converts them to shapefile or
 raster stack.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">LCZpar</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/getLCZparameters.html">getLCZparameters</a></span><span class="op">(</span><span class="va">lcz_map</span>, iStack <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <p><img width="1439" alt="Screenshot 2023-08-13 at 19 19 06" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/e9006776-a336-4303-bc35-f787090a1caf"></p>
 <p>This function calculates the LCZ area like this:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">LCZarea</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/LCZarea.html">LCZarea</a></span><span class="op">(</span><span class="va">lcz_map</span>, iplot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
 <span><span class="va">LCZarea</span></span></code></pre></div>
 <p><img width="1440" alt="Screenshot 2023-08-13 at 19 24 47" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/2f2fcd9f-1744-47a9-850a-5ad0630aae3b"></p>
 </div>
