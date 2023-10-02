@@ -169,7 +169,7 @@ plotLCZparameters <- function(x, iSelect = "", isubtitle = "Your City", all = FA
 
       #Plot the lcz parameters
       fig_par <- ggplot2::ggplot() +
-        ggplot2::geom_raster(ggplot2::aes(x=x, y=.data$y, fill=.data$values), data = parameter_df, show.legend = TRUE) +
+        ggplot2::geom_tile(ggplot2::aes(x=x, y=.data$y, fill=.data$values), data = parameter_df, show.legend = TRUE) +
         ggplot2::scale_fill_viridis_c(option = paste0(names_par$color[i]), name=paste0(names_par$unit[i]))+
         ggplot2::labs(title = paste0(names_par$name[i]),
                       subtitle = isubtitle,
@@ -233,7 +233,7 @@ plotLCZparameters <- function(x, iSelect = "", isubtitle = "Your City", all = FA
 
         #Plot the lcz parameters
         fig_par <- ggplot2::ggplot() +
-          ggplot2::geom_raster(ggplot2::aes(x=x, y=.data$y, fill=.data$values), data = parameter_df, show.legend = TRUE) +
+          ggplot2::geom_tile(ggplot2::aes(x=x, y=.data$y, fill=.data$values), data = parameter_df, show.legend = TRUE) +
           ggplot2::scale_fill_viridis_c(option = paste0(names_par_select$color[i]), name=paste0(names_par_select$unit[i]))+
           ggplot2::labs(title = paste0(names_par_select$name[i]),
                         subtitle = isubtitle,
@@ -289,7 +289,7 @@ plotLCZparameters <- function(x, iSelect = "", isubtitle = "Your City", all = FA
 
       #Plot the lcz parameters
       fig_par <- ggplot2::ggplot() +
-        ggplot2::geom_raster(ggplot2::aes(x=x, y=.data$y, fill=.data$values), data = parameter_df, show.legend = TRUE) +
+        ggplot2::geom_tile(ggplot2::aes(x=x, y=.data$y, fill=.data$values), data = parameter_df, show.legend = TRUE) +
         ggplot2::scale_fill_viridis_c(option = paste0(names_par_select$color), name=paste0(names_par_select$unit))+
         ggplot2::labs(title = paste0(names_par_select$name),
                       subtitle = isubtitle,

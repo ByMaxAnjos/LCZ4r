@@ -69,7 +69,7 @@ dataPlot <- terra::as.data.frame(lcz_map, xy=TRUE) %>%
   my_plot <-
   ggplot2::ggplot() +
     # Add the raster layer
-    ggplot2::geom_raster(ggplot2::aes(x = x, y = .data$y, fill = base::as.factor(class)),
+    ggplot2::geom_tile(ggplot2::aes(x = x, y = .data$y, fill = base::as.factor(class)),
                          data = dataPlot,  inherit.aes = FALSE) +
     # Set the color palette to a qualitative one and add labels, title and legend.hist
     ggplot2::scale_fill_manual(values = color_values, name = "LCZ class",
