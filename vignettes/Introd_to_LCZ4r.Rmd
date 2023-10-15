@@ -6,14 +6,13 @@ urlcolor: blue
 vignette: >
   %\VignetteIndexEntry{Introduction to `LCZ4r`}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}
+  %\VignetteEncoding{UTF-8}{inputenc}
 ---
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  eval = identical(tolower(Sys.getenv("NOT_CRAN")), "true"),
   out.width = "100%"
 )
 
@@ -31,11 +30,10 @@ Happy coding!
 
 To install LCZ4r, use the development version with latest features
 
-```{r, message = FALSE, eval = FALSE}
-
-devtools::install_github("ByMaxAnjos/LCZ4r")
+```{r,include = FALSE}
 
 library(LCZ4r)
+
 ```
 
 
@@ -43,21 +41,25 @@ library(LCZ4r)
 
 The **LCZ4r** package includes 5 functions:
 
-- `getLCZmap()` - Get you LCZ map
-- `plotLCZmap()` - Plot you LCZ map
-- `LCZarea()` - Caculate the LCZ area
-- `getLCZparameters()` - Get LCZ parameters
-- `plotLCZparameters()` - Plot LCZ parameters
+|    Function	   |    description   |     Use of data   | Use of Internet |
+|------------------|-------------|-------------------|---------|
+| getLCZmap()       | Get you LCZ map        | Not | Yes  |
+| plotLCZmap()	     |  Plot you LCZ map      | Not | Not |
+| LCZarea()	     | Calculate LCZ area      | Not | Not |
+| getLCZparameters()	   | Get LCZ parameters    | Not | Not |
+| plotLCZparameters()	   | Plot LCZ parameters   | Not | Not |
 
 
 ## Basic Usage
 
 This function gets LCZ for a specified region of interest (ROI) using global LCZ mapping.
 
-```{r, message = FALSE, eval = FALSE}
+```{r, include = FALSE}
 
+#Get your city LCZ map
 lcz_map <- getLCZmap(city="Berlin")
 
+#Plot it
 plotLCZmap(lcz_map)
 
 ```
@@ -74,8 +76,7 @@ This nice function gets all LCZ parameters (including, min, max, and mean) from 
 | SVF.max	     | Sky View Factor      | Maximum Sky View Factor |[0-1] |
 | SVF.mean	     | Sky View Factor      | Mean Sky View Factor |[0-1] |
 
-
-```{r, message = FALSE, eval = FALSE}
+```{r, include = FALSE}
 
 LCZpar <- getLCZparameters(lcz_map, iStack = TRUE)
 
@@ -86,7 +87,7 @@ LCZpar <- getLCZparameters(lcz_map, iStack = TRUE)
 
 This function calculates the LCZ area like this:
 
-```{r, message = FALSE, eval = FALSE}
+```{r, include = FALSE}
 
 LCZarea <- LCZarea(lcz_map, iplot = TRUE)
 

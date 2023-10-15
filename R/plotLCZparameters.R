@@ -4,7 +4,7 @@
 #' This function plots the parameters of an LCZ (Local Climate Zone) map.
 #'
 #' @param x The LCZ map in SpatRaster format.
-#' @param iSelect Character vector. Specify one or more parameter names to retrieve specific
+#' @param iselect Character vector. Specify one or more parameter names to retrieve specific
 #'                parameters. For example, "SVF.min" to get the minimum Sky View Factor,
 #'                or c("SVF.min", "veg.frac.max") to select multiple parameters.
 #' @param isave Save the plot into your directory.
@@ -17,7 +17,7 @@
 #'
 #' @examples
 #'
-#' #myplot_par <- plotLCZparameters(x = lcz_map, iSelect = "SVF.min", isubtitle = "Your City")
+#' #myplot_par <- plotLCZparameters(x = lcz_map, iselect = "SVF.min", isubtitle = "Your City")
 #'
 #' @importFrom rlang .data
 #'
@@ -27,18 +27,18 @@
 #' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis
 
 
-plotLCZparameters <- function(x, iSelect = "", isubtitle = "Your City", all = FALSE, isave = FALSE) {
+plotLCZparameters <- function(x, iselect = "", isubtitle = "", all = FALSE, isave = FALSE) {
 
   # # Validate inputs
   # if (is.null(x) & is.null(x)) {
   #   stop("Error: provide either a raster or raster stack from getLCZparameters()")
-  # } else if (!is.null(iSelect) & !is.character(iSelect)) {
+  # } else if (!is.null(iselect) & !is.character(iselect)) {
   #   stop("Error: city input must be a character string")
   # } else if (!is.null(x) & !inherits(x, "raster")) {
   #   stop("Error: x input must be raster stack object of raster package. Please, use the getLCZparameters(x, iStack = TRUE, iShp = FALSE")
   # }
 
-  LCZpar <- {{x}}[[-1]]
+  LCZpar <- {{my_par}}[[-1]]
 
   take_names <- function(x) {
     if(x == "SVF.min") return("Minimum Sky View Factor")
@@ -75,6 +75,43 @@ plotLCZparameters <- function(x, iSelect = "", isubtitle = "Your City", all = FA
     if(x == "antrop.heat.max") return("Maximum Anthropogenic Heat Outupt")
     if(x == "antrop.heat.mean") return("Mean Anthropogenic Heat Outupt")
     if(x == "z0") return("Roughness Lenght")
+  }
+
+  take_code <- function(x) {
+    if(x == "SVF.min") return("SVF1")
+    if(x == "SVF.max") return("SVF2")
+    if(x == "SVF.mean") return("SVF3")
+    if(x == "aspect.ratio.min") return("ASP1")
+    if(x == "aspect.ratio.max") return("ASP2")
+    if(x == "aspect.ratio.mean") return("ASP3")
+    if(x == "build.frac.min") return("BUI1")
+    if(x == "build.frac.max") return("BUI2")
+    if(x == "build.frac.mean") return("BUI3")
+    if(x == "imp.frac.min") return("IMP1")
+    if(x == "imp.frac.max") return("IMP2")
+    if(x == "imp.frac.mean") return("IMP3")
+    if(x == "veg.frac.min") return("VEG1")
+    if(x == "veg.frac.max") return("VEG2")
+    if(x == "veg.frac.mean") return("VEG3")
+    if(x == "tree.frac.min") return("TRE1")
+    if(x == "tree.frac.max") return("TRE2")
+    if(x == "tree.frac.mean") return("TRE3")
+    if(x == "height.roug.min") return("HEI1")
+    if(x == "height.roug.max") return("HEI2")
+    if(x == "height.roug.mean") return("HEI3")
+    if(x == "terra.roug.min") return("TER1")
+    if(x == "terra.roug.max") return("TER2")
+    if(x == "terra.roug.mean") return("TER3")
+    if(x == "surf.admit.min") return("ADM1")
+    if(x == "surf.admit.max") return("ADM2")
+    if(x == "surf.admit.mean") return("ADM3")
+    if(x == "surf.albedo.min") return("ALB1")
+    if(x == "surf.albedo.max") return("ALB2")
+    if(x == "surf.albedo.mean") return("ALB3")
+    if(x == "antrop.heat.min") return("ANT1")
+    if(x == "antrop.heat.max") return("ANT2")
+    if(x == "antrop.heat.mean") return("ANT3")
+    if(x == "z0") return("Z0")
   }
 
   take_unit <- function(x) {
@@ -157,6 +194,7 @@ plotLCZparameters <- function(x, iSelect = "", isubtitle = "Your City", all = FA
   names_par$name <- base::sapply(names_par$value, take_names)
   names_par$unit <- base::sapply(names_par$value, take_unit)
   names_par$color <- base::sapply(names_par$value, take_color)
+  names_par$code <- base::sapply(names_par$value, take_code)
 
   if(all == TRUE) {
 
@@ -212,17 +250,18 @@ plotLCZparameters <- function(x, iSelect = "", isubtitle = "Your City", all = FA
 
   }
 
-  if(!base::is.null(iSelect)){
+  if(!base::is.null(iselect)){
 
 
-    if(length(iSelect)>1) {
+    if(length(iselect)>1) {
 
       #Select the raster
-      select_raster <- LCZpar[[{{iSelect}}]]
+      select_raster <- LCZpar[[{{iselect}}]]
       names_par_select <- tibble::as_tibble(names(select_raster))
       names_par_select$name <- base::sapply(names_par_select$value, take_names)
       names_par_select$unit <- base::sapply(names_par_select$value, take_unit)
       names_par_select$color <- base::sapply(names_par_select$value, take_color)
+      names_par$code <- base::sapply(names_par$value, take_code)
 
       for (i in 1:raster::nlayers(select_raster)) {
 
@@ -276,11 +315,12 @@ plotLCZparameters <- function(x, iSelect = "", isubtitle = "Your City", all = FA
 
     } else {
 
-      select_raster <- LCZpar[[{{iSelect}}]]
+      select_raster <- LCZpar[[{{iselect}}]]
       names_par_select <- tibble::as_tibble(names(select_raster))
       names_par_select$name <- base::sapply(names_par_select$value, take_names)
       names_par_select$unit <- base::sapply(names_par_select$value, take_unit)
       names_par_select$color <- base::sapply(names_par_select$value, take_color)
+      names_par$code <- base::sapply(names_par$value, take_code)
 
       # Convert the raster layer to a data frame
       parameter_df <- terra::as.data.frame(select_raster, xy=TRUE) %>%

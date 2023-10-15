@@ -66,9 +66,11 @@ plotLCZmap <- function(x, isubtitle = "", isave = FALSE, legend = "name") {
 dataPlot <- terra::as.data.frame(lcz_map, xy=TRUE) %>%
   tidyr::drop_na()
 
+boundary <- raster::rasterToPolygons(lcz_map) %>% sf::st_as_sf() %>% sf::st_union()
   my_plot <-
   ggplot2::ggplot() +
     # Add the raster layer
+    ggplot2::geom_sf(data=boundary, fill='transparent', lwd = 2, inherit.aes = FALSE) +
     ggplot2::geom_tile(ggplot2::aes(x = x, y = .data$y, fill = base::as.factor(class)),
                          data = dataPlot,  inherit.aes = FALSE) +
     # Set the color palette to a qualitative one and add labels, title and legend.hist
@@ -76,16 +78,17 @@ dataPlot <- terra::as.data.frame(lcz_map, xy=TRUE) %>%
                                labels = lcz.lables,
                                guide = ggplot2::guide_legend(reverse = FALSE,
                                                              title.position = "top")) +
+    ggplot2::coord_sf() +
     ggplot2::labs(title = "Local Climate Zones",
                   subtitle = isubtitle,
-      caption = "Source:LCZ4r, https://github.com/ByMaxAnjos/LCZ4r\nData:Demuzere et al.(2022), https://doi.org/10.5194/essd-14-3835-2022") +
+      caption = "Source: LCZ4r, https://github.com/ByMaxAnjos/LCZ4r\nData: Stewart and Oke, 2012; Demuzere et al.2022") +
     ggplot2::theme_void() +
     ggplot2::theme(plot.title = ggplot2::element_text(color = "#3f1651", size = 18, face = "bold", hjust = 0.5),
           plot.subtitle = ggplot2::element_text(color = "#3f1651", size = 18, hjust = 0.5),
-          plot.background = ggplot2::element_rect(fill = "white"),
+          plot.background = ggplot2::element_blank(),
           legend.title = ggplot2::element_text(size = 16, color = "black", face = "bold"),
           legend.text = ggplot2::element_text(size = 16, color = "black"),
-          plot.caption = ggplot2::element_text(colour = "grey60", size = 9), # move caption to the left
+          plot.caption = ggplot2::element_text(colour = "grey10", size = 12), # move caption to the left
           axis.line = ggplot2::element_blank(),
           axis.text.x = ggplot2::element_blank(),
           axis.text.y = ggplot2::element_blank(),
@@ -93,12 +96,8 @@ dataPlot <- terra::as.data.frame(lcz_map, xy=TRUE) %>%
           #panel.grid.major = ggplot2::element_line(color = "white", size = 0.3),
           #panel.grid.minor = ggplot2::element_line(color = "white", size = 0.3),
            )
-
-    # ggplot2::coord_sf(crs = "+proj=longlat +datum=WGS84 +no_defs") +
-    # ggspatial::annotation_scale(plot_unit = "m", bar_cols = c("grey40", "grey80"), colour = "white") +
-    # ggspatial::annotation_north_arrow(location = "br", which_north = "true",
-    #                                   height = unit(1.0, "cm"),
-    #                                   width = unit(1.0, "cm"))
+    # ggspatial::annotation_scale() +
+    # ggspatial::annotation_north_arrow(location = "br", which_north = "true")
 
   if(isave == TRUE){
 
@@ -119,3 +118,4 @@ dataPlot <- terra::as.data.frame(lcz_map, xy=TRUE) %>%
 return(my_plot)
 
 }
+

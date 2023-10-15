@@ -8,7 +8,6 @@
 #' @param city The name of your city or the area you want to focus on. It is based on Open Street Map project.
 #' @param roi Optionally, you can provide a Region of Interest (ROI) in ESRI shapefile format to clip the LCZ map.
 #' @param isave_map Set to TRUE if you want to save the your clipped resulting map as a raster.tiff file on your local machine.
-#' @param isave_global Set to TRUE if you want to save the global resulting map as a raster.tiff file on your local machine.
 #' @return A Terra raster.tiff file containing the LCZ classes for your specified area.
 #'
 #' @export
@@ -20,12 +19,12 @@
 #'
 #' #Get LCZ map for a custom region of interest
 #' #custom_roi <- sf::st_read("custom_roi.shp")
-#' #roi_lcz <- getLCZmap(roi = custom_roi, isave_map = TRUE, isave_global = TRUE)
+#' #roi_lcz <- getLCZmap(roi = custom_roi, isave_map = TRUE)
 #'
 #' #For National scale
-#' #my_lcz_country <- getLCZmap(city = "Brazil", roi = NULL, isave_map = TRUE, isave_global = TRUE)
+#' #my_lcz_country <- getLCZmap(city = "Brazil", roi = NULL, isave_map = TRUE)
 
-getLCZmap <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_global = FALSE) {
+getLCZmap <- function(city=NULL, roi = NULL, isave_map = FALSE) {
 
   # Validate inputs
   if (is.null(city) & is.null(roi)) {
@@ -40,6 +39,9 @@ getLCZmap <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_global = F
     # Get study area polygon from OpenStreetMap data
     shp_verify <- osmdata::getbb({{city}}, format_out = "sf_polygon", limit = 1)
 
+    if(is.null(shp_verify)){
+      stop(paste0("No polygonal boundary for", city, ".See https://nominatim.openstreetmap.org"))
+    }
     # Check if polygon was obtained successfully
     if(!is.null(shp_verify$geometry) & !inherits(shp_verify, "list")) {
       study_area <- shp_verify$geometry
@@ -52,10 +54,11 @@ getLCZmap <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_global = F
         sf::st_as_sf() %>%
         sf::st_transform(crs="+proj=longlat +datum=WGS84 +no_defs")
     }
+
     # Download the LCZ global map
     lcz_url <- "https://zenodo.org/record/6364594/files/lcz_filter_v1.tif?download=1"
     lcz_download <- terra::rast(base::paste0("/vsicurl/", lcz_url))
-    lcz_ras <- terra::crop(lcz_download, terra::ext(study_area))
+    lcz_ras <- terra::crop(lcz_download, terra::ext(study_area), snap = "out", mask= TRUE)
     lcz_ras <- terra::mask(lcz_ras, terra::vect(study_area))
     base::names(lcz_ras) <- "lcz"
 
@@ -75,22 +78,6 @@ getLCZmap <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_global = F
       terra::writeRaster(lcz_ras, file, overwrite = TRUE)
     }
 
-    if(isave_global==TRUE){
-
-      # Create a folder name using paste0
-      folder <- base::paste0("LCZ4r_output/")
-
-      # Check if the folder exists
-      if (!base::dir.exists(folder)) {
-        # Create the folder if it does not exist
-        base::dir.create(folder)
-      }
-
-      file <- base::paste0(folder,"lcz_globalmap.tif")
-
-      terra::writeRaster(lcz_download, file, overwrite = TRUE)
-    }
-
     return(lcz_ras)
 
   } else {
@@ -101,7 +88,7 @@ getLCZmap <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_global = F
       sf::st_as_sf() %>%
       sf::st_make_valid() %>%
       sf::st_transform(crs = "+proj=longlat +datum=WGS84 +no_defs")
-    lcz_ras <- terra::crop(lcz_download, terra::ext(roi_crs))
+    lcz_ras <- terra::crop(lcz_download, terra::ext(roi_crs), mask = TRUE)
     lcz_ras <- terra::mask(lcz_ras, terra::vect(roi_crs))
     base::names(lcz_ras) <- "lcz"
 
@@ -141,3 +128,4 @@ getLCZmap <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_global = F
   }
 
 }
+my_map <- getLCZmap(city="Vaticano")

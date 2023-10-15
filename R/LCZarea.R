@@ -79,21 +79,21 @@ LCZarea <- function(x, iplot=TRUE, isave=FALSE){
                                  guide = ggplot2::guide_legend(reverse = FALSE,
                                                       title.position = "top")) +
       ggplot2::geom_text(data = lcz_df,
-                         label = paste0(round(lcz_df$area_perc, 1), "%"), vjust = -1, size = 6) +
+                         label = paste0(round(lcz_df$area_perc, 1), "%"), vjust = -0.2, size = 6) +
       ggplot2::labs(title = "",
-           x = "LCZ",
+           x = "LCZ code",
            y = "Area [square kilometer]",
            fill = "LCZ") +
-      ggplot2::theme_bw() +
-      ggplot2::labs(caption = "Source:LCZ4r, https://github.com/ByMaxAnjos/LCZ4r\nData:Demuzere et al.(2022), https://doi.org/10.5194/essd-14-3835-2022") +
-      ggplot2::theme(
+      #ggplot2::theme_bw() +
+      ggplot2::labs(caption = "Source: LCZ4r, https://github.com/ByMaxAnjos/LCZ4r\nData: Stewart and Oke, 2012; Demuzere et al.2022") +
+      ggplot2::theme(panel.background = ggplot2::element_rect(),
         axis.text.x = ggplot2::element_text(size = 17),
-        axis.title.x =ggplot2::element_text(size = 17),
+        axis.title.x =ggplot2::element_text(size = 17, face = "bold"),
         axis.text.y = ggplot2::element_text(size = 17),
-        axis.title.y =ggplot2::element_text(size = 17),
+        axis.title.y =ggplot2::element_text(size = 17, face = "bold"),
         legend.text = ggplot2::element_text(size = 18),
-        legend.title = ggplot2::element_text(size = 18, face = "bold"),
-        plot.caption = ggplot2::element_text(color = "grey60", size = 9))
+        legend.title = ggplot2::element_text(size = 18),
+        plot.caption = ggplot2::element_text(color = "grey10", size = 12))
 
     if(isave == TRUE){
 

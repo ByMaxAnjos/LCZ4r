@@ -6,18 +6,18 @@
 #' morphology and are useful for urban climate and environmental studies.
 #'
 #' @param x A LCZ map in .tiff format SpatRaster object containing LCZ classes.
-#' @param iSelect Character vector. Specify one or more parameter names to retrieve specific
-#'                parameters. For example, "SVF.min" to get the minimum Sky View Factor,
-#'                or c("SVF.min", "veg.frac.max") to select multiple parameters.
-#' @param iShp Logical. If TRUE, returns all parameters as an ESRI shapefile.
-#' @param iStack Logical. If TRUE, returns all parameters as a raster stack.
+#' @param iselect Character vector. Specify one or more parameter names to retrieve specific
+#'                parameters. For example, "SVF1" to get the minimum Sky View Factor,
+#'                or c("SVF1", "z0") to select multiple parameters.
+#' @param ishp Logical. If TRUE, returns all parameters as an ESRI shapefile.
+#' @param istack Logical. If TRUE, returns all parameters as a raster stack.
 #'               If FALSE, returns a list of individual parameter rasters.
 #' @param isave Set to TRUE if you want to save the your clipped resulting map as a raster.tiff or .shp file on your local machine.
 #'
-#' @return If 'iStack' is TRUE, it returns a raster stack containing 34 LCZ-related parameters.
-#'         If 'iStack' is FALSE, it returns a list of individual parameter rasters.
-#'         If 'iShp' is TRUE, it returns an ESRI shapefile containing all parameters.
-#'         If 'iSelect' is specified, it returns the selected parameter(s) as a raster(s).
+#' @return If 'istack' is TRUE, it returns a raster stack containing 34 LCZ-related parameters.
+#'         If 'istack' is FALSE, it returns a list of individual parameter rasters.
+#'         If 'ishp' is TRUE, it returns an ESRI shapefile containing all parameters.
+#'         If 'iselect' is specified, it returns the selected parameter(s) as a raster(s).
 #'
 #' @export
 #'
@@ -26,23 +26,20 @@
 #' #lcz_map <- raster::raster("path/to/lcz_map.tif")
 #'
 #' # Get LCZ parameters as a raster stack
-#' #lcz_params_stack <- getLCZparameters(lcz_map, iStack = TRUE)
+#' #lcz_params_stack <- getLCZparameters(lcz_map, istack = TRUE)
 #'
 #' # Get LCZ parameters as a list of individual parameter rasters
-#' #lcz_params_list <- getLCZparameters(lcz_map, iStack = FALSE)
+#' #lcz_params_list <- getLCZparameters(lcz_map, istack = FALSE)
 #'
 #' # Access individual parameters from the list
 #' #specific_param <- lcz_params_list$parameter_name
 #'
-#' # Plot a specific parameter
-#' #plot(specific_param, main = "LCZ Parameter: Parameter Name")
-#'
 #' # Get specific parameters as a raster or shapefile
-#' #selected_params <- getLCZparameters(lcz_map, iSelect = c("SVF.min", "veg.frac.max"), iShp = TRUE)
+#' #selected_params <- getLCZparameters(lcz_map, iselect = c("SVF1", "VEG1"), ishp = TRUE)
 #'
 #' @importFrom rlang .data
 
-getLCZparameters <- function(x,  iSelect = NULL, iStack = TRUE, iShp = FALSE, isave = FALSE) {
+getLCZparameters <- function(x,  iselect = "SVF1", istack = FALSE, ishp = FALSE, isave = FALSE) {
 
   lcz.name <- c("Compact highrise", "Compact midrise", "Compact lowrise", "Open highrise",
                 "Open midrise", "Open lowrise", "Lightweight low-rise", "Large lowrise",
@@ -96,6 +93,8 @@ getLCZparameters <- function(x,  iSelect = NULL, iStack = TRUE, iShp = FALSE, is
     return(NA)
   }
 
+
+
   # Calculate z0 values
   lcz.df$z0 <- base::sapply(lcz.df$lcz.code, calculate_z0)
 
@@ -112,6 +111,51 @@ getLCZparameters <- function(x,  iSelect = NULL, iStack = TRUE, iShp = FALSE, is
   lcz.df$surf.albedo.mean <- (lcz.df$surf.albedo.min + lcz.df$surf.albedo.max) / 2
   lcz.df$antrop.heat.mean <- (lcz.df$antrop.heat.min + lcz.df$antrop.heat.max) / 2
 
+
+  # Create a named vector with mappings
+  code_mapping <- c(
+     "lcz",
+     "lcz.name",
+     "lcz.code",
+     "lcz.col",
+     "SVF1",
+     "SVF2",
+     "SVF3",
+     "ASP1",
+     "ASP2",
+     "ASP3",
+     "BUI1",
+     "BUI2",
+     "BUI3",
+     "IMP1",
+     "IMP2",
+     "IMP3",
+     "VEG1",
+     "VEG2",
+     "VEG3",
+     "TRE1",
+     "TRE2",
+     "TRE3",
+     "HEI1",
+     "HEI2",
+     "HEI3",
+     "TER1",
+     "TER2",
+     "TER3",
+     "ADM1",
+     "ADM2",
+     "ADM3",
+     "ALB1",
+     "ALB2",
+     "ALB3",
+     "ANT1",
+     "ANT2",
+     "ANT3",
+     "z0"
+  )
+
+  base::colnames(lcz.df) <- code_mapping
+
   #Pbase::reprocessing raster
   base::names(x) <- "lcz"
   lcz_shp <- terra::as.polygons({{x}}) %>%
@@ -119,7 +163,8 @@ getLCZparameters <- function(x,  iSelect = NULL, iStack = TRUE, iShp = FALSE, is
   lcz_result <- dplyr::inner_join(lcz_shp, lcz.df, by="lcz") %>%
     dplyr::select(-.data$lcz.code, -lcz.name, -lcz.col)
 
-  if(iShp==TRUE) {
+
+  if(ishp==TRUE) {
 
     if(isave==TRUE){
 
@@ -152,9 +197,10 @@ getLCZparameters <- function(x,  iSelect = NULL, iStack = TRUE, iShp = FALSE, is
       return(lcz_result)
   }
 
-  if(iStack==TRUE){
+  if(istack==TRUE){
 
       # Initialize a list to store rasterized and resampled maps
+
 
     ras <- base::lapply(1:ncol(lcz_result), FUN = function(i) {
       ras_select <- stars::st_rasterize(lcz_result[, i]) %>%
@@ -165,6 +211,7 @@ getLCZparameters <- function(x,  iSelect = NULL, iStack = TRUE, iShp = FALSE, is
       ras_stack <- raster::stack(ras)[[-36]]
 
       # Set names for the layers in the raster stack
+
       base::names(ras_stack) <- base::colnames(lcz_result)[1:ncol(lcz_result)-1]
 
     if(isave==TRUE){
@@ -186,14 +233,14 @@ getLCZparameters <- function(x,  iSelect = NULL, iStack = TRUE, iShp = FALSE, is
     return(ras_stack)
   }
 
-  if(!base::is.null(iSelect)){
+  if(!base::is.null(iselect)){
 
 
-    if(length(iSelect)>1) {
+    if(length(iselect)>1) {
 
       # Remove the 'lcz' column from lcz_result
       lcz_df_pre <- lcz_result %>%
-        dplyr::select({{iSelect}})
+        dplyr::select({{iselect}})
 
       ras_select <- base::lapply(2:ncol(lcz_df_pre)-1, FUN = function(i) {
         ras_select <- stars::st_rasterize(lcz_df_pre[, i]) %>%
@@ -204,6 +251,7 @@ getLCZparameters <- function(x,  iSelect = NULL, iStack = TRUE, iShp = FALSE, is
       ras_stack_selec <- raster::stack(ras_select)
 
       # Set names for the layers in the raster stack
+
       base::names(ras_stack_selec) <- base::colnames(lcz_df_pre)[1:ncol(lcz_df_pre)-1]
 
       if(isave==TRUE){
