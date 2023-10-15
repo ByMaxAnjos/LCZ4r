@@ -56,7 +56,7 @@ getLCZmap <- function(city=NULL, roi = NULL, isave_map = FALSE) {
     }
 
     # Download the LCZ global map
-    lcz_url <- "https://zenodo.org/record/6364594/files/lcz_filter_v1.tif?download=1"
+    lcz_url <- "https://zenodo.org/records/8419340/files/lcz_filter_v3.tif?download=1"
     lcz_download <- terra::rast(base::paste0("/vsicurl/", lcz_url))
     lcz_ras <- terra::crop(lcz_download, terra::ext(study_area), snap = "out", mask= TRUE)
     lcz_ras <- terra::mask(lcz_ras, terra::vect(study_area))
