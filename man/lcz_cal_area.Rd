@@ -21,10 +21,10 @@ This function calculates the areas of LCZ (Local Climate Zones) classes in both 
 }
 \examples{
 
-#Calcute the lcz_cal_area
+#Calcute the LCZ area
 #my_lcz_area <- lcz_cal_area(x= my_lcz_map, iplot = TRUE, isave = TRUE)
 
 }
 \seealso{
-See the documentation for getLCZmap() to obtain an LCZ map.
+See the documentation for lcz_get_map() to obtain an LCZ map.
 }

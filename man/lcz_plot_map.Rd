@@ -27,7 +27,7 @@ This function plots the classes of an LCZ (Local Climate Zone) map represented a
 
 }
 \seealso{
-See the documentation for getLCZmap() to obtain an LCZ map.
+See the documentation for lcz_get_map() to obtain an LCZ map.
 }
 \keyword{Climate}
 \keyword{LCZ,}

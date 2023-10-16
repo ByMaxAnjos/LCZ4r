@@ -4,7 +4,7 @@
 \alias{lcz_get_map}
 \title{Get LCZ Map for Your Area}
 \usage{
-lcz_get_map(city = NULL, roi = NULL, isave_map = FALSE, isave_global = FALSE)
+lcz_get_map(city = NULL, roi = NULL, isave_map = FALSE)
 }
 \arguments{
 \item{city}{The name of your city or the area you want to focus on. It is based on Open Street Map project.}
@@ -12,8 +12,6 @@ lcz_get_map(city = NULL, roi = NULL, isave_map = FALSE, isave_global = FALSE)
 \item{roi}{Optionally, you can provide a Region of Interest (ROI) in ESRI shapefile format to clip the LCZ map.}
 
 \item{isave_map}{Set to TRUE if you want to save the your clipped resulting map as a raster.tiff file on your local machine.}
-
-\item{isave_global}{Set to TRUE if you want to save the global resulting map as a raster.tiff file on your local machine.}
 }
 \value{
 A Terra raster.tiff file containing the LCZ classes for your specified area.
@@ -30,8 +28,8 @@ It automatically clips the LCZ map to your specified area of interest, which can
 
 #Get LCZ map for a custom region of interest
 #custom_roi <- sf::st_read("custom_roi.shp")
-#roi_lcz <- lcz_get_map(roi = custom_roi, isave_map = TRUE, isave_global = TRUE)
+#roi_lcz <- lcz_get_map(roi = custom_roi, isave_map = TRUE)
 
 #For National scale
-#my_lcz_country <- lcz_get_map(city = "Brazil", roi = NULL, isave_map = TRUE, isave_global = TRUE)
+#my_lcz_country <- lcz_get_map(city = "Brazil", roi = NULL, isave_map = TRUE)
 }
