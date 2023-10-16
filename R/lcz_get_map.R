@@ -72,7 +72,7 @@ lcz_get_map <- function(city=NULL, roi = NULL, isave_map = FALSE) {
            Then read it using the terra package, eg., my_map <- rast('path/lcz_filter_v3.tif')")
     }
 
-    lcz_ras <- terra::crop(lcz_download, terra::ext(study_area), snap = "out", mask= TRUE)
+    lcz_ras <- terra::crop(lcz_download, terra::ext(study_area), snap = "out")
     lcz_ras <- terra::mask(lcz_ras, terra::vect(study_area))
     base::names(lcz_ras) <- "lcz"
 
