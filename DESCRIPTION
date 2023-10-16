@@ -32,7 +32,10 @@ Imports:
     ggplot2,
     purrr,
     tibble,
-    tidyr
+    tidyr,
+    openssl,
+    httr,
+    curl
 Suggests: 
     knitr,
     rmarkdown,
