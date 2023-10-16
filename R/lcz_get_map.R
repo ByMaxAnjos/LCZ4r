@@ -56,8 +56,15 @@ getLCZmap <- function(city=NULL, roi = NULL, isave_map = FALSE) {
     }
 
     # Download the LCZ global map
+
     lcz_url <- "https://zenodo.org/records/8419340/files/lcz_filter_v3.tif?download=1"
     lcz_download <- terra::rast(base::paste0("/vsicurl/", lcz_url))
+
+    if(base::is.null(lcz_download)) {
+      stop("This error might be due to server restrictions. In such cases, you may need to download the file manually using this link:
+           https://zenodo.org/records/8419340/files/lcz_filter_v3.tif?download=1.
+           Then read it using the terra package, eg., my_map <- rast('path/lcz_filter_v3.tif')")
+    }
     lcz_ras <- terra::crop(lcz_download, terra::ext(study_area), snap = "out", mask= TRUE)
     lcz_ras <- terra::mask(lcz_ras, terra::vect(study_area))
     base::names(lcz_ras) <- "lcz"
@@ -128,4 +135,4 @@ getLCZmap <- function(city=NULL, roi = NULL, isave_map = FALSE) {
   }
 
 }
-my_map <- getLCZmap(city="Vaticano")
+my_map <- getLCZmap(city="Berlin")

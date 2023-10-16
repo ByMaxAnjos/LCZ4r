@@ -14,7 +14,7 @@
 #'
 #' @examples
 #'
-#' #myplot <- plotLCZmap(x = myLCZmap, legend = "name")
+#' #myplot <- lcz_plot_map(x = myLCZmap, legend = "name")
 #'
 #' @importFrom rlang .data
 #'
@@ -24,7 +24,7 @@
 #' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis
 
 
-plotLCZmap <- function(x, isubtitle = "", isave = FALSE, legend = "name") {
+lcz_plot_map <- function(x, isubtitle = "", isave = FALSE, legend = "name") {
   lcz_map <- raster::raster({{x}})
   lczClass <- raster::ratify(lcz_map)
   rat <- raster::levels(lczClass)[[1]]
@@ -62,15 +62,18 @@ plotLCZmap <- function(x, isubtitle = "", isave = FALSE, legend = "name") {
     lcz.lables <- lcz_df$lcz.name
   }
 
+
+raster::ncell(lcz_map)*raster::nlayers(lcz_map) < 10e6
+
   # ggplot using the same data
 dataPlot <- terra::as.data.frame(lcz_map, xy=TRUE) %>%
   tidyr::drop_na()
 
-boundary <- raster::rasterToPolygons(lcz_map) %>% sf::st_as_sf() %>% sf::st_union()
+#boundary <- raster::rasterToPolygons(lcz_map) %>% sf::st_as_sf() %>% sf::st_union()
   my_plot <-
   ggplot2::ggplot() +
     # Add the raster layer
-    ggplot2::geom_sf(data=boundary, fill='transparent', lwd = 2, inherit.aes = FALSE) +
+    #ggplot2::geom_sf(data=boundary, fill='transparent', lwd = 2, inherit.aes = FALSE) +
     ggplot2::geom_tile(ggplot2::aes(x = x, y = .data$y, fill = base::as.factor(class)),
                          data = dataPlot,  inherit.aes = FALSE) +
     # Set the color palette to a qualitative one and add labels, title and legend.hist

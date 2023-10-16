@@ -13,15 +13,15 @@
 #'
 #' @examples
 #'
-#' #Calcute the LCZarea
-#' #my_lcz_area <- LCZarea(x= my_lcz_map, iplot = TRUE, isave = TRUE)
+#' #Calcute the LCZ area
+#' #my_lcz_area <- lcz_cal_area(x= my_lcz_map, iplot = TRUE, isave = TRUE)
 #'
 #' @importFrom rlang .data
 #'
 #' @seealso
 #' See the documentation for getLCZmap() to obtain an LCZ map.
 
-LCZarea <- function(x, iplot=TRUE, isave=FALSE){
+lcz_cal_area <- function(x, iplot=TRUE, isave=FALSE){
 
     freq_df <- tibble::as_tibble(terra::freq({{x}}, bylayer=FALSE, usenames=TRUE)) %>%
     purrr::set_names(c("lcz", "count")) %>%
@@ -85,7 +85,7 @@ LCZarea <- function(x, iplot=TRUE, isave=FALSE){
            y = "Area [square kilometer]",
            fill = "LCZ") +
       #ggplot2::theme_bw() +
-      ggplot2::labs(caption = "Source: LCZ4r, https://github.com/ByMaxAnjos/LCZ4r\nData: Stewart and Oke, 2012; Demuzere et al.2022") +
+      ggplot2::labs(caption = "Source: LCZ4r, https://github.com/ByMaxAnjos/LCZ4r\nData: Stewart and Oke, 2012; Demuzere et al.2022.") +
       ggplot2::theme(panel.background = ggplot2::element_rect(),
         axis.text.x = ggplot2::element_text(size = 17),
         axis.title.x =ggplot2::element_text(size = 17, face = "bold"),
