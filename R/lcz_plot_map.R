@@ -19,7 +19,7 @@
 #' @importFrom rlang .data
 #'
 #' @seealso
-#' See the documentation for getLCZmap() to obtain an LCZ map.
+#' See the documentation for lcz_get_map() to obtain an LCZ map.
 #'
 #' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis
 

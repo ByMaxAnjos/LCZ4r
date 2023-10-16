@@ -15,25 +15,25 @@
 #' @examples
 #'
 #' # Load the LCZ map
-#' #my_lcz_city <- getLCZmap(city = "ExampleCity")
+#' #my_lcz_city <- lcz_get_map(city = "ExampleCity")
 #'
 #' #Get LCZ map for a custom region of interest
 #' #custom_roi <- sf::st_read("custom_roi.shp")
-#' #roi_lcz <- getLCZmap(roi = custom_roi, isave_map = TRUE)
+#' #roi_lcz <- lcz_get_map(roi = custom_roi, isave_map = TRUE)
 #'
 #' #For National scale
-#' #my_lcz_country <- getLCZmap(city = "Brazil", roi = NULL, isave_map = TRUE)
+#' #my_lcz_country <- lcz_get_map(city = "Brazil", roi = NULL, isave_map = TRUE)
 
-getLCZmap <- function(city=NULL, roi = NULL, isave_map = FALSE) {
+lcz_get_map <- function(city=NULL, roi = NULL, isave_map = FALSE) {
 
-  # Validate inputs
-  if (is.null(city) & is.null(roi)) {
-    stop("Error: provide either a city name or a roi polygon")
-  } else if (!is.null(city) & !is.character(city)) {
-    stop("Error: city input must be a character string")
-  } else if (!is.null(roi) & !inherits(roi, "sf")) {
-    stop("Error: ROI input must be a polygon object of class sf")
-  }
+  # # Validate inputs
+  # if (is.null(city) & is.null(roi)) {
+  #   stop("Error: provide either a city name or a roi polygon")
+  # } else if (!is.null(city) & !is.character(city)) {
+  #   stop("Error: city input must be a character string")
+  # } else if (!is.null(roi) & !inherits(roi, "sf")) {
+  #   stop("Error: ROI input must be a polygon object of class sf")
+  # }
 
   if(!is.null(city)) {
     # Get study area polygon from OpenStreetMap data
@@ -89,7 +89,7 @@ getLCZmap <- function(city=NULL, roi = NULL, isave_map = FALSE) {
 
   } else {
     # Download the LCZ global map from https://zenodo.org/record/6364594/files/lcz_filter_v1.tif?download=1
-    lcz_url <- "https://zenodo.org/record/6364594/files/lcz_filter_v1.tif?download=1"
+    lcz_url <- "https://zenodo.org/records/8419340/files/lcz_filter_v3.tif?download=1"
     lcz_download <- terra::rast(base::paste0("/vsicurl/", lcz_url))
     roi_crs <- roi %>%
       sf::st_as_sf() %>%
@@ -135,4 +135,4 @@ getLCZmap <- function(city=NULL, roi = NULL, isave_map = FALSE) {
   }
 
 }
-my_map <- getLCZmap(city="Berlin")
+
