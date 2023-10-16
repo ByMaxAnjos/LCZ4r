@@ -35,7 +35,8 @@ Imports:
     tidyr,
     openssl,
     httr,
-    curl
+    curl,
+    rgdal
 Suggests: 
     knitr,
     rmarkdown,
