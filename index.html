@@ -100,15 +100,16 @@
 </h2>
 <p>To install LCZ4r use the development version with latest features</p>
 <p>```{r setup, include=TRUE}</p>
-<p>devtools::install_github(“ByMaxAnjos/LCZ4r”) library(LCZ4r)</p>
+<p>devtools::install_github(“ByMaxAnjos/LCZ4r”)</p>
+<p>library(LCZ4r)</p>
 <pre><code>## Overview of the package
 The **LCZ4r** package includes 5 functions:
 
-- `getLCZmap()` - Get you LCZ map
-- `plotLCZmap()` - Plot you LCZ map
-- `LCZarea()` - Caculate the LCZ area
-- `getLCZparameters()` - Get LCZ parameters
-- `plotLCZparameters()` - Plot LCZ parameters
+- `lcz_get_map()` - Get you LCZ map
+- `lcz_plot_map()` - Plot you LCZ map
+- `lcz_cal_area()` - Caculate the LCZ area
+- `lcz_get_parameters()` - Get LCZ parameters
+- `lcz_plot_parameters()` - Plot LCZ parameters
 
 
 ## Basic Usage
@@ -117,16 +118,16 @@ This function gets LCZ for a specified region of interest (ROI) using global LCZ
 
 ```{r setup, include=TRUE}
 
-lcz_map &lt;- getLCZmap(city="Berlin")
+lcz_map &lt;- lcz_get_map(city="Berlin")
 
-plotLCZmap(lcz_map)
+lcz_plot_map(lcz_map)
 </code></pre>
 <div class="figure">
 <img src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/d1f3e0b8-bd05-464b-b52d-932fa5cf77a2" alt=""><p class="caption">lcz_PlotMap</p>
 </div>
 <p>This nice function gets all LCZ parameters (including, min, max, and mean) from Stewart and Oke (2012) and converts them to shapefile or raster stack.</p>
 <p>```{r setup, include=TRUE}</p>
-<p>LCZpar &lt;- getLCZparameters(lcz_map, iStack = TRUE)</p>
+<p>LCZpar &lt;- lcz_get_parameters(lcz_map, iStack = TRUE) lcz_plot_parameters(LCZpar, iselect = “SVF1”)</p>
 <pre><code>&lt;img width="1439" alt="Screenshot 2023-08-13 at 19 19 06" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/e9006776-a336-4303-bc35-f787090a1caf"&gt;
 
 
@@ -134,7 +135,7 @@ This function calculates the LCZ area like this:
 
 ```{r setup, include=TRUE}
 
-LCZarea &lt;- LCZarea(lcz_map, iplot = TRUE)
+LCZarea &lt;- lcz_cal_area(lcz_map, iplot = TRUE)
 LCZarea
 </code></pre>
 <p><img width="1440" alt="Screenshot 2023-08-13 at 19 24 47" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/2f2fcd9f-1744-47a9-850a-5ad0630aae3b"></p>
@@ -149,7 +150,9 @@ LCZarea
 </ol>
 <p>Note that the model converts the date-time into a R-formatted version, e.g., “2023-03-13 11:00:00” or “2023-03-13”.</p>
 <p>The following dataframe is presented as follows:</p>
-<p><code>{r setup, include=TRUE} air_UCON %&gt;% head(10)</code></p>
+<p>```{r setup, include=TRUE}</p>
+<p>air_UCON %&gt;% head(10)</p>
+<p>```</p>
 </div>
 <div class="section level2">
 <h2 id="calculate-thermal-anomaly-between-lcz">Calculate thermal anomaly between LCZ<a class="anchor" aria-label="anchor" href="#calculate-thermal-anomaly-between-lcz"></a>
