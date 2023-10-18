@@ -22,24 +22,24 @@
     <loc>/index.html</loc>
   </url>
   <url>
-    <loc>/reference/LCZarea.html</loc>
-  </url>
-  <url>
-    <loc>/reference/getLCZmap.html</loc>
-  </url>
-  <url>
-    <loc>/reference/getLCZparameters.html</loc>
-  </url>
-  <url>
     <loc>/reference/index.html</loc>
   </url>
   <url>
+    <loc>/reference/lcz_cal_area.html</loc>
+  </url>
+  <url>
+    <loc>/reference/lcz_get_map.html</loc>
+  </url>
+  <url>
+    <loc>/reference/lcz_get_parameters.html</loc>
+  </url>
+  <url>
+    <loc>/reference/lcz_plot_map.html</loc>
+  </url>
+  <url>
+    <loc>/reference/lcz_plot_parameters.html</loc>
+  </url>
+  <url>
     <loc>/reference/pipe.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plotLCZmap.html</loc>
-  </url>
-  <url>
-    <loc>/reference/plotLCZparameters.html</loc>
   </url>
 </urlset>
