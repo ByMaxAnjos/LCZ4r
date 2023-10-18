@@ -32,7 +32,7 @@ Happy coding!
 
 To install LCZ4r, use the development version with latest features
 
-```{r, include = FALSE}
+```{r, setup, include=TRUE}
 
 library(LCZ4r)
 
@@ -56,7 +56,7 @@ The **LCZ4r** package includes 5 functions:
 
 This function gets LCZ for a specified region of interest (ROI) using global LCZ mapping.
 
-```{r, include = FALSE}
+```{r, include=TRUE}
 
 #Get your city LCZ map
 lcz_map <- lcz_get_map(city="Rio de Janeiro")
@@ -76,17 +76,18 @@ This nice function gets all LCZ parameters (including, min, max, and mean) from 
 | SVF2     | Sky View Factor      | Maximum Sky View Factor |[0-1] |
 | SVF3	     | Sky View Factor      | Mean Sky View Factor |[0-1] |
 
-```{r, include = FALSE}
+```{r, include=TRUE}
 
 LCZpar <- lcz_get_parameters(lcz_map, istack = TRUE)
 
 lcz_plot_parameters(LCZpar, iselect = "SVF1")
+
 ```
 
 
 This function calculates the LCZ area like this:
 
-```{r, include = FALSE}
+```{r, include=TRUE}
 
 LCZarea <- lcz_cal_area(lcz_map, iplot = TRUE)
 

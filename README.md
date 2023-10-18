@@ -17,17 +17,18 @@ To install LCZ4r use the development version with latest features
 ```{r setup, include=TRUE}
 
 devtools::install_github("ByMaxAnjos/LCZ4r")
+
 library(LCZ4r)
 
 ```
 ## Overview of the package
 The **LCZ4r** package includes 5 functions:
 
-- `getLCZmap()` - Get you LCZ map
-- `plotLCZmap()` - Plot you LCZ map
-- `LCZarea()` - Caculate the LCZ area
-- `getLCZparameters()` - Get LCZ parameters
-- `plotLCZparameters()` - Plot LCZ parameters
+- `lcz_get_map()` - Get you LCZ map
+- `lcz_plot_map()` - Plot you LCZ map
+- `lcz_cal_area()` - Caculate the LCZ area
+- `lcz_get_parameters()` - Get LCZ parameters
+- `lcz_plot_parameters()` - Plot LCZ parameters
 
 
 ## Basic Usage
@@ -36,9 +37,9 @@ This function gets LCZ for a specified region of interest (ROI) using global LCZ
 
 ```{r setup, include=TRUE}
 
-lcz_map <- getLCZmap(city="Berlin")
+lcz_map <- lcz_get_map(city="Berlin")
 
-plotLCZmap(lcz_map)
+lcz_plot_map(lcz_map)
 
 ```
 ![lcz_PlotMap](https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/d1f3e0b8-bd05-464b-b52d-932fa5cf77a2)
@@ -48,7 +49,8 @@ This nice function gets all LCZ parameters (including, min, max, and mean) from 
 
 ```{r setup, include=TRUE}
 
-LCZpar <- getLCZparameters(lcz_map, iStack = TRUE)
+LCZpar <- lcz_get_parameters(lcz_map, iStack = TRUE)
+lcz_plot_parameters(LCZpar, iselect = "SVF1")
 
 ```
 <img width="1439" alt="Screenshot 2023-08-13 at 19 19 06" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/e9006776-a336-4303-bc35-f787090a1caf">
@@ -58,7 +60,7 @@ This function calculates the LCZ area like this:
 
 ```{r setup, include=TRUE}
 
-LCZarea <- LCZarea(lcz_map, iplot = TRUE)
+LCZarea <- lcz_cal_area(lcz_map, iplot = TRUE)
 LCZarea
 
 ```
@@ -77,7 +79,9 @@ Note that the model converts the date-time into a R-formatted version, e.g., "20
 The following dataframe is presented as follows:
 
 ```{r setup, include=TRUE}
+
 air_UCON %>% head(10)
+
 ```
 
 ## Calculate thermal anomaly between LCZ
