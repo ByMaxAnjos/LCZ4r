@@ -2,34 +2,34 @@
 % Please edit documentation in R/lcz_get_map.R
 \name{lcz_get_map}
 \alias{lcz_get_map}
-\title{Get LCZ Map for Your Area}
+\title{Get Local Climate Zone (LCZ) Map for a Specified Area}
 \usage{
 lcz_get_map(city = NULL, roi = NULL, isave_map = FALSE)
 }
 \arguments{
-\item{city}{The name of your city or the area you want to focus on. It is based on Open Street Map project.}
+\item{city}{A character string specifying the name of your target area based on the OpenStreetMap project.}
 
-\item{roi}{Optionally, you can provide a Region of Interest (ROI) in ESRI shapefile format to clip the LCZ map.}
+\item{roi}{Optionally, you can provide a Region of Interest (ROI) in ESRI shapefile format to clip the LCZ map to a custom area.}
 
-\item{isave_map}{Set to TRUE if you want to save the your clipped resulting map as a raster.tiff file on your local machine.}
+\item{isave_map}{Logical. Set to TRUE if you wish to save the resulting clipped map as a raster TIFF file on your local machine.}
 }
 \value{
-A Terra raster.tiff file containing the LCZ classes for your specified area.
+A Terra raster TIFF file containing LCZ classes for the specified area of interest.
 }
 \description{
-This function imports the LCZ (Local Climate Zone) global mapping dataset
-performed by Demuzere et al. (2022), available at https://doi.org/10.5194/essd-14-3835-2022.
-It automatically clips the LCZ map to your specified area of interest, which can be a city, state, region, or neighborhood.
+This function retrieves the Local Climate Zone (LCZ) global mapping dataset
+created by Demuzere et al. (2022) and available at https://doi.org/10.5194/essd-14-3835-2022.
+It allows you to obtain the LCZ map for a specific area of interest, which can be a city, state, region, or custom-defined shape.
 }
 \examples{
 
-# Load the LCZ map
-#my_lcz_city <- lcz_get_map(city = "ExampleCity")
+# Example 1: Load the LCZ map for a city
+# my_lcz_city <- lcz_get_map(city = "ExampleCity")
 
-#Get LCZ map for a custom region of interest
-#custom_roi <- sf::st_read("custom_roi.shp")
-#roi_lcz <- lcz_get_map(roi = custom_roi, isave_map = TRUE)
+# Example 2: Get LCZ map for a custom region of interest
+# custom_roi <- sf::st_read("custom_roi.shp")
+# roi_lcz <- lcz_get_map(roi = custom_roi, isave_map = TRUE)
 
-#For National scale
-#my_lcz_country <- lcz_get_map(city = "Brazil", roi = NULL, isave_map = TRUE)
+# Example 3: Retrieve the LCZ map for a country (no custom ROI specified)
+# my_lcz_country <- lcz_get_map(city = "Brazil", roi = NULL, isave_map = TRUE)
 }

@@ -2,28 +2,29 @@
 % Please edit documentation in R/lcz_plot_map.R
 \name{lcz_plot_map}
 \alias{lcz_plot_map}
-\title{Plot LCZ Map}
+\title{Plot Local Climate Zone (LCZ) Map}
 \usage{
 lcz_plot_map(x, isubtitle = "", isave = FALSE, legend = "name")
 }
 \arguments{
-\item{x}{The LCZ map in SpatRaster format.}
+\item{x}{A SpatRaster object containing the LCZ map to be plotted.}
 
-\item{isubtitle}{Specify your name area}
+\item{isubtitle}{An optional subtitle for the plot, allowing you to specify the area or region represented in the map.}
 
-\item{isave}{Save the plot into your directory.}
+\item{isave}{Logical. Set to TRUE if you want to save the plot in your working directory.}
 
-\item{legend}{Specify whether to include a legend. Set to "code" to show LCZ codes in the legend.}
+\item{legend}{Specify the type of legend to include in the plot. Use "code" to display LCZ codes in the legend.}
 }
 \value{
-A plot of the LCZ map.
+A visual representation of the LCZ map in ggplot format
 }
 \description{
-This function plots the classes of an LCZ (Local Climate Zone) map represented as a SpatRaster object.
+This function generates a graphical representation of an LCZ (Local Climate Zone) map provided as a SpatRaster object.
 }
 \examples{
 
-#myplot <- lcz_plot_map(x = myLCZmap, legend = "name")
+# Example: Plot an LCZ map with the legend showing LCZ codes and specify a subtitle.
+# myplot <- lcz_plot_map(x = myLCZmap, isubtitle = "My Area", legend = "code")
 
 }
 \seealso{

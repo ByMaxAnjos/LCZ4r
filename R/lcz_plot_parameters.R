@@ -5,24 +5,29 @@
 #'
 #' @param x The LCZ map in SpatRaster format.
 #' @param iselect Character vector. Specify one or more parameter names to retrieve specific
-#'                parameters. For example, "SVF.min" to get the minimum Sky View Factor,
-#'                or c("SVF.min", "veg.frac.max") to select multiple parameters.
-#' @param isave Save the plot into your directory.
-#' @param isubtitle Specify your name area
-#' @param all Salve all parameters into LCZ4r_output
+#'                parameters. For example, "SVF1" to get the minimum Sky View Factor,
+#'                or c("z0", "VEG3") to select multiple parameters.
+#'                See https://bymaxanjos.github.io/LCZ4r/articles/Introd_to_LCZ4r.html
+#' @param isave Logical, indicating whether to save the plot to your directory. Default is FALSE.
+#' @param isubtitle Character, specifying a subtitle for the plot.
+#' @param all Logical, specifying whether to save all selected parameters into LCZ4r_output. Default is FALSE.
 #'
-#' @return A plot of the LCZ parameters
+#' @return A plot of the selected LCZ parameters.
 #'
 #' @export
 #'
 #' @examples
 #'
-#' #myplot_par <- lcz_plot_parameters(x = lcz_map, iselect = "SVF.min", isubtitle = "Your City")
+#' # Plot the minimum Sky View Factor (SVF1) for your city
+#' #lcz_plot_parameters(x = lcz_map, iselect = "SVF1, isubtitle = "Rio de Janeiro")
+#'
+#' # Plot multiple parameters and save them to the LCZ4r_output directory
+#' #lcz_plot_parameters(x = lcz_map, iselect = c("SVF1", "HEI1"), isubtitle = "Rio de Janeiro", isave = TRUE, all = TRUE)
 #'
 #' @importFrom rlang .data
 #'
 #' @seealso
-#' See the documentation for lcz_get_parameters() to obtain an LCZ parameters
+#' See the documentation for lcz_get_parameters() to obtain LCZ parameters.
 #'
 #' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis
 
@@ -176,10 +181,10 @@ lcz_plot_parameters <- function(x, iselect = "", isubtitle = "", all = FALSE, is
         ggplot2::theme_void() +
         ggplot2::theme(plot.title = ggplot2::element_text(color = "#3f1651", size = 18, face = "bold", hjust = 0.5),
                        plot.subtitle = ggplot2::element_text(color = "#3f1651", size = 18, hjust = 0.5),
-                       plot.background = ggplot2::element_rect(fill = "white"),
+                       plot.background = ggplot2::element_blank(),
                        legend.title = ggplot2::element_text(size = 16, color = "black", face = "bold"),
                        legend.text = ggplot2::element_text(size = 16, color = "black"),
-                       plot.caption = ggplot2::element_text(colour = "grey60", size = 9), # move caption to the left
+                       plot.caption = ggplot2::element_text(colour = "grey10", size = 12, hjust = 0),# move caption to the left
                        axis.line = ggplot2::element_blank(),
                        axis.text.x = ggplot2::element_blank(),
                        axis.text.y = ggplot2::element_blank(),
@@ -221,7 +226,6 @@ lcz_plot_parameters <- function(x, iselect = "", isubtitle = "", all = FALSE, is
       names_par_select$name <- base::sapply(names_par_select$value, take_names)
       names_par_select$unit <- base::sapply(names_par_select$value, take_unit)
       names_par_select$color <- base::sapply(names_par_select$value, take_color)
-      names_par$code <- base::sapply(names_par$value, take_code)
 
       for (i in 1:raster::nlayers(select_raster)) {
 
@@ -241,10 +245,10 @@ lcz_plot_parameters <- function(x, iselect = "", isubtitle = "", all = FALSE, is
           ggplot2::theme_void() +
           ggplot2::theme(plot.title = ggplot2::element_text(color = "#3f1651", size = 18, face = "bold", hjust = 0.5),
                          plot.subtitle = ggplot2::element_text(color = "#3f1651", size = 18, hjust = 0.5),
-                         plot.background = ggplot2::element_rect(fill = "white"),
+                         plot.background = ggplot2::element_blank(),
                          legend.title = ggplot2::element_text(size = 16, color = "black", face = "bold"),
                          legend.text = ggplot2::element_text(size = 16, color = "black"),
-                         plot.caption = ggplot2::element_text(colour = "grey60", size = 9), # move caption to the left
+                         plot.caption = ggplot2::element_text(colour = "grey10", size = 12, hjust = 0), # move caption to the left
                          axis.line = ggplot2::element_blank(),
                          axis.text.x = ggplot2::element_blank(),
                          axis.text.y = ggplot2::element_blank(),
@@ -280,7 +284,6 @@ lcz_plot_parameters <- function(x, iselect = "", isubtitle = "", all = FALSE, is
       names_par_select$name <- base::sapply(names_par_select$value, take_names)
       names_par_select$unit <- base::sapply(names_par_select$value, take_unit)
       names_par_select$color <- base::sapply(names_par_select$value, take_color)
-      names_par$code <- base::sapply(names_par$value, take_code)
 
       # Convert the raster layer to a data frame
       parameter_df <- terra::as.data.frame(select_raster, xy=TRUE) %>%
@@ -298,10 +301,10 @@ lcz_plot_parameters <- function(x, iselect = "", isubtitle = "", all = FALSE, is
         ggplot2::theme_void() +
         ggplot2::theme(plot.title = ggplot2::element_text(color = "#3f1651", size = 18, face = "bold", hjust = 0.5),
                        plot.subtitle = ggplot2::element_text(color = "#3f1651", size = 18, hjust = 0.5),
-                       plot.background = ggplot2::element_rect(fill = "white"),
+                       plot.background = ggplot2::element_blank(),
                        legend.title = ggplot2::element_text(size = 16, color = "black", face = "bold"),
                        legend.text = ggplot2::element_text(size = 16, color = "black"),
-                       plot.caption = ggplot2::element_text(colour = "grey60", size = 9), # move caption to the left
+                       plot.caption = ggplot2::element_text(colour = "grey10", size = 12, hjust = 0), # move caption to the left
                        axis.line = ggplot2::element_blank(),
                        axis.text.x = ggplot2::element_blank(),
                        axis.text.y = ggplot2::element_blank(),
