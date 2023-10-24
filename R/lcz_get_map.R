@@ -8,6 +8,7 @@
 #' @param city A character string specifying the name of your target area based on the OpenStreetMap project.
 #' @param roi Optionally, you can provide a Region of Interest (ROI) in ESRI shapefile format to clip the LCZ map to a custom area.
 #' @param isave_map Logical. Set to TRUE if you wish to save the resulting clipped map as a raster TIFF file on your local machine.
+#' @param isave_global Logical. Set to TRUE if you wish to save the global LCZ map as a raster TIFF file on your local machine.
 #' @return A Terra raster TIFF file containing LCZ classes for the specified area of interest.
 #'
 #' @export
@@ -24,7 +25,7 @@
 #' # Example 3: Retrieve the LCZ map for a country (no custom ROI specified)
 #' # my_lcz_country <- lcz_get_map(city = "Brazil", roi = NULL, isave_map = TRUE)
 
-lcz_get_map <- function(city=NULL, roi = NULL, isave_map = FALSE) {
+lcz_get_map <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_global=TRUE) {
 
   # Validate inputs
   if (is.null(city) & is.null(roi)) {

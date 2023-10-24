@@ -35,7 +35,7 @@
 #' #specific_param <- lcz_params_list$parameter_name
 #'
 #' # Get specific parameters as a raster or shapefile
-#' #selected_params <- lcz_get_parameters(lcz_map, iselect = c("SVF1", "VEG1"), ishp = TRUE)
+#' #selected_params <- lcz_get_parameters(lcz_map, iselect = c("SVF1", "VEG1"))
 #'
 #' @importFrom rlang .data
 
