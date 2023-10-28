@@ -2,12 +2,16 @@ Package: LCZ4r
 Type: Package
 Title: Tools for Local Climate Zones and Urban Heat Island Analysis
 Version: 0.1.0
-Authors@R: c(
-    person("Max", "Anjos", , "maxanjos@campus.ul.pt", role = c("aut", "cre"),
-    comment = c(ORCID = "0000-0001-6394-1324"))
+Authors@R: c( person("Max", "Anjos", role = c("aut", "cre"), 
+                    email = "maxanjos@campus.ul.pt",
+                    comment = c(ORCID = "0000-0001-6394-1324")),
+              person("Dayvid", "Medeiros", role = "ctb",
+              comment = c(ORCID = "0000-0002-5199-3909")),
+              person("Francisco", "Castelhano", role = "ctb",
+              comment = c(ORCID = "0000-0002-6747-3545"))
   )
 Maintainer: Max Anjos <maxanjos@campus.ul.pt>
-Description: LCZ4r is a comprehensive R package designed for creating, analyzing,
+Description: LCZ4r is a comprehensive R package designed for analyzing
     and visualizing Local Climate Zones (LCZ) and Urban Heat Islands (UHI) at various spatial and temporal resolutions.
     It provides a suite of functions to work with LCZ data, perform urban climate analysis, and
     generate insights into temperature variations within urban areas.

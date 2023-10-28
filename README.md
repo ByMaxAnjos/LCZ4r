@@ -1,4 +1,4 @@
-# Tools for Urban Heat Islands and Local Climate Zones Analysis in R
+# Tools for Local Climate Zones Analysis and Urban Heat Islands in R
 
 ## Introduction
 
@@ -6,36 +6,39 @@
 
 As part of **Zoom City Carbon Model (ZCCM)**, we present the **LCZ4r**, a set of R functions which models Urban Heat Island at high-definition using Local Climate Zone classification and local air temperature readings.
 
-Please note that [LCZ4r package R](https://bymaxanjos.github.io/LCZ4r/) is currently undergoing develop, and caution is advised when interpreting its outcomes. Our methodology is based on Anjos M., Madeiros D, Meier F, Castelhano F. Tools for Urban Heat Islands and Local Climate Zones Analysis in R(in preparation).
+Please note that [LCZ4r package R](https://bymaxanjos.github.io/LCZ4r/) is currently undergoing develop, and caution is advised when interpreting its outcomes. Our methodology is based on Anjos M., Madeiros D, Meier F, Castelhano F. LCZ4r, an R package for Urban Local Climate Zones and Heat Islands Analysis (in preparation).
 
 Happy coding!
 
 ## Install 
 
-To install LCZ4r use the development version with latest features
+To install LCZ4r use the development version with latest features:
 
-```{r setup, include=TRUE}
+```{r, include=FALSE}
 
+install.packages("devtools")
 devtools::install_github("ByMaxAnjos/LCZ4r")
 
 library(LCZ4r)
 
 ```
+
 ## Overview of the package
-The **LCZ4r** package includes 5 functions:
+
+To date, the **LCZ4r** package includes 5 functions:
 
 - `lcz_get_map()` - Get you LCZ map
 - `lcz_plot_map()` - Plot you LCZ map
-- `lcz_cal_area()` - Caculate the LCZ area
+- `lcz_cal_area()` - Calculate the LCZ area
 - `lcz_get_parameters()` - Get LCZ parameters
 - `lcz_plot_parameters()` - Plot LCZ parameters
 
 
 ## Basic Usage
 
-This function gets LCZ for a specified region of interest (ROI) using global LCZ mapping.
+This function gets LCZ for your city or specified region of interest (ROI) using global LCZ mapping from Stewart and Oke (2012) and Demuzere et al., (2022).
 
-```{r setup, include=TRUE}
+```{r, include=FALSE}
 
 lcz_map <- lcz_get_map(city="Berlin")
 
@@ -47,9 +50,10 @@ lcz_plot_map(lcz_map)
 
 This nice function gets all LCZ parameters (including, min, max, and mean) from Stewart and Oke (2012) and converts them to shapefile or raster stack.
 
-```{r setup, include=TRUE}
+```{r, include=FALSE}
 
 LCZpar <- lcz_get_parameters(lcz_map, iStack = TRUE)
+
 lcz_plot_parameters(LCZpar, iselect = "SVF1")
 
 ```
@@ -58,9 +62,10 @@ lcz_plot_parameters(LCZpar, iselect = "SVF1")
 
 This function calculates the LCZ area like this:
 
-```{r setup, include=TRUE}
+```{r, include=FALSE}
 
 LCZarea <- lcz_cal_area(lcz_map, iplot = TRUE)
+
 LCZarea
 
 ```
@@ -78,7 +83,7 @@ Note that the model converts the date-time into a R-formatted version, e.g., "20
 
 The following dataframe is presented as follows:
 
-```{r setup, include=TRUE}
+```{r, include=FALSE}
 
 air_UCON %>% head(10)
 
@@ -111,7 +116,7 @@ The development of the **LCZ4r** has been led by [Dr. Max Anjos](https://www.res
 
 ### Funding
 
-This project is was financed in part by the Coordenação de Aperfeiçoamento de Pessoal de Nível Superior (CAPES) – Finance Code 001, and by the Alexander Von Humboldt Foundation.
+This project is was financed in part by the Coordenação de Aperfeiçoamento de Pessoal de Nível Superior (CAPES) – Finance Code 001, and by the Alexander von Humboldt Foundation.
 
 ### Contact
 

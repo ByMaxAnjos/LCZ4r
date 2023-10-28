@@ -22,7 +22,7 @@
 #' #lcz_plot_parameters(x = lcz_map, iselect = "SVF1, isubtitle = "Rio de Janeiro")
 #'
 #' # Plot multiple parameters and save them to the LCZ4r_output directory
-#' #lcz_plot_parameters(x = lcz_map, iselect = c("SVF1", "HEI1"), isubtitle = "Rio de Janeiro", isave = TRUE, all = TRUE)
+#' #lcz_plot_parameters(x = lcz_map, iselect = c("SVF1", "HEI1"))
 #'
 #' @importFrom rlang .data
 #'
@@ -179,12 +179,12 @@ lcz_plot_parameters <- function(x, iselect = "", isubtitle = "", all = FALSE, is
                       caption = "Source:LCZ4r, https://github.com/ByMaxAnjos/LCZ4r\nData:Demuzere et al.(2022) and Stewart and Oke (2012)") +
         ggplot2::coord_equal(expand = TRUE)+
         ggplot2::theme_void() +
-        ggplot2::theme(plot.title = ggplot2::element_text(color = "#3f1651", size = 18, face = "bold", hjust = 0.5),
-                       plot.subtitle = ggplot2::element_text(color = "#3f1651", size = 18, hjust = 0.5),
+        ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
+                       plot.subtitle = ggplot2::element_text(color = "black", size = 18, hjust = 0.5),
                        plot.background = ggplot2::element_blank(),
                        legend.title = ggplot2::element_text(size = 16, color = "black", face = "bold"),
                        legend.text = ggplot2::element_text(size = 16, color = "black"),
-                       plot.caption = ggplot2::element_text(colour = "grey10", size = 12, hjust = 0),# move caption to the left
+                       plot.caption = ggplot2::element_text(colour = "grey30", size = 12, hjust = 0),# move caption to the left
                        axis.line = ggplot2::element_blank(),
                        axis.text.x = ggplot2::element_blank(),
                        axis.text.y = ggplot2::element_blank(),
@@ -243,12 +243,12 @@ lcz_plot_parameters <- function(x, iselect = "", isubtitle = "", all = FALSE, is
                         caption = "Source:LCZ4r, https://github.com/ByMaxAnjos/LCZ4r\nData:Demuzere et al.(2022) and Stewart and Oke (2012)") +
           ggplot2::coord_equal(expand = TRUE)+
           ggplot2::theme_void() +
-          ggplot2::theme(plot.title = ggplot2::element_text(color = "#3f1651", size = 18, face = "bold", hjust = 0.5),
-                         plot.subtitle = ggplot2::element_text(color = "#3f1651", size = 18, hjust = 0.5),
+          ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
+                         plot.subtitle = ggplot2::element_text(color = "black", size = 18, hjust = 0.5),
                          plot.background = ggplot2::element_blank(),
                          legend.title = ggplot2::element_text(size = 16, color = "black", face = "bold"),
                          legend.text = ggplot2::element_text(size = 16, color = "black"),
-                         plot.caption = ggplot2::element_text(colour = "grey10", size = 12, hjust = 0), # move caption to the left
+                         plot.caption = ggplot2::element_text(colour = "grey30", size = 12, hjust = 0), # move caption to the left
                          axis.line = ggplot2::element_blank(),
                          axis.text.x = ggplot2::element_blank(),
                          axis.text.y = ggplot2::element_blank(),
@@ -299,12 +299,12 @@ lcz_plot_parameters <- function(x, iselect = "", isubtitle = "", all = FALSE, is
                       caption = "Source:LCZ4r, https://github.com/ByMaxAnjos/LCZ4r\nData:Demuzere et al.(2022) and Stewart and Oke (2012)") +
         ggplot2::coord_equal(expand = TRUE)+
         ggplot2::theme_void() +
-        ggplot2::theme(plot.title = ggplot2::element_text(color = "#3f1651", size = 18, face = "bold", hjust = 0.5),
-                       plot.subtitle = ggplot2::element_text(color = "#3f1651", size = 18, hjust = 0.5),
+        ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
+                       plot.subtitle = ggplot2::element_text(color = "black", size = 18, hjust = 0.5),
                        plot.background = ggplot2::element_blank(),
                        legend.title = ggplot2::element_text(size = 16, color = "black", face = "bold"),
                        legend.text = ggplot2::element_text(size = 16, color = "black"),
-                       plot.caption = ggplot2::element_text(colour = "grey10", size = 12, hjust = 0), # move caption to the left
+                       plot.caption = ggplot2::element_text(colour = "grey30", size = 12, hjust = 0), # move caption to the left
                        axis.line = ggplot2::element_blank(),
                        axis.text.x = ggplot2::element_blank(),
                        axis.text.y = ggplot2::element_blank(),

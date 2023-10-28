@@ -90,8 +90,8 @@ lcz_plot_map <- function(x, isubtitle = "", isave = FALSE, legend = "name") {
                   subtitle = isubtitle,
                   caption = "Source: LCZ4r, https://github.com/ByMaxAnjos/LCZ4r\nData: Stewart and Oke, 2012; Demuzere et al.2022") +
     ggplot2::theme_void() +
-    ggplot2::theme(plot.title = ggplot2::element_text(color = "#3f1651", size = 18, face = "bold", hjust = 0.5),
-                   plot.subtitle = ggplot2::element_text(color = "#3f1651", size = 18, hjust = 0.5),
+    ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
+                   plot.subtitle = ggplot2::element_text(color = "black", size = 18, hjust = 0.5),
                    plot.background = ggplot2::element_blank(),
                    legend.title = ggplot2::element_text(size = 16, color = "black", face = "bold"),
                    legend.text = ggplot2::element_text(size = 16, color = "black"),

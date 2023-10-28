@@ -4,7 +4,7 @@
 \alias{lcz_get_map}
 \title{Get Local Climate Zone (LCZ) Map for a Specified Area}
 \usage{
-lcz_get_map(city = NULL, roi = NULL, isave_map = FALSE)
+lcz_get_map(city = NULL, roi = NULL, isave_map = FALSE, isave_global = TRUE)
 }
 \arguments{
 \item{city}{A character string specifying the name of your target area based on the OpenStreetMap project.}
@@ -12,6 +12,8 @@ lcz_get_map(city = NULL, roi = NULL, isave_map = FALSE)
 \item{roi}{Optionally, you can provide a Region of Interest (ROI) in ESRI shapefile format to clip the LCZ map to a custom area.}
 
 \item{isave_map}{Logical. Set to TRUE if you wish to save the resulting clipped map as a raster TIFF file on your local machine.}
+
+\item{isave_global}{Logical. Set to TRUE if you wish to save the global LCZ map as a raster TIFF file on your local machine.}
 }
 \value{
 A Terra raster TIFF file containing LCZ classes for the specified area of interest.

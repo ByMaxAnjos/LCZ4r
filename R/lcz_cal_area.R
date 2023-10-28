@@ -93,7 +93,7 @@ lcz_cal_area <- function(x, iplot=TRUE, isave=FALSE){
         axis.title.y =ggplot2::element_text(size = 17, face = "bold"),
         legend.text = ggplot2::element_text(size = 18),
         legend.title = ggplot2::element_text(size = 18),
-        plot.caption = ggplot2::element_text(color = "grey10", size = 12, hjust = 0))
+        plot.caption = ggplot2::element_text(color = "grey30", size = 12, hjust = 0))
 
     if(isave == TRUE){
 
