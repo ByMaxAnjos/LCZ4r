@@ -64,7 +64,7 @@ It allows you to obtain the LCZ map for a specific area of interest, which can b
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">lcz_get_map</span><span class="op">(</span>city <span class="op">=</span> <span class="cn">NULL</span>, roi <span class="op">=</span> <span class="cn">NULL</span>, isave_map <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">lcz_get_map</span><span class="op">(</span>city <span class="op">=</span> <span class="cn">NULL</span>, roi <span class="op">=</span> <span class="cn">NULL</span>, isave_map <span class="op">=</span> <span class="cn">FALSE</span>, isave_global <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -79,6 +79,10 @@ It allows you to obtain the LCZ map for a specific area of interest, which can b
 
 <dt>isave_map</dt>
 <dd><p>Logical. Set to TRUE if you wish to save the resulting clipped map as a raster TIFF file on your local machine.</p></dd>
+
+
+<dt>isave_global</dt>
+<dd><p>Logical. Set to TRUE if you wish to save the global LCZ map as a raster TIFF file on your local machine.</p></dd>
 
 </dl></div>
     <div id="value">

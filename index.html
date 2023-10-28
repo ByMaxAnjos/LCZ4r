@@ -18,7 +18,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
 <script src="pkgdown.js"></script><meta property="og:title" content="Tools for Local Climate Zones and Urban Heat Island Analysis">
-<meta property="og:description" content="LCZ4r is a comprehensive R package designed for creating, analyzing,
+<meta property="og:description" content="LCZ4r is a comprehensive R package designed for analyzing
     and visualizing Local Climate Zones (LCZ) and Urban Heat Islands (UHI) at various spatial and temporal resolutions.
     It provides a suite of functions to work with LCZ data, perform urban climate analysis, and
     generate insights into temperature variations within urban areas.">
@@ -85,38 +85,40 @@
       </header><div class="row">
   <div class="contents col-md-9">
 <div class="section level1">
-<div class="page-header"><h1 id="tools-for-urban-heat-islands-and-local-climate-zones-analysis-in-r">Tools for Urban Heat Islands and Local Climate Zones Analysis in R<a class="anchor" aria-label="anchor" href="#tools-for-urban-heat-islands-and-local-climate-zones-analysis-in-r"></a>
+<div class="page-header"><h1 id="tools-for-local-climate-zones-analysis-and-urban-heat-islands-in-r">Tools for Local Climate Zones Analysis and Urban Heat Islands in R<a class="anchor" aria-label="anchor" href="#tools-for-local-climate-zones-analysis-and-urban-heat-islands-in-r"></a>
 </h1></div>
 <div class="section level2">
 <h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
 <p><img align="right" src="https://github.com/ByMaxAnjos/LCZ4r/blob/main/inst/figures/logo.png?raw=true" alt="logo" width="140"></p>
 <p>As part of <strong>Zoom City Carbon Model (ZCCM)</strong>, we present the <strong>LCZ4r</strong>, a set of R functions which models Urban Heat Island at high-definition using Local Climate Zone classification and local air temperature readings.</p>
-<p>Please note that <a href="https://bymaxanjos.github.io/LCZ4r/" class="external-link">LCZ4r package R</a> is currently undergoing develop, and caution is advised when interpreting its outcomes. Our methodology is based on Anjos M., Madeiros D, Meier F, Castelhano F. Tools for Urban Heat Islands and Local Climate Zones Analysis in R(in preparation).</p>
+<p>Please note that <a href="https://bymaxanjos.github.io/LCZ4r/" class="external-link">LCZ4r package R</a> is currently undergoing develop, and caution is advised when interpreting its outcomes. Our methodology is based on Anjos M., Madeiros D, Meier F, Castelhano F. LCZ4r, an R package for Urban Local Climate Zones and Heat Islands Analysis (in preparation).</p>
 <p>Happy coding!</p>
 </div>
 <div class="section level2">
 <h2 id="install">Install<a class="anchor" aria-label="anchor" href="#install"></a>
 </h2>
-<p>To install LCZ4r use the development version with latest features</p>
-<p>```{r setup, include=TRUE}</p>
-<p>devtools::install_github(“ByMaxAnjos/LCZ4r”)</p>
+<p>To install LCZ4r use the development version with latest features:</p>
+<p>```{r, include=FALSE}</p>
+<p>install.packages(“devtools”) devtools::install_github(“ByMaxAnjos/LCZ4r”)</p>
 <p>library(LCZ4r)</p>
-<pre><code>## Overview of the package
-The **LCZ4r** package includes 5 functions:
+<pre><code>
+## Overview of the package
+
+To date, the **LCZ4r** package includes 5 functions:
 
 - `lcz_get_map()` - Get you LCZ map
 - `lcz_plot_map()` - Plot you LCZ map
-- `lcz_cal_area()` - Caculate the LCZ area
+- `lcz_cal_area()` - Calculate the LCZ area
 - `lcz_get_parameters()` - Get LCZ parameters
 - `lcz_plot_parameters()` - Plot LCZ parameters
 
 
 ## Basic Usage
 
-This function gets LCZ for a specified region of interest (ROI) using global LCZ mapping.
+This function gets LCZ for your city or specified region of interest (ROI) using global LCZ mapping from Stewart and Oke (2012) and Demuzere et al., (2022).
 
-```{r setup, include=TRUE}
+```{r, include=FALSE}
 
 lcz_map &lt;- lcz_get_map(city="Berlin")
 
@@ -126,16 +128,18 @@ lcz_plot_map(lcz_map)
 <img src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/d1f3e0b8-bd05-464b-b52d-932fa5cf77a2" alt=""><p class="caption">lcz_PlotMap</p>
 </div>
 <p>This nice function gets all LCZ parameters (including, min, max, and mean) from Stewart and Oke (2012) and converts them to shapefile or raster stack.</p>
-<p>```{r setup, include=TRUE}</p>
-<p>LCZpar &lt;- lcz_get_parameters(lcz_map, iStack = TRUE) lcz_plot_parameters(LCZpar, iselect = “SVF1”)</p>
+<p>```{r, include=FALSE}</p>
+<p>LCZpar &lt;- lcz_get_parameters(lcz_map, iStack = TRUE)</p>
+<p>lcz_plot_parameters(LCZpar, iselect = “SVF1”)</p>
 <pre><code>&lt;img width="1439" alt="Screenshot 2023-08-13 at 19 19 06" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/e9006776-a336-4303-bc35-f787090a1caf"&gt;
 
 
 This function calculates the LCZ area like this:
 
-```{r setup, include=TRUE}
+```{r, include=FALSE}
 
 LCZarea &lt;- lcz_cal_area(lcz_map, iplot = TRUE)
+
 LCZarea
 </code></pre>
 <p><img width="1440" alt="Screenshot 2023-08-13 at 19 24 47" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/2f2fcd9f-1744-47a9-850a-5ad0630aae3b"></p>
@@ -150,7 +154,7 @@ LCZarea
 </ol>
 <p>Note that the model converts the date-time into a R-formatted version, e.g., “2023-03-13 11:00:00” or “2023-03-13”.</p>
 <p>The following dataframe is presented as follows:</p>
-<p>```{r setup, include=TRUE}</p>
+<p>```{r, include=FALSE}</p>
 <p>air_UCON %&gt;% head(10)</p>
 <p>```</p>
 </div>
@@ -179,7 +183,7 @@ LCZarea
 <div class="section level3">
 <h3 id="funding">Funding<a class="anchor" aria-label="anchor" href="#funding"></a>
 </h3>
-<p>This project is was financed in part by the Coordenação de Aperfeiçoamento de Pessoal de Nível Superior (CAPES) – Finance Code 001, and by the Alexander Von Humboldt Foundation.</p>
+<p>This project is was financed in part by the Coordenação de Aperfeiçoamento de Pessoal de Nível Superior (CAPES) – Finance Code 001, and by the Alexander von Humboldt Foundation.</p>
 </div>
 <div class="section level3">
 <h3 id="contact">Contact<a class="anchor" aria-label="anchor" href="#contact"></a>
@@ -219,6 +223,7 @@ LCZarea
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>Max Anjos <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0001-6394-1324" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<li><a href="authors.html">More about authors...</a></li>
 </ul>
 </div>
 

@@ -84,7 +84,7 @@
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Introduction to LCZ4r</h1>
             
-            <h4 data-toc-skip class="date">2023-10-24</h4>
+            <h4 data-toc-skip class="date">2023-10-28</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ByMaxAnjos/LCZ4r/blob/HEAD/vignettes/Introd_to_LCZ4r.Rmd" class="external-link"><code>vignettes/Introd_to_LCZ4r.Rmd</code></a></small>
       <div class="hidden name"><code>Introd_to_LCZ4r.Rmd</code></div>
@@ -99,8 +99,6 @@ package.</p>
 <strong>LCZ4r</strong>, a set of R functions which models Urban Heat
 Island at high-definition using Local Climate Zone classification and
 local air temperature readings.</p>
-<p>Please note that <strong>LCZ4r</strong> is currently undergoing
-develop, and caution is advised when interpreting its outcomes.</p>
 <p>Happy coding!</p>
 <div class="section level2">
 <h2 id="install">Install<a class="anchor" aria-label="anchor" href="#install"></a>
@@ -174,7 +172,7 @@ global LCZ mapping.</p>
 <span></span>
 <span><span class="co">#Plot it</span></span>
 <span><span class="fu"><a href="../reference/lcz_plot_map.html">lcz_plot_map</a></span><span class="op">(</span><span class="va">lcz_map</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Introd_to_LCZ4r_files/figure-html/unnamed-chunk-2-1.png" width="100%"></p>
+<p><img src="Introd_to_LCZ4r_files/figure-html/unnamed-chunk-3-1.png" width="100%"></p>
 <p>This nice function gets all LCZ parameters (including, min, max, and
 mean) from Stewart and Oke (2012) and converts them to shapefile or
 raster stack.</p>
@@ -217,14 +215,14 @@ raster stack.</p>
 <span><span class="va">LCZpar</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lcz_get_parameters.html">lcz_get_parameters</a></span><span class="op">(</span><span class="va">lcz_map</span>, istack <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="../reference/lcz_plot_parameters.html">lcz_plot_parameters</a></span><span class="op">(</span><span class="va">LCZpar</span>, iselect <span class="op">=</span> <span class="st">"SVF1"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Introd_to_LCZ4r_files/figure-html/unnamed-chunk-3-1.png" width="100%"></p>
+<p><img src="Introd_to_LCZ4r_files/figure-html/unnamed-chunk-4-1.png" width="100%"></p>
 <p>This function calculates the LCZ area like this:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">LCZarea</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lcz_cal_area.html">lcz_cal_area</a></span><span class="op">(</span><span class="va">lcz_map</span>, iplot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">LCZarea</span></span></code></pre></div>
-<p><img src="Introd_to_LCZ4r_files/figure-html/unnamed-chunk-4-1.png" width="100%"></p>
+<p><img src="Introd_to_LCZ4r_files/figure-html/unnamed-chunk-5-1.png" width="100%"></p>
 </div>
   </div>
 
