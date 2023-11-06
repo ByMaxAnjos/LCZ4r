@@ -80,20 +80,25 @@ lcz_cal_area <- function(x, iplot=TRUE, isave=FALSE){
                                                       title.position = "top")) +
       ggplot2::geom_text(data = lcz_df,
                          label = paste0(round(lcz_df$area_perc, 1), "%"), vjust = -0.2, size = 6) +
-      ggplot2::labs(title = "",
+      ggplot2::coord_cartesian(expand = FALSE, clip = "off")+
+       ggplot2::labs(title = "",
            x = "LCZ code",
            y = "Area [square kilometer]",
            fill = "LCZ") +
       #ggplot2::theme_bw() +
       ggplot2::labs(caption = "Source: LCZ4r, https://github.com/ByMaxAnjos/LCZ4r\nData: Stewart and Oke, 2012; Demuzere et al.2022.") +
       ggplot2::theme(panel.background = ggplot2::element_rect(),
+                     panel.grid.major = ggplot2::element_line(color = "grey90"),
+                     panel.grid.minor = ggplot2::element_line(color = "grey90"),
+                     panel.grid.major.y = ggplot2::element_line(color = "grey90"),
         axis.text.x = ggplot2::element_text(size = 17),
         axis.title.x =ggplot2::element_text(size = 17, face = "bold"),
         axis.text.y = ggplot2::element_text(size = 17),
         axis.title.y =ggplot2::element_text(size = 17, face = "bold"),
         legend.text = ggplot2::element_text(size = 18),
         legend.title = ggplot2::element_text(size = 18),
-        plot.caption = ggplot2::element_text(color = "grey30", size = 12, hjust = 0))
+        plot.margin = ggplot2::margin(25, 25, 10, 25),
+        plot.caption = ggplot2::element_text(color = "grey30", size = 9, hjust = 0))
 
     if(isave == TRUE){
 

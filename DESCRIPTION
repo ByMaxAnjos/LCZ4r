@@ -39,7 +39,10 @@ Imports:
     tidyr,
     openssl,
     httr,
-    curl
+    curl,
+    openair,
+    recipes,
+    janitor
 Suggests: 
     knitr,
     rmarkdown,
