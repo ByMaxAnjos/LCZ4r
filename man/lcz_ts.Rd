@@ -6,7 +6,7 @@
 \usage{
 lcz_ts(
   x,
-  df = "",
+  data_frame = "",
   var = "",
   station_id = "",
   ...,
@@ -15,13 +15,13 @@ lcz_ts(
   hemisphere = "northern",
   impute = NULL,
   iplot = FALSE,
-  ylab = "Air temperature [ºC]"
+  ylab = "Air temperature [Degree Celsius]"
 )
 }
 \arguments{
 \item{x}{A SpatRaster object containing the LCZ map. The LCZ map can be obtained using the lcz_get_map() function.}
 
-\item{df}{A data frame containing air temperature measurements and station IDs. The data frame should have a date field in hourly or higher resolution format.}
+\item{data_frame}{A data frame containing air temperature measurements and station IDs. The data frame should have a date field in hourly or higher resolution format.}
 
 \item{var}{Name of the variable, e.g. air temperature, in the dataframe.}
 
@@ -42,7 +42,7 @@ Can either be numeric e.g. month = 1:6 to select months 1-6 (January to June), o
 
 \item{iplot}{Set to TRUE if you want to save the plot in your working directory.}
 
-\item{ylab}{y-axis name. Default is \dQuote{Air temperature ºC}.}
+\item{ylab}{y-axis name. Default is \dQuote{Air temperature}.}
 }
 \value{
 A visual representation of the time series of air temperature of LCZ in \code{ggplot} format

@@ -5,7 +5,8 @@
 #' created by Demuzere et al. (2022) and available at https://doi.org/10.5194/essd-14-3835-2022.
 #' It allows you to obtain the LCZ map for a specific area of interest, which can be a city, state, region, or custom-defined shape.
 #'
-#' @param x A SpatRaster object containing the LCZ map. It can be download using this link: https://zenodo.org/records/8419340/files/lcz_filter_v3.tif?download=1"
+#' @param x A SpatRaster object containing the LCZ map. It can be download using this link: https://zenodo.org/records/8419340/files/lcz_filter_v3.tif?download=1".
+#'          Then, it suggested use terra::rast(path/lcz_filter_v3.tif") to import the raster .tif into R.
 #' @param city A character string specifying the name of your target area based on the OpenStreetMap project.
 #' @param roi Optionally, you can provide a Region of Interest (ROI) in ESRI shapefile format to clip the LCZ map to a custom area.
 #' @param isave_map Logical. Set to TRUE if you wish to save the resulting clipped map as a raster TIFF file on your local machine.
@@ -85,6 +86,7 @@ lcz_get_map2 <- function(x, city=NULL, roi = NULL, isave_map = FALSE) {
     }
 
     return(lcz_ras)
+    base::cat("Congratulations! You've successfully got the LCZ map!\n")
 
   } else {
     # ROI
@@ -121,6 +123,7 @@ lcz_get_map2 <- function(x, city=NULL, roi = NULL, isave_map = FALSE) {
       }
 
       return(lcz_ras)
+      base::cat("Congratulations! You've successfully got the LCZ map!\n")
     }
 
   }

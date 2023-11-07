@@ -4,7 +4,7 @@
 #' This function generates a graphical representation of time series air temperature data for different Local Climate Zones (LCZs)
 #'
 #' @param x A SpatRaster object containing the LCZ map. The LCZ map can be obtained using the lcz_get_map() function.
-#' @param df A data frame containing air temperature measurements and station IDs. The data frame should have a date field in hourly or higher resolution format.
+#' @param data_frame A data frame containing air temperature measurements and station IDs. The data frame should have a date field in hourly or higher resolution format.
 #' @param var Name of the variable, e.g. air temperature, in the dataframe.
 #' @param station_id Name of the station ID variable in the dataframe.
 #' @param ... Utilities from \code{selectBydata} from \code{openair} package. A start date string in the form e.g. \dQuote{1/2/1999} or in format i.e. \dQuote{YYYY-mm-dd}, \dQuote{1999-02-01}.
@@ -16,7 +16,7 @@
 #' @param hemisphere Hemisphere for splitting data into seasons (\dQuote{northern} or \dQuote{southern}).
 #' @param impute Method to impute missing values (\dQuote{mean}, \dQuote{median}, \dQuote{knn}, \dQuote{bag}).
 #' @param iplot Set to TRUE if you want to save the plot in your working directory.
-#' @param ylab y-axis name. Default is \dQuote{Air temperature ºC}.
+#' @param ylab y-axis name. Default is \dQuote{Air temperature}.
 #'
 #' @return A visual representation of the time series of air temperature of LCZ in \code{ggplot} format
 #'
@@ -34,9 +34,9 @@
 #'
 #' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis
 
-lcz_ts <- function(x, df="", var = "", station_id = "", ...,
+lcz_ts <- function(x, data_frame="", var = "", station_id = "", ...,
                    time.freq = "hour", by= NULL, hemisphere = "northern",
-                   impute = NULL, iplot=FALSE, ylab = "Air temperature [ºC]") {
+                   impute = NULL, iplot=FALSE, ylab = "Air temperature [Degree Celsius]") {
 
   # Check and validate inputs -----------------------------------------------
   if (is.null(x)) {
@@ -64,8 +64,20 @@ lcz_ts <- function(x, df="", var = "", station_id = "", ...,
 
   # Validate the time series -----------------------------------------------
 
+  if ("date" %in% names(data_frame)) {
+    if (!(inherits(data_frame$date, "POSIXct") || inherits(data_frame$date, "Date"))) {
+      converted_col <- as.POSIXct(data_frame$date, format = "%Y-%m-%d %H:%M:%S", tz = "UTC")
+      data_frame$date <- converted_col
+      base::cat("Converted column 'date' to POSIXct class.\n")
+    }
+  } else {
+    base::cat("Column 'date' not found in the data frame.\n")
+  }
+
+# Pre-processing time series ----------------------------------------------
+
   #Rename and define lcz_id for each lat and long
-  df_processed <- df %>%
+  df_processed <- data_frame %>%
     dplyr::rename(var_interp = {{var}}, station = {{station_id}}) %>%
     janitor::clean_names() %>%
     dplyr::group_by(.data$latitude, .data$longitude) %>%
@@ -111,6 +123,7 @@ lcz_ts <- function(x, df="", var = "", station_id = "", ...,
         recipes::bake(new_data = NULL)
     }
 
+    base::cat("Hooray! The missing values have been nicelly imputed with ",impute,"\n")
   }
 
   # Geospatial operations ---------------------------------------------------
@@ -175,6 +188,51 @@ lcz_ts <- function(x, df="", var = "", station_id = "", ...,
   lcz.lables <- lcz_df$station
 
   # Define time series frequency with argument "by"--------------------------------------------
+  if(is.null(by)) {
+
+    mydata <- openair::timeAverage(lcz_model,
+                                   pollutant = "var_interp",
+                                   avg.time = time.freq,
+                                   type = c("station"))
+
+    final_graph <- ggplot2::ggplot(mydata, ggplot2::aes(x = date, y = .data$var_interp, group = .data$station)) +
+      ggplot2::geom_line(ggplot2::aes(linetype=.data$station, color=.data$station)) +
+      #geom_point(aes(color=station, shape= station)) +
+      ggplot2::scale_color_manual(name="Station (LCZ)",
+                                  values = color_values, labels = lcz.lables,
+                                  guide = ggplot2::guide_legend(reverse = FALSE,
+                                                                title.position = "top")) +
+      ggplot2::coord_cartesian(expand = FALSE, clip = "off") +
+      ggplot2::labs(title = "",
+                    x = "Time",
+                    y = ylab,
+                    fill = "LCZ") +
+      ggplot2::labs(caption = "Source: LCZ4r, https://github.com/ByMaxAnjos/LCZ4r; Data: Stewart and Oke, 2012; Demuzere et al.2022.") +
+      ggplot2::theme(panel.background = ggplot2::element_rect(),
+                     panel.grid.major = ggplot2::element_line(color = "grey90"),
+                     panel.grid.minor = ggplot2::element_line(color = "grey90"),
+                     panel.grid.major.y = ggplot2::element_line(color = "grey90"),
+                     axis.text.x = ggplot2::element_text(size = 12),
+                     axis.title.x =ggplot2::element_text(size = 17, face = "bold"),
+                     axis.text.y = ggplot2::element_text(size = 17),
+                     axis.title.y =ggplot2::element_text(size = 17, face = "bold"),
+                     legend.text = ggplot2::element_text(size = 18),
+                     legend.title = ggplot2::element_text(size = 18),
+                     legend.key = ggplot2::element_blank(),
+                     plot.margin = ggplot2::margin(25, 25, 10, 25),
+                     plot.caption = ggplot2::element_text(color = "grey30",hjust = 0, size = 9)
+      )
+
+
+    return(final_graph)
+
+    if(iplot==FALSE) {
+      return(mydata)
+    }
+
+    base::cat("Congratulations! You've successfully generated a time series based on LCZ classes!\n")
+
+  }
 
   if(!is.null(by)) {
 
@@ -231,6 +289,7 @@ lcz_ts <- function(x, df="", var = "", station_id = "", ...,
         return(mydata)
       }
 
+      base::cat("Congratulations! You've successfully generated a time series by", by, "based on LCZ classes!\n")
     }
     if (by == "season"){
 
@@ -286,7 +345,7 @@ lcz_ts <- function(x, df="", var = "", station_id = "", ...,
         return(mydata)
       }
 
-
+      base::cat("Congratulations! You've successfully generated a time series by", by, "based on LCZ classes!\n")
     }
     if (by == "seasonyear"){
 
@@ -340,6 +399,7 @@ lcz_ts <- function(x, df="", var = "", station_id = "", ...,
         return(mydata)
       }
 
+      base::cat("Congratulations! You've successfully generated a time series by", by, "based on LCZ classes!\n")
     }
     else {
 
@@ -388,54 +448,9 @@ lcz_ts <- function(x, df="", var = "", station_id = "", ...,
         return(mydata)
       }
 
+      base::cat("Congratulations! You've successfully generated a time series by", by, "based on LCZ classes!\n")
     }
 
   }
-
-  else {
-
-    mydata <- openair::timeAverage(lcz_model,
-                                   pollutant = "var_interp",
-                                   avg.time = time.freq,
-                                   type = c("station"))
-
-    final_graph <- ggplot2::ggplot(mydata, ggplot2::aes(x = date, y = .data$var_interp, group = .data$station)) +
-      ggplot2::geom_line(ggplot2::aes(linetype=.data$station, color=.data$station)) +
-      #geom_point(aes(color=station, shape= station)) +
-      ggplot2::scale_color_manual(name="Station (LCZ)",
-                                  values = color_values, labels = lcz.lables,
-                                  guide = ggplot2::guide_legend(reverse = FALSE,
-                                                                title.position = "top")) +
-      ggplot2::coord_cartesian(expand = FALSE, clip = "off") +
-      ggplot2::labs(title = "",
-                    x = "Time",
-                    y = ylab,
-                    fill = "LCZ") +
-      ggplot2::labs(caption = "Source: LCZ4r, https://github.com/ByMaxAnjos/LCZ4r; Data: Stewart and Oke, 2012; Demuzere et al.2022.") +
-      ggplot2::theme(panel.background = ggplot2::element_rect(),
-                     panel.grid.major = ggplot2::element_line(color = "grey90"),
-                     panel.grid.minor = ggplot2::element_line(color = "grey90"),
-                     panel.grid.major.y = ggplot2::element_line(color = "grey90"),
-                     axis.text.x = ggplot2::element_text(size = 12),
-                     axis.title.x =ggplot2::element_text(size = 17, face = "bold"),
-                     axis.text.y = ggplot2::element_text(size = 17),
-                     axis.title.y =ggplot2::element_text(size = 17, face = "bold"),
-                     legend.text = ggplot2::element_text(size = 18),
-                     legend.title = ggplot2::element_text(size = 18),
-                     legend.key = ggplot2::element_blank(),
-                     plot.margin = ggplot2::margin(25, 25, 10, 25),
-                     plot.caption = ggplot2::element_text(color = "grey30",hjust = 0, size = 9)
-      )
-
-
-    return(final_graph)
-
-    if(iplot==FALSE) {
-      return(mydata)
-    }
-
-
-  }
-
 
 }

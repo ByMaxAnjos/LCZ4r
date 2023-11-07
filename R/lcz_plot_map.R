@@ -95,11 +95,12 @@ lcz_plot_map <- function(x, isubtitle = "", isave = FALSE, legend = "name") {
                    plot.background = ggplot2::element_blank(),
                    legend.title = ggplot2::element_text(size = 16, color = "black", face = "bold"),
                    legend.text = ggplot2::element_text(size = 16, color = "black"),
-                   plot.caption = ggplot2::element_text(colour = "grey10", size = 12, hjust = 0), # move caption to the left
+                   plot.caption = ggplot2::element_text(colour = "grey30", size = 9, hjust = 0), # move caption to the left
                    axis.line = ggplot2::element_blank(),
                    axis.text.x = ggplot2::element_blank(),
                    axis.text.y = ggplot2::element_blank(),
                    axis.ticks = ggplot2::element_blank(),
+                   plot.margin = ggplot2::margin(25, 25, 10, 25)
                    #panel.grid.major = ggplot2::element_line(color = "white", size = 0.3),
                    #panel.grid.minor = ggplot2::element_line(color = "white", size = 0.3),
     )
@@ -124,6 +125,7 @@ lcz_plot_map <- function(x, isubtitle = "", isave = FALSE, legend = "name") {
 
   return(my_plot)
 
+  base::cat("Congratulations! You've successfully generated the LCZ map!\n")
 
 }
 

@@ -59,7 +59,7 @@ lcz_get_map <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_global=T
     if(base::is.null(lcz_download)) {
       stop("This error might be due to server restrictions. In such cases, you may need to download the file manually using this link:
            https://zenodo.org/records/8419340/files/lcz_filter_v3.tif?download=1.
-           Then read it using the terra package, eg., my_map <- rast('path/lcz_filter_v3.tif')")
+           Then read it using the terra package, eg., my_map <- rast('path/lcz_filter_v3.tif'), and use the function lcz_get_map2()")
     }
 
     lcz_ras <- terra::crop(lcz_download, terra::ext(study_area))
@@ -89,7 +89,24 @@ lcz_get_map <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_global=T
       terra::writeRaster(lcz_ras, file, overwrite = TRUE)
     }
 
+    if(isave_global==TRUE){
+
+      # Create a folder name using paste0
+      folder <- base::paste0("LCZ4r_output/")
+
+      # Check if the folder exists
+      if (!base::dir.exists(folder)) {
+        # Create the folder if it does not exist
+        base::dir.create(folder)
+      }
+
+      file <- base::paste0(folder,"lcz_globalmap.tif")
+
+      terra::writeRaster(lcz_download, file, overwrite = TRUE)
+    }
+
     return(lcz_ras)
+    base::cat("Congratulations! You've successfully got the LCZ map!\n")
 
   } else {
     # Download the LCZ global map from https://zenodo.org/record/6364594/files/lcz_filter_v1.tif?download=1
@@ -144,6 +161,8 @@ lcz_get_map <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_global=T
     }
 
     return(lcz_ras)
+
+    base::cat("Congratulations! You've successfully got the LCZ map!\n")
   }
 
   }

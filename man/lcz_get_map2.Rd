@@ -7,7 +7,8 @@
 lcz_get_map2(x, city = NULL, roi = NULL, isave_map = FALSE)
 }
 \arguments{
-\item{x}{A SpatRaster object containing the LCZ map. It can be download using this link: https://zenodo.org/records/8419340/files/lcz_filter_v3.tif?download=1"}
+\item{x}{A SpatRaster object containing the LCZ map. It can be download using this link: https://zenodo.org/records/8419340/files/lcz_filter_v3.tif?download=1".
+Then, it suggested use terra::rast(path/lcz_filter_v3.tif") to import the raster .tif into R.}
 
 \item{city}{A character string specifying the name of your target area based on the OpenStreetMap project.}
 

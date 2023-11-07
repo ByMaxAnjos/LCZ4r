@@ -82,12 +82,12 @@ lcz_plot_parameters <- function(x, iselect = "", isubtitle = "", all = FALSE, is
 
   take_unit <- function(x) {
 
-    if(x == "SVF1") return("[0-1]")
-    if(x == "SVF2") return("[0-1]")
-    if(x == "SVF3") return("[0-1]")
-    if(x == "ASP1") return("[%]")
-    if(x == "ASP2") return("[%]")
-    if(x == "ASP3") return("[%]")
+    if(x == "SVF1") return("[0 - 1]")
+    if(x == "SVF2") return("[0 - 1]")
+    if(x == "SVF3") return("[0 - 1]")
+    if(x == "ASP1") return("[0 – 3+]")
+    if(x == "ASP2") return("[0 – 3+]")
+    if(x == "ASP3") return("[0 – 3+]")
     if(x == "BUI1") return("[%]")
     if(x == "BUI2") return("[%]")
     if(x == "BUI3") return("[%]")
@@ -106,15 +106,15 @@ lcz_plot_parameters <- function(x, iselect = "", isubtitle = "", all = FALSE, is
     if(x == "TER1") return("[m]")
     if(x == "TER2") return("[m]")
     if(x == "TER3") return("[m]")
-    if(x == "ADM1") return("[J/m/s/K]")
-    if(x == "ADM2") return("[J/m/s/K]")
-    if(x == "ADM3") return("[J/m/s/K]")
-    if(x == "ALB1") return("[ratio]")
-    if(x == "ALB2") return("[ratio]")
-    if(x == "ALB3") return("[ratio]")
-    if(x == "ANT1") return("[W/m2]")
-    if(x == "ANT2") return("[W/m2]")
-    if(x == "ANT3") return("[W/m2]")
+    if(x == "ADM1") return("[J m-2 s1/2 K-1]")
+    if(x == "ADM2") return("[J m-2 s1/2 K-1]")
+    if(x == "ADM3") return("[J m-2 s1/2 K-1]")
+    if(x == "ALB1") return("[0 – 0.5]")
+    if(x == "ALB2") return("[0 – 0.5]")
+    if(x == "ALB3") return("[0 – 0.5]")
+    if(x == "ANT1") return("[W m-2]")
+    if(x == "ANT2") return("[W m-2]")
+    if(x == "ANT3") return("[W m-2]")
     if(x == "z0") return("[m]")
   }
 
@@ -177,21 +177,21 @@ lcz_plot_parameters <- function(x, iselect = "", isubtitle = "", all = FALSE, is
         ggplot2::labs(title = paste0(names_par$name[i]),
                       subtitle = isubtitle,
                       caption = "Source:LCZ4r, https://github.com/ByMaxAnjos/LCZ4r\nData:Demuzere et al.(2022) and Stewart and Oke (2012)") +
-        ggplot2::coord_equal(expand = TRUE)+
+        ggplot2::coord_equal(expand = TRUE, clip = "off")+
         ggplot2::theme_void() +
         ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
                        plot.subtitle = ggplot2::element_text(color = "black", size = 18, hjust = 0.5),
                        plot.background = ggplot2::element_blank(),
                        legend.title = ggplot2::element_text(size = 16, color = "black", face = "bold"),
                        legend.text = ggplot2::element_text(size = 16, color = "black"),
-                       plot.caption = ggplot2::element_text(colour = "grey30", size = 12, hjust = 0),# move caption to the left
+                       plot.caption = ggplot2::element_text(colour = "grey30", size = 9, hjust = 0),# move caption to the left
                        axis.line = ggplot2::element_blank(),
                        axis.text.x = ggplot2::element_blank(),
                        axis.text.y = ggplot2::element_blank(),
                        axis.ticks = ggplot2::element_blank(),
                        #panel.grid.major = ggplot2::element_line(color = "white", size = 0.3),
                        #panel.grid.minor = ggplot2::element_line(color = "white", size = 0.3),
-                       plot.margin = ggplot2::margin(1, 1, 1, 1))
+                       plot.margin = ggplot2::margin(25, 25, 10, 25))
 
       if(isave == TRUE){
 
@@ -212,6 +212,7 @@ lcz_plot_parameters <- function(x, iselect = "", isubtitle = "", all = FALSE, is
     }
 
     return(fig_par)
+    base::cat("Wow! You've successfully salved all the LCZ parameter maps into you pc!\n")
 
   }
 
@@ -241,21 +242,21 @@ lcz_plot_parameters <- function(x, iselect = "", isubtitle = "", all = FALSE, is
           ggplot2::labs(title = paste0(names_par_select$name[i]),
                         subtitle = isubtitle,
                         caption = "Source:LCZ4r, https://github.com/ByMaxAnjos/LCZ4r\nData:Demuzere et al.(2022) and Stewart and Oke (2012)") +
-          ggplot2::coord_equal(expand = TRUE)+
+          ggplot2::coord_equal(expand = TRUE, clip = "off")+
           ggplot2::theme_void() +
           ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
                          plot.subtitle = ggplot2::element_text(color = "black", size = 18, hjust = 0.5),
                          plot.background = ggplot2::element_blank(),
                          legend.title = ggplot2::element_text(size = 16, color = "black", face = "bold"),
                          legend.text = ggplot2::element_text(size = 16, color = "black"),
-                         plot.caption = ggplot2::element_text(colour = "grey30", size = 12, hjust = 0), # move caption to the left
+                         plot.caption = ggplot2::element_text(colour = "grey30", size = 9, hjust = 0), # move caption to the left
                          axis.line = ggplot2::element_blank(),
                          axis.text.x = ggplot2::element_blank(),
                          axis.text.y = ggplot2::element_blank(),
                          axis.ticks = ggplot2::element_blank(),
                          #panel.grid.major = ggplot2::element_line(color = "white", size = 0.3),
                          #panel.grid.minor = ggplot2::element_line(color = "white", size = 0.3),
-                         plot.margin = ggplot2::margin(1, 1, 1, 1))
+                         plot.margin = ggplot2::margin(25, 25, 10, 25))
 
         if(isave == TRUE) {
 
@@ -276,6 +277,7 @@ lcz_plot_parameters <- function(x, iselect = "", isubtitle = "", all = FALSE, is
       }
 
       return(fig_par)
+      base::cat("Wow! You've successfully salved the selected LCZ parameter maps into you pc!\n")
 
     } else {
 
@@ -297,21 +299,21 @@ lcz_plot_parameters <- function(x, iselect = "", isubtitle = "", all = FALSE, is
         ggplot2::labs(title = paste0(names_par_select$name),
                       subtitle = isubtitle,
                       caption = "Source:LCZ4r, https://github.com/ByMaxAnjos/LCZ4r\nData:Demuzere et al.(2022) and Stewart and Oke (2012)") +
-        ggplot2::coord_equal(expand = TRUE)+
+        ggplot2::coord_equal(expand = TRUE, clip = "off")+
         ggplot2::theme_void() +
         ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
                        plot.subtitle = ggplot2::element_text(color = "black", size = 18, hjust = 0.5),
                        plot.background = ggplot2::element_blank(),
                        legend.title = ggplot2::element_text(size = 16, color = "black", face = "bold"),
                        legend.text = ggplot2::element_text(size = 16, color = "black"),
-                       plot.caption = ggplot2::element_text(colour = "grey30", size = 12, hjust = 0), # move caption to the left
+                       plot.caption = ggplot2::element_text(colour = "grey30", size = 9, hjust = 0), # move caption to the left
                        axis.line = ggplot2::element_blank(),
                        axis.text.x = ggplot2::element_blank(),
                        axis.text.y = ggplot2::element_blank(),
                        axis.ticks = ggplot2::element_blank(),
                        #panel.grid.major = ggplot2::element_line(color = "white", size = 0.3),
                        #panel.grid.minor = ggplot2::element_line(color = "white", size = 0.3),
-                       plot.margin = ggplot2::margin(1, 1, 1, 1))
+                       plot.margin = ggplot2::margin(25, 25, 10, 25))
 
       if(isave == TRUE) {
 
@@ -332,6 +334,7 @@ lcz_plot_parameters <- function(x, iselect = "", isubtitle = "", all = FALSE, is
     }
 
     return(fig_par)
+    base::cat("Wow! You've successfully salved the selected LCZ parameter map into you pc!\n")
 
   }
 
