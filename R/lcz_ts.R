@@ -223,14 +223,12 @@ lcz_ts <- function(x, data_frame="", var = "", station_id = "", ...,
                      plot.caption = ggplot2::element_text(color = "grey30",hjust = 0, size = 9)
       )
 
-
+    base::cat("Congratulations! You've successfully generated a time series based on LCZ classes.\n")
     return(final_graph)
 
     if(iplot==FALSE) {
       return(mydata)
     }
-
-    base::cat("Congratulations! You've successfully generated a time series based on LCZ classes!\n")
 
   }
 
@@ -282,6 +280,7 @@ lcz_ts <- function(x, data_frame="", var = "", station_id = "", ...,
         ggplot2::theme(strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 14),
                        strip.background = ggplot2::element_rect(linetype = "dotted"))
 
+      base::cat("Congratulations! You've successfully generated a time series by", by, "based on LCZ classes.\n")
       return(final_graph)
 
       if(iplot==FALSE) {
@@ -289,7 +288,6 @@ lcz_ts <- function(x, data_frame="", var = "", station_id = "", ...,
         return(mydata)
       }
 
-      base::cat("Congratulations! You've successfully generated a time series by", by, "based on LCZ classes!\n")
     }
     if (by == "season"){
 
@@ -339,13 +337,13 @@ lcz_ts <- function(x, data_frame="", var = "", station_id = "", ...,
         ggplot2::theme(strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 14),
               strip.background = ggplot2::element_rect(linetype = "dotted"))
 
+      base::cat("Congratulations! You've successfully generated a time series by", by, "based on LCZ classes.\n")
       return(final_graph)
 
       if(iplot==FALSE) {
         return(mydata)
       }
 
-      base::cat("Congratulations! You've successfully generated a time series by", by, "based on LCZ classes!\n")
     }
     if (by == "seasonyear"){
 
@@ -393,13 +391,13 @@ lcz_ts <- function(x, data_frame="", var = "", station_id = "", ...,
         ggplot2::theme(strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 14),
               strip.background = ggplot2::element_rect(linetype = "dotted"))
 
+      base::cat("Congratulations! You've successfully generated a time series by", by, "based on LCZ classes.\n")
       return(final_graph)
 
       if(iplot==FALSE) {
         return(mydata)
       }
 
-      base::cat("Congratulations! You've successfully generated a time series by", by, "based on LCZ classes!\n")
     }
     else {
 
@@ -442,13 +440,13 @@ lcz_ts <- function(x, data_frame="", var = "", station_id = "", ...,
         ggplot2::theme(strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 14),
               strip.background = ggplot2::element_rect(linetype = "dotted"))
 
+      base::cat("Congratulations! You've successfully generated a time series by", by, "based on LCZ classes.\n")
       return(final_graph)
 
       if(iplot==FALSE) {
         return(mydata)
       }
 
-      base::cat("Congratulations! You've successfully generated a time series by", by, "based on LCZ classes!\n")
     }
 
   }

@@ -4,7 +4,7 @@
 \alias{lcz_get_map}
 \title{Get Local Climate Zone (LCZ) Map for a Specified Area}
 \usage{
-lcz_get_map(city = NULL, roi = NULL, isave_map = FALSE, isave_global = TRUE)
+lcz_get_map(city = NULL, roi = NULL, isave_map = FALSE, isave_global = FALSE)
 }
 \arguments{
 \item{city}{A character string specifying the name of your target area based on the OpenStreetMap project.}

@@ -85,8 +85,9 @@ lcz_get_map2 <- function(x, city=NULL, roi = NULL, isave_map = FALSE) {
       terra::writeRaster(lcz_ras, file, overwrite = TRUE)
     }
 
-    return(lcz_ras)
     base::cat("Congratulations! You've successfully got the LCZ map!\n")
+    return(lcz_ras)
+
 
   } else {
     # ROI
@@ -122,8 +123,9 @@ lcz_get_map2 <- function(x, city=NULL, roi = NULL, isave_map = FALSE) {
         terra::writeRaster(lcz_ras, file, overwrite = TRUE)
       }
 
+      base::cat("Congratulations! You've successfully got the LCZ map.\n")
       return(lcz_ras)
-      base::cat("Congratulations! You've successfully got the LCZ map!\n")
+
     }
 
   }

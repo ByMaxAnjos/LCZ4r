@@ -116,15 +116,14 @@ lcz_cal_area <- function(x, iplot=TRUE, isave=FALSE){
 
     }
 
+    base::cat("Congratulations! You've successfully calculated the LCZ area classes.\n")
     return(graph)
-
-    base::cat("Congratulations! You've successfully calculated the LCZ area classes!\n")
 
   } else {
 
+    base::cat("Congratulations! You've successfully calculated the LCZ area classes.\n")
     return(summary_resul)
 
-    base::cat("Congratulations! You've successfully calculated the LCZ area classes!\n")
   }
 
 

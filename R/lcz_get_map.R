@@ -25,7 +25,7 @@
 #' # Example 3: Retrieve the LCZ map for a country (no custom ROI specified)
 #' # my_lcz_country <- lcz_get_map(city = "Brazil", roi = NULL, isave_map = TRUE)
 
-lcz_get_map <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_global=TRUE) {
+lcz_get_map <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_global=FALSE) {
 
   # Validate inputs
   if (is.null(city) & is.null(roi)) {
@@ -105,8 +105,8 @@ lcz_get_map <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_global=T
       terra::writeRaster(lcz_download, file, overwrite = TRUE)
     }
 
+    base::cat("Congratulations! You've successfully got the LCZ map.\n")
     return(lcz_ras)
-    base::cat("Congratulations! You've successfully got the LCZ map!\n")
 
   } else {
     # Download the LCZ global map from https://zenodo.org/record/6364594/files/lcz_filter_v1.tif?download=1
@@ -160,9 +160,9 @@ lcz_get_map <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_global=T
       terra::writeRaster(lcz_download, file, overwrite = TRUE)
     }
 
+    base::cat("Congratulations! You've successfully got the LCZ map.\n")
     return(lcz_ras)
 
-    base::cat("Congratulations! You've successfully got the LCZ map!\n")
   }
 
   }

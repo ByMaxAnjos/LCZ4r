@@ -269,7 +269,7 @@ lcz_get_parameters <- function(x,  iselect = "", istack = TRUE, ishp = FALSE, is
       sf::st_write(lcz_result, file,  append = FALSE)
 
     }
-
+      base::cat("Congratulations! You've successfully generated the  shapfile of all LCZ parameters.\n")
       return(lcz_result)
   }
 
@@ -344,6 +344,7 @@ lcz_get_parameters <- function(x,  iselect = "", istack = TRUE, ishp = FALSE, is
       raster::writeRaster(ras_stack, file, format="GTiff", overwrite = TRUE)
     }
 
+    base::cat("Congratulations! You've successfully generated the raster stack of all LCZ parameters.\n")
     return(ras_stack)
   }
 
@@ -421,6 +422,7 @@ lcz_get_parameters <- function(x,  iselect = "", istack = TRUE, ishp = FALSE, is
         raster::writeRaster(ras_stack_selec, file, format="GTiff", overwrite = TRUE)
       }
 
+      base::cat("Congratulations! You've successfully generated the raster stack of selected LCZ parameters.\n")
       return(ras_stack_selec)
 
     } else {
@@ -490,6 +492,7 @@ lcz_get_parameters <- function(x,  iselect = "", istack = TRUE, ishp = FALSE, is
         raster::writeRaster(ras_select_raster, file, format="GTiff", overwrite = TRUE)
       }
 
+      base::cat("Congratulations! You've successfully generated the raster of selected LCZ parameters.\n")
       return(ras_select_raster)
     }
 

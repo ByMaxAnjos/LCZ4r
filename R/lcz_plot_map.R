@@ -123,9 +123,8 @@ lcz_plot_map <- function(x, isubtitle = "", isave = FALSE, legend = "name") {
 
   }
 
+  base::cat("Congratulations! You've successfully generated the LCZ map.\n")
   return(my_plot)
-
-  base::cat("Congratulations! You've successfully generated the LCZ map!\n")
 
 }
 

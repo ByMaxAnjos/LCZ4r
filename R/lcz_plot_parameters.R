@@ -211,8 +211,8 @@ lcz_plot_parameters <- function(x, iselect = "", isubtitle = "", all = FALSE, is
 
     }
 
+    base::cat("Wow! You've successfully salved all the LCZ parameter maps into you pc.\n")
     return(fig_par)
-    base::cat("Wow! You've successfully salved all the LCZ parameter maps into you pc!\n")
 
   }
 
@@ -276,8 +276,9 @@ lcz_plot_parameters <- function(x, iselect = "", isubtitle = "", all = FALSE, is
 
       }
 
+      base::cat("Wow! You've successfully salved the selected LCZ parameter maps into you pc.\n")
       return(fig_par)
-      base::cat("Wow! You've successfully salved the selected LCZ parameter maps into you pc!\n")
+
 
     } else {
 
@@ -333,8 +334,8 @@ lcz_plot_parameters <- function(x, iselect = "", isubtitle = "", all = FALSE, is
 
     }
 
+    base::cat("Wow! You've successfully salved the selected LCZ parameter map into you pc.\n")
     return(fig_par)
-    base::cat("Wow! You've successfully salved the selected LCZ parameter map into you pc!\n")
 
   }
 
