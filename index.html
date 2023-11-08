@@ -54,7 +54,8 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="articles/Introd_to_LCZ4r.html">Introduction to General Functions of LCZ4r</a>
+    <a class="dropdown-item" href="articles/Introd_general_LCZ4r.html">Introduction to General Functions of *LCZ4r*</a>
+    <a class="dropdown-item" href="articles/Introd_local_LCZ4r.html">Introduction to Local Functions of *LCZ4r*</a>
   </div>
 </li>
       </ul>
@@ -93,56 +94,66 @@
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p>To install LCZ4r use the development version with latest features:</p>
-<p>```{r, include=FALSE}</p>
-<p>install.packages(“devtools”) devtools::install_github(“ByMaxAnjos/LCZ4r”) library(LCZ4r)</p>
-<pre><code>
-## Package Overview
-
-The **LCZ4r** package is a comprehensive toolset, featuring a total of 13 functions. These functions are categorized into two main types: general functions and local functions. The general functions are tailored for circumstances where specific LCZ data is not readily available. In contrast, the local functions are designed to operate with more extensive data inputs, such as urban meteorological network readings, including air temperature.
-
-* `lcz_get_map()` - Obtain the LCZ map 
-* `lcz_get_map2()` - Obtain the LCZ map (with downloaded global LCZ map)
-* `lcz_plot_map()` - Visualize the LCZ map 
-* `lcz_cal_area()` - Calculate LCZ areas 
-* `lcz_get_parameters()` - Retrieve LCZ parameters
-* `lcz_plot_parameters()` - Visualize LCZ parameters
-* `lcz_ts()` - Analyze LCZ Time Series
-* `lcz_anamoly()` - Explore LCZ Thermal Anomalies
-* `lcz_interp_krige()` - Perform LCZ Interpolation with Kriging
-* `lcz_eval_krige()` - Evaluate LCZ Interpolation with Kriging
-* `lcz_interp_idw()` - Perform LCZ Interpolation with IDW
-* `lcz_eval_idw()` - Evaluate LCZ Interpolation with IDW
-* `lcz_uhi()` - Assess LCZ for Urban Heat Island Intensity
-
-## Tutorials 
-
-We highly recommend that users explore the following tutorials to gain a deeper understanding of the capabilities and applications of the LCZ4r package:
-
-* Introduction to the General Functions of LCZ4r
-
-* Introduction to the Local Functions of LCZ4r
-
-These tutorials will provide valuable insights and practical guidance on using the package's functions effectively.
-
-## Obtain and visualize the LCZ map
-
-```{r, include=FALSE}
-lcz_map &lt;- lcz_get_map(city="Berlin")
-
-lcz_plot_map(lcz_map)</code></pre>
-<div class="figure">
-<img src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/d1f3e0b8-bd05-464b-b52d-932fa5cf77a2" alt=""><p class="caption">lcz_PlotMap</p>
-</div>
+<p><code>{r, eval=FALSE} install.packages("devtools") devtools::install_github("ByMaxAnjos/LCZ4r") library(LCZ4r)</code></p>
 </div>
 <div class="section level2">
-<h2 id="calculate-lcz-areas">Calculate LCZ areas<a class="anchor" aria-label="anchor" href="#calculate-lcz-areas"></a>
+<h2 id="package-overview">Package Overview<a class="anchor" aria-label="anchor" href="#package-overview"></a>
 </h2>
-<p><code>{r, include=FALSE} LCZarea &lt;- lcz_cal_area(lcz_map, iplot = TRUE) LCZarea</code> <img width="1440" alt="Screenshot 2023-08-13 at 19 24 47" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/2f2fcd9f-1744-47a9-850a-5ad0630aae3b"></p>
+<p>The <strong>LCZ4r</strong> package is a comprehensive toolset, featuring a total of 13 functions. These functions are categorized into two main types: general functions and local functions. The general functions are tailored for circumstances where specific LCZ data is not readily available. In contrast, the local functions are designed to operate with more extensive data inputs, such as urban meteorological network readings, including air temperature.</p>
+<ul>
+<li>
+<code><a href="reference/lcz_get_map.html">lcz_get_map()</a></code> - Obtain the LCZ map</li>
+<li>
+<code><a href="reference/lcz_get_map2.html">lcz_get_map2()</a></code> - Obtain the LCZ map (with downloaded global LCZ map)</li>
+<li>
+<code><a href="reference/lcz_plot_map.html">lcz_plot_map()</a></code> - Visualize the LCZ map</li>
+<li>
+<code><a href="reference/lcz_cal_area.html">lcz_cal_area()</a></code> - Calculate LCZ areas</li>
+<li>
+<code><a href="reference/lcz_get_parameters.html">lcz_get_parameters()</a></code> - Retrieve LCZ parameters</li>
+<li>
+<code><a href="reference/lcz_plot_parameters.html">lcz_plot_parameters()</a></code> - Visualize LCZ parameters</li>
+<li>
+<code><a href="reference/lcz_ts.html">lcz_ts()</a></code> - Analyze LCZ Time Series</li>
+<li>
+<code>lcz_anamoly()</code> - Explore LCZ Thermal Anomalies</li>
+<li>
+<code>lcz_interp_krige()</code> - Perform LCZ Interpolation with Kriging</li>
+<li>
+<code>lcz_eval_krige()</code> - Evaluate LCZ Interpolation with Kriging</li>
+<li>
+<code>lcz_interp_idw()</code> - Perform LCZ Interpolation with IDW</li>
+<li>
+<code>lcz_eval_idw()</code> - Evaluate LCZ Interpolation with IDW</li>
+<li>
+<code>lcz_uhi()</code> - Assess LCZ for Urban Heat Island Intensity</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="tutorials">Tutorials<a class="anchor" aria-label="anchor" href="#tutorials"></a>
+</h2>
+<p>We highly recommend that users explore the following tutorials to gain a deeper understanding of the capabilities and applications of the LCZ4r package:</p>
+<p>These tutorials will provide valuable insights and practical guidance on using the package’s functions effectively.</p>
+</div>
+<div class="section level2">
+<h2 id="obtain-and-visualize-the-lcz-map">Obtain and visualize the LCZ map<a class="anchor" aria-label="anchor" href="#obtain-and-visualize-the-lcz-map"></a>
+</h2>
+<p>```{r, eval=FALSE} lcz_map &lt;- lcz_get_map(city=“Berlin”)</p>
+<p>lcz_plot_map(lcz_map)</p>
+<pre><code>![lcz_PlotMap](https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/d1f3e0b8-bd05-464b-b52d-932fa5cf77a2)
+
+
+## Calculate LCZ areas 
+
+```{r, eval=FALSE}
+LCZarea &lt;- lcz_cal_area(lcz_map, iplot = TRUE)
+LCZarea</code></pre>
+<p><img width="1440" alt="Screenshot 2023-08-13 at 19 24 47" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/2f2fcd9f-1744-47a9-850a-5ad0630aae3b"></p>
 </div>
 <div class="section level2">
 <h2 id="retrieve-and-visualize-lcz-parameters">Retrieve and visualize LCZ parameters<a class="anchor" aria-label="anchor" href="#retrieve-and-visualize-lcz-parameters"></a>
 </h2>
-<p>```{r, include=FALSE}</p>
+<p>```{r, eval=FALSE}</p>
 <p>LCZpar &lt;- lcz_get_parameters(lcz_map, iStack = TRUE)</p>
 <p>lcz_plot_parameters(LCZpar, iselect = “SVF1”) ``` <img width="1439" alt="Screenshot 2023-08-13 at 19 19 06" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/e9006776-a336-4303-bc35-f787090a1caf"></p>
 </div>
