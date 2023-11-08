@@ -84,7 +84,7 @@ Here's a glimpse of the available LCZ parameters:
 # Extract the LCZ parameters
 LCZpar <- lcz_get_parameters(lcz_map, istack = TRUE)
 
-# Visualize the selected parameter, for instance, "SVF1"
-lcz_plot_parameters(LCZpar, iselect = "ADM3", isubtitle = "Rio de Janeiro")
+# Visualize the selected parameter, for instance, Maximum Sky View Factor
+lcz_plot_parameters(LCZpar, iselect = "SVF2", isubtitle = "Rio de Janeiro")
 
 ```
