@@ -1,5 +1,5 @@
 
-#' Plot LCZ parameter map
+#' Visualize LCZ parameters
 #'
 #' This function plots the parameters of an Local Climate Zone map.
 #'

@@ -1,5 +1,5 @@
 
-#' Get LCZ Parameters from LCZ Stewart and Oke (2012)
+#' Retrieve LCZ parameters
 #'
 #' This function extracts 34 Local Climate Zone (LCZ) parameters based on the classification
 #' scheme developed by Stewart and Oke (2012). LCZs provide valuable information about urban

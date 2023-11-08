@@ -1,5 +1,5 @@
 
-#' Time series of Local Climate Zone analysis
+#' Analyze LCZ Time Series
 #'
 #' This function generates a graphical representation of time series air temperature data for different Local Climate Zones (LCZs)
 #'

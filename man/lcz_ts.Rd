@@ -2,7 +2,7 @@
 % Please edit documentation in R/lcz_ts.R
 \name{lcz_ts}
 \alias{lcz_ts}
-\title{Time series of Local Climate Zone analysis}
+\title{Analyze LCZ Time Series}
 \usage{
 lcz_ts(
   x,

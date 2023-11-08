@@ -2,7 +2,7 @@
 % Please edit documentation in R/lcz_cal_area.R
 \name{lcz_cal_area}
 \alias{lcz_cal_area}
-\title{Calculate LCZ Class Areas}
+\title{Calculate LCZ areas}
 \usage{
 lcz_cal_area(x, iplot = TRUE, isave = FALSE)
 }
@@ -17,7 +17,7 @@ lcz_cal_area(x, iplot = TRUE, isave = FALSE)
 A summary table of LCZ class areas if iplot is FALSE, otherwise, a bar plot.
 }
 \description{
-This function calculates the areas of LCZ (Local Climate Zones) classes in both percentage and square kilometers.
+This function calculates the areas of LCZ classes in both percentage and square kilometers.
 }
 \examples{
 

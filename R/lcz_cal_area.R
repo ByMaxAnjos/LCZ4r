@@ -1,7 +1,7 @@
 
-#' Calculate LCZ Class Areas
+#' Calculate LCZ areas
 #'
-#' This function calculates the areas of LCZ (Local Climate Zones) classes in both percentage and square kilometers.
+#' This function calculates the areas of LCZ classes in both percentage and square kilometers.
 #'
 #' @param x A raster SpatRaster layer containing LCZ classes.
 #' @param iplot Logical, indicating whether to create a plot (default is TRUE).

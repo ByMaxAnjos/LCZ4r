@@ -2,7 +2,7 @@
 % Please edit documentation in R/lcz_get_map2.R
 \name{lcz_get_map2}
 \alias{lcz_get_map2}
-\title{Get Local Climate Zone (LCZ) Map for a Specified Area 2}
+\title{Obtain the LCZ map for a Specified Area (with downloaded global LCZ map)}
 \usage{
 lcz_get_map2(x, city = NULL, roi = NULL, isave_map = FALSE)
 }

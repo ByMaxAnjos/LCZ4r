@@ -2,7 +2,7 @@
 % Please edit documentation in R/lcz_get_parameters.R
 \name{lcz_get_parameters}
 \alias{lcz_get_parameters}
-\title{Get LCZ Parameters from LCZ Stewart and Oke (2012)}
+\title{Retrieve LCZ parameters}
 \usage{
 lcz_get_parameters(x, iselect = "", istack = TRUE, ishp = FALSE, isave = FALSE)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/lcz_plot_parameters.R
 \name{lcz_plot_parameters}
 \alias{lcz_plot_parameters}
-\title{Plot LCZ parameter map}
+\title{Visualize LCZ parameters}
 \usage{
 lcz_plot_parameters(
   x,
