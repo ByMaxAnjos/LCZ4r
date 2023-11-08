@@ -40,6 +40,13 @@ lcz_get_map2 <- function(x, city=NULL, roi = NULL, isave_map = FALSE) {
 
   }
 
+  if(terra::crs(x, proj=TRUE) != "+proj=longlat +datum=WGS84 +no_defs") {
+
+    # If not, project it to WGS84
+    x <- terra::project(x, "+proj=longlat +datum=WGS84 +no_defs")
+
+  }
+
   if (is.null(city) & is.null(roi)) {
     stop("Error: provide either a city name or a roi polygon")
   }
@@ -65,14 +72,6 @@ lcz_get_map2 <- function(x, city=NULL, roi = NULL, isave_map = FALSE) {
     }
 
     options(warn=-1)
-     # Check if the input raster's CRS
-
-    if(terra::crs(x, proj=TRUE) != "+proj=longlat +datum=WGS84 +no_defs") {
-
-      # If not, project it to WGS84
-      x <- terra::project(x, "+proj=longlat +datum=WGS84 +no_defs")
-
-    } else {
       # Crop the raster to the study area extent
       lcz_ras <- terra::crop(x, terra::ext(study_area))
 
@@ -88,8 +87,6 @@ lcz_get_map2 <- function(x, city=NULL, roi = NULL, isave_map = FALSE) {
 
       # Rename the raster layer to "lcz"
       base::names(lcz_ras) <- "lcz"
-
-    }
 
     if(isave_map==TRUE){
 
@@ -119,25 +116,15 @@ lcz_get_map2 <- function(x, city=NULL, roi = NULL, isave_map = FALSE) {
       sf::st_make_valid() %>%
       sf::st_transform(crs = "+proj=longlat +datum=WGS84 +no_defs")
 
-    if(terra::crs(x, proj=TRUE) != "+proj=longlat +datum=WGS84 +no_defs") {
-
-      x <- terra::project(x, "+proj=longlat +datum=WGS84 +no_defs")
-
-    }
-    else {
-
+    #Crop the raster
       lcz_ras <- terra::crop(x, terra::ext(roi_crs))
-
       if(is.null(lcz_ras)) {
         stop("oops! If you are working with very large raster datasets, consider working on a
            smaller area to reduce the memory and processing requirements.
            You can crop a smaller region first to see if the operation succeeds.")
       }
-
       lcz_ras <- terra::mask(lcz_ras, terra::vect(roi_crs))
-
       base::names(lcz_ras) <- "lcz"
-
     }
 
     if(isave_map==TRUE){
@@ -158,8 +145,6 @@ lcz_get_map2 <- function(x, city=NULL, roi = NULL, isave_map = FALSE) {
 
     base::cat("Congratulations! You've successfully got the LCZ map.\n")
     return(lcz_ras)
-
-  }
 
 }
 
