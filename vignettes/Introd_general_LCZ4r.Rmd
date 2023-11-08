@@ -28,18 +28,18 @@ This vignette serves as an introduction to the **general functions of the `LCZ4r
 
 The **LCZ4r** package fundamental functions, each serving a unique purpose:
 
-|    Function	   |    Description   |     Data Required  | Internet Access Required |
-|------------------|-------------|-------------------|---------|
-| `lcz_get_map()`       | Obtain the LCZ map        | Not needed    | Yes  |
-| `lcz_get_map2()`       | Obtain the LCZ map        | Not needed    | Not needed  |
-| `lcz_plot_map()`	     |  Visualize the LCZ map      | Not needed     | Not needed |
-| `lcz_cal_area()`	     | Calculate LCZ areas      |Not needed    | Not needed |
-| `lcz_get_parameters()`	   | Retrieve LCZ parameters    | Not needed   | Not needed |
-| `lcz_plot_parameters()`	   | Visualize LCZ parameters  | Not needed   | Not needed |
+| Function                | Description              | Data Required | Internet Access Required |
+|--------------------|----------------|---------------------|----------------|
+| `lcz_get_map()`         | Obtain the LCZ map       | Not needed    | Yes                      |
+| `lcz_get_map2()`        | Obtain the LCZ map       | Not needed    | Not needed               |
+| `lcz_plot_map()`        | Visualize the LCZ map    | Not needed    | Not needed               |
+| `lcz_cal_area()`        | Calculate LCZ areas      | Not needed    | Not needed               |
+| `lcz_get_parameters()`  | Retrieve LCZ parameters  | Not needed    | Not needed               |
+| `lcz_plot_parameters()` | Visualize LCZ parameters | Not needed    | Not needed               |
 
 Happy coding, and enjoy exploring the LCZ4r package!
 
-## Obtain an visualize the LCZ map 
+## Obtain an visualize the LCZ map
 
 The `lcz_get_map()` function allows you to obtain the LCZ map for your city or a specific Region of Interest (ROI) using the global LCZ map developed by Demuzere et al. (2022). In the rare cases when this function encounters inconsistencies, you can rely on the `lcz_get_map2()` as an alternative.
 
@@ -54,7 +54,9 @@ lcz_plot_map(lcz_map, isubtitle = "Rio de Janeiro")
 
 ```
 
-## Calculate LCZ areas 
+![](images/Screenshot 2023-11-08 at 18.17.48.png)
+
+## Calculate LCZ areas
 
 This `lcz_cal_area()` function is designed to calculate the Local Climate Zone (LCZ) areas. You can use it like this:
 
@@ -65,18 +67,19 @@ LCZarea <- lcz_cal_area(lcz_map, iplot = TRUE)
 LCZarea
 ```
 
+![](images/Screenshot 2023-11-08 at 18.18.29.png)
+
 ## Retrieve and visualize LCZ parameters
 
 This `lcz_get_parameters()` function allows you to retrieve various LCZ parameters, including minimum, maximum, and mean values, sourced from Stewart and Oke (2012). These parameters can be converted into either shapefiles or raster stacks.
 
 Here's a glimpse of the available LCZ parameters:
 
-|    Code	   |    Parameter   |     Description   | Unit |
-|------------------|-------------|-------------------|---------|
-| SVF1	       | Sky View Factor        | Minimum Sky View Factor |[0-1] |
-| SVF2     | Sky View Factor      | Maximum Sky View Factor |[0-1] |
-| SVF3	     | Sky View Factor      | Mean Sky View Factor |[0-1] |
-
+| Code | Parameter       | Description             | Unit  |
+|------|-----------------|-------------------------|-------|
+| SVF1 | Sky View Factor | Minimum Sky View Factor | [0-1] |
+| SVF2 | Sky View Factor | Maximum Sky View Factor | [0-1] |
+| SVF3 | Sky View Factor | Mean Sky View Factor    | [0-1] |
 
 ```{r eval=FALSE}
 
@@ -84,14 +87,8 @@ Here's a glimpse of the available LCZ parameters:
 LCZpar <- lcz_get_parameters(lcz_map, istack = TRUE)
 
 # Visualize the selected parameter, for instance, "SVF1"
-lcz_plot_parameters(LCZpar, iselect = "SVF1")
+lcz_plot_parameters(LCZpar, iselect = "ADM3", isubtitle = "Rio de Janeiro")
 
 ```
 
-
-
-
-
-
-
-
+![](images/Screenshot 2023-11-08 at 18.20.26.png)

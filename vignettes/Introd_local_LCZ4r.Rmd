@@ -1,5 +1,5 @@
 ---
-title: "Introduction to Local Functions of *LCZ4r*"
+title: "Introduction to Local Functions of LCZ4r"
 author: "Max Anjos"
 date: "`r Sys.Date()`"
 output:
@@ -10,7 +10,7 @@ output:
       smooth_scroll: false
     toc_depth: 2
 vignette: >
-  %\VignetteIndexEntry{Introduction to Local Functions of *LCZ4r*}
+  %\VignetteIndexEntry{Introduction to Local Functions of LCZ4r}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -28,26 +28,26 @@ This vignette serves as an introduction to the **Local functions of `LCZ4r`** pa
 
 The **Local functions of `LCZ4r`**, each serving a unique purpose:
 
-|    Function	   |    Description   |     Data Required  | Internet Access Required |
-|------------------|-------------|-------------------|---------|
-| `lcz_ts()`       | Analyze LCZ Time Series        | Not needed    | Not needed  |
-| `lcz_anamoly()`        | Explore LCZ Thermal Anomalies        | Not needed    | Not needed  |
-| `lcz_interp_krige()`	     |  Perform LCZ Interpolation with Kriging      | Not needed     | Not needed |
-| `lcz_eval_krige()`	     | Evaluate LCZ Interpolation with Kriging      |Not needed    | Not needed |
-| `lcz_interp_idw()`	   | Perform LCZ Interpolation with IDW    | Not needed   | Not needed |
-| `lcz_eval_idw()`	   | Evaluate LCZ Interpolation with IDW  | Not needed   | Not needed |
-| `lcz_uhi()`	   | Assess LCZ for Urban Heat Island Intensity  | Not needed   | Not needed |
+| Function             | Description                                | Data Required | Internet Access Required |
+|----------------------|--------------------------------------------|---------------|--------------------------|
+| `lcz_ts()`           | Analyze LCZ Time Series                    | Not needed    | Not needed               |
+| `lcz_anamoly()`      | Explore LCZ Thermal Anomalies              | Not needed    | Not needed               |
+| `lcz_interp_krige()` | Perform LCZ Interpolation with Kriging     | Not needed    | Not needed               |
+| `lcz_eval_krige()`   | Evaluate LCZ Interpolation with Kriging    | Not needed    | Not needed               |
+| `lcz_interp_idw()`   | Perform LCZ Interpolation with IDW         | Not needed    | Not needed               |
+| `lcz_eval_idw()`     | Evaluate LCZ Interpolation with IDW        | Not needed    | Not needed               |
+| `lcz_uhi()`          | Assess LCZ for Urban Heat Island Intensity | Not needed    | Not needed               |
 
 Happy coding, and enjoy exploring the LCZ4r package!
 
-
-##  Analyze LCZ Time Series
+## Analyze LCZ Time Series
 
 ```{r, eval=FALSE}
 library(LCZ4r)
 ```
 
-## Explore LCZ Thermal Anomalies 
+## Explore LCZ Thermal Anomalies
+
 ...
 
 ```{r, eval=TRUE}
@@ -56,7 +56,7 @@ library(LCZ4r)
 
 ```
 
-## Perform and Evaluate LCZ Interpolation with Kriging  
+## Perform and Evaluate LCZ Interpolation with Kriging
 
 ...
 
@@ -64,9 +64,7 @@ library(LCZ4r)
 
 ```
 
-
-
-## Perform and Evaluate LCZ Interpolation with IDW  
+## Perform and Evaluate LCZ Interpolation with IDW
 
 ...
 
@@ -74,12 +72,10 @@ library(LCZ4r)
 
 ```
 
-
-## Assess LCZ for Urban Heat Island Intensit 
+## Assess LCZ for Urban Heat Island Intensit
 
 ...
 
 ```{r, eval=TRUE}
 
 ```
-

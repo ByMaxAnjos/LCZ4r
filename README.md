@@ -44,35 +44,22 @@ The **LCZ4r** package is a comprehensive toolset, featuring a total of 13 functi
 
 We highly recommend that users explore the following tutorials to gain a deeper understanding of the capabilities and applications of the LCZ4r package:
 
+* [Introduction to the General Functions of LCZ4r](https://bymaxanjos.github.io/LCZ4r/articles/Introd_general_LCZ4r.html)
+
+* [Introduction to the Local Functions of LCZ4r](https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html) 
 
 These tutorials will provide valuable insights and practical guidance on using the package's functions effectively.
 
 ## Obtain and visualize the LCZ map
 
-```{r, eval=FALSE}
-lcz_map <- lcz_get_map(city="Berlin")
-
-lcz_plot_map(lcz_map)
-```
 ![lcz_PlotMap](https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/d1f3e0b8-bd05-464b-b52d-932fa5cf77a2)
-
 
 ## Calculate LCZ areas 
 
-```{r, eval=FALSE}
-LCZarea <- lcz_cal_area(lcz_map, iplot = TRUE)
-LCZarea
-```
 <img width="1440" alt="Screenshot 2023-08-13 at 19 24 47" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/2f2fcd9f-1744-47a9-850a-5ad0630aae3b">
 
 ## Retrieve and visualize LCZ parameters
 
-```{r, eval=FALSE}
-
-LCZpar <- lcz_get_parameters(lcz_map, iStack = TRUE)
-
-lcz_plot_parameters(LCZpar, iselect = "SVF1")
-```
 <img width="1439" alt="Screenshot 2023-08-13 at 19 19 06" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/e9006776-a336-4303-bc35-f787090a1caf">
 
 ## Time serires of air tempearture from LCZ classes
