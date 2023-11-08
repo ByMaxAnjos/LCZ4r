@@ -1,13 +1,12 @@
 
 #' Plot LCZ parameter map
 #'
-#' This function plots the parameters of an LCZ (Local Climate Zone) map.
+#' This function plots the parameters of an Local Climate Zone map.
 #'
-#' @param x The LCZ map in SpatRaster format.
+#' @param x The LCZ map in SpatRaster in a stack format.
 #' @param iselect Character vector. Specify one or more parameter names to retrieve specific
 #'                parameters. For example, "SVF1" to get the minimum Sky View Factor,
 #'                or c("z0", "VEG3") to select multiple parameters.
-#'                See https://bymaxanjos.github.io/LCZ4r/articles/Introd_to_LCZ4r.html
 #' @param isave Logical, indicating whether to save the plot to your directory. Default is FALSE.
 #' @param isubtitle Character, specifying a subtitle for the plot.
 #' @param all Logical, specifying whether to save all selected parameters into LCZ4r_output. Default is FALSE.
@@ -19,10 +18,10 @@
 #' @examples
 #'
 #' # Plot the minimum Sky View Factor (SVF1) for your city
-#' #lcz_plot_parameters(x = lcz_map, iselect = "SVF1, isubtitle = "Rio de Janeiro")
+#' # lcz_plot_parameters(x = lcz_map, iselect = "SVF1", isubtitle = "Rio de Janeiro")
 #'
 #' # Plot multiple parameters and save them to the LCZ4r_output directory
-#' #lcz_plot_parameters(x = lcz_map, iselect = c("SVF1", "HEI1"))
+#' # lcz_plot_parameters(x = lcz_map, iselect = c("SVF1", "HEI1"))
 #'
 #' @importFrom rlang .data
 #'
@@ -36,9 +35,9 @@ lcz_plot_parameters <- function(x, iselect = "", isubtitle = "", all = FALSE, is
 
   # Validate inputs
   if (is.null(x)) {
-    stop("The input must be raster stack object of raster package. Please, use the lcz_get_map(x, iStack = TRUE, iShp = FALSE")
+    stop("The input must be raster stack object of raster package. Please, use the lcz_get_map(x, istack = TRUE, ishp = FALSE")
   } else if (!is.null(x) & !inherits(x, "RasterStack")) {
-    stop("The input must be raster stack object of raster package. Please, use the lcz_get_map(x, iStack = TRUE, iShp = FALSE")
+    stop("The input must be raster stack object of raster package. Please, use the lcz_get_map(x, istack = TRUE, ishp = FALSE")
   }
 
   LCZpar <- {{x}}[[-1]]
@@ -85,9 +84,9 @@ lcz_plot_parameters <- function(x, iselect = "", isubtitle = "", all = FALSE, is
     if(x == "SVF1") return("[0 - 1]")
     if(x == "SVF2") return("[0 - 1]")
     if(x == "SVF3") return("[0 - 1]")
-    if(x == "ASP1") return("[0 – 3+]")
-    if(x == "ASP2") return("[0 – 3+]")
-    if(x == "ASP3") return("[0 – 3+]")
+    if(x == "ASP1") return("[0 - 3]")
+    if(x == "ASP2") return("[0 - 3]")
+    if(x == "ASP2") return("[0 - 3]")
     if(x == "BUI1") return("[%]")
     if(x == "BUI2") return("[%]")
     if(x == "BUI3") return("[%]")
@@ -109,9 +108,9 @@ lcz_plot_parameters <- function(x, iselect = "", isubtitle = "", all = FALSE, is
     if(x == "ADM1") return("[J m-2 s1/2 K-1]")
     if(x == "ADM2") return("[J m-2 s1/2 K-1]")
     if(x == "ADM3") return("[J m-2 s1/2 K-1]")
-    if(x == "ALB1") return("[0 – 0.5]")
-    if(x == "ALB2") return("[0 – 0.5]")
-    if(x == "ALB3") return("[0 – 0.5]")
+    if(x == "ALB1") return("[0 - 0.5]")
+    if(x == "ALB2") return("[0 - 0.5]")
+    if(x == "ALB3") return("[0 - 0.5]")
     if(x == "ANT1") return("[W m-2]")
     if(x == "ANT2") return("[W m-2]")
     if(x == "ANT3") return("[W m-2]")
@@ -211,7 +210,7 @@ lcz_plot_parameters <- function(x, iselect = "", isubtitle = "", all = FALSE, is
 
     }
 
-    base::cat("Wow! You've successfully salved all the LCZ parameter maps into you pc.\n")
+    base::cat("Wow! You have successfully salved all the LCZ parameter maps into you pc.\n")
     return(fig_par)
 
   }
@@ -276,7 +275,7 @@ lcz_plot_parameters <- function(x, iselect = "", isubtitle = "", all = FALSE, is
 
       }
 
-      base::cat("Wow! You've successfully salved the selected LCZ parameter maps into you pc.\n")
+      base::cat("Wow! You have successfully salved the selected LCZ parameter maps into you pc.\n")
       return(fig_par)
 
 
@@ -334,7 +333,7 @@ lcz_plot_parameters <- function(x, iselect = "", isubtitle = "", all = FALSE, is
 
     }
 
-    base::cat("Wow! You've successfully salved the selected LCZ parameter map into you pc.\n")
+    base::cat("Wow! You have successfully salved the selected LCZ parameter map into you pc.\n")
     return(fig_par)
 
   }

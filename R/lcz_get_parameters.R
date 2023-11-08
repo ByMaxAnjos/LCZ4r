@@ -46,6 +46,7 @@ lcz_get_parameters <- function(x,  iselect = "", istack = TRUE, ishp = FALSE, is
     stop("The input must be SpatRaster object of terra package. Please, use the get_lcz_map()")
   }
 
+  if(!inherits(x, "SpatRaster")) { x <- terra::rast({{x}}) }
 
   lcz.name <- c("Compact highrise", "Compact midrise", "Compact lowrise", "Open highrise",
                 "Open midrise", "Open lowrise", "Lightweight low-rise", "Large lowrise",

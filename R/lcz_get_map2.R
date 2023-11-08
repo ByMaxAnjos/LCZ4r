@@ -26,11 +26,18 @@
 #' # Example 3: Retrieve the LCZ map for a country (no custom ROI specified)
 #' # my_lcz_country <- lcz_get_map2(my_map, city = "Brazil")
 
+
 lcz_get_map2 <- function(x, city=NULL, roi = NULL, isave_map = FALSE) {
 
   # Validate inputs
   if (is.null(x)) {
     stop("The input must be raster object. To download the map, use this link: https://zenodo.org/records/8419340/files/lcz_filter_v3.tif?download=1")
+  }
+
+  if(!inherits(x, "SpatRaster")) {
+
+    x <- terra::rast(x)
+
   }
 
   if (is.null(city) & is.null(roi)) {
@@ -56,18 +63,33 @@ lcz_get_map2 <- function(x, city=NULL, roi = NULL, isave_map = FALSE) {
         sf::st_as_sf() %>%
         sf::st_transform(crs="+proj=longlat +datum=WGS84 +no_defs")
     }
+
     options(warn=-1)
-    # Download the LCZ global map
-    lcz_ras <- terra::crop(x, terra::ext(study_area))
+     # Check if the input raster's CRS
 
-    if(is.null(lcz_ras)) {
-      stop("Large Data: If you are working with very large raster datasets, consider working on a
-           subset of the data to reduce the memory and processing requirements.
+    if(terra::crs(x, proj=TRUE) != "+proj=longlat +datum=WGS84 +no_defs") {
+
+      # If not, project it to WGS84
+      x <- terra::project(x, "+proj=longlat +datum=WGS84 +no_defs")
+
+    } else {
+      # Crop the raster to the study area extent
+      lcz_ras <- terra::crop(x, terra::ext(study_area))
+
+      # Check if the cropped raster is null
+      if(is.null(lcz_ras)) {
+        stop("Oops! If you are working with very large raster datasets, consider working on a
+           smaller area to reduce the memory and processing requirements.
            You can crop a smaller region first to see if the operation succeeds.")
-    }
+      }
 
-    lcz_ras <- terra::mask(lcz_ras, terra::vect(study_area))
-    base::names(lcz_ras) <- "lcz"
+      # Mask the cropped raster
+      lcz_ras <- terra::mask(lcz_ras, terra::vect(study_area))
+
+      # Rename the raster layer to "lcz"
+      base::names(lcz_ras) <- "lcz"
+
+    }
 
     if(isave_map==TRUE){
 
@@ -85,7 +107,8 @@ lcz_get_map2 <- function(x, city=NULL, roi = NULL, isave_map = FALSE) {
       terra::writeRaster(lcz_ras, file, overwrite = TRUE)
     }
 
-    base::cat("Congratulations! You've successfully got the LCZ map!\n")
+    base::cat("Congratulations! You've successfully got the LCZ map.\n")
+
     return(lcz_ras)
 
 
@@ -96,37 +119,45 @@ lcz_get_map2 <- function(x, city=NULL, roi = NULL, isave_map = FALSE) {
       sf::st_make_valid() %>%
       sf::st_transform(crs = "+proj=longlat +datum=WGS84 +no_defs")
 
-    lcz_ras <- terra::crop(x, terra::ext(roi_crs))
+    if(terra::crs(x, proj=TRUE) != "+proj=longlat +datum=WGS84 +no_defs") {
 
-    if(is.null(lcz_ras)) {
-      stop("Large Data: If you are working with very large raster datasets, consider working on a
-           subset of the data to reduce the memory and processing requirements.
+      x <- terra::project(x, "+proj=longlat +datum=WGS84 +no_defs")
+
+    }
+    else {
+
+      lcz_ras <- terra::crop(x, terra::ext(roi_crs))
+
+      if(is.null(lcz_ras)) {
+        stop("oops! If you are working with very large raster datasets, consider working on a
+           smaller area to reduce the memory and processing requirements.
            You can crop a smaller region first to see if the operation succeeds.")
+      }
 
       lcz_ras <- terra::mask(lcz_ras, terra::vect(roi_crs))
 
       base::names(lcz_ras) <- "lcz"
 
-      if(isave_map==TRUE){
+    }
 
-        # Create a folder name using paste0
-        folder <- base::paste0("LCZ4r_output/")
+    if(isave_map==TRUE){
 
-        # Check if the folder exists
-        if (!dir.exists(folder)) {
-          # Create the folder if it does not exist
-          base::dir.create(folder)
-        }
+      # Create a folder name using paste0
+      folder <- base::paste0("LCZ4r_output/")
 
-        file <- base::paste0(folder,"lcz_map.tif")
-
-        terra::writeRaster(lcz_ras, file, overwrite = TRUE)
+      # Check if the folder exists
+      if (!dir.exists(folder)) {
+        # Create the folder if it does not exist
+        base::dir.create(folder)
       }
 
-      base::cat("Congratulations! You've successfully got the LCZ map.\n")
-      return(lcz_ras)
+      file <- base::paste0(folder,"lcz_map.tif")
 
+      terra::writeRaster(lcz_ras, file, overwrite = TRUE)
     }
+
+    base::cat("Congratulations! You've successfully got the LCZ map.\n")
+    return(lcz_ras)
 
   }
 

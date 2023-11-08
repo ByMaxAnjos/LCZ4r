@@ -32,8 +32,13 @@ lcz_plot_map <- function(x, isubtitle = "", isave = FALSE, legend = "name") {
     stop("The input must be raster object. Please, use the lcz_get_map( )")
   }
 
-    lcz_map <- raster::raster({{x}})
-    lczClass <- raster::ratify(lcz_map)
+  if(!inherits(x, "RasterLayer")) {
+
+    x <- raster::raster(x)
+
+  }
+
+    lczClass <- raster::ratify(x)
     rat <- raster::levels(lczClass)[[1]]
     ID <- c(base::seq(1, 10, 1), base::seq(11, 17)) %>%
       tibble::as_tibble() %>%
@@ -55,7 +60,7 @@ lcz_plot_map <- function(x, isubtitle = "", isave = FALSE, legend = "name") {
     lcz_df <- dplyr::bind_cols(ID, lcz.name, lcz.col) %>%
       dplyr::inner_join(rat, by = "ID")
 
-    base::names(lcz_map) <- "class"
+    base::names(x) <- "class"
 
     # Define qualitative palette
     color_values <- lcz_df %>%
@@ -70,7 +75,7 @@ lcz_plot_map <- function(x, isubtitle = "", isave = FALSE, legend = "name") {
     }
 
   # ggplot using the same data
-  dataPlot <- terra::as.data.frame(lcz_map, xy=TRUE) %>%
+  dataPlot <- terra::as.data.frame(x, xy=TRUE) %>%
     tidyr::drop_na()
 
   my_plot <-

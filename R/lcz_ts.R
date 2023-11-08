@@ -43,6 +43,8 @@ lcz_ts <- function(x, data_frame="", var = "", station_id = "", ...,
     stop("The input must be raster object. Please, use the lcz_get_map( )")
   }
 
+  if(!inherits(x, "SpatRaster")) { x <- terra::rast({{x}}) }
+
   # Validate hemisphere  --------------------------------------------------
   if (by == "daylight") {
     if (hemisphere != "northern" && hemisphere != "southern") {

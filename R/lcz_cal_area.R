@@ -23,7 +23,14 @@
 
 lcz_cal_area <- function(x, iplot=TRUE, isave=FALSE){
 
-    freq_df <- tibble::as_tibble(terra::freq({{x}}, bylayer=FALSE, usenames=TRUE)) %>%
+
+# Validate inputs ---------------------------------------------------------
+
+  if(!inherits(x, "SpatRaster")) { x <- terra::rast({{x}}) }
+
+# Calculate raster area ---------------------------------------------------
+
+  freq_df <- tibble::as_tibble(terra::freq({{x}}, bylayer=FALSE, usenames=TRUE)) %>%
     purrr::set_names(c("lcz", "count")) %>%
     dplyr::mutate(lcz = base::as.factor(lcz))
 
@@ -70,7 +77,6 @@ lcz_cal_area <- function(x, iplot=TRUE, isave=FALSE){
     lcz.lables <- lcz_df$lcz.name
 
     # Create the ggplot
-
     graph <-
       ggplot2::ggplot(lcz_df, ggplot2::aes(x = factor(lcz), y = .data$area_km2,  fill = factor(lcz))) +
       ggplot2::geom_bar(stat = "identity") +

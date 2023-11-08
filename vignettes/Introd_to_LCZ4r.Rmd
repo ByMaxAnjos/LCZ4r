@@ -1,97 +1,106 @@
 ---
-title: "Introduction to LCZ4r"
+title: "Introduction to General Functions of LCZ4r"
+author: "Max Anjos"
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
-urlcolor: blue
+output:
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    toc_depth: 2
 vignette: >
-  %\VignetteIndexEntry{Introduction to `LCZ4r`}
+  %\VignetteIndexEntry{Introduction to General Functions of LCZ4r}
   %\VignetteEngine{knitr::rmarkdown}
-  %\VignetteEncoding{UTF-8}{inputenc}
+  %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r , include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>",
-  message = FALSE,
-  warning = FALSE,
-  out.width = "100%"
+  comment = "#" # comment = "#>" # tidy = FALSE #, out.width = '100%' #,  cache = FALSE
 )
+# https://github.com/r-lib/crayon/issues/24
+options(repos = c(CRAN = "https://cran.rstudio.com/")) # crayon.enabled = TRUE
 
+# Hooks needs to be set to deal with outputs
+# thanks to fansi logic
+# old_hooks <- fansi::set_knit_hooks(knitr::knit_hooks, 
+#                                    which = c("output", "message", "error"))
+
+.fv_styling <- FALSE # identical(Sys.getenv("PKGDOWN"), "TRUE")
+
+options(fastverse.styling = .fv_styling)
+
+NCRAN <- identical(Sys.getenv("NCRAN"), "TRUE")
 ```
 
-This vignette introduces the **`LCZ4r`** package.
+This vignette serves as an introduction to the **general functions of the `LCZ4r`** package. These functions comprise a suite of R tools designed to facilitate the retrieval, analysis, and visualization of Local Climate Zones (LCZ) when LCZ-specific data is not readily available. The **general functions** are engineered to compute LCZ classes and extract specific parameters of interest, including but not limited to the Sky View Factor (SVF), impervious surface fraction, and roughness element height, among others.
 
-As part of Zoom City Carbon Model (ZCCM), we present the **LCZ4r**, a set of R functions which models Urban Heat Island at high-definition using Local Climate Zone classification and local air temperature readings. 
+## Getting Started
 
-Happy coding!
+The **LCZ4r** package fundamental functions, each serving a unique purpose:
 
-## Install 
+|    Function	   |    Description   |     Data Required  | Internet Access Required |
+|------------------|-------------|-------------------|---------|
+| `lcz_get_map()`       | Obtain the LCZ map        | Not needed    | Yes  |
+| `lcz_get_map2()`       | Obtain the LCZ map        | Not needed    | Not needed  |
+| `lcz_plot_map()`	     |  Visualize the LCZ map      | Not needed     | Not needed |
+| `lcz_cal_area()`	     | Calculate LCZ areas      |Not needed    | Not needed |
+| `lcz_get_parameters()`	   | Retrieve LCZ parameters    | Not needed   | Not needed |
+| `lcz_plot_parameters()`	   | Visualize LCZ parameters  | Not needed   | Not needed |
 
-To install LCZ4r, use the development version with latest features
+Happy coding, and enjoy exploring the LCZ4r package!
+
+## Obtain an visualize the LCZ map 
+
+The `lcz_get_map()` function allows you to obtain the LCZ map for your city or a specific Region of Interest (ROI) using the global LCZ map developed by Demuzere et al. (2022). In the rare cases when this function encounters inconsistencies, you can rely on the `lcz_get_map2()` as an alternative.
 
 ```{r, include=TRUE}
 
 library(LCZ4r)
-
-```
-
-
-## Overview of the package
-
-The **LCZ4r** package includes 5 functions:
-
-|    Function	   |    description   |     Use of data   | Use of Internet |
-|------------------|-------------|-------------------|---------|
-| lcz_get_map()       | Get you LCZ map        | Not    | Yes  |
-| lcz_plot_map()	     |  Plot you LCZ map      | Not     | Not |
-| lcz_cal_area()	     | Calculate LCZ area      | Not    | Not |
-| lcz_get_parameters()	   | Get LCZ parameters    | Not    | Not |
-| lcz_plot_parameters()	   | Plot LCZ parameters   | Not    | Not |
-
-
-## Basic Usage
-
-This function gets LCZ for a specified region of interest (ROI) using global LCZ mapping.
-
-```{r, include=TRUE}
-
-#Get your city LCZ map
+# Get the LCZ map for your city, e.g., "Rio de Janeiro"
 lcz_map <- lcz_get_map(city="Rio de Janeiro")
 
-#Plot it
+# Visualize the obtained LCZ map
 lcz_plot_map(lcz_map)
 
 ```
 
+## Calculate LCZ areas 
 
-This nice function gets all LCZ parameters (including, min, max, and mean) from Stewart and Oke (2012) and converts them to shapefile or raster stack.
+This `lcz_cal_area()` function is designed to calculate the Local Climate Zone (LCZ) areas. You can use it like this:
 
+```{r, include=TRUE}
 
-|    Code	   |    parameter   |     description   | unit |
+#E.g., "Rio de Janeiro"
+LCZarea <- lcz_cal_area(lcz_map, iplot = TRUE)
+LCZarea
+```
+
+## Retrieve and visualize LCZ parameters
+
+This `lcz_get_parameters()` function allows you to retrieve various LCZ parameters, including minimum, maximum, and mean values, sourced from Stewart and Oke (2012). These parameters can be converted into either shapefiles or raster stacks.
+
+Here's a glimpse of the available LCZ parameters:
+
+|    Code	   |    Parameter   |     Description   | Unit |
 |------------------|-------------|-------------------|---------|
 | SVF1	       | Sky View Factor        | Minimum Sky View Factor |[0-1] |
 | SVF2     | Sky View Factor      | Maximum Sky View Factor |[0-1] |
 | SVF3	     | Sky View Factor      | Mean Sky View Factor |[0-1] |
 
+
 ```{r, include=TRUE}
 
+# Extract the LCZ parameters
 LCZpar <- lcz_get_parameters(lcz_map, istack = TRUE)
 
+# Visualize the selected parameter, for instance, "SVF1"
 lcz_plot_parameters(LCZpar, iselect = "SVF1")
 
 ```
 
-
-This function calculates the LCZ area like this:
-
-```{r, include=TRUE}
-
-LCZarea <- lcz_cal_area(lcz_map, iplot = TRUE)
-
-LCZarea
-
-```
 
 
 

@@ -6,11 +6,12 @@
 
 As part of **Zoom City Carbon Model (ZCCM)**, we present the **LCZ4r**, a set of R functions which models Urban Heat Island at high-definition using Local Climate Zone classification and local air temperature readings.
 
+
 Please note that [LCZ4r package R](https://bymaxanjos.github.io/LCZ4r/) is currently undergoing develop, and caution is advised when interpreting its outcomes. Our methodology is based on Anjos M., Madeiros D, Meier F, Castelhano F. LCZ4r, an R package for Urban Local Climate Zones and Heat Islands Analysis (in preparation).
 
 Happy coding!
 
-## Install 
+## Installation  
 
 To install LCZ4r use the development version with latest features:
 
@@ -18,78 +19,72 @@ To install LCZ4r use the development version with latest features:
 
 install.packages("devtools")
 devtools::install_github("ByMaxAnjos/LCZ4r")
-
 library(LCZ4r)
-
 ```
 
-## Overview of the package
+## Package Overview
 
-To date, the **LCZ4r** package includes 5 functions:
+The **LCZ4r** package is a comprehensive toolset, featuring a total of 13 functions. These functions are categorized into two main types: general functions and local functions. The general functions are tailored for circumstances where specific LCZ data is not readily available. In contrast, the local functions are designed to operate with more extensive data inputs, such as urban meteorological network readings, including air temperature.
 
-- `lcz_get_map()` - Get you LCZ map
-- `lcz_plot_map()` - Plot you LCZ map
-- `lcz_cal_area()` - Calculate the LCZ area
-- `lcz_get_parameters()` - Get LCZ parameters
-- `lcz_plot_parameters()` - Plot LCZ parameters
+* `lcz_get_map()` - Obtain the LCZ map 
+* `lcz_get_map2()` - Obtain the LCZ map (with downloaded global LCZ map)
+* `lcz_plot_map()` - Visualize the LCZ map 
+* `lcz_cal_area()` - Calculate LCZ areas 
+* `lcz_get_parameters()` - Retrieve LCZ parameters
+* `lcz_plot_parameters()` - Visualize LCZ parameters
+* `lcz_ts()` - Analyze LCZ Time Series
+* `lcz_anamoly()` - Explore LCZ Thermal Anomalies
+* `lcz_interp_krige()` - Perform LCZ Interpolation with Kriging
+* `lcz_eval_krige()` - Evaluate LCZ Interpolation with Kriging
+* `lcz_interp_idw()` - Perform LCZ Interpolation with IDW
+* `lcz_eval_idw()` - Evaluate LCZ Interpolation with IDW
+* `lcz_uhi()` - Assess LCZ for Urban Heat Island Intensity
 
+## Tutorials 
 
-## Basic Usage
+We highly recommend that users explore the following tutorials to gain a deeper understanding of the capabilities and applications of the LCZ4r package:
 
-This function gets LCZ for your city or specified region of interest (ROI) using global LCZ mapping from Stewart and Oke (2012) and Demuzere et al., (2022).
+* Introduction to the General Functions of LCZ4r
+
+* Introduction to the Local Functions of LCZ4r
+
+These tutorials will provide valuable insights and practical guidance on using the package's functions effectively.
+
+## Obtain and visualize the LCZ map
 
 ```{r, include=FALSE}
-
 lcz_map <- lcz_get_map(city="Berlin")
 
 lcz_plot_map(lcz_map)
-
 ```
 ![lcz_PlotMap](https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/d1f3e0b8-bd05-464b-b52d-932fa5cf77a2)
 
 
-This nice function gets all LCZ parameters (including, min, max, and mean) from Stewart and Oke (2012) and converts them to shapefile or raster stack.
+## Calculate LCZ areas 
+
+```{r, include=FALSE}
+LCZarea <- lcz_cal_area(lcz_map, iplot = TRUE)
+LCZarea
+```
+<img width="1440" alt="Screenshot 2023-08-13 at 19 24 47" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/2f2fcd9f-1744-47a9-850a-5ad0630aae3b">
+
+## Retrieve and visualize LCZ parameters
 
 ```{r, include=FALSE}
 
 LCZpar <- lcz_get_parameters(lcz_map, iStack = TRUE)
 
 lcz_plot_parameters(LCZpar, iselect = "SVF1")
-
 ```
 <img width="1439" alt="Screenshot 2023-08-13 at 19 19 06" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/e9006776-a336-4303-bc35-f787090a1caf">
 
+## Time serires of air tempearture from LCZ classes
 
-This function calculates the LCZ area like this:
-
-```{r, include=FALSE}
-
-LCZarea <- lcz_cal_area(lcz_map, iplot = TRUE)
-
-LCZarea
-
-```
-<img width="1440" alt="Screenshot 2023-08-13 at 19 24 47" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/2f2fcd9f-1744-47a9-850a-5ad0630aae3b">
-
-
-## UHI analysis
-
-To ensure the model runs correctly, it is necessary to load the following inputs:
-
-1.  Air temperature data .csv (required) with a minimum of four columns labeled *date*, *Latitude*, *Longitude*, *airT*.
-2.  Other variables (optional) should have the same date column recommendation.
-
-Note that the model converts the date-time into a R-formatted version, e.g., "2023-03-13 11:00:00" or "2023-03-13".
-
-The following dataframe is presented as follows:
-
-```{r, include=FALSE}
-
-air_UCON %>% head(10)
-
-```
+it's coming soon...
 
 ## Calculate thermal anomaly between LCZ
+
+it's coming soon... but have look at this:
 
 <img width="1440" alt="Screenshot 2023-08-19 at 13 44 11" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/3594539f-0cfd-4671-9a1f-fc65375bc442">
 
