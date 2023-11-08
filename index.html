@@ -55,7 +55,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="articles/Introd_general_LCZ4r.html">Introduction to General Functions of *LCZ4r*</a>
-    <a class="dropdown-item" href="articles/Introd_local_LCZ4r.html">Introduction to Local Functions of *LCZ4r*</a>
+    <a class="dropdown-item" href="articles/Introd_local_LCZ4r.html">Introduction to Local Functions of LCZ4r</a>
   </div>
 </li>
       </ul>
@@ -133,29 +133,28 @@
 <h2 id="tutorials">Tutorials<a class="anchor" aria-label="anchor" href="#tutorials"></a>
 </h2>
 <p>We highly recommend that users explore the following tutorials to gain a deeper understanding of the capabilities and applications of the LCZ4r package:</p>
+<ul>
+<li><p><a href="https://bymaxanjos.github.io/LCZ4r/articles/Introd_general_LCZ4r.html" class="external-link">Introduction to the General Functions of LCZ4r</a></p></li>
+<li><p><a href="https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html" class="external-link">Introduction to the Local Functions of LCZ4r</a></p></li>
+</ul>
 <p>These tutorials will provide valuable insights and practical guidance on using the package’s functions effectively.</p>
 </div>
 <div class="section level2">
 <h2 id="obtain-and-visualize-the-lcz-map">Obtain and visualize the LCZ map<a class="anchor" aria-label="anchor" href="#obtain-and-visualize-the-lcz-map"></a>
 </h2>
-<p>```{r, eval=FALSE} lcz_map &lt;- lcz_get_map(city=“Berlin”)</p>
-<p>lcz_plot_map(lcz_map)</p>
-<pre><code>![lcz_PlotMap](https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/d1f3e0b8-bd05-464b-b52d-932fa5cf77a2)
-
-
-## Calculate LCZ areas 
-
-```{r, eval=FALSE}
-LCZarea &lt;- lcz_cal_area(lcz_map, iplot = TRUE)
-LCZarea</code></pre>
+<div class="figure">
+<img src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/d1f3e0b8-bd05-464b-b52d-932fa5cf77a2" alt=""><p class="caption">lcz_PlotMap</p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="calculate-lcz-areas">Calculate LCZ areas<a class="anchor" aria-label="anchor" href="#calculate-lcz-areas"></a>
+</h2>
 <p><img width="1440" alt="Screenshot 2023-08-13 at 19 24 47" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/2f2fcd9f-1744-47a9-850a-5ad0630aae3b"></p>
 </div>
 <div class="section level2">
 <h2 id="retrieve-and-visualize-lcz-parameters">Retrieve and visualize LCZ parameters<a class="anchor" aria-label="anchor" href="#retrieve-and-visualize-lcz-parameters"></a>
 </h2>
-<p>```{r, eval=FALSE}</p>
-<p>LCZpar &lt;- lcz_get_parameters(lcz_map, iStack = TRUE)</p>
-<p>lcz_plot_parameters(LCZpar, iselect = “SVF1”) ``` <img width="1439" alt="Screenshot 2023-08-13 at 19 19 06" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/e9006776-a336-4303-bc35-f787090a1caf"></p>
+<p><img width="1439" alt="Screenshot 2023-08-13 at 19 19 06" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/e9006776-a336-4303-bc35-f787090a1caf"></p>
 </div>
 <div class="section level2">
 <h2 id="time-serires-of-air-tempearture-from-lcz-classes">Time serires of air tempearture from LCZ classes<a class="anchor" aria-label="anchor" href="#time-serires-of-air-tempearture-from-lcz-classes"></a>

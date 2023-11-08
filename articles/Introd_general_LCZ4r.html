@@ -49,7 +49,7 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/Introd_general_LCZ4r.html">Introduction to General Functions of *LCZ4r*</a>
-    <a class="dropdown-item" href="../articles/Introd_local_LCZ4r.html">Introduction to Local Functions of *LCZ4r*</a>
+    <a class="dropdown-item" href="../articles/Introd_local_LCZ4r.html">Introduction to Local Functions of LCZ4r</a>
   </div>
 </li>
       </ul>
@@ -103,10 +103,10 @@ height, among others.</p>
 serving a unique purpose:</p>
 <table class="table">
 <colgroup>
-<col width="30%">
-<col width="22%">
-<col width="32%">
-<col width="15%">
+<col width="27%">
+<col width="21%">
+<col width="28%">
+<col width="21%">
 </colgroup>
 <thead><tr class="header">
 <th>Function</th>
@@ -170,6 +170,7 @@ when this function encounters inconsistencies, you can rely on the
 <span></span>
 <span><span class="co"># Visualize the obtained LCZ map</span></span>
 <span><span class="fu"><a href="../reference/lcz_plot_map.html">lcz_plot_map</a></span><span class="op">(</span><span class="va">lcz_map</span>, isubtitle <span class="op">=</span> <span class="st">"Rio de Janeiro"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="images/Screenshot%202023-11-08%20at%2018.17.48.png"></p>
 </div>
 <div class="section level2">
 <h2 id="calculate-lcz-areas">Calculate LCZ areas<a class="anchor" aria-label="anchor" href="#calculate-lcz-areas"></a>
@@ -180,6 +181,7 @@ the Local Climate Zone (LCZ) areas. You can use it like this:</p>
 <code class="sourceCode R"><span><span class="co">#E.g., "Rio de Janeiro"</span></span>
 <span><span class="va">LCZarea</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lcz_cal_area.html">lcz_cal_area</a></span><span class="op">(</span><span class="va">lcz_map</span>, iplot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="va">LCZarea</span></span></code></pre></div>
+<p><img src="images/Screenshot%202023-11-08%20at%2018.18.29.png"></p>
 </div>
 <div class="section level2">
 <h2 id="retrieve-and-visualize-lcz-parameters">Retrieve and visualize LCZ parameters<a class="anchor" aria-label="anchor" href="#retrieve-and-visualize-lcz-parameters"></a>
@@ -190,12 +192,6 @@ values, sourced from Stewart and Oke (2012). These parameters can be
 converted into either shapefiles or raster stacks.</p>
 <p>Here’s a glimpse of the available LCZ parameters:</p>
 <table class="table">
-<colgroup>
-<col width="30%">
-<col width="22%">
-<col width="32%">
-<col width="15%">
-</colgroup>
 <thead><tr class="header">
 <th>Code</th>
 <th>Parameter</th>
@@ -228,7 +224,8 @@ converted into either shapefiles or raster stacks.</p>
 <span><span class="va">LCZpar</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lcz_get_parameters.html">lcz_get_parameters</a></span><span class="op">(</span><span class="va">lcz_map</span>, istack <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Visualize the selected parameter, for instance, "SVF1"</span></span>
-<span><span class="fu"><a href="../reference/lcz_plot_parameters.html">lcz_plot_parameters</a></span><span class="op">(</span><span class="va">LCZpar</span>, iselect <span class="op">=</span> <span class="st">"SVF1"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/lcz_plot_parameters.html">lcz_plot_parameters</a></span><span class="op">(</span><span class="va">LCZpar</span>, iselect <span class="op">=</span> <span class="st">"ADM3"</span>, isubtitle <span class="op">=</span> <span class="st">"Rio de Janeiro"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="images/Screenshot%202023-11-08%20at%2018.20.26.png"></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
