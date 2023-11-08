@@ -15,8 +15,7 @@ Happy coding!
 
 To install LCZ4r use the development version with latest features:
 
-```{r, include=FALSE}
-
+```{r, eval=FALSE}
 install.packages("devtools")
 devtools::install_github("ByMaxAnjos/LCZ4r")
 library(LCZ4r)
@@ -40,19 +39,17 @@ The **LCZ4r** package is a comprehensive toolset, featuring a total of 13 functi
 * `lcz_eval_idw()` - Evaluate LCZ Interpolation with IDW
 * `lcz_uhi()` - Assess LCZ for Urban Heat Island Intensity
 
+
 ## Tutorials 
 
 We highly recommend that users explore the following tutorials to gain a deeper understanding of the capabilities and applications of the LCZ4r package:
 
-* Introduction to the General Functions of LCZ4r
-
-* Introduction to the Local Functions of LCZ4r
 
 These tutorials will provide valuable insights and practical guidance on using the package's functions effectively.
 
 ## Obtain and visualize the LCZ map
 
-```{r, include=FALSE}
+```{r, eval=FALSE}
 lcz_map <- lcz_get_map(city="Berlin")
 
 lcz_plot_map(lcz_map)
@@ -62,7 +59,7 @@ lcz_plot_map(lcz_map)
 
 ## Calculate LCZ areas 
 
-```{r, include=FALSE}
+```{r, eval=FALSE}
 LCZarea <- lcz_cal_area(lcz_map, iplot = TRUE)
 LCZarea
 ```
@@ -70,7 +67,7 @@ LCZarea
 
 ## Retrieve and visualize LCZ parameters
 
-```{r, include=FALSE}
+```{r, eval=FALSE}
 
 LCZpar <- lcz_get_parameters(lcz_map, iStack = TRUE)
 
