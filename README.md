@@ -13,13 +13,12 @@ Happy coding!
 To install LCZ4r use the development version on GitHub with latest features:
 
 ```{r, include=TRUE}
-install.packages("devtools") #If it is necessary
-library(devtools) # If it is necessary
+
+if(!require(devtools)) install.packages("devtools")
 
 devtools::install_github("ByMaxAnjos/LCZ4r")
 
 library(LCZ4r)
-
 ```
 
 ## Package Overview

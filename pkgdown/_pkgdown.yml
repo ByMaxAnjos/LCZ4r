@@ -8,8 +8,6 @@ template:
     bg: primary
     title: LCZ4r
   bslib:
-    primary: "#096B72"
-    navbar-background: "#e6f3fc"
     base_font: {google: "Roboto"}
     heading_font: {google: "Roboto Slab"}
     code_font: {google: "JetBrains Mono"}
