@@ -81,7 +81,7 @@ a:hover, a:active {
 pre, code {
   font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
   background-color: #f8f9fa;
-  border: none;
+  border: 1px solid #ccc;  /* Add a border for better visibility */
 }
 
 /* float toc */
@@ -189,6 +189,7 @@ p.caption {
 
 img, video, iframe {
   max-width: 100%;
+  margin: 10px 0;  /* Add margin for spacing */
 }
 
 blockquote {

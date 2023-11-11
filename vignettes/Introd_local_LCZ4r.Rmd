@@ -25,8 +25,8 @@ knitr::opts_chunk$set(
   dev = "ragg_png",
   dpi = 72,
   fig.retina = 2,
-   fig.width = 6.6668 / 0.618,
-  fig.height = 3.3334,
+   fig.width = 7,
+  fig.height = 5,
   fig.align = "center",
   out.width = "100%",
   pngquant = "--speed=1 --quality=50"
