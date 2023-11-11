@@ -1,4 +1,3 @@
-/* custom css style for Nan Xiao's R package vignettes */
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -189,7 +188,6 @@ p.caption {
 
 img, video, iframe {
   max-width: 100%;
-  margin: 10px 0;  /* Add margin for spacing */
 }
 
 blockquote {
