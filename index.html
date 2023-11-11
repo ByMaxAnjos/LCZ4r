@@ -100,10 +100,10 @@
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p>To install LCZ4r use the development version on GitHub with latest features:</p>
-<p>```{r, include=TRUE} install.packages(“devtools”) #If it is necessary library(devtools) # If it is necessary</p>
+<p>```{r, include=TRUE}</p>
+<p>if(!require(devtools)) install.packages(“devtools”)</p>
 <p>devtools::install_github(“ByMaxAnjos/LCZ4r”)</p>
-<p>library(LCZ4r)</p>
-<p>```</p>
+<p>library(LCZ4r) ```</p>
 </div>
 <div class="section level2">
 <h2 id="package-overview">Package Overview<a class="anchor" aria-label="anchor" href="#package-overview"></a>

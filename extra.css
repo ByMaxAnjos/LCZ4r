@@ -1,6 +1,6 @@
 
 .navbar-dark .navbar-nav .active>.nav-link {
-    background-color: #096B72;
+    background-color: #18bc9c;
 }
 
 pre.downlit.sourceCode{
@@ -15,11 +15,11 @@ pre.downlit.sourceCode{
 }
 
 a {
-    color: #096B72;
+    color: #18bc9c;
 }
 
 code a:any-link {
-    color: #096B72 !important;
+    color: #18bc9c !important;
     text-decoration-color: #919aa1;
 }
 
@@ -62,7 +62,7 @@ div.comparison .header {
 }
 
 .ref-index h3 {
-  color: #096B72;
+  color: #18bc9c;
 }
 
 
@@ -143,7 +143,7 @@ div.comparison .header {
   margin-left: 0.8rem;
   margin-top: 0;
   background: none;
-  border-left: 2px solid #096B72;
+  border-left: 2px solid #18bc9c;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
@@ -194,7 +194,7 @@ blockquote > pre {
 
 :root {
   --primary: #2c3350;
-  --secondary: #096B72;
+  --secondary: #18bc9c;
 }
 
 html, body {
@@ -216,7 +216,7 @@ header {
 }
 
 .content a {
-  color: #096B72;
+  color: #18bc9c;
   text-decoration: none;
   font-weight: 600;
   border-bottom: 1px solid var(--secondary);
