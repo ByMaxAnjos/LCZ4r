@@ -25,10 +25,10 @@ knitr::opts_chunk$set(
   dev = "ragg_png",
   dpi = 72,
   fig.retina = 2,
-  fig.width = 3.3334 / 0.618,
+  fig.width = 6.6668 / 0.618,
   fig.height = 3.3334,
   fig.align = "center",
-  out.width = "65%",
+  out.width = "100%",
   pngquant = "--speed=1 --quality=50"
 )
 ```
@@ -55,14 +55,12 @@ Happy coding, and enjoy exploring the LCZ4r package!
 The `lcz_get_map()` function allows you to obtain the LCZ map for your city or a specific Region of Interest (ROI) using the global LCZ map developed by Demuzere et al. (2022). In the rare cases when this function encounters inconsistencies, you can rely on the `lcz_get_map2()` as an alternative.
 
 ```{r include=TRUE}
-
 library(LCZ4r)
 # Get the LCZ map for your city, e.g., "Rio de Janeiro"
 lcz_map <- lcz_get_map(city="Rio de Janeiro")
 
 # Visualize the obtained LCZ map
 lcz_plot_map(lcz_map, isubtitle = "Rio de Janeiro")
-
 ```
 
 ## Calculate LCZ areas
@@ -70,7 +68,6 @@ lcz_plot_map(lcz_map, isubtitle = "Rio de Janeiro")
 This `lcz_cal_area()` function is designed to calculate the Local Climate Zone (LCZ) areas. You can use it like this:
 
 ```{r include=TRUE}
-
 #E.g., "Rio de Janeiro"
 LCZarea <- lcz_cal_area(lcz_map, iplot = TRUE)
 LCZarea
@@ -89,11 +86,9 @@ Here's a glimpse of the available LCZ parameters:
 | SVF3 | Sky View Factor | Mean Sky View Factor    | [0-1] |
 
 ```{r include=TRUE}
-
 # Extract the LCZ parameters
 LCZpar <- lcz_get_parameters(lcz_map, istack = TRUE)
 
 # Visualize the selected parameter, for instance, Maximum Sky View Factor
 lcz_plot_parameters(LCZpar, iselect = "SVF3", isubtitle = "Rio de Janeiro")
-
 ```
