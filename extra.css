@@ -1,11 +1,12 @@
 /* Navbar */
 .navbar-dark .navbar-nav .active > .nav-link {
-    background-color: #3498db; /* Change to your preferred color */
+    background-color: #18bc9c; /* Change to your preferred color */
+    color: white;
 }
 
 /* Code Blocks */
 pre.downlit.sourceCode {
-    border-color: #3498db !important; /* Change to your preferred color */
+    border-color: #7daad7 !important; /* Change to your preferred color */
     border-radius: 3px;
     box-shadow: 2px 2px 2px #999;
 }
@@ -23,7 +24,7 @@ a {
 
 /* Code Links */
 code a:any-link {
-    color: #3498db !important; /* Change to your preferred color */
+    color: #18bc9c  !important; /* Change to your preferred color */
     text-decoration-color: #919aa1;
 }
 
