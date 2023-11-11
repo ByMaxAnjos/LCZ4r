@@ -164,8 +164,7 @@ global LCZ map developed by Demuzere et al. (2022). In the rare cases
 when this function encounters inconsistencies, you can rely on the
 <code><a href="../reference/lcz_get_map2.html">lcz_get_map2()</a></code> as an alternative.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bymaxanjos.github.io/LCZ4r/" class="external-link">LCZ4r</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bymaxanjos.github.io/LCZ4r/" class="external-link">LCZ4r</a></span><span class="op">)</span></span>
 <span><span class="co"># Get the LCZ map for your city, e.g., "Rio de Janeiro"</span></span>
 <span><span class="va">lcz_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lcz_get_map.html">lcz_get_map</a></span><span class="op">(</span>city<span class="op">=</span><span class="st">"Rio de Janeiro"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Congratulations! You've successfully got Rio de Janeiro LCZ map.</span></span>
@@ -173,7 +172,7 @@ when this function encounters inconsistencies, you can rely on the
 <span><span class="co"># Visualize the obtained LCZ map</span></span>
 <span><span class="fu"><a href="../reference/lcz_plot_map.html">lcz_plot_map</a></span><span class="op">(</span><span class="va">lcz_map</span>, isubtitle <span class="op">=</span> <span class="st">"Rio de Janeiro"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Congratulations! You've successfully generated the LCZ map.</span></span></code></pre></div>
-<p><img src="Introd_general_LCZ4r_files/figure-html/unnamed-chunk-2-1.png" width="65%" style="display: block; margin: auto;"></p>
+<p><img src="Introd_general_LCZ4r_files/figure-html/unnamed-chunk-2-1.png" width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2">
 <h2 id="calculate-lcz-areas">Calculate LCZ areas<a class="anchor" aria-label="anchor" href="#calculate-lcz-areas"></a>
@@ -181,12 +180,11 @@ when this function encounters inconsistencies, you can rely on the
 <p>This <code><a href="../reference/lcz_cal_area.html">lcz_cal_area()</a></code> function is designed to calculate
 the Local Climate Zone (LCZ) areas. You can use it like this:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="co">#E.g., "Rio de Janeiro"</span></span>
+<code class="sourceCode R"><span><span class="co">#E.g., "Rio de Janeiro"</span></span>
 <span><span class="va">LCZarea</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lcz_cal_area.html">lcz_cal_area</a></span><span class="op">(</span><span class="va">lcz_map</span>, iplot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; That's cool! You've successfully calculated the LCZ area classes.</span></span>
 <span><span class="va">LCZarea</span></span></code></pre></div>
-<p><img src="Introd_general_LCZ4r_files/figure-html/unnamed-chunk-3-1.png" width="65%" style="display: block; margin: auto;"></p>
+<p><img src="Introd_general_LCZ4r_files/figure-html/unnamed-chunk-3-1.png" width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2">
 <h2 id="retrieve-and-visualize-lcz-parameters">Retrieve and visualize LCZ parameters<a class="anchor" aria-label="anchor" href="#retrieve-and-visualize-lcz-parameters"></a>
@@ -225,15 +223,14 @@ converted into either shapefiles or raster stacks.</p>
 </tbody>
 </table>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="co"># Extract the LCZ parameters</span></span>
+<code class="sourceCode R"><span><span class="co"># Extract the LCZ parameters</span></span>
 <span><span class="va">LCZpar</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lcz_get_parameters.html">lcz_get_parameters</a></span><span class="op">(</span><span class="va">lcz_map</span>, istack <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; You've successfully generated a raster stack of all LCZ parameters.</span></span>
 <span></span>
 <span><span class="co"># Visualize the selected parameter, for instance, Maximum Sky View Factor</span></span>
 <span><span class="fu"><a href="../reference/lcz_plot_parameters.html">lcz_plot_parameters</a></span><span class="op">(</span><span class="va">LCZpar</span>, iselect <span class="op">=</span> <span class="st">"SVF3"</span>, isubtitle <span class="op">=</span> <span class="st">"Rio de Janeiro"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; You've generated SVF3 LCZ parameter map.</span></span></code></pre></div>
-<p><img src="Introd_general_LCZ4r_files/figure-html/unnamed-chunk-4-1.png" width="65%" style="display: block; margin: auto;"></p>
+<p><img src="Introd_general_LCZ4r_files/figure-html/unnamed-chunk-4-1.png" width="100%" style="display: block; margin: auto;"></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
