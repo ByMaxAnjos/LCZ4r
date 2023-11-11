@@ -4,9 +4,6 @@ template:
   bootswatch: lux
   params:
     ganalytics: G-20GDZ5LL77
-  navbar:
-    bg: primary
-    title: LCZ4r
   bslib:
     base_font: {google: "Roboto"}
     heading_font: {google: "Roboto Slab"}
