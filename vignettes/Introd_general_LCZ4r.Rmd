@@ -1,26 +1,35 @@
 ---
-title: "Introduction to General Functions of LCZ4r"
+title: "Introduction to the General Functions of LCZ4r"
 author: "Max Anjos"
 date: "`r Sys.Date()`"
 output:
-  html_document:
+  rmarkdown::html_document:
     toc: true
-    toc_float:
-      collapsed: false
-      smooth_scroll: false
+    toc_float: false
     toc_depth: 2
+    number_sections: false
+    highlight: "textmate"
+    css: custom.css
 vignette: >
-  %\VignetteIndexEntry{Introduction to General Functions of LCZ4r}
+  %\VignetteIndexEntry{Introduction to the General Functions of LCZ4r}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
 ```{r , include = FALSE}
+knitr::knit_hooks$set(pngquant = knitr::hook_pngquant)
 knitr::opts_chunk$set(
+  message = FALSE,
   collapse = TRUE,
-  out.width = '100%',
-  out.height= '100%',
-  comment = "#" # comment = "#>" # tidy = FALSE #, out.width = '100%' #,  cache = FALSE
+  comment = "#>",
+  dev = "ragg_png",
+  dpi = 72,
+  fig.retina = 2,
+  fig.width = 3.3334 / 0.618,
+  fig.height = 3.3334,
+  fig.align = "center",
+  out.width = "65%",
+  pngquant = "--speed=1 --quality=50"
 )
 ```
 
@@ -85,6 +94,6 @@ Here's a glimpse of the available LCZ parameters:
 LCZpar <- lcz_get_parameters(lcz_map, istack = TRUE)
 
 # Visualize the selected parameter, for instance, Maximum Sky View Factor
-lcz_plot_parameters(LCZpar, iselect = "SVF2", isubtitle = "Rio de Janeiro")
+lcz_plot_parameters(LCZpar, iselect = "SVF3", isubtitle = "Rio de Janeiro")
 
 ```

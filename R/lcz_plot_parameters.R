@@ -36,8 +36,8 @@ lcz_plot_parameters <- function(x, iselect = "", isubtitle = "", all = FALSE, is
   # Validate inputs
   if (is.null(x)) {
     stop("The input must be raster stack object of raster package. Please, use the lcz_get_map(x, istack = TRUE, ishp = FALSE")
-  } else if (!is.null(x) & !inherits(x, "RasterStack")) {
-    stop("The input must be raster stack object of raster package. Please, use the lcz_get_map(x, istack = TRUE, ishp = FALSE")
+  } else if (!is.null(x) & !inherits(x, "SpatRaster")) {
+    x <- terra::rast({{x}})
   }
 
   LCZpar <- {{x}}[[-1]]
@@ -210,7 +210,7 @@ lcz_plot_parameters <- function(x, iselect = "", isubtitle = "", all = FALSE, is
 
     }
 
-    base::cat("Wow! You have successfully salved all the LCZ parameter maps into you pc.\n")
+    base::cat("Wow! You've salved all the LCZ parameter maps into folder LCZ4r_output.\n")
     return(fig_par)
 
   }
@@ -275,7 +275,7 @@ lcz_plot_parameters <- function(x, iselect = "", isubtitle = "", all = FALSE, is
 
       }
 
-      base::cat("Wow! You have successfully salved the selected LCZ parameter maps into you pc.\n")
+      base::cat("Wow! You've salved the",iselect,"LCZ parameter maps into folder LCZ4r_output.\n")
       return(fig_par)
 
 
@@ -329,11 +329,13 @@ lcz_plot_parameters <- function(x, iselect = "", isubtitle = "", all = FALSE, is
         file <- base::paste0(folder, names_par_select$value, ".png")
         ggplot2::ggsave(file, fig_par, height = 7, width = 10, units="in", dpi=300)
 
+        base::cat("Wow! You've salved",iselect,"LCZ parameter map into folder LCZ4r_output.\n")
+
       }
 
     }
 
-    base::cat("Wow! You have successfully salved the selected LCZ parameter map into you pc.\n")
+    base::cat("You've generated",iselect,"LCZ parameter map.\n")
     return(fig_par)
 
   }

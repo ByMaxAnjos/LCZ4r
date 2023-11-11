@@ -37,7 +37,7 @@ lcz_get_map <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_global=F
     shp_verify <- osmdata::getbb({{city}}, format_out = "sf_polygon", limit = 1)
 
     if(is.null(shp_verify)){
-      stop(paste0("No polygonal boundary for", city, ".See https://nominatim.openstreetmap.org"))
+      stop(paste0("No polygonal boundary for",city,".See https://nominatim.openstreetmap.org"))
     }
     # Check if polygon was obtained successfully
     if(!is.null(shp_verify$geometry) & !inherits(shp_verify, "list")) {
@@ -105,7 +105,7 @@ lcz_get_map <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_global=F
       terra::writeRaster(lcz_download, file, overwrite = TRUE)
     }
 
-    base::cat("Congratulations! You've successfully got the LCZ map.\n")
+    base::cat("Congratulations! You've successfully got",city,"LCZ map.\n")
     return(lcz_ras)
 
   } else {
@@ -160,7 +160,7 @@ lcz_get_map <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_global=F
       terra::writeRaster(lcz_download, file, overwrite = TRUE)
     }
 
-    base::cat("Congratulations! You've successfully got the LCZ map.\n")
+    base::cat("Congratulations! You've successfully got",roi,"LCZ map.\n")
     return(lcz_ras)
 
   }

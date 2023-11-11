@@ -39,6 +39,8 @@
 #'
 #' @importFrom rlang .data
 
+
+
 lcz_get_parameters <- function(x,  iselect = "", istack = TRUE, ishp = FALSE, isave = FALSE) {
 
   # Validate inputs
@@ -152,7 +154,7 @@ lcz_get_parameters <- function(x,  iselect = "", istack = TRUE, ishp = FALSE, is
       sf::st_write(lcz_result, file,  append = FALSE)
 
     }
-      base::cat("Congratulations! You've successfully generated the  shapfile of all LCZ parameters.\n")
+      base::cat("You've successfully generated the  shapfile of all LCZ parameters.\n")
       return(lcz_result)
   }
 
@@ -161,11 +163,10 @@ lcz_get_parameters <- function(x,  iselect = "", istack = TRUE, ishp = FALSE, is
       # Initialize a list to store rasterized and resampled maps
     ras <- base::lapply(1:ncol(lcz_result), FUN = function(i) {
       ras_select <- stars::st_rasterize(lcz_result[, i]) %>%
-        terra::rast() %>%
-        raster::raster()})
+        terra::rast()})
 
       # Create a raster stack from the list of rasters
-      ras_stack <- raster::stack(ras)[[-36]]
+      ras_stack <- terra::rast(ras)[[-36]]
 
       # Set names for the layers in the raster stack
       base::names(ras_stack) <- base::colnames(lcz_result)[1:ncol(lcz_result)-1]
@@ -186,7 +187,7 @@ lcz_get_parameters <- function(x,  iselect = "", istack = TRUE, ishp = FALSE, is
       raster::writeRaster(ras_stack, file, format="GTiff", overwrite = TRUE)
     }
 
-    base::cat("Congratulations! You've successfully generated the raster stack of all LCZ parameters.\n")
+    base::cat("You've successfully generated a raster stack of all LCZ parameters.\n")
     return(ras_stack)
   }
 
@@ -200,12 +201,10 @@ lcz_get_parameters <- function(x,  iselect = "", istack = TRUE, ishp = FALSE, is
 
       ras_select <- base::lapply(2:ncol(lcz_df_pre)-1, FUN = function(i) {
         ras_select <- stars::st_rasterize(lcz_df_pre[, i]) %>%
-          terra::rast() %>%
-          raster::raster()})
+          terra::rast()})
 
       # Set names for the layers in the raster stack
-      ras_stack_selec <- raster::stack(ras_select)
-
+      ras_stack_selec <- terra::rast(ras_select)
       base::names(ras_stack_selec) <-  base::colnames(lcz_df_pre)[1:ncol(lcz_df_pre)-1]
 
       if(isave==TRUE){
@@ -224,7 +223,7 @@ lcz_get_parameters <- function(x,  iselect = "", istack = TRUE, ishp = FALSE, is
         raster::writeRaster(ras_stack_selec, file, format="GTiff", overwrite = TRUE)
       }
 
-      base::cat("Congratulations! You've successfully generated the raster stack of selected LCZ parameters.\n")
+      base::cat("You've successfully generated a raster stack of selected LCZ parameters.\n")
       return(ras_stack_selec)
 
     } else {
@@ -234,8 +233,7 @@ lcz_get_parameters <- function(x,  iselect = "", istack = TRUE, ishp = FALSE, is
         dplyr::select({{iselect}})
 
       ras_select <- stars::st_rasterize(lcz_df_pre)
-      ras_select_raster <- raster::raster(terra::rast(ras_select))
-
+      ras_select_raster <- terra::rast(ras_select)
       base::names(ras_select_raster) <-  base::colnames(lcz_df_pre)[1:ncol(lcz_df_pre)-1]
 
       if(isave==TRUE){
@@ -254,7 +252,7 @@ lcz_get_parameters <- function(x,  iselect = "", istack = TRUE, ishp = FALSE, is
         raster::writeRaster(ras_select_raster, file, format="GTiff", overwrite = TRUE)
       }
 
-      base::cat("Congratulations! You've successfully generated the raster of selected LCZ parameters.\n")
+      base::cat("You've successfully generated a raster of selected LCZ parameters.\n")
       return(ras_select_raster)
     }
 

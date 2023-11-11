@@ -1,11 +1,8 @@
 # Tools for Local Climate Zones Analysis and Urban Heat Islands in R
 
-## Introduction
-
 <img align="right" src="https://github.com/ByMaxAnjos/LCZ4r/blob/main/inst/figures/logo.png?raw=true" alt="logo" width="140"> 
 
 As part of **Zoom City Carbon Model (ZCCM)**, we present the **LCZ4r**, a set of R functions which models Urban Heat Island at high-definition using Local Climate Zone classification and local air temperature readings.
-
 
 Please note that [LCZ4r package R](https://bymaxanjos.github.io/LCZ4r/) is currently undergoing develop, and caution is advised when interpreting its outcomes. Our methodology is based on Anjos M., Madeiros D, Meier F, Castelhano F. LCZ4r, an R package for Urban Local Climate Zones and Heat Islands Analysis (in preparation).
 
@@ -13,12 +10,14 @@ Happy coding!
 
 ## Installation  
 
-To install LCZ4r use the development version with latest features:
+To install LCZ4r use the development version on GitHub with latest features:
 
 ```{r, include=TRUE}
+install.packages("devtools") #If it is necessary
+library(devtools) # If it is necessary
 
-install.packages("devtools")
 devtools::install_github("ByMaxAnjos/LCZ4r")
+
 library(LCZ4r)
 
 ```
