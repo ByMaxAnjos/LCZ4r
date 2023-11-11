@@ -54,8 +54,8 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="articles/Introd_general_LCZ4r.html">Introduction to General Functions of LCZ4r</a>
-    <a class="dropdown-item" href="articles/Introd_local_LCZ4r.html">Introduction to Local Functions of LCZ4r</a>
+    <a class="dropdown-item" href="articles/Introd_general_LCZ4r.html">Introduction to the General Functions of LCZ4r</a>
+    <a class="dropdown-item" href="articles/Introd_local_LCZ4r.html">Introduction to the Local Functions of LCZ4r</a>
   </div>
 </li>
       </ul>
@@ -82,20 +82,17 @@
 <img src="logo.png" class="logo" alt=""><h1 id="tools-for-local-climate-zones-analysis-and-urban-heat-islands-in-r">Tools for Local Climate Zones Analysis and Urban Heat Islands in R<a class="anchor" aria-label="anchor" href="#tools-for-local-climate-zones-analysis-and-urban-heat-islands-in-r"></a>
 </h1>
 </div>
-<div class="section level2">
-<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
-</h2>
 <p><img align="right" src="https://github.com/ByMaxAnjos/LCZ4r/blob/main/inst/figures/logo.png?raw=true" alt="logo" width="140"></p>
 <p>As part of <strong>Zoom City Carbon Model (ZCCM)</strong>, we present the <strong>LCZ4r</strong>, a set of R functions which models Urban Heat Island at high-definition using Local Climate Zone classification and local air temperature readings.</p>
 <p>Please note that <a href="https://bymaxanjos.github.io/LCZ4r/" class="external-link">LCZ4r package R</a> is currently undergoing develop, and caution is advised when interpreting its outcomes. Our methodology is based on Anjos M., Madeiros D, Meier F, Castelhano F. LCZ4r, an R package for Urban Local Climate Zones and Heat Islands Analysis (in preparation).</p>
 <p>Happy coding!</p>
-</div>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>To install LCZ4r use the development version with latest features:</p>
-<p>```{r, include=TRUE}</p>
-<p>install.packages(“devtools”) devtools::install_github(“ByMaxAnjos/LCZ4r”) library(LCZ4r)</p>
+<p>To install LCZ4r use the development version on GitHub with latest features:</p>
+<p>```{r, include=TRUE} install.packages(“devtools”) #If it is necessary library(devtools) # If it is necessary</p>
+<p>devtools::install_github(“ByMaxAnjos/LCZ4r”)</p>
+<p>library(LCZ4r)</p>
 <p>```</p>
 </div>
 <div class="section level2">
