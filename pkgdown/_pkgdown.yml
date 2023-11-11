@@ -4,6 +4,9 @@ template:
   bootswatch: lux
   params:
     ganalytics: G-20GDZ5LL77
+  navbar:
+    bg: primary
+    title: LCZ4r
   bslib:
     primary: "#096B72"
     navbar-background: "#e6f3fc"
