@@ -8,6 +8,7 @@ template:
     bg: primary
     title: LCZ4r
   bslib:
+    primary: white
     base_font: {google: "Roboto"}
     heading_font: {google: "Roboto Slab"}
     code_font: {google: "JetBrains Mono"}
