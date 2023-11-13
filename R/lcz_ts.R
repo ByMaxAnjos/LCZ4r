@@ -293,7 +293,8 @@ lcz_ts <- function(x,
   }
 
   if (!is.null(by)) {
-    if (by == "daylight") {
+
+    if(length(by)<2 & by %in% c("daylight", "season", "seasonyear")) {
       my_latitude <- lcz_model$latitude[1]
       my_longitude <- lcz_model$longitude[1]
       mydata <- openair::cutData(lcz_model, type = by, hemisphere= hemisphere,
@@ -303,8 +304,17 @@ lcz_ts <- function(x,
         mydata,
         pollutant = "var_interp",
         avg.time = time.freq,
+        hemisphere= hemisphere,
+        latitude = my_latitude,
+        longitude = my_longitude,
         type = c("station", "my_time")
       ) %>% tidyr::drop_na()
+
+      # # convert the vector to a string
+      # by_str <- base::paste(by, collapse = " ~ ")
+      #
+      # # convert the string to a formula
+      # by_formula <- base::eval(base::parse(text = by_str))
 
       graph <-
         ggplot2::ggplot(mydata,
@@ -318,8 +328,7 @@ lcz_ts <- function(x,
           name = "Station (LCZ)",
           values = color_values,
           labels = lcz.lables,
-          guide = ggplot2::guide_legend(reverse = FALSE,
-                                        title.position = "top")
+          guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
         ) +
         #geom_text(data = merged_data, label = paste0(round(merged_data$temp_anomaly, 1), " ºC"), vjust = -1)+
         ggplot2::coord_cartesian(expand = FALSE, clip = "off") +
@@ -351,95 +360,6 @@ lcz_ts <- function(x,
           )
         )
       final_graph <-
-        graph + ggplot2::facet_grid(~ my_time, scales = "fixed") +
-        ggplot2::theme(
-          strip.text = ggplot2::element_text(
-            face = "bold",
-            hjust = 0,
-            size = 14
-          ),
-          strip.background = ggplot2::element_rect(linetype = "dotted")
-        )
-
-      base::cat(
-        "Congrats! You've successfully performed a",time.freq,"time series by",
-        by,
-        "based on LCZ classes.\n"
-      )
-      return(final_graph)
-
-      if (iplot == FALSE) {
-        return(mydata)
-      }
-
-    }
-    if (by == "season") {
-      my_latitude <- lcz_model$latitude[1]
-      my_longitude <- lcz_model$longitude[1]
-      mydata <-
-        openair::cutData(
-          lcz_model,
-          type = by,
-          hemisphere = hemisphere,
-          latitude = my_latitude,
-          longitude = my_longitude
-        ) %>%
-        tidyr::drop_na() %>%
-        dplyr::rename(my_time = dplyr::last_col())
-
-      mydata <- openair::timeAverage(
-        mydata,
-        pollutant = "var_interp",
-        avg.time = time.freq,
-        type = c("station", "my_time")
-      ) %>%
-        tidyr::drop_na()
-
-      graph <-
-        ggplot2::ggplot(mydata,
-                        ggplot2::aes(
-                          x = date,
-                          y = .data$var_interp,
-                          color = .data$station
-                        )) +
-        ggplot2::geom_line(alpha = 0.6) +
-        ggplot2::scale_color_manual(
-          name = "Station (LCZ)",
-          values = color_values,
-          labels = lcz.lables,
-          guide = ggplot2::guide_legend(reverse = FALSE,
-                                        title.position = "top")
-        ) +
-        #geom_text(data = merged_data, label = paste0(round(merged_data$temp_anomaly, 1), " ºC"), vjust = -1)+
-        ggplot2::coord_cartesian(expand = FALSE, clip = "off") +
-        ggplot2::scale_x_datetime(breaks = '1 month', date_labels = "%B\n%Y") +
-        ggplot2::labs(
-          title = "",
-          x = "Time",
-          y = ylab,
-          fill = "LCZ"
-        ) +
-        ggplot2::labs(caption = "Source: LCZ4r, https://github.com/ByMaxAnjos/LCZ4r; Data: Stewart and Oke, 2012; Demuzere et al.2022.") +
-        ggplot2::theme(
-          panel.background = ggplot2::element_rect(),
-          panel.grid.major = ggplot2::element_line(color = "grey90"),
-          panel.grid.minor = ggplot2::element_line(color = "grey90"),
-          panel.grid.major.y = ggplot2::element_line(color = "grey90"),
-          axis.text.x = ggplot2::element_text(size = 12),
-          axis.title.x = ggplot2::element_text(size = 17, face = "bold"),
-          axis.text.y = ggplot2::element_text(size = 17),
-          axis.title.y = ggplot2::element_text(size = 17, face = "bold"),
-          legend.text = ggplot2::element_text(size = 18),
-          legend.title = ggplot2::element_text(size = 18),
-          legend.key = ggplot2::element_blank(),
-          plot.margin = ggplot2::margin(25, 25, 10, 25),
-          plot.caption = ggplot2::element_text(
-            color = "grey30",
-            hjust = 0,
-            size = 9
-          )
-        )
-      final_graph <-
         graph + ggplot2::facet_wrap(~ my_time, scales = "free_x") +
         ggplot2::theme(
           strip.text = ggplot2::element_text(
@@ -462,185 +382,181 @@ lcz_ts <- function(x,
       }
 
     }
-    if (by == "seasonyear") {
-      my_latitude <- lcz_model$latitude[1]
-      my_longitude <- lcz_model$longitude[1]
 
-      mydata <-
-        openair::cutData(
-          lcz_model,
-          type = by,
-          hemisphere = hemisphere,
+    if(length(by)>1 & by %in% "daylight") {
+        my_latitude <- lcz_model$latitude[1]
+        my_longitude <- lcz_model$longitude[1]
+        mydata <- openair::cutData(lcz_model, type = by, hemisphere= hemisphere,
+                                   latitude = my_latitude, longitude = my_longitude) %>% tidyr::drop_na() %>%
+          dplyr::rename(my_time = dplyr::last_col())
+        mydata <- openair::timeAverage(
+          mydata,
+          pollutant = "var_interp",
+          avg.time = time.freq,
+          hemisphere= hemisphere,
           latitude = my_latitude,
-          longitude = my_longitude
-        ) %>%
-        tidyr::drop_na() %>%
-        dplyr::rename(my_time = dplyr::last_col())
-      mydata <- openair::timeAverage(
-        mydata,
-        pollutant = "var_interp",
-        avg.time = time.freq,
-        type = c("station", "my_time")
-      ) %>%
-        tidyr::drop_na()
+          longitude = my_longitude,
+          type = c("station", by)
+        ) %>% tidyr::drop_na()
 
-      # # convert the vector to a string
-      # by_str <- base::paste(by, collapse = " ~ ")
-      #
-      # # convert the string to a formula
-      # by_formula <- base::eval(base::parse(text = by_str))
+        # convert the vector to a string
+        by_str <- base::paste(by, collapse = " ~ ")
 
-      graph <-
-        ggplot2::ggplot(mydata,
-                        ggplot2::aes(
-                          x = date,
-                          y = .data$var_interp,
-                          color = .data$station
-                        )) +
-        ggplot2::geom_line(alpha = 0.6) +
-        ggplot2::scale_color_manual(
-          name = "Station (LCZ)",
-          values = color_values,
-          labels = lcz.lables,
-          guide = ggplot2::guide_legend(reverse = FALSE,
-                                        title.position = "top")
-        ) +
-        #geom_text(data = merged_data, label = paste0(round(merged_data$temp_anomaly, 1), " ºC"), vjust = -1)+
-        ggplot2::coord_cartesian(expand = FALSE, clip = "off") +
-        ggplot2::scale_x_datetime(breaks = '1 month', date_labels = "%B\n%Y") +
-        ggplot2::labs(
-          title = "",
-          x = "Time",
-          y = ylab,
-          fill = "LCZ"
-        ) +
-        ggplot2::labs(caption = "Source: LCZ4r, https://github.com/ByMaxAnjos/LCZ4r; Data: Stewart and Oke, 2012; Demuzere et al.2022.") +
-        ggplot2::theme(
-          panel.background = ggplot2::element_rect(),
-          panel.grid.major = ggplot2::element_line(color = "grey90"),
-          panel.grid.minor = ggplot2::element_line(color = "grey90"),
-          panel.grid.major.y = ggplot2::element_line(color = "grey90"),
-          axis.text.x = ggplot2::element_text(size = 12),
-          axis.title.x = ggplot2::element_text(size = 17, face = "bold"),
-          axis.text.y = ggplot2::element_text(size = 17),
-          axis.title.y = ggplot2::element_text(size = 17, face = "bold"),
-          legend.text = ggplot2::element_text(size = 18),
-          legend.title = ggplot2::element_text(size = 18),
-          legend.key = ggplot2::element_blank(),
-          plot.margin = ggplot2::margin(25, 25, 10, 25),
-          plot.caption = ggplot2::element_text(
-            color = "grey30",
-            hjust = 0,
-            size = 9
+        # convert the string to a formula
+        by_formula <- base::eval(base::parse(text = by_str))
+
+        graph <-
+          ggplot2::ggplot(mydata,
+                          ggplot2::aes(
+                            x = date,
+                            y = .data$var_interp,
+                            color = .data$station
+                          )) +
+          ggplot2::geom_line(alpha = 0.6) +
+          ggplot2::scale_color_manual(
+            name = "Station (LCZ)",
+            values = color_values,
+            labels = lcz.lables,
+            guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
+          ) +
+          #geom_text(data = merged_data, label = paste0(round(merged_data$temp_anomaly, 1), " ºC"), vjust = -1)+
+          ggplot2::coord_cartesian(expand = FALSE, clip = "off") +
+          #scale_x_datetime(breaks = '1 hour', date_labels = "%B\n%Y")+
+          ggplot2::labs(
+            title = "",
+            x = "Time",
+            y = ylab,
+            fill = "LCZ"
+          ) +
+          ggplot2::labs(caption = "Source: LCZ4r, https://github.com/ByMaxAnjos/LCZ4r; Data: Stewart and Oke, 2012; Demuzere et al.2022.") +
+          ggplot2::theme(
+            panel.background = ggplot2::element_rect(),
+            panel.grid.major = ggplot2::element_line(color = "grey90"),
+            panel.grid.minor = ggplot2::element_line(color = "grey90"),
+            panel.grid.major.y = ggplot2::element_line(color = "grey90"),
+            axis.text.x = ggplot2::element_text(size = 12),
+            axis.title.x = ggplot2::element_text(size = 17, face = "bold"),
+            axis.text.y = ggplot2::element_text(size = 17),
+            axis.title.y = ggplot2::element_text(size = 17, face = "bold"),
+            legend.text = ggplot2::element_text(size = 18),
+            legend.title = ggplot2::element_text(size = 18),
+            legend.key = ggplot2::element_blank(),
+            plot.margin = ggplot2::margin(25, 25, 10, 25),
+            plot.caption = ggplot2::element_text(
+              color = "grey30",
+              hjust = 0,
+              size = 9
+            )
           )
-        )
-      final_graph <-
-        graph + ggplot2::facet_wrap( ~ my_time, scales = "free_x") +
-        ggplot2::theme(
-          strip.text = ggplot2::element_text(
-            face = "bold",
-            hjust = 0,
-            size = 14
-          ),
-          strip.background = ggplot2::element_rect(linetype = "dotted")
-        )
+        final_graph <-
+          graph + ggplot2::facet_grid(by_formula, scales = "free_x") +
+          ggplot2::theme(
+            strip.text = ggplot2::element_text(
+              face = "bold",
+              hjust = 0,
+              size = 14
+            ),
+            strip.background = ggplot2::element_rect(linetype = "dotted")
+          )
 
-      base::cat(
-        "Congrats! You've successfully performed a",time.freq,"time series by",
-        by,
-        "based on LCZ classes.\n"
-      )
-      return(final_graph)
+        base::cat(
+          "Congrats! You've successfully performed a",time.freq,"time series by",
+          by,
+          "based on LCZ classes.\n"
+        )
+        return(final_graph)
 
-      if (iplot == FALSE) {
-        return(mydata)
+        if (iplot == FALSE) {
+          return(mydata)
+        }
+
       }
 
-    }
     else {
-      mydata <-
-        openair::cutData(
-          lcz_model,
-          type = by,
-          hemisphere = hemisphere,
-          latitude = my_latitude,
-          longitude = my_longitude
+        mydata <-
+          openair::cutData(
+            lcz_model,
+            type = by,
+            hemisphere = hemisphere,
+            latitude = my_latitude,
+            longitude = my_longitude
+          ) %>%
+          tidyr::drop_na() %>%
+          dplyr::rename(my_time = dplyr::last_col())
+        mydata <- openair::timeAverage(
+          mydata,
+          pollutant = "var_interp",
+          avg.time = time.freq,
+          type = c("station", "my_time")
         ) %>%
-        tidyr::drop_na() %>%
-        dplyr::rename(my_time = dplyr::last_col())
-      mydata <- openair::timeAverage(
-        mydata,
-        pollutant = "var_interp",
-        avg.time = time.freq,
-        type = c("station", "my_time")
-      ) %>%
-        tidyr::drop_na()
+          tidyr::drop_na()
 
-      graph <-
-        ggplot2::ggplot(mydata,
-                        ggplot2::aes(
-                          x = date,
-                          y = .data$var_interp,
-                          color = .data$station
-                        )) +
-        ggplot2::geom_line(alpha = 0.6) +
-        ggplot2::scale_color_manual(
-          name = "Station (LCZ)",
-          values = color_values,
-          labels = lcz.lables,
-          guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
-        ) +
-        ggplot2::coord_cartesian(expand = FALSE, clip = "off") +
-        ggplot2::labs(
-          title = "",
-          x = "Time",
-          y = ylab,
-          fill = "LCZ"
-        ) +
-        ggplot2::labs(caption = "Source: LCZ4r, https://github.com/ByMaxAnjos/LCZ4r; Data: Stewart and Oke, 2012; Demuzere et al.2022.") +
-        ggplot2::theme(
-          panel.background = ggplot2::element_rect(),
-          panel.grid.major = ggplot2::element_line(color = "grey90"),
-          panel.grid.minor = ggplot2::element_line(color = "grey90"),
-          panel.grid.major.y = ggplot2::element_line(color = "grey90"),
-          axis.text.x = ggplot2::element_text(size = 12),
-          axis.title.x = ggplot2::element_text(size = 17, face = "bold"),
-          axis.text.y = ggplot2::element_text(size = 17),
-          axis.title.y = ggplot2::element_text(size = 17, face = "bold"),
-          legend.text = ggplot2::element_text(size = 18),
-          legend.title = ggplot2::element_text(size = 18),
-          legend.key = ggplot2::element_blank(),
-          plot.margin = ggplot2::margin(25, 25, 10, 25),
-          plot.caption = ggplot2::element_text(
-            color = "grey30",
-            hjust = 0,
-            size = 9
+        graph <-
+          ggplot2::ggplot(mydata,
+                          ggplot2::aes(
+                            x = date,
+                            y = .data$var_interp,
+                            color = .data$station
+                          )) +
+          ggplot2::geom_line(alpha = 0.6) +
+          ggplot2::scale_color_manual(
+            name = "Station (LCZ)",
+            values = color_values,
+            labels = lcz.lables,
+            guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
+          ) +
+          ggplot2::coord_cartesian(expand = FALSE, clip = "off") +
+          ggplot2::labs(
+            title = "",
+            x = "Time",
+            y = ylab,
+            fill = "LCZ"
+          ) +
+          ggplot2::labs(caption = "Source: LCZ4r, https://github.com/ByMaxAnjos/LCZ4r; Data: Stewart and Oke, 2012; Demuzere et al.2022.") +
+          ggplot2::theme(
+            panel.background = ggplot2::element_rect(),
+            panel.grid.major = ggplot2::element_line(color = "grey90"),
+            panel.grid.minor = ggplot2::element_line(color = "grey90"),
+            panel.grid.major.y = ggplot2::element_line(color = "grey90"),
+            axis.text.x = ggplot2::element_text(size = 12),
+            axis.title.x = ggplot2::element_text(size = 17, face = "bold"),
+            axis.text.y = ggplot2::element_text(size = 17),
+            axis.title.y = ggplot2::element_text(size = 17, face = "bold"),
+            legend.text = ggplot2::element_text(size = 18),
+            legend.title = ggplot2::element_text(size = 18),
+            legend.key = ggplot2::element_blank(),
+            plot.margin = ggplot2::margin(25, 25, 10, 25),
+            plot.caption = ggplot2::element_text(
+              color = "grey30",
+              hjust = 0,
+              size = 9
+            )
           )
+
+        final_graph <-
+          graph + ggplot2::facet_wrap(~ my_time, scales = "free_x") +
+          ggplot2::theme(
+            strip.text = ggplot2::element_text(
+              face = "bold",
+              hjust = 0,
+              size = 14
+            ),
+            strip.background = ggplot2::element_rect(linetype = "dotted")
+          )
+
+        base::cat(
+          "Congrats! You've successfully performed a",time.freq,"time series by",
+          by,
+          "based on LCZ classes.\n"
         )
+        return(final_graph)
 
-      final_graph <-
-        graph + ggplot2::facet_wrap(~ my_time, scales = "free_x") +
-        ggplot2::theme(
-          strip.text = ggplot2::element_text(
-            face = "bold",
-            hjust = 0,
-            size = 14
-          ),
-          strip.background = ggplot2::element_rect(linetype = "dotted")
-        )
+        if (iplot == FALSE) {
+          return(mydata)
+        }
 
-      base::cat(
-        "Congrats! You've successfully performed a",time.freq,"time series by",
-        by,
-        "based on LCZ classes.\n"
-      )
-      return(final_graph)
-
-      if (iplot == FALSE) {
-        return(mydata)
       }
 
-    }
 
   }
 
