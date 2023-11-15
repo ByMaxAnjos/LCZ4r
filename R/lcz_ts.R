@@ -1,5 +1,4 @@
 
-
 #' Analyze LCZ Time Series
 #'
 #' This function generates a graphical representation of time series air temperature data for different Local Climate Zones (LCZs)
@@ -17,6 +16,7 @@
 #' @param hemisphere Hemisphere for splitting data into seasons (\dQuote{northern} or \dQuote{southern}).
 #' @param impute Method to impute missing values (\dQuote{mean}, \dQuote{median}, \dQuote{knn}, \dQuote{bag}).
 #' @param iplot Set to TRUE if you want to save the plot in your working directory.
+#' @param inclusive Set to TRUE to a colorblind-friendly palette.
 #' @param ylab y-axis name. Default is \dQuote{Air temperature}.
 #'
 #' @return A visual representation of the time series of air temperature of LCZ in \code{ggplot} format
@@ -45,6 +45,7 @@ lcz_ts <- function(x,
                    hemisphere = "northern",
                    impute = NULL,
                    iplot = FALSE,
+                   inclusive = FALSE,
                    ylab = "Air temperature [Degree Celsius]") {
 
   # Check and validate inputs -----------------------------------------------
@@ -216,15 +217,31 @@ lcz_ts <- function(x,
     tibble::as_tibble() %>%
     purrr::set_names("lcz.col")
 
-  lcz_df <- dplyr::bind_cols(lcz, lcz.name, lcz.col) %>%
+  lcz_colorblind <- c("#E16A86", "#D8755E", "#C98027", "#B48C00",
+                      "#989600", "#739F00", "#36A631", "#00AA63",
+                      "#00AD89", "#00ACAA", "#00A7C5", "#009EDA",
+                      "#6290E5", "#9E7FE5", "#C36FDA", "#D965C6",
+                      "#E264A9") %>%
+    tibble::as_tibble() %>%
+    purrr::set_names("lcz_colorblind")
+
+  lcz_df <- dplyr::bind_cols(lcz, lcz.name, lcz.col, lcz_colorblind) %>%
     dplyr::mutate(lcz = base::as.factor(lcz)) %>%
     dplyr::inner_join(my_stations,  by = "lcz")
 
   # Define qualitative palette
-  color_values <- lcz_df %>%
-    dplyr::select(.data$station, .data$lcz.col) %>%
-    dplyr::distinct(.data$station, .data$lcz.col) %>%
-    dplyr::pull(.data$lcz.col, .data$station)
+  if(inclusive == TRUE) {
+    color_values <- lcz_df %>%
+      dplyr::select(.data$station, .data$lcz_colorblind) %>%
+      dplyr::distinct(.data$station, .data$lcz_colorblind) %>%
+      dplyr::pull(.data$lcz_colorblind, .data$station)
+
+  } else {
+    color_values <- lcz_df %>%
+      dplyr::select(.data$station, .data$lcz.col) %>%
+      dplyr::distinct(.data$station, .data$lcz.col) %>%
+      dplyr::pull(.data$lcz.col, .data$station)
+  }
 
   # Define LCZ labels
   lcz.lables <- lcz_df$station
@@ -242,9 +259,10 @@ lcz_ts <- function(x,
       ggplot2::ggplot(mydata,
                       ggplot2::aes(
                         x = date,
-                        y = .data$var_interp
+                        y = .data$var_interp,
+                        color = .data$station
                       )) +
-      ggplot2::geom_line(alpha = 0.6) +
+      ggplot2::geom_line(lwd = 1 ,alpha = 0.9) +
       #geom_point(aes(color=station, shape= station)) +
       ggplot2::scale_color_manual(
         name = "Station (LCZ)",
@@ -263,7 +281,7 @@ lcz_ts <- function(x,
       ggplot2::labs(caption = "Source: LCZ4r, https://github.com/ByMaxAnjos/LCZ4r; Data: Stewart and Oke, 2012; Demuzere et al.2022.") +
       ggplot2::theme(
         panel.background = ggplot2::element_rect(),
-        panel.grid.major = ggplot2::element_line(color = "grey90"),
+        #plot.background = ggplot2::element_rect(fill = "grey90"),
         panel.grid.minor = ggplot2::element_line(color = "grey90"),
         panel.grid.major.y = ggplot2::element_line(color = "grey90"),
         axis.text.x = ggplot2::element_text(size = 12),
@@ -323,7 +341,7 @@ lcz_ts <- function(x,
                           y = .data$var_interp,
                           color = .data$station
                         )) +
-        ggplot2::geom_line(alpha = 0.6) +
+        ggplot2::geom_line(lwd= 1, alpha = 0.9) +
         ggplot2::scale_color_manual(
           name = "Station (LCZ)",
           values = color_values,
@@ -342,6 +360,7 @@ lcz_ts <- function(x,
         ggplot2::labs(caption = "Source: LCZ4r, https://github.com/ByMaxAnjos/LCZ4r; Data: Stewart and Oke, 2012; Demuzere et al.2022.") +
         ggplot2::theme(
           panel.background = ggplot2::element_rect(),
+          #plot.background = ggplot2::element_rect(fill = "grey90"),
           panel.grid.major = ggplot2::element_line(color = "grey90"),
           panel.grid.minor = ggplot2::element_line(color = "grey90"),
           panel.grid.major.y = ggplot2::element_line(color = "grey90"),
@@ -412,7 +431,7 @@ lcz_ts <- function(x,
                             y = .data$var_interp,
                             color = .data$station
                           )) +
-          ggplot2::geom_line(alpha = 0.6) +
+          ggplot2::geom_line(lwd=1, alpha = 0.9) +
           ggplot2::scale_color_manual(
             name = "Station (LCZ)",
             values = color_values,
@@ -431,7 +450,7 @@ lcz_ts <- function(x,
           ggplot2::labs(caption = "Source: LCZ4r, https://github.com/ByMaxAnjos/LCZ4r; Data: Stewart and Oke, 2012; Demuzere et al.2022.") +
           ggplot2::theme(
             panel.background = ggplot2::element_rect(),
-            panel.grid.major = ggplot2::element_line(color = "grey90"),
+            #plot.background = ggplot2::element_rect(fill = "grey90"),
             panel.grid.minor = ggplot2::element_line(color = "grey90"),
             panel.grid.major.y = ggplot2::element_line(color = "grey90"),
             axis.text.x = ggplot2::element_text(size = 12),
@@ -498,7 +517,7 @@ lcz_ts <- function(x,
                             y = .data$var_interp,
                             color = .data$station
                           )) +
-          ggplot2::geom_line(alpha = 0.6) +
+          ggplot2::geom_line(lwd = 1, alpha = 0.9) +
           ggplot2::scale_color_manual(
             name = "Station (LCZ)",
             values = color_values,
@@ -515,7 +534,7 @@ lcz_ts <- function(x,
           ggplot2::labs(caption = "Source: LCZ4r, https://github.com/ByMaxAnjos/LCZ4r; Data: Stewart and Oke, 2012; Demuzere et al.2022.") +
           ggplot2::theme(
             panel.background = ggplot2::element_rect(),
-            panel.grid.major = ggplot2::element_line(color = "grey90"),
+            #plot.background = ggplot2::element_rect(fill = "grey90"),
             panel.grid.minor = ggplot2::element_line(color = "grey90"),
             panel.grid.major.y = ggplot2::element_line(color = "grey90"),
             axis.text.x = ggplot2::element_text(size = 12),

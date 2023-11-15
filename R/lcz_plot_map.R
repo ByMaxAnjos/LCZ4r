@@ -1,5 +1,5 @@
 
-#' Plot Local Climate Zone (LCZ) Map
+#' Visualize the LCZ Map
 #'
 #' This function generates a graphical representation of an LCZ (Local Climate Zone) map provided as a SpatRaster object.
 #'
@@ -7,6 +7,7 @@
 #' @param isubtitle An optional subtitle for the plot, allowing you to specify the area or region represented in the map.
 #' @param isave Logical. Set to TRUE if you want to save the plot in your working directory.
 #' @param legend Specify the type of legend to include in the plot. Use "code" to display LCZ codes in the legend.
+#' @param inclusive Set to TRUE to a colorblind-friendly palette.
 #'
 #' @return A visual representation of the LCZ map in ggplot format
 #'
@@ -25,7 +26,7 @@
 #' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis
 
 
-lcz_plot_map <- function(x, isubtitle = "", isave = FALSE, legend = "name") {
+lcz_plot_map <- function(x, isubtitle = "", isave = FALSE, inclusive = FALSE, legend = "name") {
 
   # Validate inputs
   if (is.null(x)) {
@@ -56,17 +57,31 @@ lcz_plot_map <- function(x, isubtitle = "", isave = FALSE, legend = "name") {
                  "#628432", "#B5DA7F", "#000000", "#FCF7B1", "#656BFA") %>%
       tibble::as_tibble() %>%
       purrr::set_names("lcz.col")
+    lcz_colorblind <- c("#E16A86", "#D8755E", "#C98027", "#B48C00",
+                        "#989600", "#739F00", "#36A631", "#00AA63",
+                        "#00AD89", "#00ACAA", "#00A7C5", "#009EDA",
+                        "#6290E5", "#9E7FE5", "#C36FDA", "#D965C6",
+                        "#E264A9") %>%
+      tibble::as_tibble() %>%
+      purrr::set_names("lcz_colorblind")
 
-    lcz_df <- dplyr::bind_cols(ID, lcz.name, lcz.col) %>%
+    lcz_df <- dplyr::bind_cols(ID, lcz.name, lcz.col, lcz_colorblind) %>%
       dplyr::inner_join(rat, by = "ID")
 
     base::names(x) <- "class"
 
     # Define qualitative palette
-    color_values <- lcz_df %>%
-      dplyr::select(.data$ID, lcz.col) %>%
-      dplyr::pull(.data$lcz.col, .data$ID)
 
+    if(inclusive == TRUE) {
+      color_values <- lcz_df %>%
+        dplyr::select(.data$ID, lcz_colorblind) %>%
+        dplyr::pull(.data$lcz_colorblind, .data$ID)
+
+    } else {
+      color_values <- lcz_df %>%
+        dplyr::select(.data$ID, lcz.col) %>%
+        dplyr::pull(.data$lcz.col, .data$ID)
+    }
     # Define LCZ labels
     if(legend == "code") {
       lcz.lables <- lcz_df$lcz
@@ -90,7 +105,7 @@ lcz_plot_map <- function(x, isubtitle = "", isave = FALSE, legend = "name") {
                                labels = lcz.lables,
                                guide = ggplot2::guide_legend(reverse = FALSE,
                                                              title.position = "top")) +
-    ggplot2::coord_sf() +
+    ggplot2::coord_sf(expand = FALSE, clip = "off") +
     ggplot2::labs(title = "Local Climate Zones",
                   subtitle = isubtitle,
                   caption = "Source: LCZ4r, https://github.com/ByMaxAnjos/LCZ4r\nData: Stewart and Oke, 2012; Demuzere et al.2022") +
@@ -98,7 +113,7 @@ lcz_plot_map <- function(x, isubtitle = "", isave = FALSE, legend = "name") {
     ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
                    plot.subtitle = ggplot2::element_text(color = "black", size = 18, hjust = 0.5),
                    plot.background = ggplot2::element_blank(),
-                   legend.title = ggplot2::element_text(size = 16, color = "black", face = "bold"),
+                   legend.title = ggplot2::element_text(size = 17, color = "black", face = "bold"),
                    legend.text = ggplot2::element_text(size = 16, color = "black"),
                    plot.caption = ggplot2::element_text(colour = "grey30", size = 9, hjust = 0), # move caption to the left
                    axis.line = ggplot2::element_blank(),

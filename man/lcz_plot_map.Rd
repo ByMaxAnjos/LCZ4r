@@ -2,9 +2,15 @@
 % Please edit documentation in R/lcz_plot_map.R
 \name{lcz_plot_map}
 \alias{lcz_plot_map}
-\title{Plot Local Climate Zone (LCZ) Map}
+\title{Visualize the LCZ Map}
 \usage{
-lcz_plot_map(x, isubtitle = "", isave = FALSE, legend = "name")
+lcz_plot_map(
+  x,
+  isubtitle = "",
+  isave = FALSE,
+  inclusive = FALSE,
+  legend = "name"
+)
 }
 \arguments{
 \item{x}{A SpatRaster object containing the LCZ map to be plotted.}
@@ -12,6 +18,8 @@ lcz_plot_map(x, isubtitle = "", isave = FALSE, legend = "name")
 \item{isubtitle}{An optional subtitle for the plot, allowing you to specify the area or region represented in the map.}
 
 \item{isave}{Logical. Set to TRUE if you want to save the plot in your working directory.}
+
+\item{inclusive}{Set to TRUE to a colorblind-friendly palette.}
 
 \item{legend}{Specify the type of legend to include in the plot. Use "code" to display LCZ codes in the legend.}
 }

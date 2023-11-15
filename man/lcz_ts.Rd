@@ -15,6 +15,7 @@ lcz_ts(
   hemisphere = "northern",
   impute = NULL,
   iplot = FALSE,
+  inclusive = FALSE,
   ylab = "Air temperature [Degree Celsius]"
 )
 }
@@ -41,6 +42,8 @@ Can either be numeric e.g. month = 1:6 to select months 1-6 (January to June), o
 \item{impute}{Method to impute missing values (\dQuote{mean}, \dQuote{median}, \dQuote{knn}, \dQuote{bag}).}
 
 \item{iplot}{Set to TRUE if you want to save the plot in your working directory.}
+
+\item{inclusive}{Set to TRUE to a colorblind-friendly palette.}
 
 \item{ylab}{y-axis name. Default is \dQuote{Air temperature}.}
 }

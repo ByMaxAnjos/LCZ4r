@@ -1,5 +1,5 @@
 
-#' Obtain the LCZ map for a Specified Area (with downloaded global LCZ map)
+#' Obtain the LCZ map (with downloaded global LCZ map)
 #'
 #' This function retrieves the Local Climate Zone (LCZ) global mapping dataset
 #' created by Demuzere et al. (2022) and available at https://doi.org/10.5194/essd-14-3835-2022.

@@ -6,6 +6,7 @@
 #' @param x A raster SpatRaster layer containing LCZ classes.
 #' @param iplot Logical, indicating whether to create a plot (default is TRUE).
 #' @param isave Save the plot into your directory.
+#' @param inclusive Set to TRUE to a colorblind-friendly palette.
 #'
 #' @return A summary table of LCZ class areas if iplot is FALSE, otherwise, a bar plot.
 #'
@@ -21,7 +22,7 @@
 #' @seealso
 #' See the documentation for lcz_get_map() to obtain an LCZ map.
 
-lcz_cal_area <- function(x, iplot=TRUE, isave=FALSE){
+lcz_cal_area <- function(x, iplot=TRUE, isave=FALSE, inclusive = FALSE){
 
 
 # Validate inputs ---------------------------------------------------------
@@ -63,15 +64,32 @@ lcz_cal_area <- function(x, iplot=TRUE, isave=FALSE){
       tibble::as_tibble() %>%
       purrr::set_names("lcz.col")
 
-    lcz_df <- dplyr::bind_cols(lcz, lcz.name, lcz.col) %>%
+    lcz_colorblind <- c("#E16A86", "#D8755E", "#C98027", "#B48C00",
+                        "#989600", "#739F00", "#36A631", "#00AA63",
+                        "#00AD89", "#00ACAA", "#00A7C5", "#009EDA",
+                        "#6290E5", "#9E7FE5", "#C36FDA", "#D965C6",
+                        "#E264A9") %>%
+      tibble::as_tibble() %>%
+      purrr::set_names("lcz_colorblind")
+
+    lcz_df <- dplyr::bind_cols(lcz, lcz.name, lcz.col, lcz_colorblind) %>%
       dplyr::mutate(lcz = .data$ID) %>%
       dplyr::mutate(lcz = base::as.factor(lcz)) %>%
       dplyr::inner_join(summary_resul, by = "lcz")
 
     # Define qualitative palette
-    color_values <- lcz_df %>%
-      dplyr::select(lcz, lcz.col) %>%
-      dplyr::pull(lcz.col, lcz)
+    if(inclusive == TRUE) {
+
+      color_values <- lcz_df %>%
+        dplyr::select(lcz, lcz_colorblind) %>%
+        dplyr::pull(lcz_colorblind, lcz)
+
+    } else {
+
+      color_values <- lcz_df %>%
+        dplyr::select(lcz, lcz.col) %>%
+        dplyr::pull(lcz.col, lcz)
+    }
 
     # Define LCZ labels
     lcz.lables <- lcz_df$lcz.name
@@ -85,7 +103,7 @@ lcz_cal_area <- function(x, iplot=TRUE, isave=FALSE){
                                  guide = ggplot2::guide_legend(reverse = FALSE,
                                                       title.position = "top")) +
       ggplot2::geom_text(data = lcz_df,
-                         label = paste0(round(lcz_df$area_perc, 1), "%"), vjust = -0.2, size = 6) +
+                         label = paste0(round(lcz_df$area_perc, 1), "%"), vjust = -0.2, size = 6, fontface = "bold") +
       ggplot2::coord_cartesian(expand = FALSE, clip = "off")+
        ggplot2::labs(title = "",
            x = "LCZ code",
@@ -97,12 +115,12 @@ lcz_cal_area <- function(x, iplot=TRUE, isave=FALSE){
                      panel.grid.major = ggplot2::element_line(color = "grey90"),
                      panel.grid.minor = ggplot2::element_line(color = "grey90"),
                      panel.grid.major.y = ggplot2::element_line(color = "grey90"),
-        axis.text.x = ggplot2::element_text(size = 17),
-        axis.title.x =ggplot2::element_text(size = 17, face = "bold"),
-        axis.text.y = ggplot2::element_text(size = 17),
-        axis.title.y =ggplot2::element_text(size = 17, face = "bold"),
-        legend.text = ggplot2::element_text(size = 18),
-        legend.title = ggplot2::element_text(size = 18),
+        axis.text.x = ggplot2::element_text(size = 16),
+        axis.title.x =ggplot2::element_text(size = 16, face = "bold"),
+        axis.text.y = ggplot2::element_text(size = 16),
+        axis.title.y =ggplot2::element_text(size = 16, face = "bold"),
+        legend.text = ggplot2::element_text(size = 16),
+        legend.title = ggplot2::element_text(size = 17),
         plot.margin = ggplot2::margin(25, 25, 10, 25),
         plot.caption = ggplot2::element_text(color = "grey30", size = 9, hjust = 0))
 
