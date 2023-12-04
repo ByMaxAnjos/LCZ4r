@@ -42,7 +42,8 @@ Imports:
     curl,
     openair,
     recipes,
-    janitor
+    janitor,
+    data.table
 Suggests: 
     knitr,
     rmarkdown,

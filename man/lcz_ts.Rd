@@ -15,8 +15,13 @@ lcz_ts(
   hemisphere = "northern",
   impute = NULL,
   iplot = FALSE,
+  isave = FALSE,
   inclusive = FALSE,
-  ylab = "Air temperature [Degree Celsius]"
+  ylab = "Air temperature [Degree Celsius]",
+  xlab = "Time",
+  title = "",
+ 
+    caption = "Source: LCZ4r, https://github.com/ByMaxAnjos/LCZ4r\\nData: Stewart and Oke, 2012; Demuzere et al.2022."
 )
 }
 \arguments{
@@ -43,9 +48,17 @@ Can either be numeric e.g. month = 1:6 to select months 1-6 (January to June), o
 
 \item{iplot}{Set to TRUE if you want to save the plot in your working directory.}
 
+\item{isave}{Save the plot into your directory.}
+
 \item{inclusive}{Set to TRUE to a colorblind-friendly palette.}
 
-\item{ylab}{y-axis name. Default is \dQuote{Air temperature}.}
+\item{ylab}{y-axis name. Default is \dQuote{Air temperature Degree Celsius}.}
+
+\item{xlab}{y-axis name. Default is \dQuote{Time}}
+
+\item{title}{y-axis name. Default is \dQuote{" "}.}
+
+\item{caption}{source data. Default is \dQuote{Source: LCZ4r, https://github.com/ByMaxAnjos/LCZ4r\nData: Stewart and Oke, 2012; Demuzere et al.2022."}.}
 }
 \value{
 A visual representation of the time series of air temperature of LCZ in \code{ggplot} format

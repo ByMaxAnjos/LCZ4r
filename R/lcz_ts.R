@@ -16,8 +16,12 @@
 #' @param hemisphere Hemisphere for splitting data into seasons (\dQuote{northern} or \dQuote{southern}).
 #' @param impute Method to impute missing values (\dQuote{mean}, \dQuote{median}, \dQuote{knn}, \dQuote{bag}).
 #' @param iplot Set to TRUE if you want to save the plot in your working directory.
+#' @param isave Save the plot into your directory.
 #' @param inclusive Set to TRUE to a colorblind-friendly palette.
-#' @param ylab y-axis name. Default is \dQuote{Air temperature}.
+#' @param ylab y-axis name. Default is \dQuote{Air temperature Degree Celsius}.
+#' @param xlab y-axis name. Default is \dQuote{Time}
+#' @param title y-axis name. Default is \dQuote{" "}.
+#' @param caption source data. Default is \dQuote{Source: LCZ4r, https://github.com/ByMaxAnjos/LCZ4r\nData: Stewart and Oke, 2012; Demuzere et al.2022."}.
 #'
 #' @return A visual representation of the time series of air temperature of LCZ in \code{ggplot} format
 #'
@@ -45,8 +49,12 @@ lcz_ts <- function(x,
                    hemisphere = "northern",
                    impute = NULL,
                    iplot = FALSE,
+                   isave = FALSE,
                    inclusive = FALSE,
-                   ylab = "Air temperature [Degree Celsius]") {
+                   ylab = "Air temperature [Degree Celsius]",
+                   xlab = "Time",
+                   title = "",
+                   caption = "Source: LCZ4r, https://github.com/ByMaxAnjos/LCZ4r\nData: Stewart and Oke, 2012; Demuzere et al.2022.") {
 
   # Check and validate inputs -----------------------------------------------
   if (is.null(x)) {
@@ -256,49 +264,57 @@ lcz_ts <- function(x,
     )
 
     final_graph <-
-      ggplot2::ggplot(mydata,
-                      ggplot2::aes(
-                        x = date,
+      ggplot2::ggplot(mydata, ggplot2::aes(
+                        x = .data$date,
                         y = .data$var_interp,
                         color = .data$station
                       )) +
-      ggplot2::geom_line(lwd = 1 ,alpha = 0.9) +
-      #geom_point(aes(color=station, shape= station)) +
+      ggplot2::geom_line(lwd = .8 ,alpha = 0.9) +
       ggplot2::scale_color_manual(
         name = "Station (LCZ)",
         values = color_values,
         labels = lcz.lables,
-        guide = ggplot2::guide_legend(reverse = FALSE,
-                                      title.position = "top")
+        guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
       ) +
       ggplot2::coord_cartesian(expand = FALSE, clip = "off") +
-      ggplot2::labs(
-        title = "",
-        x = "Time",
-        y = ylab,
-        fill = "LCZ"
+      ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ"
       ) +
-      ggplot2::labs(caption = "Source: LCZ4r, https://github.com/ByMaxAnjos/LCZ4r; Data: Stewart and Oke, 2012; Demuzere et al.2022.") +
+      ggplot2::labs(caption = "Source: LCZ4r, https://github.com/ByMaxAnjos/LCZ4r\nData: Stewart and Oke, 2012; Demuzere et al.2022.") +
       ggplot2::theme(
         panel.background = ggplot2::element_rect(),
         #plot.background = ggplot2::element_rect(fill = "grey90"),
         panel.grid.minor = ggplot2::element_line(color = "grey90"),
         panel.grid.major.y = ggplot2::element_line(color = "grey90"),
         axis.text.x = ggplot2::element_text(size = 12),
-        axis.title.x = ggplot2::element_text(size = 17, face = "bold"),
-        axis.text.y = ggplot2::element_text(size = 17),
-        axis.title.y = ggplot2::element_text(size = 17, face = "bold"),
-        legend.text = ggplot2::element_text(size = 18),
-        legend.title = ggplot2::element_text(size = 18),
+        axis.title.x = ggplot2::element_text(size = 14, face = "bold"),
+        axis.text.y = ggplot2::element_text(size = 12),
+        axis.title.y = ggplot2::element_text(size = 14, face = "bold"),
+        legend.text = ggplot2::element_text(size = 13),
+        legend.title = ggplot2::element_text(size = 13),
         legend.key = ggplot2::element_blank(),
         plot.margin = ggplot2::margin(25, 25, 10, 25),
         plot.caption = ggplot2::element_text(
           color = "grey30",
-          hjust = 0,
+          hjust = 1,
           size = 9
         )
       )
 
+    if(isave == TRUE){
+
+      # Create a folder name using paste0
+      folder <- base::paste0("LCZ4r_output/")
+
+      # Check if the folder exists
+      if (!base::dir.exists(folder)) {
+        # Create the folder if it does not exist
+        base::dir.create(folder)
+      }
+
+      file <- base::paste0(folder,"lcz_ts.png")
+      ggplot2::ggsave(file, final_graph, height = 9, width = 14, units="in", dpi=300)
+
+    }
     base::cat(
       "Congrats! You've successfully performed a",time.freq,"time series based on LCZ classes.\n"
     )
@@ -328,20 +344,14 @@ lcz_ts <- function(x,
         type = c("station", "my_time")
       ) %>% tidyr::drop_na()
 
-      # # convert the vector to a string
-      # by_str <- base::paste(by, collapse = " ~ ")
-      #
-      # # convert the string to a formula
-      # by_formula <- base::eval(base::parse(text = by_str))
-
       graph <-
         ggplot2::ggplot(mydata,
                         ggplot2::aes(
-                          x = date,
+                          x = .data$date,
                           y = .data$var_interp,
                           color = .data$station
                         )) +
-        ggplot2::geom_line(lwd= 1, alpha = 0.9) +
+        ggplot2::geom_line(lwd= .8, alpha = 0.9) +
         ggplot2::scale_color_manual(
           name = "Station (LCZ)",
           values = color_values,
@@ -351,13 +361,9 @@ lcz_ts <- function(x,
         #geom_text(data = merged_data, label = paste0(round(merged_data$temp_anomaly, 1), " ºC"), vjust = -1)+
         ggplot2::coord_cartesian(expand = FALSE, clip = "off") +
         #scale_x_datetime(breaks = '1 hour', date_labels = "%B\n%Y")+
-        ggplot2::labs(
-          title = "",
-          x = "Time",
-          y = ylab,
-          fill = "LCZ"
+        ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ"
         ) +
-        ggplot2::labs(caption = "Source: LCZ4r, https://github.com/ByMaxAnjos/LCZ4r; Data: Stewart and Oke, 2012; Demuzere et al.2022.") +
+        ggplot2::labs(caption = caption) +
         ggplot2::theme(
           panel.background = ggplot2::element_rect(),
           #plot.background = ggplot2::element_rect(fill = "grey90"),
@@ -365,18 +371,14 @@ lcz_ts <- function(x,
           panel.grid.minor = ggplot2::element_line(color = "grey90"),
           panel.grid.major.y = ggplot2::element_line(color = "grey90"),
           axis.text.x = ggplot2::element_text(size = 12),
-          axis.title.x = ggplot2::element_text(size = 17, face = "bold"),
-          axis.text.y = ggplot2::element_text(size = 17),
-          axis.title.y = ggplot2::element_text(size = 17, face = "bold"),
-          legend.text = ggplot2::element_text(size = 18),
-          legend.title = ggplot2::element_text(size = 18),
+          axis.title.x = ggplot2::element_text(size = 14, face = "bold"),
+          axis.text.y = ggplot2::element_text(size = 12),
+          axis.title.y = ggplot2::element_text(size = 14, face = "bold"),
+          legend.text = ggplot2::element_text(size = 13),
+          legend.title = ggplot2::element_text(size = 13),
           legend.key = ggplot2::element_blank(),
           plot.margin = ggplot2::margin(25, 25, 10, 25),
-          plot.caption = ggplot2::element_text(
-            color = "grey30",
-            hjust = 0,
-            size = 9
-          )
+          plot.caption = ggplot2::element_text(color = "grey30", hjust = 1, size = 9)
         )
       final_graph <-
         graph + ggplot2::facet_wrap(~ my_time, scales = "free_x") +
@@ -384,11 +386,27 @@ lcz_ts <- function(x,
           strip.text = ggplot2::element_text(
             face = "bold",
             hjust = 0,
-            size = 14
+            size = 12
           ),
           strip.background = ggplot2::element_rect(linetype = "dotted")
         )
 
+
+      if(isave == TRUE){
+
+        # Create a folder name using paste0
+        folder <- base::paste0("LCZ4r_output/")
+
+        # Check if the folder exists
+        if (!base::dir.exists(folder)) {
+          # Create the folder if it does not exist
+          base::dir.create(folder)
+        }
+
+        file <- base::paste0(folder,"lcz_ts.png")
+        ggplot2::ggsave(file, final_graph, height = 9, width = 14, units="in", dpi=300)
+
+      }
       base::cat(
         "Congrats! You've successfully performed a",time.freq,"time series by",
         by,
@@ -427,11 +445,11 @@ lcz_ts <- function(x,
         graph <-
           ggplot2::ggplot(mydata,
                           ggplot2::aes(
-                            x = date,
+                            x = .data$date,
                             y = .data$var_interp,
                             color = .data$station
                           )) +
-          ggplot2::geom_line(lwd=1, alpha = 0.9) +
+          ggplot2::geom_line(lwd=.8, alpha = 0.9) +
           ggplot2::scale_color_manual(
             name = "Station (LCZ)",
             values = color_values,
@@ -441,29 +459,25 @@ lcz_ts <- function(x,
           #geom_text(data = merged_data, label = paste0(round(merged_data$temp_anomaly, 1), " ºC"), vjust = -1)+
           ggplot2::coord_cartesian(expand = FALSE, clip = "off") +
           #scale_x_datetime(breaks = '1 hour', date_labels = "%B\n%Y")+
-          ggplot2::labs(
-            title = "",
-            x = "Time",
-            y = ylab,
-            fill = "LCZ"
+          ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ"
           ) +
-          ggplot2::labs(caption = "Source: LCZ4r, https://github.com/ByMaxAnjos/LCZ4r; Data: Stewart and Oke, 2012; Demuzere et al.2022.") +
+          ggplot2::labs(caption = caption) +
           ggplot2::theme(
             panel.background = ggplot2::element_rect(),
             #plot.background = ggplot2::element_rect(fill = "grey90"),
             panel.grid.minor = ggplot2::element_line(color = "grey90"),
             panel.grid.major.y = ggplot2::element_line(color = "grey90"),
             axis.text.x = ggplot2::element_text(size = 12),
-            axis.title.x = ggplot2::element_text(size = 17, face = "bold"),
-            axis.text.y = ggplot2::element_text(size = 17),
-            axis.title.y = ggplot2::element_text(size = 17, face = "bold"),
-            legend.text = ggplot2::element_text(size = 18),
-            legend.title = ggplot2::element_text(size = 18),
+            axis.title.x = ggplot2::element_text(size = 14, face = "bold"),
+            axis.text.y = ggplot2::element_text(size = 12),
+            axis.title.y = ggplot2::element_text(size = 14, face = "bold"),
+            legend.text = ggplot2::element_text(size = 13),
+            legend.title = ggplot2::element_text(size = 13),
             legend.key = ggplot2::element_blank(),
             plot.margin = ggplot2::margin(25, 25, 10, 25),
             plot.caption = ggplot2::element_text(
               color = "grey30",
-              hjust = 0,
+              hjust = 1,
               size = 9
             )
           )
@@ -473,11 +487,26 @@ lcz_ts <- function(x,
             strip.text = ggplot2::element_text(
               face = "bold",
               hjust = 0,
-              size = 14
+              size = 12
             ),
             strip.background = ggplot2::element_rect(linetype = "dotted")
           )
 
+        if(isave == TRUE){
+
+          # Create a folder name using paste0
+          folder <- base::paste0("LCZ4r_output/")
+
+          # Check if the folder exists
+          if (!base::dir.exists(folder)) {
+            # Create the folder if it does not exist
+            base::dir.create(folder)
+          }
+
+          file <- base::paste0(folder,"lcz_ts.png")
+          ggplot2::ggsave(file, final_graph, height = 9, width = 14, units="in", dpi=300)
+
+        }
         base::cat(
           "Congrats! You've successfully performed a",time.freq,"time series by",
           by,
@@ -511,13 +540,12 @@ lcz_ts <- function(x,
           tidyr::drop_na()
 
         graph <-
-          ggplot2::ggplot(mydata,
-                          ggplot2::aes(
-                            x = date,
+          ggplot2::ggplot(mydata, ggplot2::aes(
+                            x = .data$date,
                             y = .data$var_interp,
                             color = .data$station
                           )) +
-          ggplot2::geom_line(lwd = 1, alpha = 0.9) +
+          ggplot2::geom_line(lwd = .8, alpha = 0.9) +
           ggplot2::scale_color_manual(
             name = "Station (LCZ)",
             values = color_values,
@@ -525,29 +553,25 @@ lcz_ts <- function(x,
             guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
           ) +
           ggplot2::coord_cartesian(expand = FALSE, clip = "off") +
-          ggplot2::labs(
-            title = "",
-            x = "Time",
-            y = ylab,
-            fill = "LCZ"
+          ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ"
           ) +
-          ggplot2::labs(caption = "Source: LCZ4r, https://github.com/ByMaxAnjos/LCZ4r; Data: Stewart and Oke, 2012; Demuzere et al.2022.") +
+          ggplot2::labs(caption = caption) +
           ggplot2::theme(
             panel.background = ggplot2::element_rect(),
             #plot.background = ggplot2::element_rect(fill = "grey90"),
             panel.grid.minor = ggplot2::element_line(color = "grey90"),
             panel.grid.major.y = ggplot2::element_line(color = "grey90"),
             axis.text.x = ggplot2::element_text(size = 12),
-            axis.title.x = ggplot2::element_text(size = 17, face = "bold"),
-            axis.text.y = ggplot2::element_text(size = 17),
-            axis.title.y = ggplot2::element_text(size = 17, face = "bold"),
-            legend.text = ggplot2::element_text(size = 18),
-            legend.title = ggplot2::element_text(size = 18),
+            axis.title.x = ggplot2::element_text(size = 14, face = "bold"),
+            axis.text.y = ggplot2::element_text(size = 12),
+            axis.title.y = ggplot2::element_text(size = 14, face = "bold"),
+            legend.text = ggplot2::element_text(size = 13),
+            legend.title = ggplot2::element_text(size = 13),
             legend.key = ggplot2::element_blank(),
             plot.margin = ggplot2::margin(25, 25, 10, 25),
             plot.caption = ggplot2::element_text(
               color = "grey30",
-              hjust = 0,
+              hjust = 1,
               size = 9
             )
           )
@@ -558,11 +582,26 @@ lcz_ts <- function(x,
             strip.text = ggplot2::element_text(
               face = "bold",
               hjust = 0,
-              size = 14
+              size = 12
             ),
             strip.background = ggplot2::element_rect(linetype = "dotted")
           )
 
+        if(isave == TRUE){
+
+          # Create a folder name using paste0
+          folder <- base::paste0("LCZ4r_output/")
+
+          # Check if the folder exists
+          if (!base::dir.exists(folder)) {
+            # Create the folder if it does not exist
+            base::dir.create(folder)
+          }
+
+          file <- base::paste0(folder,"lcz_ts.png")
+          ggplot2::ggsave(file, final_graph, height = 9, width = 14, units="in", dpi=300)
+
+        }
         base::cat(
           "Congrats! You've successfully performed a",time.freq,"time series by",
           by,

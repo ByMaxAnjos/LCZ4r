@@ -109,7 +109,6 @@ lcz_cal_area <- function(x, iplot=TRUE, isave=FALSE, inclusive = FALSE){
            x = "LCZ code",
            y = "Area [square kilometer]",
            fill = "LCZ") +
-      #ggplot2::theme_bw() +
       ggplot2::labs(caption = "Source: LCZ4r, https://github.com/ByMaxAnjos/LCZ4r\nData: Stewart and Oke, 2012; Demuzere et al.2022.") +
       ggplot2::theme(panel.background = ggplot2::element_rect(),
                      panel.grid.major = ggplot2::element_line(color = "grey90"),
