@@ -120,6 +120,7 @@ lcz_cal_area <- function(x, iplot=TRUE, isave=FALSE, inclusive = FALSE){
         axis.title.y =ggplot2::element_text(size = 16, face = "bold"),
         legend.text = ggplot2::element_text(size = 16),
         legend.title = ggplot2::element_text(size = 17),
+        legend.spacing.y = ggplot2::unit(0.02, "cm"),
         plot.margin = ggplot2::margin(25, 25, 10, 25),
         plot.caption = ggplot2::element_text(color = "grey30", size = 9, hjust = 0))
 

@@ -4,13 +4,7 @@
 \alias{lcz_plot_parameters}
 \title{Visualize LCZ parameters}
 \usage{
-lcz_plot_parameters(
-  x,
-  iselect = "",
-  isubtitle = "",
-  all = FALSE,
-  isave = FALSE
-)
+lcz_plot_parameters(x, iselect = "", all = FALSE, isave = FALSE, ...)
 }
 \arguments{
 \item{x}{The LCZ map in SpatRaster in a stack format.}
@@ -19,11 +13,11 @@ lcz_plot_parameters(
 parameters. For example, "SVF1" to get the minimum Sky View Factor,
 or c("z0", "VEG3") to select multiple parameters.}
 
-\item{isubtitle}{Character, specifying a subtitle for the plot.}
-
 \item{all}{Logical, specifying whether to save all selected parameters into LCZ4r_output. Default is FALSE.}
 
 \item{isave}{Logical, indicating whether to save the plot to your directory. Default is FALSE.}
+
+\item{...}{An optional modify axis, legend, and plot labels: title, subtitle, and caption.}
 }
 \value{
 A plot of the selected LCZ parameters.
@@ -34,10 +28,10 @@ This function plots the parameters of an Local Climate Zone map.
 \examples{
 
 # Plot the minimum Sky View Factor (SVF1) for your city
-# lcz_plot_parameters(x = lcz_map, iselect = "SVF1", isubtitle = "Rio de Janeiro")
+# lcz_plot_parameters(lcz_map, iselect = "SVF1")
 
 # Plot multiple parameters and save them to the LCZ4r_output directory
-# lcz_plot_parameters(x = lcz_map, iselect = c("SVF1", "HEI1"))
+# lcz_plot_parameters(lcz_map, iselect = c("SVF1", "HEI1"))
 
 }
 \seealso{

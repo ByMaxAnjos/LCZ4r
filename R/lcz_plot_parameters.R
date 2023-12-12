@@ -8,8 +8,8 @@
 #'                parameters. For example, "SVF1" to get the minimum Sky View Factor,
 #'                or c("z0", "VEG3") to select multiple parameters.
 #' @param isave Logical, indicating whether to save the plot to your directory. Default is FALSE.
-#' @param isubtitle Character, specifying a subtitle for the plot.
 #' @param all Logical, specifying whether to save all selected parameters into LCZ4r_output. Default is FALSE.
+#' @param ... An optional modify axis, legend, and plot labels: title, subtitle, and caption.
 #'
 #' @return A plot of the selected LCZ parameters.
 #'
@@ -18,10 +18,10 @@
 #' @examples
 #'
 #' # Plot the minimum Sky View Factor (SVF1) for your city
-#' # lcz_plot_parameters(x = lcz_map, iselect = "SVF1", isubtitle = "Rio de Janeiro")
+#' # lcz_plot_parameters(lcz_map, iselect = "SVF1")
 #'
 #' # Plot multiple parameters and save them to the LCZ4r_output directory
-#' # lcz_plot_parameters(x = lcz_map, iselect = c("SVF1", "HEI1"))
+#' # lcz_plot_parameters(lcz_map, iselect = c("SVF1", "HEI1"))
 #'
 #' @importFrom rlang .data
 #'
@@ -31,7 +31,7 @@
 #' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis
 
 
-lcz_plot_parameters <- function(x, iselect = "", isubtitle = "", all = FALSE, isave = FALSE) {
+lcz_plot_parameters <- function(x, iselect = "", all = FALSE, isave = FALSE, ...) {
 
   # Validate inputs
   if (is.null(x)) {
@@ -162,7 +162,7 @@ lcz_plot_parameters <- function(x, iselect = "", isubtitle = "", all = FALSE, is
 
   if(all == TRUE) {
 
-    for (i in 1:raster::nlayers(LCZpar)) {
+    for (i in 1:terra::nlyr(LCZpar)) {
 
       # Convert the raster layer to a data frame
       parameter_df <- terra::as.data.frame(LCZpar[[i]], xy=TRUE) %>%
@@ -173,9 +173,7 @@ lcz_plot_parameters <- function(x, iselect = "", isubtitle = "", all = FALSE, is
       fig_par <- ggplot2::ggplot() +
         ggplot2::geom_tile(ggplot2::aes(x=x, y=.data$y, fill=.data$values), data = parameter_df, show.legend = TRUE) +
         ggplot2::scale_fill_viridis_c(option = paste0(names_par$color[i]), name=paste0(names_par$unit[i]))+
-        ggplot2::labs(title = paste0(names_par$name[i]),
-                      subtitle = isubtitle,
-                      caption = "Source:LCZ4r, https://github.com/ByMaxAnjos/LCZ4r\nData:Demuzere et al.(2022) and Stewart and Oke (2012)") +
+        ggplot2::labs(title = paste0(names_par$name[i]),...) +
         ggplot2::coord_equal(expand = TRUE, clip = "off")+
         ggplot2::theme_void() +
         ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
@@ -188,6 +186,7 @@ lcz_plot_parameters <- function(x, iselect = "", isubtitle = "", all = FALSE, is
                        axis.text.x = ggplot2::element_blank(),
                        axis.text.y = ggplot2::element_blank(),
                        axis.ticks = ggplot2::element_blank(),
+                       legend.spacing.y = ggplot2::unit(0.02, "cm"),
                        #panel.grid.major = ggplot2::element_line(color = "white", size = 0.3),
                        #panel.grid.minor = ggplot2::element_line(color = "white", size = 0.3),
                        plot.margin = ggplot2::margin(25, 25, 10, 25))
@@ -227,7 +226,7 @@ lcz_plot_parameters <- function(x, iselect = "", isubtitle = "", all = FALSE, is
       names_par_select$unit <- base::sapply(names_par_select$value, take_unit)
       names_par_select$color <- base::sapply(names_par_select$value, take_color)
 
-      for (i in 1:raster::nlayers(select_raster)) {
+      for (i in 1:terra::nlyr(select_raster)) {
 
         # Convert the raster layer to a data frame
         parameter_df <- terra::as.data.frame(select_raster[[i]], xy=TRUE) %>%
@@ -238,9 +237,7 @@ lcz_plot_parameters <- function(x, iselect = "", isubtitle = "", all = FALSE, is
         fig_par <- ggplot2::ggplot() +
           ggplot2::geom_tile(ggplot2::aes(x=x, y=.data$y, fill=.data$values), data = parameter_df, show.legend = TRUE) +
           ggplot2::scale_fill_viridis_c(option = paste0(names_par_select$color[i]), name=paste0(names_par_select$unit[i]))+
-          ggplot2::labs(title = paste0(names_par_select$name[i]),
-                        subtitle = isubtitle,
-                        caption = "Source:LCZ4r, https://github.com/ByMaxAnjos/LCZ4r\nData:Demuzere et al.(2022) and Stewart and Oke (2012)") +
+          ggplot2::labs(title = paste0(names_par_select$name[i]),...) +
           ggplot2::coord_equal(expand = TRUE, clip = "off")+
           ggplot2::theme_void() +
           ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
@@ -253,6 +250,7 @@ lcz_plot_parameters <- function(x, iselect = "", isubtitle = "", all = FALSE, is
                          axis.text.x = ggplot2::element_blank(),
                          axis.text.y = ggplot2::element_blank(),
                          axis.ticks = ggplot2::element_blank(),
+                         legend.spacing.y = ggplot2::unit(0.02, "cm"),
                          #panel.grid.major = ggplot2::element_line(color = "white", size = 0.3),
                          #panel.grid.minor = ggplot2::element_line(color = "white", size = 0.3),
                          plot.margin = ggplot2::margin(25, 25, 10, 25))
@@ -296,9 +294,7 @@ lcz_plot_parameters <- function(x, iselect = "", isubtitle = "", all = FALSE, is
       fig_par <- ggplot2::ggplot() +
         ggplot2::geom_tile(ggplot2::aes(x=x, y=.data$y, fill=.data$values), data = parameter_df, show.legend = TRUE) +
         ggplot2::scale_fill_viridis_c(option = paste0(names_par_select$color), name=paste0(names_par_select$unit))+
-        ggplot2::labs(title = paste0(names_par_select$name),
-                      subtitle = isubtitle,
-                      caption = "Source:LCZ4r, https://github.com/ByMaxAnjos/LCZ4r\nData:Demuzere et al.(2022) and Stewart and Oke (2012)") +
+        ggplot2::labs(title = paste0(names_par_select$name),...) +
         ggplot2::coord_equal(expand = TRUE, clip = "off")+
         ggplot2::theme_void() +
         ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
@@ -311,6 +307,7 @@ lcz_plot_parameters <- function(x, iselect = "", isubtitle = "", all = FALSE, is
                        axis.text.x = ggplot2::element_blank(),
                        axis.text.y = ggplot2::element_blank(),
                        axis.ticks = ggplot2::element_blank(),
+                       legend.spacing.y = ggplot2::unit(0.02, "cm"),
                        #panel.grid.major = ggplot2::element_line(color = "white", size = 0.3),
                        #panel.grid.minor = ggplot2::element_line(color = "white", size = 0.3),
                        plot.margin = ggplot2::margin(25, 25, 10, 25))

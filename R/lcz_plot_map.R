@@ -4,10 +4,10 @@
 #' This function generates a graphical representation of an LCZ (Local Climate Zone) map provided as a SpatRaster object.
 #'
 #' @param x A SpatRaster object containing the LCZ map to be plotted.
-#' @param isubtitle An optional subtitle for the plot, allowing you to specify the area or region represented in the map.
 #' @param isave Logical. Set to TRUE if you want to save the plot in your working directory.
 #' @param legend Specify the type of legend to include in the plot. Use "code" to display LCZ codes in the legend.
 #' @param inclusive Set to TRUE to a colorblind-friendly palette.
+#' @param ... An optional modify axis, legend, and plot labels: title, subtitle, and caption.
 #'
 #' @return A visual representation of the LCZ map in ggplot format
 #'
@@ -16,7 +16,7 @@
 #' @examples
 #'
 #' # Example: Plot an LCZ map with the legend showing LCZ codes and specify a subtitle.
-#' # myplot <- lcz_plot_map(x = myLCZmap, isubtitle = "My Area", legend = "code")
+#' # myplot <- lcz_plot_map(myLCZmap)
 #'
 #' @importFrom rlang .data
 #'
@@ -26,7 +26,7 @@
 #' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis
 
 
-lcz_plot_map <- function(x, isubtitle = "", isave = FALSE, inclusive = FALSE, legend = "name") {
+lcz_plot_map <- function(x, isave = FALSE, inclusive = FALSE, legend = "name", ...) {
 
   # Validate inputs
   if (is.null(x)) {
@@ -106,12 +106,10 @@ lcz_plot_map <- function(x, isubtitle = "", isave = FALSE, inclusive = FALSE, le
                                guide = ggplot2::guide_legend(reverse = FALSE,
                                                              title.position = "top")) +
     ggplot2::coord_sf(expand = FALSE, clip = "off") +
-    ggplot2::labs(title = "Local Climate Zones",
-                  subtitle = isubtitle,
-                  caption = "Source: LCZ4r, https://github.com/ByMaxAnjos/LCZ4r\nData: Stewart and Oke, 2012; Demuzere et al.2022") +
+    ggplot2::labs(...) +
     ggplot2::theme_void() +
     ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
-                   plot.subtitle = ggplot2::element_text(color = "black", size = 18, hjust = 0.5),
+                   plot.subtitle = ggplot2::element_text(color = "black", size = 17, hjust = 0.5),
                    plot.background = ggplot2::element_blank(),
                    legend.title = ggplot2::element_text(size = 17, color = "black", face = "bold"),
                    legend.text = ggplot2::element_text(size = 16, color = "black"),
@@ -120,6 +118,7 @@ lcz_plot_map <- function(x, isubtitle = "", isave = FALSE, inclusive = FALSE, le
                    axis.text.x = ggplot2::element_blank(),
                    axis.text.y = ggplot2::element_blank(),
                    axis.ticks = ggplot2::element_blank(),
+                   legend.spacing.y = ggplot2::unit(0.02, "cm"),
                    plot.margin = ggplot2::margin(25, 25, 10, 25)
                    #panel.grid.major = ggplot2::element_line(color = "white", size = 0.3),
                    #panel.grid.minor = ggplot2::element_line(color = "white", size = 0.3),

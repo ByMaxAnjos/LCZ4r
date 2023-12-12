@@ -21,7 +21,7 @@
 #' @param ylab y-axis name. Default is \dQuote{Air temperature Degree Celsius}.
 #' @param xlab y-axis name. Default is \dQuote{Time}
 #' @param title y-axis name. Default is \dQuote{" "}.
-#' @param caption source data. Default is \dQuote{Source: LCZ4r, https://github.com/ByMaxAnjos/LCZ4r\nData: Stewart and Oke, 2012; Demuzere et al.2022."}.
+#' @param caption source data. Default is \dQuote{Source: LCZ4r, Stewart and Oke, 2012; Demuzere et al.2022."}.
 #'
 #' @return A visual representation of the time series of air temperature of LCZ in \code{ggplot} format
 #'
@@ -54,7 +54,7 @@ lcz_ts <- function(x,
                    ylab = "Air temperature [Degree Celsius]",
                    xlab = "Time",
                    title = "",
-                   caption = "Source: LCZ4r, https://github.com/ByMaxAnjos/LCZ4r\nData: Stewart and Oke, 2012; Demuzere et al.2022.") {
+                   caption = "Source:LCZ4r; Stewart and Oke, 2012; Demuzere et al.2022.") {
 
   # Check and validate inputs -----------------------------------------------
   if (is.null(x)) {
@@ -279,7 +279,8 @@ lcz_ts <- function(x,
       ggplot2::coord_cartesian(expand = FALSE, clip = "off") +
       ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ"
       ) +
-      ggplot2::labs(caption = "Source: LCZ4r, https://github.com/ByMaxAnjos/LCZ4r\nData: Stewart and Oke, 2012; Demuzere et al.2022.") +
+      ggplot2::labs(caption = caption) +
+      ggplot2::theme_bw() +
       ggplot2::theme(
         panel.background = ggplot2::element_rect(),
         #plot.background = ggplot2::element_rect(fill = "grey90"),
@@ -290,14 +291,11 @@ lcz_ts <- function(x,
         axis.text.y = ggplot2::element_text(size = 12),
         axis.title.y = ggplot2::element_text(size = 14, face = "bold"),
         legend.text = ggplot2::element_text(size = 13),
-        legend.title = ggplot2::element_text(size = 13),
+        legend.title = ggplot2::element_text(size = 13, face = "bold"),
         legend.key = ggplot2::element_blank(),
+        legend.spacing.y = ggplot2::unit(0.02, "cm"),
         plot.margin = ggplot2::margin(25, 25, 10, 25),
-        plot.caption = ggplot2::element_text(
-          color = "grey30",
-          hjust = 1,
-          size = 9
-        )
+        plot.caption = ggplot2::element_text(color = "grey30", hjust = 1, size = 9)
       )
 
     if(isave == TRUE){
@@ -375,8 +373,9 @@ lcz_ts <- function(x,
           axis.text.y = ggplot2::element_text(size = 12),
           axis.title.y = ggplot2::element_text(size = 14, face = "bold"),
           legend.text = ggplot2::element_text(size = 13),
-          legend.title = ggplot2::element_text(size = 13),
+          legend.title = ggplot2::element_text(size = 13, face = "bold"),
           legend.key = ggplot2::element_blank(),
+          legend.spacing.y = ggplot2::unit(0.02, "cm"),
           plot.margin = ggplot2::margin(25, 25, 10, 25),
           plot.caption = ggplot2::element_text(color = "grey30", hjust = 1, size = 9)
         )
@@ -472,8 +471,9 @@ lcz_ts <- function(x,
             axis.text.y = ggplot2::element_text(size = 12),
             axis.title.y = ggplot2::element_text(size = 14, face = "bold"),
             legend.text = ggplot2::element_text(size = 13),
-            legend.title = ggplot2::element_text(size = 13),
+            legend.title = ggplot2::element_text(size = 13, face = "bold"),
             legend.key = ggplot2::element_blank(),
+            legend.spacing.y = ggplot2::unit(0.02, "cm"),
             plot.margin = ggplot2::margin(25, 25, 10, 25),
             plot.caption = ggplot2::element_text(
               color = "grey30",
@@ -566,8 +566,9 @@ lcz_ts <- function(x,
             axis.text.y = ggplot2::element_text(size = 12),
             axis.title.y = ggplot2::element_text(size = 14, face = "bold"),
             legend.text = ggplot2::element_text(size = 13),
-            legend.title = ggplot2::element_text(size = 13),
+            legend.title = ggplot2::element_text(size = 13, face = "bold"),
             legend.key = ggplot2::element_blank(),
+            legend.spacing.y = ggplot2::unit(0.02, "cm"),
             plot.margin = ggplot2::margin(25, 25, 10, 25),
             plot.caption = ggplot2::element_text(
               color = "grey30",
