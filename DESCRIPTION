@@ -46,6 +46,7 @@ Imports:
     data.table
 Suggests: 
     knitr,
+    RColorBrewer,
     rmarkdown,
     testthat (>= 3.0.0)
 VignetteBuilder: knitr

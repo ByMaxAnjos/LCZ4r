@@ -254,6 +254,9 @@ lcz_ts <- function(x,
   # Define LCZ labels
   lcz.lables <- lcz_df$station
 
+  nb.cols <- base::length(my_stations$station)
+  mycolors <- grDevices::colorRampPalette(RColorBrewer::brewer.pal(8, "Paired"))(nb.cols)
+
   # Define time series frequency with argument "by"--------------------------------------------
   if (is.null(by)) {
     mydata <- openair::timeAverage(
@@ -272,7 +275,7 @@ lcz_ts <- function(x,
       ggplot2::geom_line(lwd = .8 ,alpha = 0.9) +
       ggplot2::scale_color_manual(
         name = "Station (LCZ)",
-        values = color_values,
+        values = mycolors,
         labels = lcz.lables,
         guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
       ) +

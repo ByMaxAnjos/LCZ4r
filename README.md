@@ -32,7 +32,7 @@ The **LCZ4r** package is a comprehensive toolset, featuring a total of 13 functi
 * `lcz_get_parameters()` - Retrieve LCZ parameters
 * `lcz_plot_parameters()` - Visualize LCZ parameters
 * `lcz_ts()` - Analyze LCZ Time Series
-* `lcz_anamoly()` - Explore LCZ Thermal Anomalies
+* `lcz_anomaly()` - Explore LCZ Thermal Anomalies
 * `lcz_interp_krige()` - Perform LCZ Interpolation with Kriging
 * `lcz_eval_krige()` - Evaluate LCZ Interpolation with Kriging
 * `lcz_interp_idw()` - Perform LCZ Interpolation with IDW
