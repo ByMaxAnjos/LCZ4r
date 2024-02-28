@@ -29,7 +29,7 @@
 #' @examples
 #'
 #' # Hourly air temperature values in 2019.
-#' # my_ts <- lcz_anomaly(my_map, df = air_UCON, var = "airT", station_id = "station", year = 2019)
+#' # my_ts <- lcz_anomaly(my_map, df = lcz_data, var = "airT", station_id = "station", year = 2019)
 #'
 #' @importFrom rlang .data
 #'
@@ -51,10 +51,10 @@ lcz_anomaly <- function(x,
                    iplot = FALSE,
                    isave = FALSE,
                    inclusive = FALSE,
-                   ylab = "Thermal Anomaly [Degree Celsius]",
-                   xlab = "Station",
+                   ylab = "Air temperature anomaly [ºC]",
+                   xlab = "Meterological station",
                    title = "",
-                   caption = "Source: LCZ4r; Stewart and Oke, 2012; Demuzere et al.2022.") {
+                   caption = "") {
 
   # Check and validate inputs -----------------------------------------------
   if (is.null(x)) {
@@ -136,9 +136,7 @@ lcz_anomaly <- function(x,
         recipes::bake(new_data = NULL)
     }
 
-    base::cat("Hooray! The missing values have been imputed with ",
-              impute,
-              "\n")
+    base::cat("Hooray! The missing values have been imputed with ", impute,"\n")
   }
 
   # Geospatial operations ---------------------------------------------------

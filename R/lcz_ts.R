@@ -30,7 +30,7 @@
 #' @examples
 #'
 #' # Hourly air temperature values in 2019.
-#' # my_ts <- lcz_ts(my_map, df = air_UCON, var = "airT", station_id = "station", year = 2019)
+#' # my_ts <- lcz_ts(my_map, df = lcz_data, var = "airT", station_id = "station", year = 2019)
 #'
 #' @importFrom rlang .data
 #'
@@ -51,10 +51,10 @@ lcz_ts <- function(x,
                    iplot = FALSE,
                    isave = FALSE,
                    inclusive = FALSE,
-                   ylab = "Air temperature [Degree Celsius]",
+                   ylab = "Air temperature [ºC]",
                    xlab = "Time",
                    title = "",
-                   caption = "Source:LCZ4r; Stewart and Oke, 2012; Demuzere et al.2022.") {
+                   caption = "") {
 
   # Check and validate inputs -----------------------------------------------
   if (is.null(x)) {
@@ -77,7 +77,7 @@ lcz_ts <- function(x,
     if (!(inherits(data_frame$date, "POSIXct") ||
           inherits(data_frame$date, "Date"))) {
       converted_col <-
-        as.POSIXct(data_frame$date, format = "%Y-%m-%d %H:%M:%S", tz = "UTC")
+        as.POSIXct(data_frame$date, format = "%Y-%m-%d %H:%M:%S")
       data_frame$date <- converted_col
     }
   } else {
@@ -355,7 +355,7 @@ lcz_ts <- function(x,
         ggplot2::geom_line(lwd= .8, alpha = 0.9) +
         ggplot2::scale_color_manual(
           name = "Station (LCZ)",
-          values = color_values,
+          values = mycolors,
           labels = lcz.lables,
           guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
         ) +
@@ -454,7 +454,7 @@ lcz_ts <- function(x,
           ggplot2::geom_line(lwd=.8, alpha = 0.9) +
           ggplot2::scale_color_manual(
             name = "Station (LCZ)",
-            values = color_values,
+            values = mycolors,
             labels = lcz.lables,
             guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
           ) +
@@ -551,7 +551,7 @@ lcz_ts <- function(x,
           ggplot2::geom_line(lwd = .8, alpha = 0.9) +
           ggplot2::scale_color_manual(
             name = "Station (LCZ)",
-            values = color_values,
+            values = mycolors,
             labels = lcz.lables,
             guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
           ) +
@@ -607,10 +607,7 @@ lcz_ts <- function(x,
 
         }
         base::cat(
-          "Congrats! You've successfully performed a",time.freq,"time series by",
-          by,
-          "based on LCZ classes.\n"
-        )
+          "Congrats! You've successfully performed a",time.freq,"time series by",by,"based on LCZ classes.\n")
         return(final_graph)
 
         if (iplot == FALSE) {

@@ -17,10 +17,10 @@ lcz_anomaly(
   iplot = FALSE,
   isave = FALSE,
   inclusive = FALSE,
-  ylab = "Thermal Anomaly [Degree Celsius]",
-  xlab = "Station",
+  ylab = "Air temperature anomaly [ºC]",
+  xlab = "Meterological station",
   title = "",
-  caption = "Source: LCZ4r; Stewart and Oke, 2012; Demuzere et al.2022."
+  caption = ""
 )
 }
 \arguments{
@@ -68,7 +68,7 @@ This function generates a graphical representation of thermal anomaly for differ
 \examples{
 
 # Hourly air temperature values in 2019.
-# my_ts <- lcz_anomaly(my_map, df = air_UCON, var = "airT", station_id = "station", year = 2019)
+# my_ts <- lcz_anomaly(my_map, df = lcz_data, var = "airT", station_id = "station", year = 2019)
 
 }
 \seealso{

@@ -17,10 +17,10 @@ lcz_ts(
   iplot = FALSE,
   isave = FALSE,
   inclusive = FALSE,
-  ylab = "Air temperature [Degree Celsius]",
+  ylab = "Air temperature [ºC]",
   xlab = "Time",
   title = "",
-  caption = "Source:LCZ4r; Stewart and Oke, 2012; Demuzere et al.2022."
+  caption = ""
 )
 }
 \arguments{
@@ -68,7 +68,7 @@ This function generates a graphical representation of time series air temperatur
 \examples{
 
 # Hourly air temperature values in 2019.
-# my_ts <- lcz_ts(my_map, df = air_UCON, var = "airT", station_id = "station", year = 2019)
+# my_ts <- lcz_ts(my_map, df = lcz_data, var = "airT", station_id = "station", year = 2019)
 
 }
 \seealso{

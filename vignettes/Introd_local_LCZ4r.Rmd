@@ -1,9 +1,9 @@
 ---
-title: "Introduction to the Local Functions of LCZ4r"
+title: "Introduction to the LCZ4r Local Functions"
 author: "Max Anjos"
-date: "`r Sys.Date()`"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output:
-  rmarkdown::html_document:
+    html_document:
     toc: true
     toc_float: false
     toc_depth: 2
@@ -11,7 +11,7 @@ output:
     highlight: "textmate"
     css: custom.css
 vignette: >
-  %\VignetteIndexEntry{Introduction to the Local Functions of LCZ4r}
+  %\VignetteIndexEntry{Introduction to the LCZ4r Local Functions}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -33,7 +33,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-This vignette serves as an introduction to the **Local functions of LCZ4r** package. The local functions are designed to operate with more extensive data inputs, such as urban meteorological network readings, including air temperature.
+The **Local functions of LCZ4r**  are designed to operate with more extensive data inputs, such as air temperature readings.
 
 ## Getting Started
 
@@ -42,51 +42,75 @@ The **Local functions of `LCZ4r`**, each serving a unique purpose:
 | Function             | Description                                | Data Required | Internet Access Required |
 |---------------|--------------------------|---------------|---------------|
 | `lcz_ts()`           | Analyze LCZ Time Series                    | Not needed    | Not needed               |
-| `lcz_anamoly()`      | Explore LCZ Thermal Anomalies              | Not needed    | Not needed               |
-| `lcz_interp_krige()` | Perform LCZ Interpolation with Kriging     | Not needed    | Not needed               |
-| `lcz_eval_krige()`   | Evaluate LCZ Interpolation with Kriging    | Not needed    | Not needed               |
-| `lcz_interp_idw()`   | Perform LCZ Interpolation with IDW         | Not needed    | Not needed               |
-| `lcz_eval_idw()`     | Evaluate LCZ Interpolation with IDW        | Not needed    | Not needed               |
+| `lcz_anamoly()`      | Calculate LCZ Thermal Anomalies              | Not needed    | Not needed               |
+| `lcz_anamoly_map()`      | Visualize LCZ Thermal Anomalies map              | Not needed    | Not needed               |
+| `lcz_krige_map()` | Perform LCZ Interpolation with Kriging     | Not needed    | Not needed               |
+| `lcz_krige_eval()`   | Evaluate LCZ Interpolation with Kriging    | Not needed    | Not needed               |
+| `lcz_idw_map()`   | Perform LCZ Interpolation with IDW         | Not needed    | Not needed               |
+| `lcz_idw_eval()`     | Evaluate LCZ Interpolation with IDW        | Not needed    | Not needed               |
 | `lcz_uhi()`          | Assess LCZ for Urban Heat Island Intensity | Not needed    | Not needed               |
 
-Happy coding, and enjoy exploring the LCZ4r package!
+
+## Data input
+```{r, eval=FALSE}
+library(LCZ4r)
+
+#Load data from LCZ4r package
+data("lcz_data")
+
+#Check data structure out
+str(lcz_data)
+
+```
+
 
 ## Analyze LCZ Time Series
 
+
 ```{r, eval=FALSE}
-library(LCZ4r)
+
+#Let's get LCZ air temperature time series
+lcz_ts(my_map, data_frame = lcz_data, 
+       var = "airT", station_id = "station",
+       time.freq = "hour", year = 2019:2020)
+
 ```
 
-## Explore LCZ Thermal Anomalies
-
-...
-
-```{r, eval=TRUE}
+## Calculate LCZ Thermal Anomalies
 
 
+```{r include=FALSE}
+# Let's get LCZ air temperature anomalies in 2019
+lcz_anomaly(my_map, data_frame = lcz_data, 
+            var = "airT", station_id = "station", 
+            time.freq = "hour", year = 2019)
 
 ```
 
 ## Perform and Evaluate LCZ Interpolation with Kriging
 
-...
 
 ```{r, eval=TRUE}
+
 
 ```
 
 ## Perform and Evaluate LCZ Interpolation with IDW
 
-...
 
 ```{r, eval=TRUE}
+
 
 ```
 
 ## Assess LCZ for Urban Heat Island Intensit
 
-...
 
 ```{r, eval=TRUE}
 
+
 ```
+
+
+
+
