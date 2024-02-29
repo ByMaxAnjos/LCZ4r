@@ -48,9 +48,11 @@ The general functions, each serving a unique purpose:
 | `lcz_get_parameters()`  | Retrieve LCZ parameters | Not needed  | Not needed |
 | `lcz_plot_parameters()` | Visualize LCZ parameters | Not needed | Not needed |
 
+Tips: Utilize the help(lcz_*) function to access comprehensive documentation for each LCZ function. For instance, you can explore details about the lcz_get_map function by typing help("lcz_get_map").
+
 ## Obtain an visualize the LCZ map
 
-The `lcz_get_map()` function allows you to obtain the LCZ map for your city or a specific Region of Interest (ROI) using the global LCZ map developed by Demuzere et al. (2022). In our case, we used Rio de Janeiro, Brazil as reference. 
+The lcz_get_map() function facilitates obtaining the LCZ map for your chosen city or a specific Region of Interest (ROI) by leveraging the global LCZ map developed by Demuzere et al. (2022). In our demonstration, we utilized Rio de Janeiro, Brazil as a reference city.
 
 
 ```{r echo=TRUE, fig.height=7, fig.width=11, message=FALSE, warning=FALSE}
@@ -63,23 +65,24 @@ lcz_map <- lcz_get_map(city="Rio de Janeiro")
 lcz_plot_map(lcz_map, subtitle = "Rio de Janeiro")
 
 ```
+Here are some tips to enhance your experience:
 
-Tips: *1*. In the rare cases when the `lcz_get_map()` function encounters inconsistencies (e.g., without internet), you can rely on the `lcz_get_map2()` as an alternative; *2*. Use `lcz_get_map()` function with the shp for ROI, coding lcz_get_map(roi="your_shp"). See the package [sf](https://r-spatial.github.io/sf/) to load the shp file into R.
-
+1. Fallback Option: In rare instances where the lcz_get_map() function faces inconsistencies (e.g., due to connectivity issues), you can rely on lcz_get_map2() as an alternative solution.
+2. Custom ROI: Utilize the lcz_get_map() function along with a shapefile for your ROI by coding lcz_get_map(roi="your_shp"). Refer to the R package [sf](https://r-spatial.github.io/sf/) documentation for guidance on loading the shapefile into R.
 ## Calculate LCZ areas
 
 This `lcz_cal_area()` function calculates the area for each LCZ classes, as follows:
 
-```{r echo=TRUE, fig.height=7, fig.width=11, message=FALSE, warning=FALSE}
-LCZarea <- lcz_cal_area(lcz_map)
-LCZarea
+```{r echo=TRUE, fig.height=7, fig.width=12, message=FALSE, warning=FALSE}
+lcz_cal_area(lcz_map)
+
 ```
 
 Tips: this function provides a table.csv of the calculated LCZ areas, coding like this: *lcz_cal_area(lcz_map, iplot = FALSE)*
 
 ## Retrieve and visualize LCZ parameters
 
-This `lcz_get_parameters()` function allows you to retrieve various LCZ parameters, including minimum, maximum, and mean values, sourced from Stewart and Oke (2012). These parameters can be converted into either shapefiles or raster stack, in which it is aggregated multiple rasters to unique file.
+This `lcz_get_parameters()`function gives you to retrieve diverse LCZ parameters, encompassing minimum, maximum, and mean values, drawn from Stewart and Oke (2012). These parameters are convertible into either shapefiles or a raster stack, where multiple rasters are aggregated into a single file.
 
 Here's a glimpse of the available LCZ parameters:
 

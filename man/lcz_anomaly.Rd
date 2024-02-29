@@ -36,12 +36,12 @@ lcz_anomaly(
 A year or years to select e.g. year = 1998:2004 to select 1998-2004 inclusive or year = c(1998, 2004) to select 1998 and 2004. A month or months to select.
 Can either be numeric e.g. month = 1:6 to select months 1-6 (January to June), or by name e.g. month = c(\dQuote{January}, \dQuote{December}).}
 
-\item{time.freq}{Defines the time period to average to. Default is \dQuote{hour}.}
+\item{time.freq}{Defines the time period to average to. Default is \dQuote{hour}, but includes \dQuote{day}, \dQuote{week}, \dQuote{month} or \dQuote{year}.}
 
-\item{by}{Temporal components of the data (e.g.,\dQuote{sec}, \dQuote{min}, \dQuote{hour}, \dQuote{day}, \dQuote{DSTday},
-\dQuote{week}, \dQuote{month}, \dQuote{quarter} or \dQuote{year}). See argument \emph{type} in openair package.}
+\item{by}{data frame time-serie split: \dQuote{year}, \dQuote{season}, \dQuote{seasonyear},  \dQuote{month}, \dQuote{monthyear}, \dQuote{weekday}, \dQuote{weekend},  \dQuote{site},
+\dQuote{daylight}, \dQuote{dst} (daylight saving time).See argument \emph{type} in openair package: https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option}
 
-\item{hemisphere}{Hemisphere for splitting data into seasons (\dQuote{northern} or \dQuote{southern}).}
+\item{hemisphere}{Hemisphere \dQuote{northern} or \dQuote{southern} for splitting data into \dQuote{season}, \dQuote{seasonyear}, \dQuote{daylight}, and \dQuote{dst}.}
 
 \item{impute}{Method to impute missing values (\dQuote{mean}, \dQuote{median}, \dQuote{knn}, \dQuote{bag}).}
 
@@ -57,7 +57,7 @@ Can either be numeric e.g. month = 1:6 to select months 1-6 (January to June), o
 
 \item{title}{y-axis name. Default is \dQuote{" "}.}
 
-\item{caption}{source data. Default is \dQuote{Source: LCZ4r, Stewart and Oke, 2012; Demuzere et al.2022."}.}
+\item{caption}{source data. Default can be \dQuote{Source: LCZ4r, Stewart and Oke, 2012; Demuzere et al.2022."}.}
 }
 \value{
 A visual representation of the time series of air temperature of LCZ in \code{ggplot} format

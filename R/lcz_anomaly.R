@@ -9,10 +9,10 @@
 #' @param ... Utilities from \code{selectBydata} from \code{openair} package. A start date string in the form e.g. \dQuote{1/2/1999} or in format i.e. \dQuote{YYYY-mm-dd}, \dQuote{1999-02-01}.
 #'            A year or years to select e.g. year = 1998:2004 to select 1998-2004 inclusive or year = c(1998, 2004) to select 1998 and 2004. A month or months to select.
 #'            Can either be numeric e.g. month = 1:6 to select months 1-6 (January to June), or by name e.g. month = c(\dQuote{January}, \dQuote{December}).
-#' @param time.freq Defines the time period to average to. Default is \dQuote{hour}.
-#' @param by Temporal components of the data (e.g.,\dQuote{sec}, \dQuote{min}, \dQuote{hour}, \dQuote{day}, \dQuote{DSTday},
-#'            \dQuote{week}, \dQuote{month}, \dQuote{quarter} or \dQuote{year}). See argument \emph{type} in openair package.
-#' @param hemisphere Hemisphere for splitting data into seasons (\dQuote{northern} or \dQuote{southern}).
+#' @param time.freq Defines the time period to average to. Default is \dQuote{hour}, but includes \dQuote{day}, \dQuote{week}, \dQuote{month} or \dQuote{year}.
+#' @param by  data frame time-serie split: \dQuote{year}, \dQuote{season}, \dQuote{seasonyear},  \dQuote{month}, \dQuote{monthyear}, \dQuote{weekday}, \dQuote{weekend},  \dQuote{site},
+#'            \dQuote{daylight}, \dQuote{dst} (daylight saving time).See argument \emph{type} in openair package: https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option
+#' @param hemisphere Hemisphere \dQuote{northern} or \dQuote{southern} for splitting data into \dQuote{season}, \dQuote{seasonyear}, \dQuote{daylight}, and \dQuote{dst}.
 #' @param impute Method to impute missing values (\dQuote{mean}, \dQuote{median}, \dQuote{knn}, \dQuote{bag}).
 #' @param iplot Set to TRUE if you want to save the plot in your working directory.
 #' @param isave Save the plot into your directory.
@@ -20,7 +20,7 @@
 #' @param ylab y-axis name. Default is \dQuote{Thermal Anomaly Degree Celsius}.
 #' @param xlab y-axis name. Default is \dQuote{Station}
 #' @param title y-axis name. Default is \dQuote{" "}.
-#' @param caption source data. Default is \dQuote{Source: LCZ4r, Stewart and Oke, 2012; Demuzere et al.2022."}.
+#' @param caption source data. Default can be \dQuote{Source: LCZ4r, Stewart and Oke, 2012; Demuzere et al.2022."}.
 #'
 #' @return A visual representation of the time series of air temperature of LCZ in \code{ggplot} format
 #'
