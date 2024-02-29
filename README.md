@@ -23,8 +23,9 @@ The **LCZ4r** package is a comprehensive toolset, featuring a total of functions
 * `lcz_idw_eval()` - Evaluate LCZ Interpolation with IDW
 * `lcz_uhi()` - Assess LCZ for Urban Heat Island Intensity
 
+## Instalation 
 
-* [Install to the LCZ4r](https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r.html)
+To [Install to the LCZ4r](https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r.html) use the development version on GitHub.
 
 
 ## Function types and tutorials 
