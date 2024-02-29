@@ -16,20 +16,10 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r , include = FALSE}
-knitr::knit_hooks$set(pngquant = knitr::hook_pngquant)
+```{r, include = FALSE}
 knitr::opts_chunk$set(
-  message = FALSE,
   collapse = TRUE,
-  comment = "#>",
-  dev = "ragg_png",
-  dpi = 72,
-  fig.retina = 2,
-   fig.width = 7,
-  fig.height = 6,
-  fig.align = "center",
-  out.width = "100%",
-  pngquant = "--speed=1 --quality=50"
+  comment = "#>"
 )
 ```
 
@@ -101,7 +91,7 @@ You have the flexibility to select specific years and months for analysis. For e
 ```{r echo=TRUE, fig.height=7, fig.width=11, message=FALSE, warning=FALSE}
 
 #Selecting one specifique day
-lcz_ts(my_map, data_frame = lcz_data, 
+lcz_ts(lcz_map, data_frame = lcz_data, 
        var = "airT", station_id = "station",
        time.freq = "hour", 
        year = 2019, month = 9, day = 1)
@@ -124,11 +114,11 @@ lcz_ts(lcz_map, data_frame = lcz_data,
 
 ```{r echo=TRUE, fig.height=7, fig.width=12, message=FALSE, warning=FALSE}
 
-#Let's split by daylight and month together. 
+#Let's split by daylight and months 6, 7, 8 together. 
 lcz_ts(lcz_map, data_frame = lcz_data, 
        var = "airT", station_id = "station",
        time.freq = "hour", 
-       year = 2019, by = c("daylight", "month")) 
+       year = 2019, month = 6:8, by = c("daylight", "month")) 
 
 ```
 
