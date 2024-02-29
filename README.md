@@ -55,7 +55,7 @@ We highly recommend that users explore the following tutorials to gain a deeper 
 
 ## Calculate LCZ areas 
 
-<img width="1440" alt="Screenshot 2023-08-13 at 19 24 47" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/2f2fcd9f-1744-47a9-850a-5ad0630aae3b">
+![lczarea_berlin](https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/46b57b89-f05d-4f60-95d4-a93d9f54ad93)
 
 ## Retrieve and visualize LCZ parameters
 
@@ -63,13 +63,12 @@ We highly recommend that users explore the following tutorials to gain a deeper 
 
 ## Time serires of air tempearture from LCZ classes
 
-it's coming soon...
+<img width="1440" alt="ts_berlin" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/8b86432e-a372-4c05-82b0-60c1e231596f">
+
 
 ## Calculate thermal anomaly between LCZ
 
-it's coming soon... but have look at this:
-
-<img width="1440" alt="Screenshot 2023-08-19 at 13 44 11" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/3594539f-0cfd-4671-9a1f-fc65375bc442">
+<img width="1440" alt="thermal_berlin" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/3fdb3509-eaa1-43a0-832c-bfbc8b38ac52">
 
 
 ## Interpolate air temperature with LCZ
