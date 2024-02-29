@@ -4,20 +4,6 @@
 
 The **LCZ4r**, a suite of R functions for analyzing and visualizing Local Climate Zones and Urban Heat Islands.
 
-Happy coding!
-
-## Installation  
-
-To install LCZ4r use the development version on GitHub with latest features:
-
-```{r, include=TRUE}
-
-if(!require(devtools)) install.packages("devtools")
-devtools::install_github("ByMaxAnjos/LCZ4r")
-library(LCZ4r)
-
-```
-
 ## Package Overview
 
 The **LCZ4r** package is a comprehensive toolset, featuring a total of functions. 
@@ -36,6 +22,9 @@ The **LCZ4r** package is a comprehensive toolset, featuring a total of functions
 * `lcz_idw_map()` - Perform LCZ Interpolation with IDW
 * `lcz_idw_eval()` - Evaluate LCZ Interpolation with IDW
 * `lcz_uhi()` - Assess LCZ for Urban Heat Island Intensity
+
+
+* [Install to the LCZ4r](https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r.html)
 
 
 ## Function types and tutorials 

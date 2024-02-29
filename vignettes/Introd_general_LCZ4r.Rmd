@@ -22,6 +22,7 @@ knitr::opts_chunk$set(
   comment = "#>"
 )
 ```
+
 The **`LCZ4r` general functions** are designed to facilitate the retrieval, analysis, and visualization of Local Climate Zones (LCZ) when LCZ related data is not readily available. They are engineered to get the LZ map, compute LCZ classes, and extract specific parameters of interest, including Sky View Factor (SVF), impervious surface fraction, and roughness element height, among others.
 
 ## Getting Started
@@ -54,6 +55,7 @@ lcz_map <- lcz_get_map(city="Rio de Janeiro")
 lcz_plot_map(lcz_map, subtitle = "Rio de Janeiro")
 
 ```
+
 Here are some tips to enhance your experience:
 
 1. Fallback Option: In rare instances where the lcz_get_map() function faces inconsistencies (e.g., due to connectivity issues), you can rely on lcz_get_map2() as an alternative solution.
