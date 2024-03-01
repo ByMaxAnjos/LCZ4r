@@ -15,4 +15,3 @@ template:
     code_font: {google: "JetBrains Mono"}
 development:
   mode: auto
- pkgdown::build_site_github_pages()
