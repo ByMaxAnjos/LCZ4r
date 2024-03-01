@@ -31,8 +31,8 @@ Enter one or more numbers, or an empty line to skip updates: **3**
 
 ```{r include=TRUE}
 
-if(!require(devtools)) install.packages("devtools")
-devtools::install_github("ByMaxAnjos/LCZ4r")
+#if(!require(devtools)) install.packages("devtools")
+#devtools::install_github("ByMaxAnjos/LCZ4r")
 
 ```
 
