@@ -22,9 +22,9 @@ If FALSE, returns a list of individual parameter rasters.}
 }
 \value{
 If 'istack' is TRUE, it returns a raster stack containing 34 LCZ-related parameters.
-        If 'istack' is FALSE, it returns a list of individual parameter rasters.
-        If 'ishp' is TRUE, it returns an ESRI shapefile containing all parameters.
-        If 'iselect' is specified, it returns the selected parameter(s) as a raster(s).
+If 'istack' is FALSE, it returns a list of individual parameter rasters.
+If 'ishp' is TRUE, it returns an ESRI shapefile containing all parameters.
+If 'iselect' is specified, it returns the selected parameter(s) as a raster(s).
 }
 \description{
 This function extracts 34 LCZ parameters based on the classification

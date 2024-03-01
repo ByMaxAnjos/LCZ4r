@@ -17,7 +17,7 @@ lcz_anomaly(
   iplot = FALSE,
   isave = FALSE,
   inclusive = FALSE,
-  ylab = "Air temperature anomaly [ºC]",
+  ylab = "Air temperature anomaly in Degree Celsius",
   xlab = "Meterological station",
   title = "",
   caption = ""
@@ -51,7 +51,7 @@ Can either be numeric e.g. month = 1:6 to select months 1-6 (January to June), o
 
 \item{inclusive}{Set to TRUE to a colorblind-friendly palette.}
 
-\item{ylab}{y-axis name. Default is \dQuote{Thermal Anomaly Degree Celsius}.}
+\item{ylab}{y-axis name.}
 
 \item{xlab}{y-axis name. Default is \dQuote{Station}}
 
@@ -68,7 +68,7 @@ This function generates a graphical representation of thermal anomaly for differ
 \examples{
 
 # Hourly air temperature values in 2019.
-# my_ts <- lcz_anomaly(my_map, df = lcz_data, var = "airT", station_id = "station", year = 2019)
+# my_ts <- lcz_anomaly(lcz_map, df = lcz_data, var = "airT", station_id = "station", year = 2019)
 
 }
 \seealso{

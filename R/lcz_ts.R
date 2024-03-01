@@ -10,6 +10,7 @@
 #' @param ... Utilities from \code{selectBydata} from \code{openair} package. A start date string in the form e.g. \dQuote{1/2/1999} or in format i.e. \dQuote{YYYY-mm-dd}, \dQuote{1999-02-01}.
 #'            A year or years to select e.g. year = 1998:2004 to select 1998-2004 inclusive or year = c(1998, 2004) to select 1998 and 2004. A month or months to select.
 #'            Can either be numeric e.g. month = 1:6 to select months 1-6 (January to June), or by name e.g. month = c(\dQuote{January}, \dQuote{December}).
+#' @param time.freq Defines the time period to average to. Default is \dQuote{hour}, but includes \dQuote{day}, \dQuote{week}, \dQuote{month} or \dQuote{year}.
 #' @param by  data frame time-serie split: \dQuote{year}, \dQuote{season}, \dQuote{seasonyear},  \dQuote{month}, \dQuote{monthyear}, \dQuote{weekday}, \dQuote{weekend},  \dQuote{site},
 #'            \dQuote{daylight}, \dQuote{dst} (daylight saving time).See argument \emph{type} in openair package: https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option
 #' @param hemisphere Hemisphere \dQuote{northern} or \dQuote{southern} for splitting data into \dQuote{season}, \dQuote{seasonyear}, \dQuote{daylight}, and \dQuote{dst}.
@@ -17,7 +18,7 @@
 #' @param iplot Set to TRUE if you want to save the plot in your working directory.
 #' @param isave Save the plot into your directory.
 #' @param inclusive Set to TRUE to a colorblind-friendly palette.
-#' @param ylab y-axis name. Default is \dQuote{Air temperature Degree Celsius}.
+#' @param ylab y-axis name.
 #' @param xlab y-axis name. Default is \dQuote{Time}
 #' @param title y-axis name. Default is \dQuote{" "}.
 #' @param caption source data. Default can be \dQuote{Source:Stewart and Oke, 2012; Demuzere et al.2022."}.
@@ -29,7 +30,7 @@
 #' @examples
 #'
 #' # Hourly air temperature values in 2019.
-#' # my_ts <- lcz_ts(my_map, df = lcz_data, var = "airT", station_id = "station", year = 2019)
+#' # my_ts <- lcz_ts(lcz_map, df = lcz_data, var = "airT", station_id = "station", year = 2019)
 #'
 #' @importFrom rlang .data
 #'
@@ -50,7 +51,7 @@ lcz_ts <- function(x,
                    iplot = FALSE,
                    isave = FALSE,
                    inclusive = FALSE,
-                   ylab = "Air temperature [ºC]",
+                   ylab = "Air temperature [Degree Celsius]",
                    xlab = "Time",
                    title = "",
                    caption = "") {
@@ -162,7 +163,7 @@ lcz_ts <- function(x,
   lcz_model <-
     dplyr::inner_join(df_processed, lcz_stations, by = c("station", "lcz_id")) %>%
     dplyr::mutate(
-      lcz = base::as.factor(lcz),
+      lcz = base::as.factor(.data$lcz),
       lcz_id = base::as.factor(.data$lcz_id),
       station = base::as.factor(paste0(.data$station, "(", lcz, ")"))
     )
@@ -233,7 +234,7 @@ lcz_ts <- function(x,
     purrr::set_names("lcz_colorblind")
 
   lcz_df <- dplyr::bind_cols(lcz, lcz.name, lcz.col, lcz_colorblind) %>%
-    dplyr::mutate(lcz = base::as.factor(lcz)) %>%
+    dplyr::mutate(lcz = base::as.factor(.data$lcz)) %>%
     dplyr::inner_join(my_stations,  by = "lcz")
 
   # Define qualitative palette

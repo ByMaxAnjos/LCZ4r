@@ -17,7 +17,7 @@ lcz_ts(
   iplot = FALSE,
   isave = FALSE,
   inclusive = FALSE,
-  ylab = "Air temperature [ºC]",
+  ylab = "Air temperature [Degree Celsius]",
   xlab = "Time",
   title = "",
   caption = ""
@@ -36,6 +36,8 @@ lcz_ts(
 A year or years to select e.g. year = 1998:2004 to select 1998-2004 inclusive or year = c(1998, 2004) to select 1998 and 2004. A month or months to select.
 Can either be numeric e.g. month = 1:6 to select months 1-6 (January to June), or by name e.g. month = c(\dQuote{January}, \dQuote{December}).}
 
+\item{time.freq}{Defines the time period to average to. Default is \dQuote{hour}, but includes \dQuote{day}, \dQuote{week}, \dQuote{month} or \dQuote{year}.}
+
 \item{by}{data frame time-serie split: \dQuote{year}, \dQuote{season}, \dQuote{seasonyear},  \dQuote{month}, \dQuote{monthyear}, \dQuote{weekday}, \dQuote{weekend},  \dQuote{site},
 \dQuote{daylight}, \dQuote{dst} (daylight saving time).See argument \emph{type} in openair package: https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option}
 
@@ -49,7 +51,7 @@ Can either be numeric e.g. month = 1:6 to select months 1-6 (January to June), o
 
 \item{inclusive}{Set to TRUE to a colorblind-friendly palette.}
 
-\item{ylab}{y-axis name. Default is \dQuote{Air temperature Degree Celsius}.}
+\item{ylab}{y-axis name.}
 
 \item{xlab}{y-axis name. Default is \dQuote{Time}}
 
@@ -66,7 +68,7 @@ This function generates a graphical representation of time series air temperatur
 \examples{
 
 # Hourly air temperature values in 2019.
-# my_ts <- lcz_ts(my_map, df = lcz_data, var = "airT", station_id = "station", year = 2019)
+# my_ts <- lcz_ts(lcz_map, df = lcz_data, var = "airT", station_id = "station", year = 2019)
 
 }
 \seealso{

@@ -3,26 +3,25 @@
 \docType{data}
 \name{lcz_data}
 \alias{lcz_data}
-\title{Air temperature LCZ data}
+\title{Air Temperature LCZ Data}
 \format{
 A data frame with 386,354 rows and 5 columns:
 \describe{
-  \item{date}{date POSIXct, format: "2019-01-01 00:00:00"}
-  \item{station}{station name}
-  \item{Latitude}{Latitude station}
-  \item{Longitue}{Longitude station}
-  ...
+\item{date}{Date and time in POSIXct format: "2019-01-01 00:00:00"}
+\item{station}{Name of the meteorological station}
+\item{airT}{Air temperature in degree celsius}
+\item{Latitude}{Latitude of the station}
+\item{Longitude}{Longitude of the station}
 }
 }
 \source{
-<https://uco.berlin/>
+\href{https://uco.berlin/}{UCO Berlin}
 }
 \usage{
 lcz_data
 }
 \description{
-A subset of data from the Urban Climate Observatory (UCO) Berlin, Germany.
-It contains hourly air temperature readings from 23 meteorological stations for the 2019-2020 period.
+This dataset is a subset of data from the Urban Climate Observatory (UCO) in Berlin, Germany. It contains hourly air temperature readings from 23 meteorological stations for the period of 2019-2020.
 }
 \examples{
 data(lcz_data)
