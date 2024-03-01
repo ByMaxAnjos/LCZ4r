@@ -5,21 +5,26 @@ template:
   params:
     ganalytics: G-20GDZ5LL77
 navbar:
-  bg: primary
-  title: LCZ4r
-structure:
-  left:
-    - reference
+  structure:
+    left:
+    - home
     - articles
-  right: github
-components:
-  reference:
-    text: Reference
-    href: reference/index.html
-  github:
-    icon: fab fa-github fa-lg
+    - reference
+    - suggestions
+    right:
+    - news
+    - github
+  components:
+    home:
+      icon: fa-home fa-lg
+      href: index.html
+    reference:
+      text: Functions
+      href: reference/index.html
+    github:
+      text: source code
+      icon: fa-lg fa-github
     href: https://github.com/ByMaxAnjos/LCZ4r/
-    aria-label: GitHub
   articles:
     text: Articles
     menu:
@@ -29,6 +34,14 @@ components:
         href: articles/Introd_local_LCZ4r.html
       - text: Installation LCZ4r
         href: articles/installation_lcz4r.html
+
 development:
-  mode: auto
+  mode: unreleased
+
+toc:
+  depth: 2
+
+pkgdown:
+  as_is: true
+
 
