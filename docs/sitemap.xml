@@ -28,15 +28,6 @@
     <loc>https://bymaxanjos.github.io/LCZ4r/index.html</loc>
   </url>
   <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/reference/LCZarea.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/reference/getLCZmap.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/reference/getLCZparameters.html</loc>
-  </url>
-  <url>
     <loc>https://bymaxanjos.github.io/LCZ4r/reference/index.html</loc>
   </url>
   <url>
@@ -68,8 +59,5 @@
   </url>
   <url>
     <loc>https://bymaxanjos.github.io/LCZ4r/reference/pipe.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/reference/plotLCZmap.html</loc>
   </url>
 </urlset>
