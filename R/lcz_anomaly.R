@@ -283,8 +283,8 @@ lcz_anomaly <- function(x,
       ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = .data$station, y = .data$anomaly, fill = .data$lcz)) +
       ggplot2::geom_bar(stat='identity', width=.5) +
       ggplot2::geom_hline(data=anomaly_cal$anomaly, yintercept = 0, linetype="dashed", color = "black") +
-      ggplot2::geom_text(data = base::subset(anomaly_cal, .data$anomaly >0), ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4, fontface = "bold") +
-      ggplot2::geom_text(data = base::subset(anomaly_cal, .data$anomaly <0), ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4, fontface = "bold") +
+      ggplot2::geom_text(data = anomaly_cal %>% base::subset(.data$anomaly >0), ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4, fontface = "bold") +
+      ggplot2::geom_text(data = anomaly_cal %>% base::subset(.data$anomaly <0), ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4, fontface = "bold") +
       ggplot2::scale_fill_manual(values = color_values, name = "LCZ class", labels = lcz.lables,
                                  guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")) +
       ggplot2::coord_flip(expand = FALSE, clip = "off") +
@@ -377,8 +377,8 @@ lcz_anomaly <- function(x,
         ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = .data$station, y = .data$anomaly, fill = .data$lcz)) +
         ggplot2::geom_bar(stat='identity', width=.4) +
         ggplot2::geom_hline(data=anomaly_cal$anomaly, yintercept = 0, linetype="dashed", color = "black") +
-        ggplot2::geom_text(data = base::subset(anomaly_cal, .data$anomaly >0), ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4, fontface = "bold") +
-        ggplot2::geom_text(data = base::subset(anomaly_cal, .data$anomaly <0), ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4, fontface = "bold") +
+        ggplot2::geom_text(data = base::subset(anomaly_cal, anomaly >0), ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4, fontface = "bold") +
+        ggplot2::geom_text(data = base::subset(anomaly_cal, anomaly <0), ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4, fontface = "bold") +
         ggplot2::scale_fill_manual(values = color_values, name = "LCZ class", labels = lcz.lables,
                                    guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")) +
         ggplot2::coord_flip(expand = FALSE, clip = "off") +
@@ -474,8 +474,8 @@ lcz_anomaly <- function(x,
         ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = .data$station, y = .data$anomaly, fill = .data$lcz)) +
         ggplot2::geom_bar(stat='identity', width=.5) +
         ggplot2::geom_hline(data=anomaly_cal$anomaly, yintercept = 0, linetype="dashed", color = "black") +
-        ggplot2::geom_text(data = base::subset(anomaly_cal, .data$anomaly >0), ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4, fontface = "bold") +
-        ggplot2::geom_text(data = base::subset(anomaly_cal, .data$anomaly <0), ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4, fontface = "bold") +
+        ggplot2::geom_text(data = base::subset(anomaly_cal, anomaly >0), ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4, fontface = "bold") +
+        ggplot2::geom_text(data = base::subset(anomaly_cal, anomaly <0), ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4, fontface = "bold") +
         ggplot2::scale_fill_manual(values = color_values, name = "LCZ class", labels = lcz.lables,
                                    guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")) +
         ggplot2::coord_flip(expand = FALSE, clip = "off") +
@@ -568,8 +568,8 @@ lcz_anomaly <- function(x,
         ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = .data$station, y = .data$anomaly, fill = .data$lcz)) +
         ggplot2::geom_bar(stat='identity', width=.4) +
         ggplot2::geom_hline(data=anomaly_cal$anomaly, yintercept = 0, linetype="dashed", color = "black") +
-        ggplot2::geom_text(data = base::subset(anomaly_cal, .data$anomaly >0), ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4, fontface = "bold") +
-        ggplot2::geom_text(data = base::subset(anomaly_cal, .data$anomaly <0), ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4, fontface = "bold") +
+        ggplot2::geom_text(data = base::subset(anomaly_cal, anomaly >0), ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4, fontface = "bold") +
+        ggplot2::geom_text(data = base::subset(anomaly_cal, anomaly <0), ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4, fontface = "bold") +
         ggplot2::scale_fill_manual(values = color_values, name = "LCZ class", labels = lcz.lables,
                                    guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")) +
         ggplot2::coord_flip(expand = FALSE, clip = "off") +
