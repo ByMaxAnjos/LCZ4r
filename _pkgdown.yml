@@ -5,13 +5,13 @@ template:
   params:
     ganalytics: G-20GDZ5LL77
   navbar:
+    bg: primary
+    title: LCZ4r
+    source:
   structure:
     left:
-    - intro
     - reference
     - articles
-    - tutorials
-    - news
     right: github
   components:
     reference:
@@ -36,5 +36,11 @@ template:
     heading_font: {google: "Roboto Slab"}
     code_font: {google: "JetBrains Mono"}
 
-development:
-  mode: auto
+  development:
+    mode: auto
+
+  repo:
+    url:
+      home: https://bymaxanjos.github.io/LCZ4r/
+
+
