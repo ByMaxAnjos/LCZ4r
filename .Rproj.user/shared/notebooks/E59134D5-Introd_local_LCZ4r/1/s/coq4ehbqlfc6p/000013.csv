@@ -1,0 +1,18 @@
+"0","# Get the LCZ map for your city"
+"0","lcz_map <- lcz_get_map(city=""Berlin"")"
+"1","Congratulations! You've successfully got"
+"1"," "
+"1","Berlin"
+"1"," "
+"1","LCZ map.
+"
+"0","#Let's get LCZ air temperature time series"
+"0","lcz_ts(lcz_map, data_frame = lcz_data, "
+"0","       var = ""airT"", station_id = ""station"","
+"0","       time.freq = ""month"") # Monthly temporal frequency. Let's change to ""hour, ""day"", ""week"", and so on."
+"1","Congrats! You've successfully performed a"
+"1"," "
+"1","month"
+"1"," "
+"1","time series based on LCZ classes.
+"

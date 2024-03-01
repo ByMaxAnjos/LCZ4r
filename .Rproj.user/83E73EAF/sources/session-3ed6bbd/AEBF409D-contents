@@ -1,0 +1,16 @@
+url: https://bymaxanjos.github.io/LCZ4r/
+template:
+  bootstrap: 5
+  bootswatch: lux
+  params:
+    ganalytics: G-20GDZ5LL77
+  navbar:
+    bg: primary
+    title: LCZ4r
+    search: true
+  bslib:
+    primary: white
+    base_font: {google: "Roboto"}
+    heading_font: {google: "Roboto Slab"}
+    code_font: {google: "JetBrains Mono"}
+  version: 2.0.0

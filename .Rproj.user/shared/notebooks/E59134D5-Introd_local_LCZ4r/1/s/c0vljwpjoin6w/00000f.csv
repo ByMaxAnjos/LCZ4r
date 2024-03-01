@@ -1,0 +1,14 @@
+"0",""
+"0","# If you want the thermal anomalies 1 sept 2020 on hourly basis."
+"0","lcz_anomaly(lcz_map, data_frame = lcz_data, "
+"0","            var = ""airT"", station_id = ""station"", "
+"0","            time.freq = ""hour"", #Let's change the frequency to ""day"", ""month"", ""year"""
+"0","            year = 2020, month = 9, day = 1)"
+"1","[1m[33mError[39m:[22m
+[38;5;232m[33m![38;5;232m Can't subset `.data` outside of a data mask context.[39m
+Backtrace:
+[90m 1. [39mLCZ4r::lcz_anomaly(...)
+[90m 7. [39m[1mbase[22m::subset.data.frame(., .data$anomaly > 0)
+[90m 8. [39mbase::eval(e, x, parent.frame())
+[90m 9. [39m[1m[94mbase::eval([39m[22me, x, parent.frame()[1m[94m)[39m[22m
+"

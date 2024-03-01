@@ -1,0 +1,35 @@
+## ---- include = FALSE---------------------------------------------------------
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = identical(tolower(Sys.getenv("NOT_CRAN")), "FALSE"),
+  out.width = "100%"
+)
+
+
+## ----include = FALSE----------------------------------------------------------
+#  
+#  library(LCZ4r)
+#  
+
+## ---- include = FALSE---------------------------------------------------------
+#  
+#  #Get your city LCZ map
+#  lcz_map <- getLCZmap(city="Berlin")
+#  
+#  #Plot it
+#  plotLCZmap(lcz_map)
+#  
+
+## ---- include = FALSE---------------------------------------------------------
+#  
+#  LCZpar <- getLCZparameters(lcz_map, iStack = TRUE)
+#  
+
+## ---- include = FALSE---------------------------------------------------------
+#  
+#  LCZarea <- LCZarea(lcz_map, iplot = TRUE)
+#  
+#  LCZarea
+#  
+

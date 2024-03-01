@@ -1,0 +1,57 @@
+Package: LCZ4r
+Type: Package
+Title: Tools for Local Climate Zones and Urban Heat Island Analysis
+Version: 0.1.0
+Authors@R: c( person("Max", "Anjos", role = c("aut", "cre"), 
+                    email = "maxanjos@campus.ul.pt",
+                    comment = c(ORCID = "0000-0001-6394-1324")),
+              person("Dayvid", "Medeiros", role = "ctb",
+              comment = c(ORCID = "0000-0002-5199-3909")),
+              person("Francisco", "Castelhano", role = "ctb",
+              comment = c(ORCID = "0000-0002-6747-3545"))
+  )
+Maintainer: Max Anjos <maxanjos@campus.ul.pt>
+Description: LCZ4r is a comprehensive R package designed for analyzing
+    and visualizing Local Climate Zones (LCZ) and Urban Heat Islands (UHI) at various spatial and temporal resolutions.
+    It provides a suite of functions to work with LCZ data, perform urban climate analysis, and
+    generate insights into temperature variations within urban areas.
+License: MIT + file LICENSE
+URL: https://bymaxanjos.github.io/LCZ4r/
+BugReports: https://github.com/ByMaxAnjos/LCZ4r/issues
+Depends:
+    R (>= 3.2.0)
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.2.0
+Imports: 
+    dplyr,
+    ggspatial,
+    magrittr,
+    osmdata,
+    raster,
+    rlang,
+    sf,
+    stars,
+    terra,
+    ggplot2,
+    purrr,
+    tibble,
+    tidyr,
+    openssl,
+    httr,
+    curl,
+    openair,
+    recipes,
+    janitor,
+    data.table
+Suggests: 
+    knitr,
+    RColorBrewer,
+    rmarkdown,
+    htmltools,
+    htmlwidgets,
+    testthat (>= 3.0.0)
+VignetteBuilder: rmarkdown
+Config/testthat/edition: 3
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.2.3
