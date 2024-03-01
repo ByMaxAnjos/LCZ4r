@@ -5,13 +5,36 @@ template:
   params:
     ganalytics: G-20GDZ5LL77
   navbar:
-    bg: primary
-    title: LCZ4r
-    search: true
+  structure:
+    left:
+    - intro
+    - reference
+    - articles
+    - tutorials
+    - news
+    right: github
+  components:
+    reference:
+      text: Reference
+      href: reference/index.html
+    github:
+      icon: fab fa-github fa-lg
+      href: https://github.com/ByMaxAnjos/LCZ4r/
+      aria-label: github
+    articles:
+      text: Articles
+      menu:
+      - text: LCZ4r General Functions
+        href: articles/Introd_general_LCZ4r.html
+      - text: LCZ4r Local Functions
+        href: articles/Introd_local_LCZ4r.html
+      - text: Install.LCZ4r
+        href: articles/instalation_lcz4r.html
   bslib:
     primary: white
     base_font: {google: "Roboto"}
     heading_font: {google: "Roboto Slab"}
     code_font: {google: "JetBrains Mono"}
+
 development:
   mode: auto
