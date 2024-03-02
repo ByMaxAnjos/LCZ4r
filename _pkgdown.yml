@@ -27,3 +27,5 @@ navbar:
         href: articles/Introd_local_LCZ4r.html
       - text: Install LCZ4r
         href: articles/instalation_lcz4r.html
+
+destination: docs
