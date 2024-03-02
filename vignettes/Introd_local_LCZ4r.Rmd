@@ -112,16 +112,6 @@ lcz_ts(lcz_map, data_frame = lcz_data,
 
 ```
 
-```{r echo=TRUE, fig.height=7, fig.width=12, message=FALSE, warning=FALSE}
-
-#Let's split by daylight and months 6, 7, 8 together. 
-lcz_ts(lcz_map, data_frame = lcz_data, 
-       var = "airT", station_id = "station",
-       time.freq = "hour", 
-       year = 2019, month = 6:8, by = c("daylight", "month")) 
-
-```
-
 
 ## Calculate LCZ Thermal Anomalies
 
