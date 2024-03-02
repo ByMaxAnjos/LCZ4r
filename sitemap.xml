@@ -19,6 +19,9 @@
     <loc>https://bymaxanjos.github.io/LCZ4r/articles/index.html</loc>
   </url>
   <url>
+    <loc>https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r.html</loc>
+  </url>
+  <url>
     <loc>https://bymaxanjos.github.io/LCZ4r/authors.html</loc>
   </url>
   <url>
@@ -32,6 +35,9 @@
   </url>
   <url>
     <loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_cal_area.html</loc>
+  </url>
+  <url>
+    <loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_data.html</loc>
   </url>
   <url>
     <loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_get_map.html</loc>
