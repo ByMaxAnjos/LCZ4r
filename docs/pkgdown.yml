@@ -1,0 +1,12 @@
+pandoc: 3.1.1
+pkgdown: 2.0.7
+pkgdown_sha: ~
+articles:
+  Introd_general_LCZ4r: Introd_general_LCZ4r.html
+  Introd_local_LCZ4r: Introd_local_LCZ4r.html
+  instalation_lcz4r: instalation_lcz4r.html
+last_built: 2024-03-02T10:26Z
+urls:
+  reference: https://bymaxanjos.github.io/LCZ4r/reference
+  article: https://bymaxanjos.github.io/LCZ4r/articles
+
