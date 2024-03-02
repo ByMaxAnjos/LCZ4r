@@ -3,6 +3,7 @@ template:
   bootstrap: 5
   bootswatch: sandstone
 navbar:
+  bg: primary
   structure:
     left:
     - intro
