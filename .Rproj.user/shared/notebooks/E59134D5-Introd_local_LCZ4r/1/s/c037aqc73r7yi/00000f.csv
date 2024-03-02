@@ -1,8 +1,0 @@
-"0",""
-"0","# If you want the thermal anomalies "
-"0","lcz_anomaly(my_map, data_frame = lcz_data, "
-"0","            var = ""airT"", station_id = ""station"", "
-"0","            time.freq = ""hour"", #Let's change the frequency to ""day"", ""month"", ""year"""
-"0","            year = 2020, month = 9, day = 1)"
-"1","You've successfully generated anomalies based on LCZ classes.
-"
