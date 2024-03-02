@@ -10,9 +10,7 @@ navbar:
     - home
     - articles
     - reference
-    - suggestions
     right:
-    - news
     - github
   components:
     home:
