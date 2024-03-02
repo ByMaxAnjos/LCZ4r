@@ -4,11 +4,6 @@
 
 The **LCZ4r**, a suite of R functions for analyzing and visualizing Local Climate Zones and Urban Heat Islands.
 
-
-
-
-
-
 ## Package Overview
 
 The **LCZ4r** package is a comprehensive toolset, featuring a total of functions. 
