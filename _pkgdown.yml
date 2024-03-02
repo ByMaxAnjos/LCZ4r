@@ -1,14 +1,13 @@
 url: https://bymaxanjos.github.io/LCZ4r/
 template:
   bootstrap: 5
+  bootswatch: sandstone
 navbar:
   structure:
     left:
     - intro
     - reference
     - articles
-    - tutorials
-    - news
     right: github
   components:
     reference:
