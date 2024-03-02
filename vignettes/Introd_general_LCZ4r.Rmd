@@ -1,0 +1,126 @@
+---
+title: "LCZ4r General Functions"
+author: "Max Anjos"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+    rmarkdown::html_vignette:
+    toc: true
+    toc_float: TRUE
+    toc_depth: 2
+    number_sections: false
+    highlight: "textmate"
+    css: custom.css
+vignette: >
+  %\VignetteIndexEntry{LCZ4r General Functions}
+  %\VignetteEngine{rmarkdown::render}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+The **`LCZ4r` general functions** are designed to facilitate the retrieval, analysis, and visualization of Local Climate Zones (LCZ) when LCZ related data is not readily available. They are engineered to get the LZ map, compute LCZ classes, and extract specific parameters of interest, including Sky View Factor (SVF), impervious surface fraction, and roughness element height, among others.
+
+## Getting Started
+
+The general functions, each serving a unique purpose:
+
+| Function                | Description              | Data Required | Internet Access Required |
+|------------------|------------------|-------------------|------------------|
+| `lcz_get_map()`         | Obtain the LCZ map | Not needed | Yes  |
+| `lcz_get_map2()`        | Obtain the LCZ map | Not needed | Not needed |
+| `lcz_plot_map()`        | Visualize the LCZ map | Not needed | Not needed |
+| `lcz_cal_area()`        | Calculate LCZ areas | Not needed | Not needed |
+| `lcz_get_parameters()`  | Retrieve LCZ parameters | Not needed  | Not needed |
+| `lcz_plot_parameters()` | Visualize LCZ parameters | Not needed | Not needed |
+
+Tips: Utilize the help(lcz_*) function to access comprehensive documentation for each LCZ function. For instance, you can explore details about the lcz_get_map function by typing help("lcz_get_map").
+
+## Obtain an visualize the LCZ map
+
+The lcz_get_map() function facilitates obtaining the LCZ map for your chosen city or a specific Region of Interest (ROI) by leveraging the global LCZ map developed by Demuzere et al. (2022). In our demonstration, we utilized Rio de Janeiro, Brazil as a reference city.
+
+
+```{r echo=TRUE, fig.height=7, fig.width=11, message=FALSE, warning=FALSE}
+
+library(LCZ4r)
+# Get the LCZ map for your city
+lcz_map <- lcz_get_map(city="Rio de Janeiro")
+
+# Visualize the obtained LCZ map
+lcz_plot_map(lcz_map, subtitle = "Rio de Janeiro")
+
+```
+
+Here are some tips to enhance your experience:
+
+1. Fallback Option: In rare instances where the lcz_get_map() function faces inconsistencies (e.g., due to connectivity issues), you can rely on lcz_get_map2() as an alternative solution.
+2. Custom ROI: Utilize the lcz_get_map() function along with a shapefile for your ROI by coding lcz_get_map(roi="your_shp"). Refer to the R package [sf](https://r-spatial.github.io/sf/) documentation for guidance on loading the shapefile into R.
+## Calculate LCZ areas
+
+This `lcz_cal_area()` function calculates the area for each LCZ classes, as follows:
+
+```{r echo=TRUE, fig.height=7, fig.width=12, message=FALSE, warning=FALSE}
+lcz_cal_area(lcz_map)
+
+```
+
+Tips: this function provides a table.csv of the calculated LCZ areas, coding like this: *lcz_cal_area(lcz_map, iplot = FALSE)*
+
+## Retrieve and visualize LCZ parameters
+
+This `lcz_get_parameters()`function gives you to retrieve diverse LCZ parameters, encompassing minimum, maximum, and mean values, drawn from Stewart and Oke (2012). These parameters are convertible into either shapefiles or a raster stack, where multiple rasters are aggregated into a single file.
+
+Here's a glimpse of the available LCZ parameters:
+
+| Code | Parameter       | Description             | Unit  |
+|------|-----------------|-------------------------|-------|
+| SVF1 | Sky View Factor | Minimum Sky View Factor | [0-1] |
+| SVF2 | Sky View Factor | Maximum Sky View Factor | [0-1] |
+| SVF3 | Sky View Factor | Mean Sky View Factor | [0-1] |
+| ASP1 | Aspect ratio | Minimum Aspect Ratio | [0-3] |
+| ASP2 | Aspect ratio | Maximum Aspect Ratio | [0-3] |
+| ASP3 | Aspect ratio | Mean Aspect Ratio | [0-3] |
+| BUI1 | Building Surface Fraction | Minimum Building Surface Fraction | [%] |
+| BUI2 | Building Surface Fraction | Maximum Building Surface Fraction | [%] |
+| BUI3 | Building Surface Fraction | Mean Building Surface Fraction | [%] |
+| IMP1 | Impervious Surface Fraction | Minimum Impervious Surface Fraction | [%] |
+| IMP2 | Impervious Surface Fraction | Minimum Impervious Surface Fraction | [%] |
+| IMP3 | Impervious Surface Fraction | Minimum Impervious Surface Fraction | [%] |
+| VEG1 | Vegetation Surface Fraction | Minimum Vegetation Surface Fraction | [%] |
+| VEG2 | Vegetation Surface Fraction | Maximum Vegetation Surface Fraction | [%] |
+| VEG3 | Vegetation Surface Fraction | Mean Vegetation Surface Fraction | [%] |
+| TRE1 | Tree Surface Fraction | Minimum Tree Surface Fraction | [%] |
+| TRE2 | Tree Surface Fraction | Maximum Tree Surface Fraction | [%] |
+| TRE3 | Tree Surface Fraction | Mean Tree Surface Fraction | [%] |
+| HEI1 | Height Roughness Elements | Minimum Height Roughness Elements | [meters] |
+| HEI2 | Height Roughness Elements | Maximum Height Roughness Elements | [meters] |
+| HEI3 | Height Roughness Elements | Mean Height Roughness Elements | [meters] |
+| TER1 | Terrain Roughness class | Minimum Terrain Roughness class | [meters] |
+| TER2 | Terrain Roughness class | Maximum Terrain Roughness class | [meters] |
+| TER3 | Terrain Roughness class | Mean Terrain Roughness class | [meters] |
+| ADM1 | Surface Admittance | Minimum Surface Admittance | [J m-2 s1/2 K-1] |
+| ADM2 | Surface Admittance | Maximum Surface Admittance | [J m-2 s1/2 K-1] |
+| ADM3 | Surface Admittance | Mean Surface Admittance | [J m-2 s1/2 K-1] |
+| ALB1 | Surface Albedo | Minimum Surface Albedo | [0-0.5] |
+| ALB2 | Surface Albedo | Maximum Surface Albedo | [0-0.5] |
+| ALB3 | Surface Albedo | Mean Surface Albedo | [0-0.5] |
+| ANT1 | Anthropogenic Heat Outupt | Minimum Anthropogenic Heat Outupt | [W m-2] |
+| ANT2 | Anthropogenic Heat Outupt | Maximum Anthropogenic Heat Outupt | [W m-2] |
+| ANT3 | Anthropogenic Heat Outupt | Mean Anthropogenic Heat Outupt | [W m-2] |
+| z0 | Roughness Lenght | Roughness Lenght class | [meters] |
+
+
+```{r echo=TRUE, fig.height=7, fig.width=11, message=FALSE, warning=FALSE}
+
+# Extract the LCZ parameters for raster stack format
+LCZpar <- lcz_get_parameters(lcz_map, istack = TRUE)
+
+# Visualize the selected parameter, using SVF3 code for Mean Sky View Factor values
+lcz_plot_parameters(LCZpar, iselect = "SVF3", subtitle = "Rio de Janeiro")
+
+```

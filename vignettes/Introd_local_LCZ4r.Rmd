@@ -1,0 +1,189 @@
+---
+title: "LCZ4r Local Functions"
+author: "Max Anjos"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+    rmarkdown::html_vignette:
+    toc: true
+    toc_float: TRUE
+    toc_depth: 2
+    number_sections: false
+    highlight: "textmate"
+    css: custom.css
+vignette: >
+  %\VignetteIndexEntry{LCZ4r Local Functions}
+  %\VignetteEngine{rmarkdown::render}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+The **Local functions of LCZ4r** are tailored to handle larger-scale data inputs, such as datasets containing air temperature readings. In this tutorial, we focus on the city of Berlin as our reference location. Specifically, we utilize data collected from 23 meteorological stations situated across the city, which provide hourly time series of air temperature readings. These datasets are sourced from the Urban Climate Observatory (UCO).
+
+## Getting Started
+
+The **Local functions of `LCZ4r`**, each serving a unique purpose:
+
+| Function             | Description                                | Data Required | Internet Access Required |
+|---------------|--------------------------|---------------|---------------|
+| `lcz_ts()`           | Analyze LCZ Time Series                    | Yes   | Optional*               |
+| `lcz_anamoly()`      | Calculate LCZ Thermal Anomalies              | Yes    | Optional               |
+| `lcz_anamoly_map()`      | Visualize LCZ Thermal Anomalies map              | Yes    | Optional              |
+| `lcz_krige_map()` | Perform LCZ Interpolation with Kriging     | Yes    | Optional              |
+| `lcz_krige_eval()`   | Evaluate LCZ Interpolation with Kriging    | Yes    | Optional               |
+| `lcz_idw_map()`   | Perform LCZ Interpolation with IDW         | Yes   | Optional              |
+| `lcz_idw_eval()`     | Evaluate LCZ Interpolation with IDW        | Yes   | Optional              |
+| `lcz_uhi()`          | Assess LCZ for Urban Heat Island Intensity | Yes    | Optional               |
+*Optional if you use the `lcz_get_map2()` function.
+
+Tips: 1. Utilize the help(lcz_*) function to access comprehensive documentation for each LCZ function. For instance, you can explore details about the lcz_ts function by typing help("lcz_ts"); 2. Each of these functions includes imputation for missing values within the data.frame. Refer to the documentation of each function and check the "impute" argument for further details on how missing values are handled.
+
+
+## Data inputs
+
+For the local functions to operate smoothly, you should import the air temperature (or any other environmental variable) into R as a data frame, with columns structured as follows:
+
+1. *date*: This column should contain date-time information. This column must labeled "date".
+2. *Station*: Designate a column for meteorological station identifiers.
+3. *Air Temperature*: At least one column representing the air temperature variable.
+4. *Latitude* and *Longitude*: Two columns are required to specify the geographical coordinates.
+
+It's important to note that the model standardizes the date-time format to R's conventions, such as "2023-03-13 11:00:00" or "2023-03-13". It also includes: e.g. “1/2/1999” or in format i.e. “YYYY-mm-dd”, “1999-02-01”.
+
+To streamline this process, LCZ4r offers a sample data frame, accessible through the following way:
+
+```{r echo=TRUE, fig.height=7, fig.width=11, message=FALSE, warning=FALSE}
+library(LCZ4r)
+
+#Load data from LCZ4r package
+data("lcz_data")
+
+#Check data structure out
+str(lcz_data)
+
+```
+
+## Analyze LCZ Time Series
+
+With the `lcz_ts()` function, you can analyze the air temperature associated with LCZ classes over time. For instance, you can perform hourly frequency analysis of air temperature for the years 2019-2020 using the "lcz_data" from the LCZ4r package.  
+
+```{r echo=TRUE, fig.height=7, fig.width=11, message=FALSE, warning=FALSE}
+# Get the LCZ map for your city
+lcz_map <- lcz_get_map(city="Berlin")
+
+#Let's get LCZ air temperature time series
+lcz_ts(lcz_map, data_frame = lcz_data, 
+       var = "airT", station_id = "station",
+       time.freq = "month") # Monthly temporal frequency. Let's change to "hour, "day", "week", and so on.
+
+```
+
+ Additionally, you can customize this function:
+
+**1. Flexibility time selection**
+You have the flexibility to select specific years and months for analysis. For example, you can specify a range of years (e.g., 1998:2004) or individual years (e.g., c(1998, 2004)). Similarly, you can select months either numerically (e.g., 1:6 for January to June) or by name (e.g., c("January", "December")). To illustrate, you can select data for September 1st, 2019, by including the arguments "year", "month", and "day" in the function call. See the [utility functions from the openair package](https://bookdown.org/david_carslaw/openair/sections/utilities/utility-functions.html#sec-selectByDate) for more details.
+
+```{r echo=TRUE, fig.height=7, fig.width=11, message=FALSE, warning=FALSE}
+
+#Selecting one specifique day
+lcz_ts(lcz_map, data_frame = lcz_data, 
+       var = "airT", station_id = "station",
+       time.freq = "hour", 
+       year = 2019, month = 9, day = 1)
+
+```
+
+**2. Splitting LCZ time series by temporal window or site**
+You have the flexibility to select specific years and months for analysis. For example, you can specify a range of years (e.g., 1998:2004) or individual years (e.g., c(1998, 2004)). Similarly, you can select months either numerically (e.g., 1:6 for January to June) or by name (e.g., c("January", "December")). To illustrate, you can select data for September 1st, 2019, by including the arguments "year", "month", and "day" in the function call.
+
+
+```{r echo=TRUE, fig.height=7, fig.width=12, message=FALSE, warning=FALSE}
+
+#Splitting by daylight 
+lcz_ts(lcz_map, data_frame = lcz_data, 
+       var = "airT", station_id = "station",
+       time.freq = "hour", # frequency changed to hour
+       year = 2019, month = 9, day = 1, by = "daylight") 
+
+```
+
+```{r echo=TRUE, fig.height=7, fig.width=12, message=FALSE, warning=FALSE}
+
+#Let's split by daylight and months 6, 7, 8 together. 
+lcz_ts(lcz_map, data_frame = lcz_data, 
+       var = "airT", station_id = "station",
+       time.freq = "hour", 
+       year = 2019, month = 6:8, by = c("daylight", "month")) 
+
+```
+
+
+## Calculate LCZ Thermal Anomalies
+
+The thermal anomaly is a great way to evaluate the intra-urban air temperatures differences. At each LCZ station, the thermal anomaly is defined as the difference between its temperature and the overall mean temperature of all LCZ stations. For instance, a positive temperature anomaly indicates that a particular LCZ is warmer compared to all other LCZs. The `lcz_anamoly()` function has the same utilities of the `lcz_ts()` regarding **Flexibility time selection** and **Splitting LCZ time series by temporal window or site**.
+
+```{r echo=TRUE, fig.height=7, fig.width=11, message=FALSE, warning=FALSE}
+
+# If you want the thermal anomalies 1 sept 2020 on hourly basis.
+lcz_anomaly(lcz_map, data_frame = lcz_data, 
+            var = "airT", station_id = "station", 
+            time.freq = "hour", #Let's change the frequency to "day", "month", "year"
+            year = 2020, month = 9, day = 1)
+
+```
+
+
+```{r echo=TRUE, fig.height=9, fig.width=11, message=FALSE, warning=FALSE}
+
+# If you want the thermal anomalies by months of 2020 on daily basis.
+lcz_anomaly(lcz_map, data_frame = lcz_data, 
+            var = "airT", station_id = "station", 
+            time.freq = "day", #Let's change the frequency to "day", "month", "year"
+            year = 2020, by = "month")
+
+```
+
+
+
+## Visualize LCZ Thermal Anomaly map
+
+It is coming soon...
+
+```{r echo=TRUE, fig.height=7, fig.width=11, message=FALSE, warning=FALSE}
+
+
+```
+
+
+## Perform and Evaluate LCZ Interpolation with Kriging
+
+It is coming soon...
+```{r, eval=TRUE}
+
+
+```
+
+## Perform and Evaluate LCZ Interpolation with IDW
+
+It is coming soon...
+```{r, eval=TRUE}
+
+
+```
+
+## Assess LCZ for Urban Heat Island Intensity
+
+It is coming soon..
+```{r, eval=TRUE}
+
+
+```
+
+
+
+
