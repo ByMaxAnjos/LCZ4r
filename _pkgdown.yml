@@ -34,7 +34,7 @@ navbar:
         href: articles/installation_lcz4r.html
 
 development:
-  mode: unreleased
+  mode: auto
 
 toc:
   depth: 2
