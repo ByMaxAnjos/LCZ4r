@@ -1,4 +1,12 @@
 url: https://bymaxanjos.github.io/LCZ4r/
+
+figures:
+  dpi: 300
+  fig.retina: 2
+
+development:
+  mode: auto
+
 template:
   bootstrap: 5
   bootswatch: sandstone
@@ -9,7 +17,9 @@ navbar:
     - intro
     - reference
     - articles
-    right: github
+    right:
+    - search
+    - github
   components:
     reference:
       text: Reference
