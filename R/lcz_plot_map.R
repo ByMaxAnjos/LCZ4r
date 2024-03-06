@@ -82,11 +82,8 @@ lcz_plot_map <- function(x, isave = FALSE, inclusive = FALSE, ...) {
         dplyr::pull(.data$lcz.col, .data$ID)
     }
     # Define LCZ labels
-    if(legend == "code") {
-      lcz.lables <- lcz_df$lcz
-    } else {
-      lcz.lables <- lcz_df$lcz.name
-    }
+    lcz.lables <- lcz_df$lcz.name
+
 
   # ggplot using the same data
   dataPlot <- terra::as.data.frame(x, xy=TRUE) %>%
