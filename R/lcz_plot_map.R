@@ -5,7 +5,6 @@
 #'
 #' @param x A SpatRaster object containing the LCZ map to be plotted.
 #' @param isave Logical. Set to TRUE if you want to save the plot in your working directory.
-#' @param legend Specify the type of legend to include in the plot. Use "code" to display LCZ codes in the legend.
 #' @param inclusive Set to TRUE to a colorblind-friendly palette.
 #' @param ... An optional modify axis, legend, and plot labels: title, subtitle, and caption.
 #'
@@ -26,7 +25,7 @@
 #' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis
 
 
-lcz_plot_map <- function(x, isave = FALSE, inclusive = FALSE, legend = "name", ...) {
+lcz_plot_map <- function(x, isave = FALSE, inclusive = FALSE, ...) {
 
   # Validate inputs
   if (is.null(x)) {

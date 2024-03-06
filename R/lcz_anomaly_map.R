@@ -23,9 +23,10 @@
 #'
 #' @examples
 #'
-#' # Hourly air temperature values in 2019.
-# my_anomaly <- lcz_anomaly_map(lcz_map, data_frame = lcz_data, var = "airT",
-#                                station_id = "station", year = 2019)
+#' # Daily air temperature values in September 2019 .
+#'  #my_anomaly <- lcz_anomaly_map(lcz_map, data_frame = lcz_data, var = "airT",
+#'  #                              station_id = "station", tp.res = "day", sp.res= "100",
+#'  #                              year = 2019, month=9)
 #' @importFrom rlang .data
 #'
 #' @seealso

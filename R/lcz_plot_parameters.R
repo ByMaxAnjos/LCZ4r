@@ -11,7 +11,7 @@
 #' @param all Logical, specifying whether to save all selected parameters into LCZ4r_output. Default is FALSE.
 #' @param ... An optional modify axis, legend, and plot labels: title, subtitle, and caption.
 #'
-#' @return A plot of the selected LCZ parameters.
+#' @return A plot of the selected LCZ parameters in ggplot2 format
 #'
 #' @export
 #'
