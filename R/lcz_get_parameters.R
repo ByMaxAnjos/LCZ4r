@@ -164,7 +164,6 @@ lcz_get_parameters <- function(x,  iselect = "", istack = TRUE, ishp = FALSE, is
     ras <- base::lapply(1:ncol(lcz_result), FUN = function(i) {
       ras_select <- stars::st_rasterize(lcz_result[, i]) %>%
         terra::rast()})
-
       # Create a raster stack from the list of rasters
       ras_stack <- terra::rast(ras)[[-36]]
 

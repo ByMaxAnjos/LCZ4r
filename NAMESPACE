@@ -2,6 +2,7 @@
 
 export("%>%")
 export(lcz_anomaly)
+export(lcz_anomaly_map)
 export(lcz_cal_area)
 export(lcz_get_map)
 export(lcz_get_map2)

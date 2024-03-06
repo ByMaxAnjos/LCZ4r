@@ -12,7 +12,7 @@ output:
     css: custom.css
 vignette: >
   %\VignetteIndexEntry{Install LCZ4r}
-  %\VignetteEngine{rmarkdown::render}
+  %\VignetteEngine{rmarkdown::knitr}
   %\VignetteEncoding{UTF-8}
 ---
 

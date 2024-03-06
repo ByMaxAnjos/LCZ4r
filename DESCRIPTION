@@ -37,21 +37,22 @@ Imports:
     purrr,
     tibble,
     tidyr,
-    openssl,
-    httr,
-    curl,
     openair,
     recipes,
     janitor,
-    data.table
-Suggests: 
+    data.table,
+    automap,
+    gstat,
+    lubridate
+Suggests:
     knitr,
+    openssl,
+    httr,
+    curl,
     RColorBrewer,
     rmarkdown,
     htmltools,
     htmlwidgets,
-    testthat (>= 3.0.0),
     covr
 VignetteBuilder: knitr
-Config/testthat/edition: 3
 Roxygen: list(markdown = TRUE)

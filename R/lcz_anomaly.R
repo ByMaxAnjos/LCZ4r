@@ -1,6 +1,6 @@
 #' Explore LCZ Thermal Anomalies
 #'
-#' This function generates a graphical representation of thermal anomaly for different Local Climate Zones (LCZs)
+#' This function generates a graphical representation of thermal anomaly for different Local Climate Zones (LCZs). More details: https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html
 #'
 #' @param x A SpatRaster object containing the LCZ map. The LCZ map can be obtained using the lcz_get_map() function.
 #' @param data_frame A data frame containing air temperature measurements and station IDs. The data frame should have a date field in hourly or higher resolution format.
@@ -11,7 +11,7 @@
 #'            Can either be numeric e.g. month = 1:6 to select months 1-6 (January to June), or by name e.g. month = c(\dQuote{January}, \dQuote{December}).
 #' @param time.freq Defines the time period to average to. Default is \dQuote{hour}, but includes \dQuote{day}, \dQuote{week}, \dQuote{month} or \dQuote{year}.
 #' @param by  data frame time-serie split: \dQuote{year}, \dQuote{season}, \dQuote{seasonyear},  \dQuote{month}, \dQuote{monthyear}, \dQuote{weekday}, \dQuote{weekend},  \dQuote{site},
-#'            \dQuote{daylight}, \dQuote{dst} (daylight saving time).See argument \emph{type} in openair package: https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option
+#'            \dQuote{daylight} (daytime and nighttime).See argument \emph{type} in openair package: https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option
 #' @param hemisphere Hemisphere \dQuote{northern} or \dQuote{southern} for splitting data into \dQuote{season}, \dQuote{seasonyear}, \dQuote{daylight}, and \dQuote{dst}.
 #' @param impute Method to impute missing values (\dQuote{mean}, \dQuote{median}, \dQuote{knn}, \dQuote{bag}).
 #' @param iplot Set to TRUE if you want to save the plot in your working directory.
@@ -29,7 +29,8 @@
 #' @examples
 #'
 #' # Hourly air temperature values in 2019.
-#' # my_ts <- lcz_anomaly(lcz_map, df = lcz_data, var = "airT", station_id = "station", year = 2019)
+#' # my_res <- lcz_anomaly(lcz_map, data_frame = lcz_data, var = "airT",
+#' #                       station_id = "station", year = 2019)
 #'
 #' @importFrom rlang .data
 #'
@@ -111,7 +112,7 @@ lcz_anomaly <- function(x,
         recipes::recipe(.data$var_interp ~ ., data = df_processed) %>%
         recipes::step_impute_median(.data$var_interp)
 
-      df_imputed <- lcz_recipe %>%
+      df_processed <- lcz_recipe %>%
         recipes::prep(df_processed) %>%
         recipes::bake(new_data = NULL)
     }
@@ -121,7 +122,7 @@ lcz_anomaly <- function(x,
         recipes::recipe(.data$var_interp ~ ., data = df_processed) %>%
         recipes::step_impute_knn(.data$var_interp)
 
-      df_imputed <- lcz_recipe %>%
+      df_processed <- lcz_recipe %>%
         recipes::prep(df_processed) %>%
         recipes::bake(new_data = NULL)
     }
@@ -131,7 +132,7 @@ lcz_anomaly <- function(x,
         recipes::recipe(.data$var_interp ~ ., data = df_processed) %>%
         recipes::step_impute_bag(.data$var_interp)
 
-      df_imputed <- lcz_recipe %>%
+      df_processed <- lcz_recipe %>%
         recipes::prep(df_processed) %>%
         recipes::bake(new_data = NULL)
     }
@@ -278,13 +279,14 @@ lcz_anomaly <- function(x,
 
     anomaly_cal <- anomaly_cal %>%
       dplyr::left_join(lcz_df %>% dplyr::select(.data$lcz_id, .data$station), by = "lcz_id")
+    # Subset the data outside the ggplot call for clarity
 
     final_graph <-
       ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = .data$station, y = .data$anomaly, fill = .data$lcz)) +
       ggplot2::geom_bar(stat='identity', width=.5) +
       ggplot2::geom_hline(data=anomaly_cal$anomaly, yintercept = 0, linetype="dashed", color = "black") +
-      ggplot2::geom_text(data = base::subset(anomaly_cal, anomaly >0), ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4, fontface = "bold") +
-      ggplot2::geom_text(data = base::subset(anomaly_cal, anomaly <0), ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4, fontface = "bold") +
+      ggplot2::geom_text(data = base::subset(anomaly_cal, anomaly > 0), ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4, fontface = "bold") +
+      ggplot2::geom_text(data = base::subset(anomaly_cal, anomaly < 0), ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4, fontface = "bold") +
       ggplot2::scale_fill_manual(values = color_values, name = "LCZ class", labels = lcz.lables,
                                  guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")) +
       ggplot2::coord_flip(expand = FALSE, clip = "off") +
@@ -337,6 +339,11 @@ lcz_anomaly <- function(x,
   if (!is.null(by)) {
 
     if(length(by)<2 & by %in% c("daylight", "season", "seasonyear")) {
+
+      # Extract AXIS information from CRS
+      axis_matches <- terra::crs({{x}}, parse = TRUE)[14]
+      # Extract hemisphere from AXIS definition
+      hemisphere <- base::ifelse(base::grepl("north", axis_matches), "northern", "southern")
       my_latitude <- lcz_model$latitude[1]
       my_longitude <- lcz_model$longitude[1]
       mydata <- openair::cutData(lcz_model, type = by, hemisphere= hemisphere,
@@ -372,13 +379,13 @@ lcz_anomaly <- function(x,
 
       anomaly_cal <- anomaly_cal %>%
         dplyr::left_join(lcz_df %>% dplyr::select(.data$lcz, .data$station), by = "station")
-
+      # Subset the data outside the ggplot call for clarity
       graph <-
         ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = .data$station, y = .data$anomaly, fill = .data$lcz)) +
         ggplot2::geom_bar(stat='identity', width=.4) +
         ggplot2::geom_hline(data=anomaly_cal$anomaly, yintercept = 0, linetype="dashed", color = "black") +
-        ggplot2::geom_text(data = base::subset(anomaly_cal, anomaly >0), ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4, fontface = "bold") +
-        ggplot2::geom_text(data = base::subset(anomaly_cal, anomaly <0), ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4, fontface = "bold") +
+        ggplot2::geom_text(data = base::subset(anomaly_cal, anomaly > 0), ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4, fontface = "bold") +
+        ggplot2::geom_text(data = base::subset(anomaly_cal, anomaly < 0), ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4, fontface = "bold") +
         ggplot2::scale_fill_manual(values = color_values, name = "LCZ class", labels = lcz.lables,
                                    guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")) +
         ggplot2::coord_flip(expand = FALSE, clip = "off") +
@@ -432,6 +439,12 @@ lcz_anomaly <- function(x,
     }
 
     if(length(by)>1 & by %in% "daylight") {
+
+      # Extract AXIS information from CRS
+      axis_matches <- terra::crs({{x}}, parse = TRUE)[14]
+      # Extract hemisphere from AXIS definition
+      hemisphere <- base::ifelse(base::grepl("north", axis_matches), "northern", "southern")
+
       my_latitude <- lcz_model$latitude[1]
       my_longitude <- lcz_model$longitude[1]
       mydata <- openair::cutData(lcz_model, type = by, hemisphere= hemisphere,
@@ -470,12 +483,13 @@ lcz_anomaly <- function(x,
       anomaly_cal <- anomaly_cal %>%
         dplyr::left_join(lcz_df %>% dplyr::select(.data$lcz, .data$station), by = "station")
 
+      # Subset the data outside the ggplot call for clarity
       graph <-
         ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = .data$station, y = .data$anomaly, fill = .data$lcz)) +
         ggplot2::geom_bar(stat='identity', width=.5) +
         ggplot2::geom_hline(data=anomaly_cal$anomaly, yintercept = 0, linetype="dashed", color = "black") +
-        ggplot2::geom_text(data = base::subset(anomaly_cal, anomaly >0), ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4, fontface = "bold") +
-        ggplot2::geom_text(data = base::subset(anomaly_cal, anomaly <0), ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4, fontface = "bold") +
+        ggplot2::geom_text(data = base::subset(anomaly_cal, anomaly > 0), ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4, fontface = "bold") +
+        ggplot2::geom_text(data = base::subset(anomaly_cal, anomaly < 0), ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4, fontface = "bold") +
         ggplot2::scale_fill_manual(values = color_values, name = "LCZ class", labels = lcz.lables,
                                    guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")) +
         ggplot2::coord_flip(expand = FALSE, clip = "off") +
@@ -564,12 +578,13 @@ lcz_anomaly <- function(x,
       anomaly_cal <- anomaly_cal %>%
         dplyr::left_join(lcz_df %>% dplyr::select(.data$lcz, .data$station), by = "station")
 
+      # Subset the data outside the ggplot call for clarity
       graph <-
         ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = .data$station, y = .data$anomaly, fill = .data$lcz)) +
         ggplot2::geom_bar(stat='identity', width=.4) +
         ggplot2::geom_hline(data=anomaly_cal$anomaly, yintercept = 0, linetype="dashed", color = "black") +
-        ggplot2::geom_text(data = base::subset(anomaly_cal, anomaly >0), ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4, fontface = "bold") +
-        ggplot2::geom_text(data = base::subset(anomaly_cal, anomaly <0), ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4, fontface = "bold") +
+        ggplot2::geom_text(data = base::subset(anomaly_cal, anomaly > 0), ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4, fontface = "bold") +
+        ggplot2::geom_text(data = base::subset(anomaly_cal, anomaly < 0), ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4, fontface = "bold") +
         ggplot2::scale_fill_manual(values = color_values, name = "LCZ class", labels = lcz.lables,
                                    guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")) +
         ggplot2::coord_flip(expand = FALSE, clip = "off") +

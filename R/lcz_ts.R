@@ -1,7 +1,7 @@
 
 #' Analyze LCZ Time Series
 #'
-#' This function generates a graphical representation of time series air temperature data for different Local Climate Zones (LCZs)
+#' This function generates a graphical representation of time series air temperature data for different Local Climate Zones (LCZs). More details: https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html
 #'
 #' @param x A SpatRaster object containing the LCZ map. The LCZ map can be obtained using the lcz_get_map() function.
 #' @param data_frame A data frame containing air temperature measurements and station IDs. The data frame should have a date field in hourly or higher resolution format.
@@ -13,7 +13,6 @@
 #' @param time.freq Defines the time period to average to. Default is \dQuote{hour}, but includes \dQuote{day}, \dQuote{week}, \dQuote{month} or \dQuote{year}.
 #' @param by  data frame time-serie split: \dQuote{year}, \dQuote{season}, \dQuote{seasonyear},  \dQuote{month}, \dQuote{monthyear}, \dQuote{weekday}, \dQuote{weekend},  \dQuote{site},
 #'            \dQuote{daylight}, \dQuote{dst} (daylight saving time).See argument \emph{type} in openair package: https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option
-#' @param hemisphere Hemisphere \dQuote{northern} or \dQuote{southern} for splitting data into \dQuote{season}, \dQuote{seasonyear}, \dQuote{daylight}, and \dQuote{dst}.
 #' @param impute Method to impute missing values (\dQuote{mean}, \dQuote{median}, \dQuote{knn}, \dQuote{bag}).
 #' @param iplot Set to TRUE if you want to save the plot in your working directory.
 #' @param isave Save the plot into your directory.
@@ -30,7 +29,8 @@
 #' @examples
 #'
 #' # Hourly air temperature values in 2019.
-#' # my_ts <- lcz_ts(lcz_map, df = lcz_data, var = "airT", station_id = "station", year = 2019)
+#' # my_ts <- lcz_ts(lcz_map, df = lcz_data, var = "airT",
+#' #                 station_id = "station", year = 2019)
 #'
 #' @importFrom rlang .data
 #'
@@ -46,7 +46,6 @@ lcz_ts <- function(x,
                    ...,
                    time.freq = "hour",
                    by = NULL,
-                   hemisphere = "northern",
                    impute = NULL,
                    iplot = FALSE,
                    isave = FALSE,
@@ -111,7 +110,7 @@ lcz_ts <- function(x,
         recipes::recipe(.data$var_interp ~ ., data = df_processed) %>%
         recipes::step_impute_median(.data$var_interp)
 
-      df_imputed <- lcz_recipe %>%
+      df_processed <- lcz_recipe %>%
         recipes::prep(df_processed) %>%
         recipes::bake(new_data = NULL)
     }
@@ -121,7 +120,7 @@ lcz_ts <- function(x,
         recipes::recipe(.data$var_interp ~ ., data = df_processed) %>%
         recipes::step_impute_knn(.data$var_interp)
 
-      df_imputed <- lcz_recipe %>%
+      df_processed <- lcz_recipe %>%
         recipes::prep(df_processed) %>%
         recipes::bake(new_data = NULL)
     }
@@ -131,7 +130,7 @@ lcz_ts <- function(x,
         recipes::recipe(.data$var_interp ~ ., data = df_processed) %>%
         recipes::step_impute_bag(.data$var_interp)
 
-      df_imputed <- lcz_recipe %>%
+      df_processed <- lcz_recipe %>%
         recipes::prep(df_processed) %>%
         recipes::bake(new_data = NULL)
     }
@@ -330,6 +329,11 @@ lcz_ts <- function(x,
   if (!is.null(by)) {
 
     if(length(by)<2 & by %in% c("daylight", "season", "seasonyear")) {
+      # Extract AXIS information from CRS
+      axis_matches <- terra::crs({{x}}, parse = TRUE)[14]
+      # Extract hemisphere from AXIS definition
+      hemisphere <- base::ifelse(base::grepl("north", axis_matches), "northern", "southern")
+
       my_latitude <- lcz_model$latitude[1]
       my_longitude <- lcz_model$longitude[1]
       mydata <- openair::cutData(lcz_model, type = by, hemisphere= hemisphere,
@@ -423,7 +427,11 @@ lcz_ts <- function(x,
     }
 
     if(length(by)>1 & by %in% "daylight") {
-        my_latitude <- lcz_model$latitude[1]
+      # Extract AXIS information from CRS
+      axis_matches <- terra::crs({{x}}, parse = TRUE)[14]
+      # Extract hemisphere from AXIS definition
+      hemisphere <- base::ifelse(base::grepl("north", axis_matches), "northern", "southern")
+      my_latitude <- lcz_model$latitude[1]
         my_longitude <- lcz_model$longitude[1]
         mydata <- openair::cutData(lcz_model, type = by, hemisphere= hemisphere,
                                    latitude = my_latitude, longitude = my_longitude) %>% tidyr::drop_na() %>%

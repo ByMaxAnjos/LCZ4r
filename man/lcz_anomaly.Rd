@@ -39,7 +39,7 @@ Can either be numeric e.g. month = 1:6 to select months 1-6 (January to June), o
 \item{time.freq}{Defines the time period to average to. Default is \dQuote{hour}, but includes \dQuote{day}, \dQuote{week}, \dQuote{month} or \dQuote{year}.}
 
 \item{by}{data frame time-serie split: \dQuote{year}, \dQuote{season}, \dQuote{seasonyear},  \dQuote{month}, \dQuote{monthyear}, \dQuote{weekday}, \dQuote{weekend},  \dQuote{site},
-\dQuote{daylight}, \dQuote{dst} (daylight saving time).See argument \emph{type} in openair package: https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option}
+\dQuote{daylight} (daytime and nighttime).See argument \emph{type} in openair package: https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option}
 
 \item{hemisphere}{Hemisphere \dQuote{northern} or \dQuote{southern} for splitting data into \dQuote{season}, \dQuote{seasonyear}, \dQuote{daylight}, and \dQuote{dst}.}
 
@@ -63,12 +63,13 @@ Can either be numeric e.g. month = 1:6 to select months 1-6 (January to June), o
 A visual representation of the time series of air temperature of LCZ in \code{ggplot} format
 }
 \description{
-This function generates a graphical representation of thermal anomaly for different Local Climate Zones (LCZs)
+This function generates a graphical representation of thermal anomaly for different Local Climate Zones (LCZs). More details: https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html
 }
 \examples{
 
 # Hourly air temperature values in 2019.
-# my_ts <- lcz_anomaly(lcz_map, df = lcz_data, var = "airT", station_id = "station", year = 2019)
+# my_res <- lcz_anomaly(lcz_map, data_frame = lcz_data, var = "airT",
+#                       station_id = "station", year = 2019)
 
 }
 \seealso{
