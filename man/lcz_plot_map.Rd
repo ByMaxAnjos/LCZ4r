@@ -4,7 +4,7 @@
 \alias{lcz_plot_map}
 \title{Visualize the LCZ Map}
 \usage{
-lcz_plot_map(x, isave = FALSE, inclusive = FALSE, legend = "name", ...)
+lcz_plot_map(x, isave = FALSE, inclusive = FALSE, ...)
 }
 \arguments{
 \item{x}{A SpatRaster object containing the LCZ map to be plotted.}
@@ -12,8 +12,6 @@ lcz_plot_map(x, isave = FALSE, inclusive = FALSE, legend = "name", ...)
 \item{isave}{Logical. Set to TRUE if you want to save the plot in your working directory.}
 
 \item{inclusive}{Set to TRUE to a colorblind-friendly palette.}
-
-\item{legend}{Specify the type of legend to include in the plot. Use "code" to display LCZ codes in the legend.}
 
 \item{...}{An optional modify axis, legend, and plot labels: title, subtitle, and caption.}
 }

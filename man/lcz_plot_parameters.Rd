@@ -20,7 +20,7 @@ or c("z0", "VEG3") to select multiple parameters.}
 \item{...}{An optional modify axis, legend, and plot labels: title, subtitle, and caption.}
 }
 \value{
-A plot of the selected LCZ parameters.
+A plot of the selected LCZ parameters in ggplot2 format
 }
 \description{
 This function plots the parameters of an Local Climate Zone map.
