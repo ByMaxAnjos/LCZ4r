@@ -7,9 +7,6 @@
     <loc>https://bymaxanjos.github.io/LCZ4r/LICENSE-text.html</loc>
   </url>
   <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/LICENSE.html</loc>
-  </url>
-  <url>
     <loc>https://bymaxanjos.github.io/LCZ4r/articles/Introd_general_LCZ4r.html</loc>
   </url>
   <url>
@@ -32,6 +29,9 @@
   </url>
   <url>
     <loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_anomaly.html</loc>
+  </url>
+  <url>
+    <loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_anomaly_map.html</loc>
   </url>
   <url>
     <loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_cal_area.html</loc>
