@@ -34,6 +34,9 @@
     <loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_anomaly.html</loc>
   </url>
   <url>
+    <loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_anomaly_map.html</loc>
+  </url>
+  <url>
     <loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_cal_area.html</loc>
   </url>
   <url>
@@ -47,6 +50,12 @@
   </url>
   <url>
     <loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_get_parameters.html</loc>
+  </url>
+  <url>
+    <loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_interp_map.html</loc>
+  </url>
+  <url>
+    <loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_plot_interp.html</loc>
   </url>
   <url>
     <loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_plot_map.html</loc>

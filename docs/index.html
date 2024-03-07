@@ -28,11 +28,11 @@
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
+    <nav class="navbar fixed-top navbar-dark navbar-expand-lg bg-primary"><div class="container">
     
     <a class="navbar-brand me-2" href="index.html">LCZ4r</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -72,44 +72,14 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="tools-for-local-climate-zones-analysis-and-urban-heat-islands-in-r">Tools for Local Climate Zones Analysis and Urban Heat Islands in R<a class="anchor" aria-label="anchor" href="#tools-for-local-climate-zones-analysis-and-urban-heat-islands-in-r"></a>
+<div class="page-header"><h1 id="tools-for-local-climate-zone-and-urban-heat-island-analysis-in-r">Tools for Local Climate Zone and Urban Heat Island Analysis in R<a class="anchor" aria-label="anchor" href="#tools-for-local-climate-zone-and-urban-heat-island-analysis-in-r"></a>
 </h1></div>
 <p><img align="right" src="https://github.com/ByMaxAnjos/LCZ4r/blob/main/inst/figures/logo.png?raw=true" alt="logo" width="140"></p>
-<p>The <strong>LCZ4r</strong>, a suite of R functions for analyzing and visualizing Local Climate Zones and Urban Heat Islands.</p>
+<p>The <a href="https://github.com/ByMaxAnjos/LCZ4r" class="external-link">LCZ4r package</a> offers a suite of R functions designed to analyze and visualize Local Climate Zones and Urban Heat Islands.</p>
 <div class="section level2">
 <h2 id="package-overview">Package Overview<a class="anchor" aria-label="anchor" href="#package-overview"></a>
 </h2>
-<p>The <strong>LCZ4r</strong> package is a comprehensive toolset, featuring a total of functions.</p>
-<ul>
-<li>
-<code><a href="reference/lcz_get_map.html">lcz_get_map()</a></code> - Obtain the LCZ map</li>
-<li>
-<code><a href="reference/lcz_get_map2.html">lcz_get_map2()</a></code> - Obtain the LCZ map (without internet)</li>
-<li>
-<code><a href="reference/lcz_plot_map.html">lcz_plot_map()</a></code> - Visualize the LCZ map</li>
-<li>
-<code><a href="reference/lcz_cal_area.html">lcz_cal_area()</a></code> - Calculate LCZ areas</li>
-<li>
-<code><a href="reference/lcz_get_parameters.html">lcz_get_parameters()</a></code> - Retrieve LCZ parameters</li>
-<li>
-<code><a href="reference/lcz_plot_parameters.html">lcz_plot_parameters()</a></code> - Visualize LCZ parameter map</li>
-<li>
-<code><a href="reference/lcz_ts.html">lcz_ts()</a></code> - Analyze LCZ Time Series</li>
-<li>
-<code><a href="reference/lcz_anomaly.html">lcz_anomaly()</a></code> - Calculate LCZ Thermal Anomalies</li>
-<li>
-<code>lcz_anomaly_map()</code> - Visualize LCZ Thermal Anomaly map</li>
-<li>
-<code>lcz_krige_map()</code> - Perform LCZ Interpolation with Kriging</li>
-<li>
-<code>lcz_krige_eval()</code> - Evaluate LCZ Interpolation with Kriging</li>
-<li>
-<code>lcz_idw_map()</code> - Perform LCZ Interpolation with IDW</li>
-<li>
-<code>lcz_idw_eval()</code> - Evaluate LCZ Interpolation with IDW</li>
-<li>
-<code>lcz_uhi()</code> - Assess LCZ for Urban Heat Island Intensity</li>
-</ul>
+<p>The <strong>LCZ4r</strong> is a comprehensive toolkit, including the following functions: * <code><a href="reference/lcz_get_map.html">lcz_get_map()</a></code> - Obtain the LCZ map * <code><a href="reference/lcz_get_map2.html">lcz_get_map2()</a></code> - Obtain the LCZ map (without internet) * <code><a href="reference/lcz_plot_map.html">lcz_plot_map()</a></code> - Visualize the LCZ map * <code><a href="reference/lcz_cal_area.html">lcz_cal_area()</a></code> - Calculate LCZ areas * <code><a href="reference/lcz_get_parameters.html">lcz_get_parameters()</a></code> - Retrieve LCZ parameters * <code><a href="reference/lcz_plot_parameters.html">lcz_plot_parameters()</a></code> - Visualize LCZ parameter map * <code><a href="reference/lcz_ts.html">lcz_ts()</a></code> - Analyze LCZ Time Series * <code><a href="reference/lcz_anomaly.html">lcz_anomaly()</a></code> - Calculate LCZ Thermal Anomalies * <code><a href="reference/lcz_anomaly_map.html">lcz_anomaly_map()</a></code> - Map LCZ Thermal Anomaly * <code><a href="reference/lcz_interp_map.html">lcz_interp_map()</a></code> - Map LCZ Interpolation * <code><a href="reference/lcz_plot_interp.html">lcz_plot_interp()</a></code> - Visalize LCZ Interpolation * <code>lcz_uhi()</code> - Assess LCZ for Urban Heat Island Intensity</p>
 </div>
 <div class="section level2">
 <h2 id="instalation">Instalation<a class="anchor" aria-label="anchor" href="#instalation"></a>
@@ -158,7 +128,7 @@
 <div class="section level2">
 <h2 id="interpolate-air-temperature-with-lcz">Interpolate air temperature with LCZ<a class="anchor" aria-label="anchor" href="#interpolate-air-temperature-with-lcz"></a>
 </h2>
-<p>it’s coming soon… but have look at this:</p>
+<p>Have look at this:</p>
 <p><img width="1367" alt="Screenshot 2023-08-13 at 19 33 02" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/ecc209b1-0ef5-4554-a141-3feb26d0a623"></p>
 </div>
 <div class="section level2">
@@ -183,6 +153,11 @@
 </h3>
 <p>Please feel free to contact us if you have any questions or suggestions by emailing <a href="mailto:maxanjos@campus.ul.pt">maxanjos@campus.ul.pt</a>. If you are interested in contributing to the development of this R package, we welcome you to join our team.</p>
 </div>
+<div class="section level3">
+<h3 id="inspiration">Inspiration<a class="anchor" aria-label="anchor" href="#inspiration"></a>
+</h3>
+<p><a href="https://doi.org/10.1175/BAMS-D-11-00019.1" class="external-link">Stweart and Oke’s paper</a> <a href="https://www.wudapt.org/" class="external-link">WUDPAT project</a> <a href="https://doi.org/10.5194/essd-14-3835-2022" class="external-link">Demuzere et al.,’s paper</a></p>
+</div>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">
@@ -196,8 +171,9 @@
 <div class="license">
 <h2 data-toc-skip>License</h2>
 <ul class="list-unstyled">
-<li><a href="LICENSE.html">Full license</a></li>
-<li><small><a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
+<li>
+<a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a>
+</li>
 </ul>
 </div>
 
