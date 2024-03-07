@@ -7,6 +7,7 @@
 #' @param iplot Logical, indicating whether to create a plot (default is TRUE).
 #' @param isave Save the plot into your directory.
 #' @param inclusive Set to TRUE to a colorblind-friendly palette.
+#' @param ... Additional arguments to modify axis, legend, and plot labels, including title, subtitle, and caption.
 #'
 #' @return A summary table of LCZ class areas if iplot is FALSE, otherwise, a bar plot.
 #'
@@ -22,7 +23,7 @@
 #' @seealso
 #' See the documentation for lcz_get_map() to obtain an LCZ map.
 
-lcz_cal_area <- function(x, iplot=TRUE, isave=FALSE, inclusive = FALSE){
+lcz_cal_area <- function(x, iplot=TRUE, isave=FALSE, inclusive = FALSE, ...){
 
 
 # Validate inputs ---------------------------------------------------------
@@ -105,11 +106,11 @@ lcz_cal_area <- function(x, iplot=TRUE, isave=FALSE, inclusive = FALSE){
       ggplot2::geom_text(data = lcz_df,
                          label = paste0(round(lcz_df$area_perc, 1), "%"), vjust = -0.2, size = 6, fontface = "bold") +
       ggplot2::coord_cartesian(expand = FALSE, clip = "off")+
-       ggplot2::labs(title = "",
+       ggplot2::labs(...,
            x = "LCZ code",
            y = "Area [square kilometer]",
            fill = "LCZ") +
-      ggplot2::labs(caption = "Source: LCZ4r, https://github.com/ByMaxAnjos/LCZ4r\nData: Stewart and Oke, 2012; Demuzere et al.2022.") +
+      ggplot2::theme_bw()+
       ggplot2::theme(panel.background = ggplot2::element_rect(),
                      panel.grid.major = ggplot2::element_line(color = "grey90"),
                      panel.grid.minor = ggplot2::element_line(color = "grey90"),

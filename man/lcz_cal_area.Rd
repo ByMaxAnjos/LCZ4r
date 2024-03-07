@@ -4,7 +4,7 @@
 \alias{lcz_cal_area}
 \title{Calculate LCZ areas}
 \usage{
-lcz_cal_area(x, iplot = TRUE, isave = FALSE, inclusive = FALSE)
+lcz_cal_area(x, iplot = TRUE, isave = FALSE, inclusive = FALSE, ...)
 }
 \arguments{
 \item{x}{A raster SpatRaster layer containing LCZ classes.}
@@ -14,6 +14,8 @@ lcz_cal_area(x, iplot = TRUE, isave = FALSE, inclusive = FALSE)
 \item{isave}{Save the plot into your directory.}
 
 \item{inclusive}{Set to TRUE to a colorblind-friendly palette.}
+
+\item{...}{Additional arguments to modify axis, legend, and plot labels, including title, subtitle, and caption.}
 }
 \value{
 A summary table of LCZ class areas if iplot is FALSE, otherwise, a bar plot.

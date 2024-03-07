@@ -15,11 +15,9 @@ The **LCZ4r** is a comprehensive toolkit, including the following functions:
 * `lcz_plot_parameters()` - Visualize LCZ parameter map
 * `lcz_ts()` - Analyze LCZ Time Series
 * `lcz_anomaly()` - Calculate LCZ Thermal Anomalies
-* `lcz_anomaly_map()` - Visualize LCZ Thermal Anomaly map
-* `lcz_krige_map()` - Perform LCZ Interpolation with Kriging
-* `lcz_krige_eval()` - Evaluate LCZ Interpolation with Kriging
-* `lcz_idw_map()` - Perform LCZ Interpolation with IDW
-* `lcz_idw_eval()` - Evaluate LCZ Interpolation with IDW
+* `lcz_anomaly_map()` - Map LCZ Thermal Anomaly
+* `lcz_interp_map()` - Map LCZ Interpolation
+* `lcz_plot_interp()` - Visalize LCZ Interpolation
 * `lcz_uhi()` - Assess LCZ for Urban Heat Island Intensity
 
 ## Instalation 
@@ -62,7 +60,7 @@ We highly recommend that users explore the following tutorials to gain a deeper 
 
 ## Interpolate air temperature with LCZ
 
-it's coming soon... but have look at this:
+Have look at this:
 
 <img width="1367" alt="Screenshot 2023-08-13 at 19 33 02" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/ecc209b1-0ef5-4554-a141-3feb26d0a623">
 
@@ -90,3 +88,12 @@ This project was financed in part by the Coordenação de Aperfeiçoamento de Pe
 ### Contact
 
 Please feel free to contact us if you have any questions or suggestions by emailing [maxanjos\@campus.ul.pt](mailto:maxanjos@campus.ul.pt). If you are interested in contributing to the development of this R package, we welcome you to join our team.
+
+### Inspiration
+
+[Stweart and Oke's paper](https://doi.org/10.1175/BAMS-D-11-00019.1)
+[WUDPAT project](https://www.wudapt.org/)
+[Demuzere et al.,'s paper](https://doi.org/10.5194/essd-14-3835-2022)
+
+
+

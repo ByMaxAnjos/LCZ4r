@@ -1,6 +1,6 @@
-#' Visualize the interpolated LCZ-Thermal Anomaly map
+#' Visualize the LCZ - interpolated map
 #'
-#' This function generates a spatial interpolation of thermal anomaly for different Local Climate Zones (LCZs). More details: https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html
+#' This function generates a spatial interpolation of any air temperature (or other variable) for different Local Climate Zones (LCZs). More details: https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html
 #'
 #' @param x A SpatRaster object containing the LCZ map. The LCZ map can be obtained using the lcz_get_map() function.
 #' @param data_frame A data frame containing air temperature measurements and station IDs. The data frame should have a date field in hourly or higher resolution format.
@@ -17,14 +17,14 @@
 #' @param impute Method to impute missing values (\dQuote{mean}, \dQuote{median}, \dQuote{knn}, \dQuote{bag}).
 #' @param isave Save the plot into your directory.
 #'
-#' @return A map of LCZ-thermal anomalies in \code{terra raster.tif} format
+#' @return A map of LCZ-interpolatation in \code{terra raster.tif} format
 #'
 #' @export
 #'
 #' @examples
 #'
 #' # Daily air temperature values in September 2019 .
-#'  #my_anomaly <- lcz_anomaly_map(lcz_map, data_frame = lcz_data, var = "airT",
+#'  #my_interp <- lcz_interp_map(lcz_map, data_frame = lcz_data, var = "airT",
 #'  #                              station_id = "station", tp.res = "day", sp.res= "100",
 #'  #                              year = 2019, month=9)
 #' @importFrom rlang .data
@@ -35,17 +35,17 @@
 #' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis
 
 
-lcz_anomaly_map <- function(x,
-                        data_frame = "",
-                        var = "",
-                        station_id = "",
-                        sp.res = 100,
-                        tp.res = "hour",
-                        method = "Kriging",
-                        ...,
-                        by = NULL,
-                        impute = NULL,
-                        isave = FALSE) {
+lcz_interp_map <- function(x,
+                            data_frame = "",
+                            var = "",
+                            station_id = "",
+                            sp.res = 100,
+                            tp.res = "hour",
+                            method = "Kriging",
+                            ...,
+                            by = NULL,
+                            impute = NULL,
+                            isave = FALSE) {
 
   # Check and validate inputs -----------------------------------------------
   if (is.null(x)) {
@@ -207,7 +207,7 @@ lcz_anomaly_map <- function(x,
   base::names(ras_grid) <- "lcz"
 
 
-  # Calculate anomaly temporal resolution  ------------------------------------------------------
+  # Calculate interp temporal resolution  ------------------------------------------------------
   if(is.null(by) & tp.res %in% c("hour", "day")) {  #Downscale to hour or day
     iday <- df_processed %>%
       dplyr::group_by(.data$date) %>%
@@ -247,76 +247,54 @@ lcz_anomaly_map <- function(x,
           dplyr::mutate(
             lcz = base::as.factor(.data$lcz),
             lcz_id = base::as.factor(.data$lcz_id))
-        anomlay_lcz <- function(input = NULL){
 
-          mean_df <- lcz_model %>%
-            dplyr::filter(.data$station == paste0(input)) %>%
-            dplyr::group_by(.data$lcz_id, .data$lcz) %>%
-            dplyr::summarise(mean_value = mean(.data$var_interp),.groups = "drop")
-
-          reference_df <- lcz_model %>%
-            dplyr::filter(.data$station != paste0(input)) %>%
-            dplyr::mutate(reference_value = mean(.data$var_interp))
-          reference_df <- tibble::as.tibble(mean(reference_df$reference_value))
-
-          merged_data <- dplyr::bind_cols(mean_df, reference_df) %>%
-            dplyr::rename(reference_value = .data$value) %>%
-            dplyr::mutate(anomaly = .data$mean_value - .data$reference_value)
-
-          return(merged_data)
-        }
-        anomaly_job <- base::lapply(1:base::length(my_stations$station), FUN = function(i)
-          anomlay_lcz(input = my_stations$station[i]))
-
-        anomaly_cal <- base::do.call(rbind.data.frame, anomaly_job)
-
-        lcz_anomaly_mod <- dplyr::inner_join(lcz_poi_mod, anomaly_cal, by=c("lcz_id","lcz")) %>%
+        lcz_interp_mod <- dplyr::inner_join(lcz_poi_mod, lcz_model, by=c("lcz_id","lcz")) %>%
           sf::st_transform(crs = 3857) %>%
           dplyr::mutate(lcz = base::as.integer(.data$lcz))
-        lcz_anomaly_mod <-lcz_anomaly_mod[!is.na(lcz_anomaly_mod$lcz),]
-        sf::st_crs(ras_grid) <- sf::st_crs(lcz_anomaly_mod)
+        lcz_interp_mod <-lcz_interp_mod[!is.na(lcz_interp_mod$lcz),]
+        sf::st_crs(ras_grid) <- sf::st_crs(lcz_interp_mod)
 
         if(method == "kriging") {
           # [using ordinary kriging]
-          krige_vgm <- automap::autofitVariogram(anomaly ~ lcz, lcz_anomaly_mod)$var_model
-          krige_mod <- gstat::gstat(formula = anomaly ~ lcz, model = krige_vgm$var_model, data = lcz_anomaly_mod)
+          krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, lcz_interp_mod)$var_model
+          krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = lcz_interp_mod)
           krige_map <- terra::predict(krige_mod, newdata=ras_grid)
           krige_map <- krige_map["var1.pred",,]
-          anomaly_map <- terra::rast(krige_map)
-          anomaly_map <- terra::focal(anomaly_map, w=7, fun=mean)
+          interp_map <- terra::rast(krige_map)
+          interp_map <- terra::focal(interp_map, w=7, fun=mean)
           mydate <- lcz_model %>% dplyr::pull(.data$date)
           mydate <- base::gsub("[: -]", "" , mydate[1], perl=TRUE)
           ras_name <- base::paste0("krige_", mydate)
-          base::names(anomaly_map) <- ras_name
+          base::names(interp_map) <- ras_name
 
         }
 
         if(method == "IDW") {
 
           # [inverse distance weighted interpolation]
-          idw_map <- gstat::idw(anomaly~1, lcz_anomaly_mod, ras_grid)
+          idw_map <- gstat::idw(var_interp~1, lcz_interp_mod, ras_grid)
           idw_map <- idw_map["var1.pred",,]
-          anomaly_map <- terra::rast(idw_map)
-          anomaly_map <- terra::focal(anomaly_map, w=7, fun=mean)
+          interp_map <- terra::rast(idw_map)
+          interp_map <- terra::focal(interp_map, w=7, fun=mean)
           mydate <- lcz_model %>% dplyr::pull(.data$date)
           mydate <- base::gsub("[: -]", "" , mydate[1], perl=TRUE)
           ras_name <- base::paste0("idw_", mydate)
-          names(anomaly_map) <- ras_name
+          names(interp_map) <- ras_name
         }
 
-        return(anomaly_map)
+        return(interp_map)
 
       }
 
       MapHour <- base::apply(ihour, 1, model_hour)
-      anomaly_hour <- base::unlist(MapHour)
-      return(anomaly_hour)
+      interp_hour <- base::unlist(MapHour)
+      return(interp_hour)
 
     }
 
     MapDay <- base::apply(iday, 1, model_day)
-    anomaly_day <- base::unlist(MapDay)
-    anomaly_stack <- terra::rast(anomaly_day)
+    interp_day <- base::unlist(MapDay)
+    interp_stack <- terra::rast(interp_day)
 
     if(isave == TRUE){
 
@@ -330,15 +308,15 @@ lcz_anomaly_map <- function(x,
       }
 
       #Save map as raster.tif
-      file <- base::paste0(folder,"lcz4r_anomaly_map.tif")
-      terra::writeRaster(anomaly_stack, file, overwrite = TRUE)
-      base::cat("The anomaly map rasters are saved into your pc. Look at 'LCZ4r_output' folder.\n")
+      file <- base::paste0(folder,"lcz4r_interp_map.tif")
+      terra::writeRaster(interp_stack, file, overwrite = TRUE)
+      base::cat("The interp map rasters are saved into your pc. Look at 'LCZ4r_output' folder.\n")
 
     }
 
-    base::cat("That's cool! Let's explore your LCZ anomaly map.\n")
+    base::cat("That's cool! Let's explore your LCZ interp map.\n")
 
-    return(anomaly_stack) }
+    return(interp_stack) }
 
   if(is.null(by) & tp.res %in% c("week")) {  #Downscale to week
 
@@ -364,74 +342,47 @@ lcz_anomaly_map <- function(x,
         dplyr::mutate(
           lcz = base::as.factor(.data$lcz),
           lcz_id = base::as.factor(.data$lcz_id))
-      anomlay_lcz <- function(input = NULL){
-
-        mean_df <- lcz_model %>%
-          dplyr::filter(.data$station == paste0(input)) %>%
-          dplyr::group_by(.data$lcz_id, .data$lcz) %>%
-          dplyr::summarise(mean_value = mean(.data$var_interp),.groups = "drop")
-
-        reference_df <- lcz_model %>%
-          dplyr::filter(.data$station != paste0(input)) %>%
-          dplyr::mutate(reference_value = mean(.data$var_interp))
-        reference_df <- tibble::as.tibble(mean(reference_df$reference_value))
-
-        merged_data <- dplyr::bind_cols(mean_df, reference_df) %>%
-          dplyr::rename(reference_value = .data$value) %>%
-          dplyr::mutate(anomaly = .data$mean_value - .data$reference_value)
-
-        return(merged_data)
-      }
-      anomaly_job <- base::lapply(1:base::length(my_stations$station), FUN = function(i)
-        anomlay_lcz(input = my_stations$station[i]))
-
-      anomaly_cal <- base::do.call(rbind.data.frame, anomaly_job)
-
-      lcz_anomaly_mod <- dplyr::inner_join(lcz_poi_mod, anomaly_cal, by=c("lcz_id","lcz")) %>%
+      lcz_interp_mod <- dplyr::inner_join(lcz_poi_mod, lcz_model, by=c("lcz_id","lcz")) %>%
         sf::st_transform(crs = 3857) %>%
         dplyr::mutate(lcz = base::as.integer(.data$lcz))
-      lcz_anomaly_mod <-lcz_anomaly_mod[!is.na(lcz_anomaly_mod$lcz),]
-      sf::st_crs(ras_grid) <- sf::st_crs(lcz_anomaly_mod)
+      lcz_interp_mod <-lcz_interp_mod[!is.na(lcz_interp_mod$lcz),]
+      sf::st_crs(ras_grid) <- sf::st_crs(lcz_interp_mod)
 
       if(method == "kriging") {
         # [using ordinary kriging]
-        krige_vgm <- automap::autofitVariogram(anomaly ~ lcz, lcz_anomaly_mod)$var_model
-        krige_mod <- gstat::gstat(formula = anomaly ~ lcz, model = krige_vgm$var_model, data = lcz_anomaly_mod)
+        krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, lcz_interp_mod)$var_model
+        krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = lcz_interp_mod)
         krige_map <- terra::predict(krige_mod, newdata=ras_grid)
         krige_map <- krige_map["var1.pred",,]
-        anomaly_map <- terra::rast(krige_map)
-        anomaly_map <- terra::focal(anomaly_map, w=7, fun=mean)
+        interp_map <- terra::rast(krige_map)
+        interp_map <- terra::focal(interp_map, w=7, fun=mean)
         mydate <- lcz_model %>% dplyr::pull(.data$date)
         mydate <- base::gsub("[: -]", "" , mydate[1], perl=TRUE)
         ras_name <- base::paste0("krige_", mydate, "_", my_week)
-        base::names(anomaly_map) <- ras_name
+        base::names(interp_map) <- ras_name
 
       }
 
       if(method == "IDW") {
 
         # [inverse distance weighted interpolation]
-        idw_map <- gstat::idw(anomaly~1, lcz_anomaly_mod, ras_grid)
+        idw_map <- gstat::idw(var_interp~1, lcz_interp_mod, ras_grid)
         idw_map <- idw_map["var1.pred",,]
-        anomaly_map <- terra::rast(idw_map)
-        anomaly_map <- terra::focal(anomaly_map, w=7, fun=mean)
+        interp_map <- terra::rast(idw_map)
+        interp_map <- terra::focal(interp_map, w=7, fun=mean)
         mydate <- lcz_model %>% dplyr::pull(.data$date)
         mydate <- base::gsub("[: -]", "" , mydate[1], perl=TRUE)
         ras_name <- base::paste0("idw_", mydate, "_", my_week)
-        names(anomaly_map) <- ras_name
+        names(interp_map) <- ras_name
       }
 
-      return(anomaly_map)
-
-
-
-
+      return(interp_map)
 
     }
 
     mapWeek <- base::apply(iweek, 1, model_week)
-    anomaly_week <- base::unlist(mapWeek)
-    anomaly_stack <- terra::rast(anomaly_week)
+    interp_week <- base::unlist(mapWeek)
+    interp_stack <- terra::rast(interp_week)
 
     if(isave == TRUE){
 
@@ -445,15 +396,15 @@ lcz_anomaly_map <- function(x,
       }
 
       #Save map as raster.tif
-      file <- base::paste0(folder,"lcz4r_anomaly_map.tif")
-      terra::writeRaster(anomaly_stack, file, overwrite = TRUE)
-      base::cat("The anomaly map rasters are saved into your pc. Look at 'LCZ4r_output' folder.\n")
+      file <- base::paste0(folder,"lcz4r_interp_map.tif")
+      terra::writeRaster(interp_stack, file, overwrite = TRUE)
+      base::cat("The interp map rasters are saved into your pc. Look at 'LCZ4r_output' folder.\n")
 
     }
 
-    base::cat("That's cool! Let's explore your LCZ anomaly map.\n")
+    base::cat("That's cool! Let's explore your LCZ interp map.\n")
 
-    return(anomaly_stack)
+    return(interp_stack)
 
   }
 
@@ -482,70 +433,47 @@ lcz_anomaly_map <- function(x,
           lcz = base::as.factor(.data$lcz),
           lcz_id = base::as.factor(.data$lcz_id))
 
-      anomlay_lcz <- function(input = NULL){
-
-        mean_df <- lcz_model %>%
-          dplyr::filter(.data$station == paste0(input)) %>%
-          dplyr::group_by(.data$lcz_id, .data$lcz) %>%
-          dplyr::summarise(mean_value = mean(.data$var_interp),.groups = "drop")
-
-        reference_df <- lcz_model %>%
-          dplyr::filter(.data$station != paste0(input)) %>%
-          dplyr::mutate(reference_value = mean(.data$var_interp))
-        reference_df <- tibble::as.tibble(mean(reference_df$reference_value))
-
-        merged_data <- dplyr::bind_cols(mean_df, reference_df) %>%
-          dplyr::rename(reference_value = .data$value) %>%
-          dplyr::mutate(anomaly = .data$mean_value - .data$reference_value)
-
-        return(merged_data)
-      }
-      anomaly_job <- base::lapply(1:length(my_stations$station), FUN = function(i)
-        anomlay_lcz(input = my_stations$station[i]))
-
-      anomaly_cal <- base::do.call(rbind.data.frame, anomaly_job)
-
-      lcz_anomaly_mod <- dplyr::inner_join(lcz_poi_mod, anomaly_cal, by=c("lcz_id","lcz")) %>%
+      lcz_interp_mod <- dplyr::inner_join(lcz_poi_mod, lcz_model, by=c("lcz_id","lcz")) %>%
         sf::st_transform(crs = 3857) %>%
         dplyr::mutate(lcz = base::as.integer(.data$lcz))
-      lcz_anomaly_mod <-lcz_anomaly_mod[!is.na(lcz_anomaly_mod$lcz),]
-      sf::st_crs(ras_grid) <- sf::st_crs(lcz_anomaly_mod)
+      lcz_interp_mod <-lcz_interp_mod[!is.na(lcz_interp_mod$lcz),]
+      sf::st_crs(ras_grid) <- sf::st_crs(lcz_interp_mod)
 
       if(method == "kriging") {
         # [using ordinary kriging]
-        krige_vgm <- automap::autofitVariogram(anomaly ~ lcz, lcz_anomaly_mod)$var_model
-        krige_mod <- gstat::gstat(formula = anomaly ~ lcz, model = krige_vgm$var_model, data = lcz_anomaly_mod)
+        krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, lcz_interp_mod)$var_model
+        krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = lcz_interp_mod)
         krige_map <- terra::predict(krige_mod, newdata=ras_grid)
         krige_map <- krige_map["var1.pred",,]
-        anomaly_map <- terra::rast(krige_map)
-        anomaly_map <- terra::focal(anomaly_map, w=7, fun=mean)
+        interp_map <- terra::rast(krige_map)
+        interp_map <- terra::focal(interp_map, w=7, fun=mean)
         mydate <- lcz_model %>% dplyr::pull(.data$date)
         mydate <- base::gsub("[: -]", "" , mydate[1], perl=TRUE)
-        ras_name <- base::paste0("krige_", mydate, "_", my_month)
-        base::names(anomaly_map) <- ras_name
+        ras_name <- base::paste0("krige_", mydate)
+        base::names(interp_map) <- ras_name
 
       }
 
       if(method == "IDW") {
 
         # [inverse distance weighted interpolation]
-        idw_map <- gstat::idw(anomaly~1, lcz_anomaly_mod, ras_grid)
+        idw_map <- gstat::idw(var_interp~1, lcz_interp_mod, ras_grid)
         idw_map <- idw_map["var1.pred",,]
-        anomaly_map <- terra::rast(idw_map)
-        anomaly_map <- terra::focal(anomaly_map, w=7, fun=mean)
+        interp_map <- terra::rast(idw_map)
+        interp_map <- terra::focal(interp_map, w=7, fun=mean)
         mydate <- lcz_model %>% dplyr::pull(.data$date)
         mydate <- base::gsub("[: -]", "" , mydate[1], perl=TRUE)
-        ras_name <- base::paste0("idw_", mydate, "_", my_month)
-        names(anomaly_map) <- ras_name
+        ras_name <- base::paste0("idw_", mydate)
+        names(interp_map) <- ras_name
       }
 
-      return(anomaly_map)
+      return(interp_map)
 
     }
 
     mapMonth <- base::apply(imonth, 1, model_month)
-    anomaly_month <- base::unlist(mapMonth)
-    anomaly_stack <- terra::rast(anomaly_month)
+    interp_month <- base::unlist(mapMonth)
+    interp_stack <- terra::rast(interp_month)
 
     if(isave == TRUE){
 
@@ -559,15 +487,15 @@ lcz_anomaly_map <- function(x,
       }
 
       #Save map as raster.tif
-      file <- base::paste0(folder,"lcz4r_anomaly_map.tif")
-      terra::writeRaster(anomaly_stack, file, overwrite = TRUE)
-      base::cat("The anomaly map rasters are saved into your pc. Look at 'LCZ4r_output' folder.\n")
+      file <- base::paste0(folder,"lcz4r_interp_map.tif")
+      terra::writeRaster(interp_stack, file, overwrite = TRUE)
+      base::cat("The interp map rasters are saved into your pc. Look at 'LCZ4r_output' folder.\n")
 
     }
 
-    base::cat("That's cool! Let's explore your LCZ anomaly map.\n")
+    base::cat("That's cool! Let's explore your LCZ interp map.\n")
 
-    return(anomaly_stack)
+    return(interp_stack)
 
   }
 
@@ -596,70 +524,47 @@ lcz_anomaly_map <- function(x,
           lcz = base::as.factor(.data$lcz),
           lcz_id = base::as.factor(.data$lcz_id))
 
-      anomlay_lcz <- function(input = NULL){
-
-        mean_df <- lcz_model %>%
-          dplyr::filter(.data$station == paste0(input)) %>%
-          dplyr::group_by(.data$lcz_id, .data$lcz) %>%
-          dplyr::summarise(mean_value = mean(.data$var_interp),.groups = "drop")
-
-        reference_df <- lcz_model %>%
-          dplyr::filter(.data$station != paste0(input)) %>%
-          dplyr::mutate(reference_value = mean(.data$var_interp))
-        reference_df <- tibble::as.tibble(mean(reference_df$reference_value))
-
-        merged_data <- dplyr::bind_cols(mean_df, reference_df) %>%
-          dplyr::rename(reference_value = .data$value) %>%
-          dplyr::mutate(anomaly = .data$mean_value - .data$reference_value)
-
-        return(merged_data)
-      }
-      anomaly_job <- base::lapply(1:length(my_stations$station), FUN = function(i)
-        anomlay_lcz(input = my_stations$station[i]))
-
-      anomaly_cal <- base::do.call(rbind.data.frame, anomaly_job)
-
-      lcz_anomaly_mod <- dplyr::inner_join(lcz_poi_mod, anomaly_cal, by=c("lcz_id","lcz")) %>%
+      lcz_interp_mod <- dplyr::inner_join(lcz_poi_mod, lcz_model, by=c("lcz_id","lcz")) %>%
         sf::st_transform(crs = 3857) %>%
         dplyr::mutate(lcz = base::as.integer(.data$lcz))
-      lcz_anomaly_mod <-lcz_anomaly_mod[!is.na(lcz_anomaly_mod$lcz),]
-      sf::st_crs(ras_grid) <- sf::st_crs(lcz_anomaly_mod)
+      lcz_interp_mod <-lcz_interp_mod[!is.na(lcz_interp_mod$lcz),]
+      sf::st_crs(ras_grid) <- sf::st_crs(lcz_interp_mod)
 
       if(method == "kriging") {
         # [using ordinary kriging]
-        krige_vgm <- automap::autofitVariogram(anomaly ~ lcz, lcz_anomaly_mod)$var_model
-        krige_mod <- gstat::gstat(formula = anomaly ~ lcz, model = krige_vgm$var_model, data = lcz_anomaly_mod)
+        krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, lcz_interp_mod)$var_model
+        krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = lcz_interp_mod)
         krige_map <- terra::predict(krige_mod, newdata=ras_grid)
         krige_map <- krige_map["var1.pred",,]
-        anomaly_map <- terra::rast(krige_map)
-        anomaly_map <- terra::focal(anomaly_map, w=7, fun=mean)
+        interp_map <- terra::rast(krige_map)
+        interp_map <- terra::focal(interp_map, w=7, fun=mean)
         mydate <- lcz_model %>% dplyr::pull(.data$date)
         mydate <- base::gsub("[: -]", "" , mydate[1], perl=TRUE)
-        ras_name <- base::paste0("krige_", mydate, "_", my_quarter)
-        base::names(anomaly_map) <- ras_name
+        ras_name <- base::paste0("krige_", mydate)
+        base::names(interp_map) <- ras_name
 
       }
 
       if(method == "IDW") {
 
         # [inverse distance weighted interpolation]
-        idw_map <- gstat::idw(anomaly~1, lcz_anomaly_mod, ras_grid)
+        idw_map <- gstat::idw(var_interp~1, lcz_interp_mod, ras_grid)
         idw_map <- idw_map["var1.pred",,]
-        anomaly_map <- terra::rast(idw_map)
-        anomaly_map <- terra::focal(anomaly_map, w=7, fun=mean)
+        interp_map <- terra::rast(idw_map)
+        interp_map <- terra::focal(interp_map, w=7, fun=mean)
         mydate <- lcz_model %>% dplyr::pull(.data$date)
         mydate <- base::gsub("[: -]", "" , mydate[1], perl=TRUE)
-        ras_name <- base::paste0("idw_", mydate, "_", my_quarter)
-        names(anomaly_map) <- ras_name
+        ras_name <- base::paste0("idw_", mydate)
+        names(interp_map) <- ras_name
       }
 
-      return(anomaly_map)
+      return(interp_map)
 
     }
 
     mapQuarter <- base::apply(iquarter, 1, model_quarter)
-    anomaly_quarter <- base::unlist(mapQuarter)
-    anomaly_stack <- terra::rast(anomaly_quarter)
+    interp_quarter <- base::unlist(mapQuarter)
+    interp_stack <- terra::rast(interp_quarter)
 
     if(isave == TRUE){
 
@@ -673,15 +578,15 @@ lcz_anomaly_map <- function(x,
       }
 
       #Save map as raster.tif
-      file <- base::paste0(folder,"lcz4r_anomaly_map.tif")
-      terra::writeRaster(anomaly_stack, file, overwrite = TRUE)
-      base::cat("The anomaly map rasters are saved into your pc. Look at 'LCZ4r_output' folder.\n")
+      file <- base::paste0(folder,"lcz4r_interp_map.tif")
+      terra::writeRaster(interp_stack, file, overwrite = TRUE)
+      base::cat("The interp map rasters are saved into your pc. Look at 'LCZ4r_output' folder.\n")
 
     }
 
-    base::cat("That's cool! Let's explore your LCZ anomaly map.\n")
+    base::cat("That's cool! Let's explore your LCZ interp map.\n")
 
-    return(anomaly_stack)
+    return(interp_stack)
 
   }
 
@@ -709,70 +614,48 @@ lcz_anomaly_map <- function(x,
         dplyr::mutate(
           lcz = base::as.factor(.data$lcz),
           lcz_id = base::as.factor(.data$lcz_id))
-      anomlay_lcz <- function(input = NULL){
-
-        mean_df <- lcz_model %>%
-          dplyr::filter(.data$station == paste0(input)) %>%
-          dplyr::group_by(.data$lcz_id, .data$lcz) %>%
-          dplyr::summarise(mean_value = mean(.data$var_interp),.groups = "drop")
-
-        reference_df <- lcz_model %>%
-          dplyr::filter(.data$station != paste0(input)) %>%
-          dplyr::mutate(reference_value = mean(.data$var_interp))
-        reference_df <- tibble::as.tibble(mean(reference_df$reference_value))
-
-        merged_data <- dplyr::bind_cols(mean_df, reference_df) %>%
-          dplyr::rename(reference_value = .data$value) %>%
-          dplyr::mutate(anomaly = .data$mean_value - .data$reference_value)
-
-        return(merged_data)
-      }
-      anomaly_job <- base::lapply(1:length(my_stations$station), FUN = function(i)
-        anomlay_lcz(input = my_stations$station[i]))
-
-      anomaly_cal <- base::do.call(rbind.data.frame, anomaly_job)
-
-      lcz_anomaly_mod <- dplyr::inner_join(lcz_poi_mod, anomaly_cal, by=c("lcz_id","lcz")) %>%
+      lcz_interp_mod <- dplyr::inner_join(lcz_poi_mod, lcz_model, by=c("lcz_id","lcz")) %>%
         sf::st_transform(crs = 3857) %>%
         dplyr::mutate(lcz = base::as.integer(.data$lcz))
-      lcz_anomaly_mod <-lcz_anomaly_mod[!is.na(lcz_anomaly_mod$lcz),]
-      sf::st_crs(ras_grid) <- sf::st_crs(lcz_anomaly_mod)
+      lcz_interp_mod <-lcz_interp_mod[!is.na(lcz_interp_mod$lcz),]
+      sf::st_crs(ras_grid) <- sf::st_crs(lcz_interp_mod)
 
       if(method == "kriging") {
         # [using ordinary kriging]
-        krige_vgm <- automap::autofitVariogram(anomaly ~ lcz, lcz_anomaly_mod)$var_model
-        krige_mod <- gstat::gstat(formula = anomaly ~ lcz, model = krige_vgm$var_model, data = lcz_anomaly_mod)
+        krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, lcz_interp_mod)$var_model
+        krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = lcz_interp_mod)
         krige_map <- terra::predict(krige_mod, newdata=ras_grid)
         krige_map <- krige_map["var1.pred",,]
-        anomaly_map <- terra::rast(krige_map)
-        anomaly_map <- terra::focal(anomaly_map, w=7, fun=mean)
+        interp_map <- terra::rast(krige_map)
+        interp_map <- terra::focal(interp_map, w=7, fun=mean)
         mydate <- lcz_model %>% dplyr::pull(.data$date)
         mydate <- base::gsub("[: -]", "" , mydate[1], perl=TRUE)
         ras_name <- base::paste0("krige_", mydate)
-        base::names(anomaly_map) <- ras_name
+        base::names(interp_map) <- ras_name
 
       }
 
       if(method == "IDW") {
 
         # [inverse distance weighted interpolation]
-        idw_map <- gstat::idw(anomaly~1, lcz_anomaly_mod, ras_grid)
+        idw_map <- gstat::idw(var_interp~1, lcz_interp_mod, ras_grid)
         idw_map <- idw_map["var1.pred",,]
-        anomaly_map <- terra::rast(idw_map)
-        anomaly_map <- terra::focal(anomaly_map, w=7, fun=mean)
+        interp_map <- terra::rast(idw_map)
+        interp_map <- terra::focal(interp_map, w=7, fun=mean)
         mydate <- lcz_model %>% dplyr::pull(.data$date)
         mydate <- base::gsub("[: -]", "" , mydate[1], perl=TRUE)
         ras_name <- base::paste0("idw_", mydate)
-        names(anomaly_map) <- ras_name
+        names(interp_map) <- ras_name
       }
 
-      return(anomaly_map)
+      return(interp_map)
+
 
     }
 
     mapYear <- base::apply(iyear, 1, model_year)
-    anomaly_year <- base::unlist(mapYear)
-    anomaly_stack <- terra::rast(anomaly_year)
+    interp_year <- base::unlist(mapYear)
+    interp_stack <- terra::rast(interp_year)
 
     if(isave == TRUE){
 
@@ -786,15 +669,15 @@ lcz_anomaly_map <- function(x,
       }
 
       #Save map as raster.tif
-      file <- base::paste0(folder,"lcz4r_anomaly_map.tif")
-      terra::writeRaster(anomaly_stack, file, overwrite = TRUE)
-      base::cat("The anomaly map rasters are saved into your pc. Look at 'LCZ4r_output' folder.\n")
+      file <- base::paste0(folder,"lcz4r_interp_map.tif")
+      terra::writeRaster(interp_stack, file, overwrite = TRUE)
+      base::cat("The interp map rasters are saved into your pc. Look at 'LCZ4r_output' folder.\n")
 
     }
 
-    base::cat("That's cool! Let's explore your LCZ anomaly map.\n")
+    base::cat("That's cool! Let's explore your LCZ interp map.\n")
 
-    return(anomaly_stack)
+    return(interp_stack)
 
   }
 
@@ -835,72 +718,47 @@ lcz_anomaly_map <- function(x,
           dplyr::mutate(
             lcz = base::as.factor(.data$lcz),
             lcz_id = base::as.factor(.data$lcz_id))
-
-        anomlay_lcz <- function(input = NULL){
-
-          mean_df <- lcz_model %>%
-            dplyr::filter(.data$station == paste0(input)) %>%
-            dplyr::group_by(.data$lcz_id, .data$lcz) %>%
-            dplyr::summarise(mean_value = mean(.data$var_interp),.groups = "drop")
-
-          reference_df <- lcz_model %>%
-            dplyr::filter(.data$station != paste0(input)) %>%
-            dplyr::mutate(reference_value = mean(.data$var_interp))
-          reference_df <- tibble::as.tibble(mean(reference_df$reference_value))
-
-          merged_data <- dplyr::bind_cols(mean_df, reference_df) %>%
-            dplyr::rename(reference_value = .data$value) %>%
-            dplyr::mutate(anomaly = .data$mean_value - .data$reference_value)
-
-          return(merged_data)
-        }
-        anomaly_job <- base::lapply(1:length(my_stations$station), FUN = function(i)
-          anomlay_lcz(input = my_stations$station[i]))
-
-        anomaly_cal <- base::do.call(rbind.data.frame, anomaly_job)
-
-        lcz_anomaly_mod <- dplyr::inner_join(lcz_poi_mod, anomaly_cal, by=c("lcz_id","lcz")) %>%
+        lcz_interp_mod <- dplyr::inner_join(lcz_poi_mod, lcz_model, by=c("lcz_id","lcz")) %>%
           sf::st_transform(crs = 3857) %>%
           dplyr::mutate(lcz = base::as.integer(.data$lcz))
-        lcz_anomaly_mod <-lcz_anomaly_mod[!is.na(lcz_anomaly_mod$lcz),]
-        sf::st_crs(ras_grid) <- sf::st_crs(lcz_anomaly_mod)
+        lcz_interp_mod <-lcz_interp_mod[!is.na(lcz_interp_mod$lcz),]
+        sf::st_crs(ras_grid) <- sf::st_crs(lcz_interp_mod)
 
         if(method == "kriging") {
           # [using ordinary kriging]
-          krige_vgm <- automap::autofitVariogram(anomaly ~ lcz, lcz_anomaly_mod)$var_model
-          krige_mod <- gstat::gstat(formula = anomaly ~ lcz, model = krige_vgm$var_model, data = lcz_anomaly_mod)
+          krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, lcz_interp_mod)$var_model
+          krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = lcz_interp_mod)
           krige_map <- terra::predict(krige_mod, newdata=ras_grid)
           krige_map <- krige_map["var1.pred",,]
-          anomaly_map <- terra::rast(krige_map)
-          anomaly_map <- terra::focal(anomaly_map, w=7, fun=mean)
+          interp_map <- terra::rast(krige_map)
+          interp_map <- terra::focal(interp_map, w=7, fun=mean)
           mydate <- lcz_model %>% dplyr::pull(.data$date)
           mydate <- base::gsub("[: -]", "" , mydate[1], perl=TRUE)
           ras_name <- base::paste0("krige_", mydate, "_", my_by)
-          base::names(anomaly_map) <- ras_name
+          base::names(interp_map) <- ras_name
 
         }
 
         if(method == "IDW") {
 
           # [inverse distance weighted interpolation]
-          idw_map <- gstat::idw(anomaly~1, lcz_anomaly_mod, ras_grid)
+          idw_map <- gstat::idw(var_interp~1, lcz_interp_mod, ras_grid)
           idw_map <- idw_map["var1.pred",,]
-          anomaly_map <- terra::rast(idw_map)
-          anomaly_map <- terra::focal(anomaly_map, w=7, fun=mean)
+          interp_map <- terra::rast(idw_map)
+          interp_map <- terra::focal(interp_map, w=7, fun=mean)
           mydate <- lcz_model %>% dplyr::pull(.data$date)
           mydate <- base::gsub("[: -]", "" , mydate[1], perl=TRUE)
           ras_name <- base::paste0("idw_", mydate, "_", my_by)
-          names(anomaly_map) <- ras_name
+          names(interp_map) <- ras_name
         }
 
-        return(anomaly_map)
-
+        return(interp_map)
 
       }
 
       mapBy <- base::apply(iby, 1, model_by)
-      anomaly_by <- base::unlist(mapBy)
-      anomaly_stack <- terra::rast(anomaly_by)
+      interp_by <- base::unlist(mapBy)
+      interp_stack <- terra::rast(interp_by)
 
       if(isave == TRUE){
 
@@ -914,17 +772,17 @@ lcz_anomaly_map <- function(x,
         }
 
         #Save map as raster.tif
-        file <- base::paste0(folder,"lcz4r_anomaly_map.tif")
-        terra::writeRaster(anomaly_stack, file, overwrite = TRUE)
-        base::cat("The anomaly map rasters are saved into your pc. Look at 'LCZ4r_output' folder.\n")
+        file <- base::paste0(folder,"lcz4r_interp_map.tif")
+        terra::writeRaster(interp_stack, file, overwrite = TRUE)
+        base::cat("The interp map rasters are saved into your pc. Look at 'LCZ4r_output' folder.\n")
 
       }
 
-      base::cat("That's cool! Let's explore your LCZ anomaly map.\n")
+      base::cat("That's cool! Let's explore your LCZ interp map.\n")
 
-      return(anomaly_stack)
+      return(interp_stack)
 
-      }
+    }
 
     if(length(by)>1 & by %in% "daylight") {
 
@@ -963,71 +821,47 @@ lcz_anomaly_map <- function(x,
             lcz = base::as.factor(.data$lcz),
             lcz_id = base::as.factor(.data$lcz_id))
 
-        anomlay_lcz <- function(input = NULL){
-
-          mean_df <- lcz_model %>%
-            dplyr::filter(.data$station == paste0(input)) %>%
-            dplyr::group_by(.data$lcz_id, .data$lcz) %>%
-            dplyr::summarise(mean_value = mean(.data$var_interp),.groups = "drop")
-
-          reference_df <- lcz_model %>%
-            dplyr::filter(.data$station != paste0(input)) %>%
-            dplyr::mutate(reference_value = mean(.data$var_interp))
-          reference_df <- tibble::as.tibble(mean(reference_df$reference_value))
-
-          merged_data <- dplyr::bind_cols(mean_df, reference_df) %>%
-            dplyr::rename(reference_value = .data$value) %>%
-            dplyr::mutate(anomaly = .data$mean_value - .data$reference_value)
-
-          return(merged_data)
-        }
-        anomaly_job <- base::lapply(1:length(my_stations$station), FUN = function(i)
-          anomlay_lcz(input = my_stations$station[i]))
-
-        anomaly_cal <- base::do.call(rbind.data.frame, anomaly_job)
-
-        lcz_anomaly_mod <- dplyr::inner_join(lcz_poi_mod, anomaly_cal, by=c("lcz_id","lcz")) %>%
+        lcz_interp_mod <- dplyr::inner_join(lcz_poi_mod, lcz_model, by=c("lcz_id","lcz")) %>%
           sf::st_transform(crs = 3857) %>%
           dplyr::mutate(lcz = base::as.integer(.data$lcz))
-        lcz_anomaly_mod <-lcz_anomaly_mod[!is.na(lcz_anomaly_mod$lcz),]
-        sf::st_crs(ras_grid) <- sf::st_crs(lcz_anomaly_mod)
+        lcz_interp_mod <-lcz_interp_mod[!is.na(lcz_interp_mod$lcz),]
+        sf::st_crs(ras_grid) <- sf::st_crs(lcz_interp_mod)
 
         if(method == "kriging") {
           # [using ordinary kriging]
-          krige_vgm <- automap::autofitVariogram(anomaly ~ lcz, lcz_anomaly_mod)$var_model
-          krige_mod <- gstat::gstat(formula = anomaly ~ lcz, model = krige_vgm$var_model, data = lcz_anomaly_mod)
+          krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, lcz_interp_mod)$var_model
+          krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = lcz_interp_mod)
           krige_map <- terra::predict(krige_mod, newdata=ras_grid)
           krige_map <- krige_map["var1.pred",,]
-          anomaly_map <- terra::rast(krige_map)
-          anomaly_map <- terra::focal(anomaly_map, w=7, fun=mean)
+          interp_map <- terra::rast(krige_map)
+          interp_map <- terra::focal(interp_map, w=7, fun=mean)
           mydate <- lcz_model %>% dplyr::pull(.data$date)
           mydate <- base::gsub("[: -]", "" , mydate[1], perl=TRUE)
           ras_name <- base::paste0("krige_", mydate, "_", my_by)
-          base::names(anomaly_map) <- ras_name
+          base::names(interp_map) <- ras_name
 
         }
 
         if(method == "IDW") {
 
           # [inverse distance weighted interpolation]
-          idw_map <- gstat::idw(anomaly~1, lcz_anomaly_mod, ras_grid)
+          idw_map <- gstat::idw(var_interp~1, lcz_interp_mod, ras_grid)
           idw_map <- idw_map["var1.pred",,]
-          anomaly_map <- terra::rast(idw_map)
-          anomaly_map <- terra::focal(anomaly_map, w=7, fun=mean)
+          interp_map <- terra::rast(idw_map)
+          interp_map <- terra::focal(interp_map, w=7, fun=mean)
           mydate <- lcz_model %>% dplyr::pull(.data$date)
           mydate <- base::gsub("[: -]", "" , mydate[1], perl=TRUE)
           ras_name <- base::paste0("idw_", mydate, "_", my_by)
-          names(anomaly_map) <- ras_name
+          names(interp_map) <- ras_name
         }
 
-        return(anomaly_map)
-
+        return(interp_map)
 
       }
 
       mapBy <- base::apply(iby, 1, model_by)
-      anomaly_by <- base::unlist(mapBy)
-      anomaly_stack <- terra::rast(anomaly_by)
+      interp_by <- base::unlist(mapBy)
+      interp_stack <- terra::rast(interp_by)
 
       if(isave == TRUE){
 
@@ -1041,17 +875,17 @@ lcz_anomaly_map <- function(x,
         }
 
         #Save map as raster.tif
-        file <- base::paste0(folder,"lcz4r_anomaly_map.tif")
-        terra::writeRaster(anomaly_stack, file, overwrite = TRUE)
-        base::cat("The anomaly map rasters are saved into your pc. Look at 'LCZ4r_output' folder.\n")
+        file <- base::paste0(folder,"lcz4r_interp_map.tif")
+        terra::writeRaster(interp_stack, file, overwrite = TRUE)
+        base::cat("The interp map rasters are saved into your pc. Look at 'LCZ4r_output' folder.\n")
 
       }
 
-      base::cat("That's cool! Let's explore your LCZ anomaly map.\n")
+      base::cat("That's cool! Let's explore your LCZ interp map.\n")
 
-      return(anomaly_stack)
+      return(interp_stack)
 
-      }
+    }
 
     else {
 
@@ -1082,72 +916,47 @@ lcz_anomaly_map <- function(x,
           dplyr::mutate(
             lcz = base::as.factor(.data$lcz),
             lcz_id = base::as.factor(.data$lcz_id))
-
-        anomlay_lcz <- function(input = NULL){
-
-          mean_df <- lcz_model %>%
-            dplyr::filter(.data$station == paste0(input)) %>%
-            dplyr::group_by(.data$lcz_id, .data$lcz) %>%
-            dplyr::summarise(mean_value = mean(.data$var_interp),.groups = "drop")
-
-          reference_df <- lcz_model %>%
-            dplyr::filter(.data$station != paste0(input)) %>%
-            dplyr::mutate(reference_value = mean(.data$var_interp))
-          reference_df <- tibble::as.tibble(mean(reference_df$reference_value))
-
-          merged_data <- dplyr::bind_cols(mean_df, reference_df) %>%
-            dplyr::rename(reference_value = .data$value) %>%
-            dplyr::mutate(anomaly = .data$mean_value - .data$reference_value)
-
-          return(merged_data)
-        }
-        anomaly_job <- base::lapply(1:length(my_stations$station), FUN = function(i)
-          anomlay_lcz(input = my_stations$station[i]))
-
-        anomaly_cal <- base::do.call(rbind.data.frame, anomaly_job)
-
-        lcz_anomaly_mod <- dplyr::inner_join(lcz_poi_mod, anomaly_cal, by=c("lcz_id","lcz")) %>%
+        lcz_interp_mod <- dplyr::inner_join(lcz_poi_mod, lcz_model, by=c("lcz_id","lcz")) %>%
           sf::st_transform(crs = 3857) %>%
           dplyr::mutate(lcz = base::as.integer(.data$lcz))
-        lcz_anomaly_mod <-lcz_anomaly_mod[!is.na(lcz_anomaly_mod$lcz),]
-        sf::st_crs(ras_grid) <- sf::st_crs(lcz_anomaly_mod)
+        lcz_interp_mod <-lcz_interp_mod[!is.na(lcz_interp_mod$lcz),]
+        sf::st_crs(ras_grid) <- sf::st_crs(lcz_interp_mod)
 
         if(method == "kriging") {
           # [using ordinary kriging]
-          krige_vgm <- automap::autofitVariogram(anomaly ~ lcz, lcz_anomaly_mod)$var_model
-          krige_mod <- gstat::gstat(formula = anomaly ~ lcz, model = krige_vgm$var_model, data = lcz_anomaly_mod)
+          krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, lcz_interp_mod)$var_model
+          krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = lcz_interp_mod)
           krige_map <- terra::predict(krige_mod, newdata=ras_grid)
           krige_map <- krige_map["var1.pred",,]
-          anomaly_map <- terra::rast(krige_map)
-          anomaly_map <- terra::focal(anomaly_map, w=7, fun=mean)
+          interp_map <- terra::rast(krige_map)
+          interp_map <- terra::focal(interp_map, w=7, fun=mean)
           mydate <- lcz_model %>% dplyr::pull(.data$date)
           mydate <- base::gsub("[: -]", "" , mydate[1], perl=TRUE)
           ras_name <- base::paste0("krige_", mydate, "_", my_by)
-          base::names(anomaly_map) <- ras_name
+          base::names(interp_map) <- ras_name
 
         }
 
         if(method == "IDW") {
 
           # [inverse distance weighted interpolation]
-          idw_map <- gstat::idw(anomaly~1, lcz_anomaly_mod, ras_grid)
+          idw_map <- gstat::idw(var_interp~1, lcz_interp_mod, ras_grid)
           idw_map <- idw_map["var1.pred",,]
-          anomaly_map <- terra::rast(idw_map)
-          anomaly_map <- terra::focal(anomaly_map, w=7, fun=mean)
+          interp_map <- terra::rast(idw_map)
+          interp_map <- terra::focal(interp_map, w=7, fun=mean)
           mydate <- lcz_model %>% dplyr::pull(.data$date)
           mydate <- base::gsub("[: -]", "" , mydate[1], perl=TRUE)
           ras_name <- base::paste0("idw_", mydate, "_", my_by)
-          names(anomaly_map) <- ras_name
+          names(interp_map) <- ras_name
         }
 
-        return(anomaly_map)
-
+        return(interp_map)
 
       }
 
       mapBy <- base::apply(iby, 1, model_by)
-      anomaly_by <- base::unlist(mapBy)
-      anomaly_stack <- terra::rast(anomaly_by)
+      interp_by <- base::unlist(mapBy)
+      interp_stack <- terra::rast(interp_by)
 
       if(isave == TRUE){
 
@@ -1161,18 +970,18 @@ lcz_anomaly_map <- function(x,
         }
 
         #Save map as raster.tif
-        file <- base::paste0(folder,"lcz4r_anomaly_map.tif")
-        terra::writeRaster(anomaly_stack, file, overwrite = TRUE)
-        base::cat("The anomaly map rasters are saved into your pc. Look at 'LCZ4r_output' folder.\n")
+        file <- base::paste0(folder,"lcz4r_interp_map.tif")
+        terra::writeRaster(interp_stack, file, overwrite = TRUE)
+        base::cat("The interp map rasters are saved into your pc. Look at 'LCZ4r_output' folder.\n")
 
       }
 
-      base::cat("That's cool! Let's explore your LCZ anomaly map.\n")
+      base::cat("That's cool! Let's explore your LCZ interp map.\n")
 
-      return(anomaly_stack)
+      return(interp_stack)
 
 
-      }
+    }
 
   }
 

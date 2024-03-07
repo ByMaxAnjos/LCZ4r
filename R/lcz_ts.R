@@ -369,6 +369,7 @@ lcz_ts <- function(x,
         ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ"
         ) +
         ggplot2::labs(caption = caption) +
+        ggplot2::theme_bw()+
         ggplot2::theme(
           panel.background = ggplot2::element_rect(),
           #plot.background = ggplot2::element_rect(fill = "grey90"),
@@ -472,6 +473,7 @@ lcz_ts <- function(x,
           ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ"
           ) +
           ggplot2::labs(caption = caption) +
+          ggplot2::theme_bw()+
           ggplot2::theme(
             panel.background = ggplot2::element_rect(),
             #plot.background = ggplot2::element_rect(fill = "grey90"),
@@ -567,6 +569,7 @@ lcz_ts <- function(x,
           ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ"
           ) +
           ggplot2::labs(caption = caption) +
+          ggplot2::theme_bw()+
           ggplot2::theme(
             panel.background = ggplot2::element_rect(),
             #plot.background = ggplot2::element_rect(fill = "grey90"),

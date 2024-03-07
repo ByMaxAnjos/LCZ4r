@@ -101,7 +101,7 @@ lcz_plot_map <- function(x, isave = FALSE, inclusive = FALSE, ...) {
                                labels = lcz.lables,
                                guide = ggplot2::guide_legend(reverse = FALSE,
                                                              title.position = "top")) +
-    ggplot2::coord_sf(crs = 3857, expand = FALSE, clip = "off") +
+    ggplot2::coord_sf(expand = FALSE, clip = "off") +
     ggplot2::labs(...) +
     ggplot2::theme_void() +
     ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
@@ -119,8 +119,6 @@ lcz_plot_map <- function(x, isave = FALSE, inclusive = FALSE, ...) {
                    #panel.grid.major = ggplot2::element_line(color = "white", size = 0.3),
                    #panel.grid.minor = ggplot2::element_line(color = "white", size = 0.3),
     )
-  # ggspatial::annotation_scale() +
-  # ggspatial::annotation_north_arrow(location = "br", which_north = "true")
 
   if(isave == TRUE){
 
