@@ -7,18 +7,18 @@ The [LCZ4r package](https://github.com/ByMaxAnjos/LCZ4r) offers a suite of R fun
 ## Package Overview
 
 The **LCZ4r** is a comprehensive toolkit, including the following functions: 
-- `lcz_get_map()` - Obtain the LCZ map 
-- `lcz_get_map2()` - Obtain the LCZ map (without internet)
-- `lcz_plot_map()` - Visualize the LCZ map 
-- `lcz_cal_area()` - Calculate LCZ areas 
-- `lcz_get_parameters()` - Retrieve LCZ parameters
-- `lcz_plot_parameters()` - Visualize LCZ parameter map
-- `lcz_ts()` - Analyze LCZ Time Series
-- `lcz_anomaly()` - Calculate LCZ Thermal Anomalies
-- `lcz_anomaly_map()` - Map LCZ Thermal Anomaly
-- `lcz_interp_map()` - Map LCZ Interpolation
-- `lcz_plot_interp()` - Visalize LCZ Interpolation
-- `lcz_uhi()` - Assess LCZ for Urban Heat Island Intensity
+* `lcz_get_map()` - Obtain the LCZ map 
+* `lcz_get_map2()` - Obtain the LCZ map (without internet)
+* `lcz_plot_map()` - Visualize the LCZ map 
+* `lcz_cal_area()` - Calculate LCZ areas 
+* `lcz_get_parameters()` - Retrieve LCZ parameters
+* `lcz_plot_parameters()` - Visualize LCZ parameter map
+* `lcz_ts()` - Analyze LCZ Time Series
+* `lcz_anomaly()` - Calculate LCZ Thermal Anomalies
+* `lcz_anomaly_map()` - Map LCZ Thermal Anomaly
+* `lcz_interp_map()` - Map LCZ Interpolation
+* `lcz_plot_interp()` - Visalize LCZ Interpolation
+* `lcz_uhi()` - Assess LCZ for Urban Heat Island Intensity
 
 ## Instalation 
 
@@ -91,9 +91,9 @@ Please feel free to contact us if you have any questions or suggestions by email
 
 ### Inspiration
 
-- [Stweart and Oke's paper](https://doi.org/10.1175/BAMS-D-11-00019.1)
-- [WUDPAT project](https://www.wudapt.org/)
-- [Demuzere et al.,'s paper](https://doi.org/10.5194/essd-14-3835-2022)
+* [Stweart and Oke's paper](https://doi.org/10.1175/BAMS-D-11-00019.1)
+* [WUDPAT project](https://www.wudapt.org/)
+* [Demuzere et al.,'s paper](https://doi.org/10.5194/essd-14-3835-2022)
 
 
 
