@@ -129,7 +129,7 @@ lcz_anomaly(lcz_map, data_frame = lcz_data,
 ```{r echo=TRUE, fig.height=9, fig.width=11, message=FALSE, warning=FALSE}
 
 # If you want the thermal anomalies by months of 2020 on daily basis.
-lcz_anomaly(my_map, data_frame = lcz_data, 
+lcz_anomaly(lcz_map, data_frame = lcz_data, 
             var = "airT", station_id = "station", 
             time.freq = "day", #Let's change the frequency to "day", "month", "year"
             year = 2020, by = "month")
@@ -162,13 +162,13 @@ lcz_plot_interp(my_anomaly_map,
 
 ```{r echo=TRUE, fig.height=7, fig.width=11, message=FALSE, warning=FALSE}
 
-# Active the by argument! Mapping daytime and nighttime anomalies for 1st Sep 2020 using IDW
+# Active the by argument! Mapping daytime and nighttime anomalies for 1st Sep 2020
 my_anomlay_daylight <- lcz_anomaly_map(lcz_map,
                               data_frame = lcz_data, var = "airT", station_id = "station",
                               sp.res = 100, tp.res = "hour",
                               year = 2020, month = 9, day = 1,
                               by="daylight",
-                              method = "IDW")
+                              method = "kriging")
 
 my_anomlay_daylight
 
