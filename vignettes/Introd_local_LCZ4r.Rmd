@@ -36,7 +36,7 @@ The **Local functions of `LCZ4r`**, each serving a unique purpose:
 | `lcz_anamoly_map()`      | Map LCZ Thermal Anomalies              | Yes    | Optional              |
 | `lcz_interp_map()` | Perform LCZ Interpolation     | Yes    | Optional              |
 | `lcz_plot_interp()`   | Visualize LCZ Interpolation   | Yes    | Optional               |
-| `lcz_uhi()`          | Assess LCZ for Urban Heat Island Intensity | Yes    | Optional               |
+| `lcz_uhi_intensity()`          | Assess LCZ for Urban Heat Island Intensity | Yes    | Optional               |
 *Optional if you use the `lcz_get_map2()` function.
 
 Tips: 1. Utilize the help(lcz_*) function to access comprehensive documentation for each LCZ function. For instance, you can explore details about the lcz_ts function by typing help("lcz_ts"); 2. Each of these functions includes imputation for missing values within the data.frame. Refer to the documentation of each function and check the "impute" argument for further details on how missing values are handled.
