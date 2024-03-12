@@ -11,7 +11,7 @@ lcz_anomaly_map(
   station_id = "",
   sp.res = 100,
   tp.res = "hour",
-  method = "Kriging",
+  method = "kriging",
   ...,
   by = NULL,
   impute = NULL,
