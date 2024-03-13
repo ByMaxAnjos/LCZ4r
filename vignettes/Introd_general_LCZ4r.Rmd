@@ -82,36 +82,36 @@ Here's a glimpse of the available LCZ parameters:
 | SVF1 | Sky View Factor | Minimum Sky View Factor | [0-1] |
 | SVF2 | Sky View Factor | Maximum Sky View Factor | [0-1] |
 | SVF3 | Sky View Factor | Mean Sky View Factor | [0-1] |
-| ASP1 | Aspect ratio | Minimum Aspect Ratio | [0-3] |
-| ASP2 | Aspect ratio | Maximum Aspect Ratio | [0-3] |
-| ASP3 | Aspect ratio | Mean Aspect Ratio | [0-3] |
-| BUI1 | Building Surface Fraction | Minimum Building Surface Fraction | [%] |
-| BUI2 | Building Surface Fraction | Maximum Building Surface Fraction | [%] |
-| BUI3 | Building Surface Fraction | Mean Building Surface Fraction | [%] |
-| IMP1 | Impervious Surface Fraction | Minimum Impervious Surface Fraction | [%] |
-| IMP2 | Impervious Surface Fraction | Minimum Impervious Surface Fraction | [%] |
-| IMP3 | Impervious Surface Fraction | Minimum Impervious Surface Fraction | [%] |
-| VEG1 | Vegetation Surface Fraction | Minimum Vegetation Surface Fraction | [%] |
-| VEG2 | Vegetation Surface Fraction | Maximum Vegetation Surface Fraction | [%] |
-| VEG3 | Vegetation Surface Fraction | Mean Vegetation Surface Fraction | [%] |
-| TRE1 | Tree Surface Fraction | Minimum Tree Surface Fraction | [%] |
-| TRE2 | Tree Surface Fraction | Maximum Tree Surface Fraction | [%] |
-| TRE3 | Tree Surface Fraction | Mean Tree Surface Fraction | [%] |
-| HEI1 | Height Roughness Elements | Minimum Height Roughness Elements | [meters] |
-| HEI2 | Height Roughness Elements | Maximum Height Roughness Elements | [meters] |
-| HEI3 | Height Roughness Elements | Mean Height Roughness Elements | [meters] |
-| TER1 | Terrain Roughness class | Minimum Terrain Roughness class | [meters] |
-| TER2 | Terrain Roughness class | Maximum Terrain Roughness class | [meters] |
-| TER3 | Terrain Roughness class | Mean Terrain Roughness class | [meters] |
-| ADM1 | Surface Admittance | Minimum Surface Admittance | [J m-2 s1/2 K-1] |
-| ADM2 | Surface Admittance | Maximum Surface Admittance | [J m-2 s1/2 K-1] |
-| ADM3 | Surface Admittance | Mean Surface Admittance | [J m-2 s1/2 K-1] |
-| ALB1 | Surface Albedo | Minimum Surface Albedo | [0-0.5] |
-| ALB2 | Surface Albedo | Maximum Surface Albedo | [0-0.5] |
-| ALB3 | Surface Albedo | Mean Surface Albedo | [0-0.5] |
-| ANT1 | Anthropogenic Heat Outupt | Minimum Anthropogenic Heat Outupt | [W m-2] |
-| ANT2 | Anthropogenic Heat Outupt | Maximum Anthropogenic Heat Outupt | [W m-2] |
-| ANT3 | Anthropogenic Heat Outupt | Mean Anthropogenic Heat Outupt | [W m-2] |
+| AR1 | Aspect ratio | Minimum Aspect Ratio | [0-3] |
+| AR2 | Aspect ratio | Maximum Aspect Ratio | [0-3] |
+| AR3 | Aspect ratio | Mean Aspect Ratio | [0-3] |
+| BSF1 | Building Surface Fraction | Minimum Building Surface Fraction | [%] |
+| BSF2 | Building Surface Fraction | Maximum Building Surface Fraction | [%] |
+| BSF3 | Building Surface Fraction | Mean Building Surface Fraction | [%] |
+| ISF1 | Impervious Surface Fraction | Minimum Impervious Surface Fraction | [%] |
+| ISF2 | Impervious Surface Fraction | Minimum Impervious Surface Fraction | [%] |
+| ISF3 | Impervious Surface Fraction | Minimum Impervious Surface Fraction | [%] |
+| PSF1 | Vegetation Surface Fraction | Minimum Vegetation Surface Fraction | [%] |
+| PSF2 | Vegetation Surface Fraction | Maximum Vegetation Surface Fraction | [%] |
+| PSF3 | Vegetation Surface Fraction | Mean Vegetation Surface Fraction | [%] |
+| TSF1 | Tree Surface Fraction | Minimum Tree Surface Fraction | [%] |
+| TSF2 | Tree Surface Fraction | Maximum Tree Surface Fraction | [%] |
+| TSF3 | Tree Surface Fraction | Mean Tree Surface Fraction | [%] |
+| HRE1 | Height Roughness Elements | Minimum Height Roughness Elements | [meters] |
+| HRE2 | Height Roughness Elements | Maximum Height Roughness Elements | [meters] |
+| HRE3 | Height Roughness Elements | Mean Height Roughness Elements | [meters] |
+| TRC1 | Terrain Roughness class | Minimum Terrain Roughness class | [meters] |
+| TRC2 | Terrain Roughness class | Maximum Terrain Roughness class | [meters] |
+| TRC3 | Terrain Roughness class | Mean Terrain Roughness class | [meters] |
+| SAD1 | Surface Admittance | Minimum Surface Admittance | [J m-2 s1/2 K-1] |
+| SAD2 | Surface Admittance | Maximum Surface Admittance | [J m-2 s1/2 K-1] |
+| SAD3 | Surface Admittance | Mean Surface Admittance | [J m-2 s1/2 K-1] |
+| SAL1 | Surface Albedo | Minimum Surface Albedo | [0-0.5] |
+| SAL2 | Surface Albedo | Maximum Surface Albedo | [0-0.5] |
+| SAL3 | Surface Albedo | Mean Surface Albedo | [0-0.5] |
+| AH1 | Anthropogenic Heat Outupt | Minimum Anthropogenic Heat Outupt | [W m-2] |
+| AH2 | Anthropogenic Heat Outupt | Maximum Anthropogenic Heat Outupt | [W m-2] |
+| AH3 | Anthropogenic Heat Outupt | Mean Anthropogenic Heat Outupt | [W m-2] |
 | z0 | Roughness Lenght | Roughness Lenght class | [meters] |
 
 

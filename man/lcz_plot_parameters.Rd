@@ -31,7 +31,7 @@ This function plots the parameters of an Local Climate Zone map.
 # lcz_plot_parameters(lcz_map, iselect = "SVF1")
 
 # Plot multiple parameters and save them to the LCZ4r_output directory
-# lcz_plot_parameters(lcz_map, iselect = c("SVF1", "HEI1"))
+# lcz_plot_parameters(lcz_map, iselect = c("BSF3", "AH3"))
 
 }
 \seealso{

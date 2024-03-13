@@ -67,26 +67,26 @@ lcz_get_parameters <- function(x,  iselect = "", istack = TRUE, ishp = FALSE, is
     lcz.col = lcz.col,
     SVF1 = c(0.2, 0.3, 0.2, 0.5, 0.5, 0.6, 0.2, 0.75, 0.85, 0.6, 0.35, 0.5, 0.7, base::rep(0.9, 4)),
     SVF2 = c(0.4, 0.6, 0.6, 0.7, 0.8, 0.9, 0.5, 0.75, 0.85, 0.9, 0.35, 0.8, 0.9, base::rep(0.9, 4)),
-    ASP1 = c(3, 0.75, 0.75, 0.75, 0.3, 0.3, 1, 0.1, 0.1, 0.2, 1.5, 0.25, 0.25, base::rep(0.1, 4)),
-    ASP2 = c(3, 2, 1.5, 1.25, 0.75, 0.75, 2, 0.3, 0.25, 0.5, 1.5, 0.75, 1.0, base::rep(0.1, 4)),
-    BUI1 = c(40, 40, 40, base::rep(20,3), 60, 30, 10, 20, base::rep(9, 7)),
-    BUI2 = c(60, 70, 70, base::rep(40,3), 90, 50, 20, 30, base::rep(9, 7)),
-    IMP1 = c(40, 40, 40, base::rep(20, 3), 60, 30, 10, 20, base::rep(0, 7)),
-    IMP2 = c(60, 70, 70, base::rep(40, 3), 90, 50, 20, 30, base::rep(10, 7)),
-    VEG2 = c(10, 20, 30, 40, 40, 60, 30, 20, 80, 50, base::rep(100, 4), 10, 100, 100),
-    VEG1 = c(0, 0, 0, 30, 20, 30, 0, 0, 60, 40, 90, 90, 90, 90, 0, 90, 90),
-    TRE1 = c(base::rep(0, 10), 90, 90, base::rep(0, 5)),
-    TRE2 = c(base::rep(0, 10), 100, 100, base::rep(0, 5)),
-    HEI1 = c(26, 10, 3, 26, 10, 3, 2, 3, 3, 5, 3, 3, 2.9, 0.9, 0.24, 0.23,  0),
-    HEI2 = c(26, 25, 10, 26, 25, 10, 4, 10, 10, 15, 30, 15, 2.9, 0.9, 0.24, 0.23, 0),
-    TER1 = c(8, 6, 6, 7, 5, 5, 4, 5, 5, 5, 8, 5, 4, 3, 1, 1, 1),
-    TER2 = c(8, 7, 6, 8, 6, 6, 5, 5, 6, 6, 8, 6, 5, 4, 2, 2, 1),
-    ADM1 = c(1.500, 1.500, 1.200, 1.400, 1.400, 1.200, 800, 1.200, 1.000, 1.000, 0, 1.000, 700, 1.200, 1.200, 600, 1.500),
-    ADM2 = c(1.800, 2.000, 1.800, 1.800, 2.000, 1.800, 1.500, 1.800, 1.800, 2.5000, 0, 1.800, 1.500, 1.600, 2.500, 1.400, 1.500),
-    ALB1 = c(base::rep(0.10, 3), base::rep(0.12, 3), base::rep(0.15, 2), base::rep(0.12, 2), 0.10, base::rep(0.15, 4), 0.20, 0.02),
-    ALB2 = c(base::rep(0.20, 3), base::rep(0.25, 3), 0.35, 0.25, 0.25, 0.20, 0.20, 0.25, 0.30, 0.25, 0.30, 0.35, 0.10),
-    ANT1 = c(50, 74, 74, 49, 24, 24, 34, 49, 9, 310, base::rep(0, 7)),
-    ANT2 = c(300, 74, 74, 49, 24, 24, 34, 49, 9, 310, base::rep(0, 7))
+    AR1 = c(3, 0.75, 0.75, 0.75, 0.3, 0.3, 1, 0.1, 0.1, 0.2, 1.5, 0.25, 0.25, base::rep(0.1, 4)),
+    AR2 = c(3, 2, 1.5, 1.25, 0.75, 0.75, 2, 0.3, 0.25, 0.5, 1.5, 0.75, 1.0, base::rep(0.1, 4)),
+    BSF1 = c(40, 40, 40, base::rep(20,3), 60, 30, 10, 20, base::rep(9, 7)),
+    BSF2 = c(60, 70, 70, base::rep(40,3), 90, 50, 20, 30, base::rep(9, 7)),
+    ISF1 = c(40, 40, 40, base::rep(20, 3), 60, 30, 10, 20, base::rep(0, 7)),
+    ISF2 = c(60, 70, 70, base::rep(40, 3), 90, 50, 20, 30, base::rep(10, 7)),
+    PSF2 = c(10, 20, 30, 40, 40, 60, 30, 20, 80, 50, base::rep(100, 4), 10, 100, 100),
+    PSF1 = c(0, 0, 0, 30, 20, 30, 0, 0, 60, 40, 90, 90, 90, 90, 0, 90, 90),
+    TSF1 = c(base::rep(0, 10), 90, 90, base::rep(0, 5)),
+    TSF2 = c(base::rep(0, 10), 100, 100, base::rep(0, 5)),
+    HRE1 = c(26, 10, 3, 26, 10, 3, 2, 3, 3, 5, 3, 3, 2.9, 0.9, 0.24, 0.23,  0),
+    HRE2 = c(26, 25, 10, 26, 25, 10, 4, 10, 10, 15, 30, 15, 2.9, 0.9, 0.24, 0.23, 0),
+    TRC1 = c(8, 6, 6, 7, 5, 5, 4, 5, 5, 5, 8, 5, 4, 3, 1, 1, 1),
+    TRC2 = c(8, 7, 6, 8, 6, 6, 5, 5, 6, 6, 8, 6, 5, 4, 2, 2, 1),
+    SAD1 = c(1.500, 1.500, 1.200, 1.400, 1.400, 1.200, 800, 1.200, 1.000, 1.000, 0, 1.000, 700, 1.200, 1.200, 600, 1.500),
+    SAD2 = c(1.800, 2.000, 1.800, 1.800, 2.000, 1.800, 1.500, 1.800, 1.800, 2.5000, 0, 1.800, 1.500, 1.600, 2.500, 1.400, 1.500),
+    SAL1 = c(base::rep(0.10, 3), base::rep(0.12, 3), base::rep(0.15, 2), base::rep(0.12, 2), 0.10, base::rep(0.15, 4), 0.20, 0.02),
+    SAL2 = c(base::rep(0.20, 3), base::rep(0.25, 3), 0.35, 0.25, 0.25, 0.20, 0.20, 0.25, 0.30, 0.25, 0.30, 0.35, 0.10),
+    AH1 = c(50, 74, 74, 49, 24, 24, 34, 49, 9, 310, base::rep(0, 7)),
+    AH2 = c(300, 74, 74, 49, 24, 24, 34, 49, 9, 310, base::rep(0, 7))
   )
 
   # Function to calculate z0
@@ -105,18 +105,18 @@ lcz_get_parameters <- function(x,  iselect = "", istack = TRUE, ishp = FALSE, is
   # Calculate z0 values
   lcz.df$z0 <- base::sapply(lcz.df$lcz.code, calculate_z0)
 
-  # Calculate mean values for parameters
+  # Calculate mean values for parametres
   lcz.df$SVF3 <- (lcz.df$SVF1 + lcz.df$SVF2) / 2
-  lcz.df$ASP3<- (lcz.df$ASP1 + lcz.df$ASP2) / 2
-  lcz.df$BUI3 <- (lcz.df$BUI1 + lcz.df$BUI2) / 2
-  lcz.df$IMP3 <- (lcz.df$IMP1 + lcz.df$IMP2) / 2
-  lcz.df$VEG3 <- (lcz.df$VEG1 + lcz.df$VEG2) / 2
-  lcz.df$TRE3 <- (lcz.df$TRE1 + lcz.df$TRE2) / 2
-  lcz.df$HEI3 <- (lcz.df$HEI1 + lcz.df$HEI2) / 2
-  lcz.df$TER3 <- (lcz.df$TER1 + lcz.df$TER2) / 2
-  lcz.df$ADM3 <- (lcz.df$ADM1 + lcz.df$ADM2) / 2
-  lcz.df$ALB3 <- (lcz.df$ALB1 + lcz.df$ALB2) / 2
-  lcz.df$ANT3 <- (lcz.df$ANT1 + lcz.df$ANT2) / 2
+  lcz.df$AR3<- (lcz.df$AR1 + lcz.df$AR2) / 2
+  lcz.df$BSF3 <- (lcz.df$BSF1 + lcz.df$BSF2) / 2
+  lcz.df$ISF3 <- (lcz.df$ISF1 + lcz.df$ISF2) / 2
+  lcz.df$PSF3 <- (lcz.df$PSF1 + lcz.df$PSF2) / 2
+  lcz.df$TSF3 <- (lcz.df$TSF1 + lcz.df$TSF2) / 2
+  lcz.df$HRE3 <- (lcz.df$HRE1 + lcz.df$HRE2) / 2
+  lcz.df$TRC3 <- (lcz.df$TRC1 + lcz.df$TRC2) / 2
+  lcz.df$SAD3 <- (lcz.df$SAD1 + lcz.df$SAD2) / 2
+  lcz.df$SAL3 <- (lcz.df$SAL1 + lcz.df$SAL2) / 2
+  lcz.df$AH3 <- (lcz.df$AH1 + lcz.df$AH2) / 2
 
   #reprocessing raster
   base::names(x) <- "lcz"
@@ -130,12 +130,12 @@ lcz_get_parameters <- function(x,  iselect = "", istack = TRUE, ishp = FALSE, is
     if(isave==TRUE){
 
       string_list <- c(
-        "lcz_class", "svf_min", "svf_max", "aspect_min", "aspect_max", "build_min",
-        "build_max", "imper_min", "imper_max", "pervi_max", "pervi_min", "tree_min",
-        "tree_max", "height_min", "height_max", "terra_min", "terra_max", "admit_min",
-        "admit_max", "albed_min", "albed_max", "anthr_min", "anthr_max", "z0",
-        "svf_mean", "aspect_mean", "build_mean", "imper_mean", "pervi_mean", "tree_mean",
-        "height_mean", "terra_mean", "admit_mean", "albed_mean", "anthr_mean", "geometry"
+        "lcz_class", "svf_min", "svf_max", "AR_min", "AR_max", "BSF_min",
+        "BSF_max", "ISF_min", "ISF_max", "PSF_max", "PSF_min", "TSF_min",
+        "TSF_max", "HRE_min", "HRE_max", "TRC_min", "TRC_max", "SAD_min",
+        "SAD_max", "SAL_min", "SAL_max", "AH_min", "AH_max", "z0",
+        "svf_mean", "aspect_mean", "BSF_mean", "ISF_mean", "PSF_mean", "TSF_mean",
+        "HRE_mean", "TRC_mean", "SAD_mean", "SAL_mean", "AH_mean", "geometry"
       )
 
       base::names(lcz_result) <- string_list

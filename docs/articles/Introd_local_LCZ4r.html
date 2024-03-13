@@ -73,7 +73,7 @@
       <img src="" class="logo" alt=""><h1>LCZ4r Local Functions</h1>
                         <h4 data-toc-skip class="author">Max Anjos</h4>
             
-            <h4 data-toc-skip class="date">March 07, 2024</h4>
+            <h4 data-toc-skip class="date">March 13, 2024</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ByMaxAnjos/LCZ4r/blob/HEAD/vignettes/Introd_local_LCZ4r.Rmd" class="external-link"><code>vignettes/Introd_local_LCZ4r.Rmd</code></a></small>
       <div class="d-none name"><code>Introd_local_LCZ4r.Rmd</code></div>
@@ -233,13 +233,11 @@ functions from the openair package</a> for more details.</p>
 <span><span class="co">#&gt; Congrats! You've successfully performed a hour time series based on LCZ classes.</span></span></code></pre></div>
 <p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-4-1.png" width="3300"></p>
 <p><strong>2. Splitting LCZ time series by temporal window or
-site</strong> You have the flexibility to select specific years and
-months for analysis. For example, you can specify a range of years
-(e.g., 1998:2004) or individual years (e.g., c(1998, 2004)). Similarly,
-you can select months either numerically (e.g., 1:6 for January to June)
-or by name (e.g., c(“January”, “December”)). To illustrate, you can
-select data for September 1st, 2019, by including the arguments “year”,
-“month”, and “day” in the function call.</p>
+site</strong> You can split data frame calling the <em>by</em> argument.
+The split available are “year”, “season”, “seasonyear”, “month”,
+“monthyear”, “weekday”, “weekend”, “daylight” (daytime and nighttime).
+See argument <a href="https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option" class="external-link">type
+in openair package:</a></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co">#Splitting by daylight </span></span>
