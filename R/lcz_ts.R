@@ -72,17 +72,6 @@ lcz_ts <- function(x,
   }
   # Validate the time series -----------------------------------------------
 
-  if ("date" %in% names(data_frame)) {
-    if (!(inherits(data_frame$date, "POSIXct") ||
-          inherits(data_frame$date, "Date"))) {
-      converted_col <-
-        as.POSIXct(data_frame$date, format = "%Y-%m-%d %H:%M:%S")
-      data_frame$date <- converted_col
-    }
-  } else {
-    base::cat("Column 'date' not found in the data frame.\n")
-  }
-
   # Pre-processing time series ----------------------------------------------
 
   #Rename and define lcz_id for each lat and long
@@ -92,6 +81,10 @@ lcz_ts <- function(x,
     dplyr::group_by(.data$latitude, .data$longitude) %>%
     dplyr::mutate(lcz_id = dplyr::cur_group_id()) %>%
     openair::selectByDate(...)
+
+  df_processed$var_interp <- base::as.numeric(df_processed$var_interp)
+  df_processed$latitude <- base::as.numeric(df_processed$latitude)
+  df_processed$longitude <- base::as.numeric(df_processed$longitude)
 
   #Impute missing values if it is necessary
   if (!is.null(impute)) {

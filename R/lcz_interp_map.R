@@ -64,17 +64,6 @@ lcz_interp_map <- function(x,
   }
   # Validate the time series -----------------------------------------------
 
-  if ("date" %in% names(data_frame)) {
-    if (!(inherits(data_frame$date, "POSIXct") ||
-          inherits(data_frame$date, "Date"))) {
-      converted_col <-
-        as.POSIXct(data_frame$date, format = "%Y-%m-%d %H:%M:%S", tz = "UTC")
-      data_frame$date <- converted_col
-    }
-  } else {
-    base::cat("Column 'date' not found in the data frame.\n")
-  }
-
   # Pre-processing time series ----------------------------------------------
 
   #Rename and define lcz_id for each lat and long
@@ -83,8 +72,11 @@ lcz_interp_map <- function(x,
     janitor::clean_names() %>%
     dplyr::group_by(.data$latitude, .data$longitude) %>%
     dplyr::mutate(lcz_id = dplyr::cur_group_id(),
-                  lcz_id = base::as.factor(.data$lcz_id)) %>%
+                  lcz_id = base::as.factor(.data$lcz_id),
+                  var_interp = base::as.numeric(var_interp)) %>%
     dplyr::ungroup()
+  df_variable$latitude <- base::as.numeric(df_variable$latitude)
+  df_variable$longitude <- base::as.numeric(df_variable$longitude)
 
   #Impute missing values if it is necessary
   if (!is.null(impute)) {
