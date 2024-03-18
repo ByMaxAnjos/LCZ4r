@@ -31,7 +31,9 @@ The general functions, each serving a unique purpose:
 
 | Function                | Description              | Data Required | Internet Access Required |
 |------------------|------------------|-------------------|------------------|
-| `lcz_get_map()`         | Obtain the LCZ map | Not needed | Yes  |
+| `lcz_get_map()`         | Obtain your LCZ map from Global LCZ map | Not needed | Yes  |
+| `lcz_get_map_euro()`    | Obtain your LCZ map from European LCZ map | Not needed | Yes  |
+| `lcz_get_map_usa()`     | Obtain your LCZ map from Continental United States LCZ map | Not needed | Yes  |
 | `lcz_get_map2()`        | Obtain the LCZ map | Not needed | Not needed |
 | `lcz_plot_map()`        | Visualize the LCZ map | Not needed | Not needed |
 | `lcz_cal_area()`        | Calculate LCZ areas | Not needed | Not needed |

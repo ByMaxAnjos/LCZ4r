@@ -51,7 +51,7 @@ For the local functions to operate smoothly, you should import the air temperatu
 3. *Air Temperature*: At least one column representing the air temperature variable.
 4. *Latitude* and *Longitude*: Two columns are required to specify the geographical coordinates.
 
-It's important to note that the model standardizes the date-time format to R's conventions, such as "2023-03-13 11:00:00" or "2023-03-13". It also includes: e.g. “1/2/1999” or in format i.e. “YYYY-mm-dd”, “1999-02-01”.
+It's important to note that the users should standardize the date-time format to R's conventions, such as "2023-03-13 11:00:00" or "2023-03-13". It also includes: e.g. “1/2/1999” or in format i.e. “YYYY-mm-dd”, “1999-02-01”.
 
 To streamline this process, LCZ4r offers a sample data frame, accessible through the following way:
 
@@ -84,7 +84,7 @@ lcz_ts(lcz_map, data_frame = lcz_data,
  Additionally, you can customize this function:
 
 **1. Flexibility time selection**
-You have the flexibility to select specific years and months for analysis. For example, you can specify a range of years (e.g., 1998:2004) or individual years (e.g., c(1998, 2004)). Similarly, you can select months either numerically (e.g., 1:6 for January to June) or by name (e.g., c("January", "December")). To illustrate, you can select data for September 1st, 2019, by including the arguments "year", "month", and "day" in the function call. See the [utility functions from the openair package](https://bookdown.org/david_carslaw/openair/sections/utilities/utility-functions.html#sec-selectByDate) for more details.
+You have the flexibility to select specific years and months for analysis. For example, you can specify a range of years (e.g., 1998:2004) or individual years (e.g., c(1998, 2004)). Similarly, you can select months either numerically (e.g., 1:6 for January to June) or by name (e.g., c("January", "December")). To illustrate, you can select data for September 1st, 2019, by including the arguments "year", "month", and "day" in the function call. See the [utility functions from the openair package](https://bookdown.org/david_carslaw/openair/sections/utilities/utility-functions.html#sec-selectByDate) for more details.    
 
 ```{r echo=TRUE, fig.height=7, fig.width=11, message=FALSE, warning=FALSE}
 

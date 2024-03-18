@@ -8,8 +8,9 @@ The [LCZ4r package](https://github.com/ByMaxAnjos/LCZ4r) offers a suite of R fun
 
 The **LCZ4r** is a comprehensive toolkit, including the following functions: 
 
-* `lcz_get_map()`  Obtain the LCZ map 
-* `lcz_get_map2()`  Obtain the LCZ map (without internet)
+* `lcz_get_map()`  Obtain your LCZ map from Global LCZ map
+* `lcz_get_map_euro()`  Obtain your LCZ map from European LCZ map
+* `lcz_get_map_usa()`  Obtain your LCZ map from Continental United States LCZ map
 * `lcz_plot_map()`  Visualize the LCZ map 
 * `lcz_cal_area()`  Calculate LCZ areas 
 * `lcz_get_parameters()`  Retrieve LCZ parameters
@@ -92,9 +93,9 @@ Please feel free to contact us if you have any questions or suggestions by email
 
 ### Inspiration
 
-* [Stweart and Oke's paper](https://doi.org/10.1175/BAMS-D-11-00019.1)
-* [WUDPAT project](https://www.wudapt.org/)
-* [Demuzere et al.,'s paper](https://doi.org/10.5194/essd-14-3835-2022)
-
-
+* Stewart, I., and T. Oke, 2012: Local climate zones for urban temperature studies. Bull. Amer. Meteor. Soc., 93, 1879–1900[DOI](https://doi.org/10.1175/BAMS-D-11-00019.1)
+* Ching, J., Mills, G., Bechtel, B., See, L., Feddema, J., Wang, X., … Theeuwes, N. (2018). WUDAPT: An Urban Weather, Climate, and Environmental Modeling Infrastructure for the Anthropocene. Bulletin of the American Meteorological Society, 99(9), 1907–1924[DOI](https://doi.org/10.1175/BAMS-D-16-0236.1)
+* Demuzere, M., Bechtel, B., Middel, A., & Mills, G. (2019). Mapping Europe into local climate zones. PLOS ONE, 14(4), e0214474[DOI](https://doi.org/10.1371/journal.pone.0214474)
+* Demuzere, M., Hankey, S., Mills, G., Zhang, W., Lu, T., & Bechtel, B. (2020). Combining expert and crowd-sourced training data to map urban form and functions for the continental US. Scientific Data, 7(1), 264[DOI](https://doi.org/10.1038/s41597-020-00605-z)
+* Demuzere, M., Kittner, J., Martilli, A., Mills, G., Moede, C., Stewart, I. D., van Vliet, J., and Bechtel, B. (2022). A global map of Local Climate Zones to support earth system modelling and urban scale environmental science, Earth Syst. Sci. Data 14(8) 3835-3873.[DOI](https://doi.org/10.5194/essd-14-3835-2022)
 

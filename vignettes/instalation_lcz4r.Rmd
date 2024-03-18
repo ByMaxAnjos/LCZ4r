@@ -1,5 +1,5 @@
 ---
-title: "Install LCZ4r"
+title: "Install LCZ4r and input data requirements"
 author: "Max Anjos"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output:
@@ -11,7 +11,7 @@ output:
     highlight: "textmate"
     css: custom.css
 vignette: >
-  %\VignetteIndexEntry{Install LCZ4r}
+  %\VignetteIndexEntry{Install LCZ4r and input data requirements}
   %\VignetteEngine{rmarkdown::render}
   %\VignetteEncoding{UTF-8}
 ---
@@ -23,6 +23,8 @@ knitr::opts_chunk$set(
 )
 ```
 
+## Installation 
+
 To install **R package LCZ4r** LCZ4r use the development version on GitHub with latest features. 
 
 We recommend selecting option 3, "None," when prompted with the message "Which would you like to update?" during the installation process. To proceed, please enter like this: 
@@ -33,17 +35,27 @@ Enter one or more numbers, or an empty line to skip updates: **3**
 
 #if(!require(devtools)) install.packages("devtools")
 #devtools::install_github("ByMaxAnjos/LCZ4r")
+#library(LCZ4r)
 
 ```
 
+## Input data requirements: formating dates and times
+
+It's important to note that the users should standardize the date-time format to R's conventions, such as "2023-03-13 11:00:00" or "2023-03-13". It also includes: e.g. “1/2/1999” or in format i.e. “YYYY-mm-dd”, “1999-02-01”.
+
+The date/time field should be called **date**. No other name is acceptable.
+
+If your date format is 2/8/2022 11:00: 
+
+To convert from day-month-year to year-month-day:
 
 ```{r include=TRUE}
 
-library(LCZ4r)
+#Note that date column is in the my_data.
 
+#my_data$date <- as.POSIXct(my_data$date, format = "%d-%m-%Y")
+#my_data$date <- as.POSIXct(my_data$date, format = "%d-%m-%Y %H:%M:%S")
 
 ```
-
-
 
 
