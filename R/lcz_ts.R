@@ -90,7 +90,7 @@ lcz_ts <- function(x,
   if (!is.null(impute)) {
     if (impute == "mean") {
       lcz_recipe <-
-        recipes::recipe(.data$var_interp ~ ., data = df_processed) %>%
+        recipes::recipe(var_interp ~ ., data = df_processed) %>%
         recipes::step_impute_mean(.data$var_interp)
 
       df_processed <- lcz_recipe %>%
@@ -100,7 +100,7 @@ lcz_ts <- function(x,
 
     if (impute == "median") {
       lcz_recipe <-
-        recipes::recipe(.data$var_interp ~ ., data = df_processed) %>%
+        recipes::recipe(var_interp ~ ., data = df_processed) %>%
         recipes::step_impute_median(.data$var_interp)
 
       df_processed <- lcz_recipe %>%
@@ -110,7 +110,7 @@ lcz_ts <- function(x,
 
     if (impute == "knn") {
       lcz_recipe <-
-        recipes::recipe(.data$var_interp ~ ., data = df_processed) %>%
+        recipes::recipe(var_interp ~ ., data = df_processed) %>%
         recipes::step_impute_knn(.data$var_interp)
 
       df_processed <- lcz_recipe %>%
@@ -120,7 +120,7 @@ lcz_ts <- function(x,
 
     if (impute == "bag") {
       lcz_recipe <-
-        recipes::recipe(.data$var_interp ~ ., data = df_processed) %>%
+        recipes::recipe(var_interp ~ ., data = df_processed) %>%
         recipes::step_impute_bag(.data$var_interp)
 
       df_processed <- lcz_recipe %>%

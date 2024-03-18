@@ -82,7 +82,7 @@ lcz_anomaly_map <- function(x,
   if (!is.null(impute)) {
     if (impute == "mean") {
       lcz_recipe <-
-        recipes::recipe(.data$var_interp ~ ., data = df_variable) %>%
+        recipes::recipe(var_interp ~ ., data = df_variable) %>%
         recipes::step_impute_mean(.data$var_interp)
 
       df_variable <- lcz_recipe %>%
@@ -92,7 +92,7 @@ lcz_anomaly_map <- function(x,
 
     if (impute == "median") {
       lcz_recipe <-
-        recipes::recipe(.data$var_interp ~ ., data = df_variable) %>%
+        recipes::recipe(var_interp ~ ., data = df_variable) %>%
         recipes::step_impute_median(.data$var_interp)
 
       df_variable <- lcz_recipe %>%
@@ -102,7 +102,7 @@ lcz_anomaly_map <- function(x,
 
     if (impute == "knn") {
       lcz_recipe <-
-        recipes::recipe(.data$var_interp ~ ., data = df_variable) %>%
+        recipes::recipe(var_interp ~ ., data = df_variable) %>%
         recipes::step_impute_knn(.data$var_interp)
 
       df_variable <- lcz_recipe %>%
@@ -112,7 +112,7 @@ lcz_anomaly_map <- function(x,
 
     if (impute == "bag") {
       lcz_recipe <-
-        recipes::recipe(.data$var_interp ~ ., data = df_variable) %>%
+        recipes::recipe(var_interp ~ ., data = df_variable) %>%
         recipes::step_impute_bag(.data$var_interp)
 
       df_variable <- lcz_recipe %>%
