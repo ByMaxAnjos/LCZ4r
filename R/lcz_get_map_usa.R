@@ -41,12 +41,12 @@ lcz_get_map_usa <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_usa=
       study_area <- shp_verify$geometry
       study_area <- sf::st_make_valid(study_area) %>%
         sf::st_as_sf() %>%
-        sf::st_transform(crs = "+proj=longlat +datum=WGS84 +no_defs")
+        sf::st_transform(crs = 4326)
     } else {
       study_area <- shp_verify$multipolygon
       study_area <- sf::st_make_valid(study_area) %>%
         sf::st_as_sf() %>%
-        sf::st_transform(crs="+proj=longlat +datum=WGS84 +no_defs")
+        sf::st_transform(crs=4326)
     }
     options(warn=-1)
     # Download the usapean LCZ map
@@ -112,7 +112,7 @@ lcz_get_map_usa <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_usa=
     roi_crs <- roi %>%
       sf::st_as_sf() %>%
       sf::st_make_valid() %>%
-      sf::st_transform(crs = "+proj=longlat +datum=WGS84 +no_defs")
+      sf::st_transform(crs = 4326)
 
     lcz_ras <- terra::crop(lcz_download, terra::ext(roi_crs))
 
