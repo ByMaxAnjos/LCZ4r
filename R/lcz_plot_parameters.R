@@ -86,7 +86,7 @@ lcz_plot_parameters <- function(x, iselect = "", all = FALSE, isave = FALSE, ...
     if(x == "SVF3") return("[0 - 1]")
     if(x == "AR1") return("[0 - 3]")
     if(x == "AR2") return("[0 - 3]")
-    if(x == "AR2") return("[0 - 3]")
+    if(x == "AR3") return("[0 - 3]")
     if(x == "BSF1") return("[%]")
     if(x == "BSF2") return("[%]")
     if(x == "BSF3") return("[%]")
