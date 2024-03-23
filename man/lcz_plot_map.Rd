@@ -24,7 +24,7 @@ This function generates a graphical representation of an LCZ (Local Climate Zone
 \examples{
 
 # Example: Plot an LCZ map with the legend showing LCZ codes and specify a subtitle.
-# myplot <- lcz_plot_map(myLCZmap)
+# lcz_plot_map(LCZmap)
 
 }
 \seealso{

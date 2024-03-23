@@ -15,7 +15,7 @@
 #' @examples
 #'
 #' # Example: Plot an LCZ map with the legend showing LCZ codes and specify a subtitle.
-#' # myplot <- lcz_plot_map(myLCZmap)
+#' # lcz_plot_map(LCZmap)
 #'
 #' @importFrom rlang .data
 #'
@@ -32,14 +32,16 @@ lcz_plot_map <- function(x, isave = FALSE, inclusive = FALSE, ...) {
     stop("The input must be raster object. Please, use the lcz_get_map( )")
   }
 
-  if(!inherits(x, "RasterLayer")) {
+  if(!inherits(x, "RasterLayer")) { x <- raster::raster(x)}
 
-    x <- raster::raster(x)
-
+  if (raster::nlayers(x) > 0) {
+    x[raster::values(x) == 0] <- 17
   }
 
     lczClass <- raster::ratify(x)
     rat <- raster::levels(lczClass)[[1]]
+
+    # Check if 'ID' column contains 0 and replace it with 17 if it does
     ID <- c(base::seq(1, 10, 1), base::seq(11, 17)) %>%
       tibble::as_tibble() %>%
       purrr::set_names("ID")
@@ -65,7 +67,8 @@ lcz_plot_map <- function(x, isave = FALSE, inclusive = FALSE, ...) {
       purrr::set_names("lcz_colorblind")
 
     lcz_df <- dplyr::bind_cols(ID, lcz.name, lcz.col, lcz_colorblind) %>%
-      dplyr::inner_join(rat, by = "ID")
+      dplyr::inner_join(rat, by = "ID") %>%
+      dplyr::distinct(ID, .keep_all = T)
 
     base::names(x) <- "class"
 
@@ -86,8 +89,14 @@ lcz_plot_map <- function(x, isave = FALSE, inclusive = FALSE, ...) {
 
 
   # ggplot using the same data
+
+
   dataPlot <- terra::as.data.frame(x, xy=TRUE) %>%
     tidyr::drop_na()
+
+  if (any(rat$ID == 0)) {
+    rat$ID[rat$ID == 0] <- 17
+  }
 
   my_plot <-
     ggplot2::ggplot() +

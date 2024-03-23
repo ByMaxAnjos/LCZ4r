@@ -28,7 +28,7 @@ lcz_cal_area <- function(x, iplot=TRUE, isave=FALSE, inclusive = FALSE, ...){
 
 # Validate inputs ---------------------------------------------------------
 
-  if(!inherits(x, "SpatRaster")) { x <- terra::rast({{x}}) }
+  if(!inherits(x, "SpatRaster")) {x <- terra::rast({{x}}) }
 
 # Calculate raster area ---------------------------------------------------
 
@@ -36,9 +36,19 @@ lcz_cal_area <- function(x, iplot=TRUE, isave=FALSE, inclusive = FALSE, ...){
     purrr::set_names(c("lcz", "count")) %>%
     dplyr::mutate(lcz = base::as.factor(lcz))
 
+  if (base::any((freq_df$lcz == 0))) {
+
+    freq_df$lcz[freq_df$lcz==0] <- 17
+
+    freq_df <- dplyr::group_by(freq_df, lcz) %>%
+      dplyr::summarise(count = sum(count)) %>%
+      dplyr::ungroup()
+  }
+
    lcz_area <- terra::cellSize({{x}}, unit = "km")
 
-  lcz_areas_df <- base::data.frame(LCZ = terra::values({{x}}), Area_Km2 = terra::values(lcz_area)) %>%
+  lcz_areas_df <- base::data.frame(LCZ = terra::values({{x}}),
+                                   Area_Km2 = terra::values(lcz_area)) %>%
     stats::na.omit() %>%
     dplyr::group_by(lcz) %>%
     dplyr::summarise(area_km2 = base::round(base::sum(.data$area),digits = 2)) %>%
@@ -105,13 +115,16 @@ lcz_cal_area <- function(x, iplot=TRUE, isave=FALSE, inclusive = FALSE, ...){
                                                       title.position = "top")) +
       ggplot2::geom_text(data = lcz_df,
                          label = paste0(round(lcz_df$area_perc, 1), "%"), vjust = -0.2, size = 6, fontface = "bold") +
-      ggplot2::coord_cartesian(expand = FALSE, clip = "off")+
+      ggplot2::coord_cartesian(expand = FALSE, clip = "off") +
+      ggplot2::scale_y_continuous(limits = c(0, base::max(lcz_df$area_km2) + 50)) +
        ggplot2::labs(...,
            x = "LCZ code",
            y = "Area [square kilometer]",
            fill = "LCZ") +
       ggplot2::theme_bw()+
-      ggplot2::theme(panel.background = ggplot2::element_rect(),
+      ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
+                     plot.subtitle = ggplot2::element_text(color = "black", size = 17, hjust = 0.5),
+        panel.background = ggplot2::element_rect(),
                      panel.grid.major = ggplot2::element_line(color = "grey90"),
                      panel.grid.minor = ggplot2::element_line(color = "grey90"),
                      panel.grid.major.y = ggplot2::element_line(color = "grey90"),
