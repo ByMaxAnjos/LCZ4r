@@ -276,7 +276,8 @@ lcz_ts <- function(x,
       ) +
       ggplot2::labs(caption = caption) +
       ggplot2::theme_bw() +
-      ggplot2::theme(
+      ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
+                     plot.subtitle = ggplot2::element_text(color = "black", size = 18, hjust = 0.5),
         panel.background = ggplot2::element_rect(),
         #plot.background = ggplot2::element_rect(fill = "grey90"),
         panel.grid.minor = ggplot2::element_line(color = "grey90"),
@@ -363,7 +364,8 @@ lcz_ts <- function(x,
         ) +
         ggplot2::labs(caption = caption) +
         ggplot2::theme_bw()+
-        ggplot2::theme(
+        ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
+                       plot.subtitle = ggplot2::element_text(color = "black", size = 18, hjust = 0.5),
           panel.background = ggplot2::element_rect(),
           #plot.background = ggplot2::element_rect(fill = "grey90"),
           panel.grid.major = ggplot2::element_line(color = "grey90"),
@@ -467,7 +469,8 @@ lcz_ts <- function(x,
           ) +
           ggplot2::labs(caption = caption) +
           ggplot2::theme_bw()+
-          ggplot2::theme(
+          ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
+                         plot.subtitle = ggplot2::element_text(color = "black", size = 18, hjust = 0.5),
             panel.background = ggplot2::element_rect(),
             #plot.background = ggplot2::element_rect(fill = "grey90"),
             panel.grid.minor = ggplot2::element_line(color = "grey90"),
@@ -563,7 +566,8 @@ lcz_ts <- function(x,
           ) +
           ggplot2::labs(caption = caption) +
           ggplot2::theme_bw()+
-          ggplot2::theme(
+          ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
+                         plot.subtitle = ggplot2::element_text(color = "black", size = 18, hjust = 0.5),
             panel.background = ggplot2::element_rect(),
             #plot.background = ggplot2::element_rect(fill = "grey90"),
             panel.grid.minor = ggplot2::element_line(color = "grey90"),
