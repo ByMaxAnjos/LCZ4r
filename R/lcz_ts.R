@@ -16,7 +16,7 @@
 #' @param impute Method to impute missing values (\dQuote{mean}, \dQuote{median}, \dQuote{knn}, \dQuote{bag}).
 #' @param iplot Set to TRUE if you want to save the plot in your working directory.
 #' @param isave Save the plot into your directory.
-#' @param palette Define your qualitative color palette. Default is "Paired". The options are: c("Pastel 1", "Dark 2", "Dark 3", "Set 2", "Set 3", "Warm", "Cold", "Harmonic", "Dynamic")
+#' @param palette Define your qualitative color palette. Default is "Dark 2". The options are: "Pastel 1", Dark 3", "Set 2", "Set 3", "Warm", "Cold", "Harmonic", "Dynamic".
 #' @param inclusive Set to TRUE to a colorblind-friendly palette.
 #' @param ylab y-axis name.
 #' @param xlab y-axis name. Default is \dQuote{Time}
@@ -50,7 +50,7 @@ lcz_ts <- function(x,
                    impute = NULL,
                    iplot = FALSE,
                    isave = FALSE,
-                   palette = "Paired",
+                   palette = "Dark 2",
                    inclusive = FALSE,
                    ylab = "Air temperature [Degree Celsius]",
                    xlab = "Time",
@@ -247,10 +247,8 @@ lcz_ts <- function(x,
 
   # Define LCZ labels
   lcz.lables <- lcz_df$station
-
-  hcl.pals()
   nb.cols <- base::length(my_stations$station)
-  mycolors <- grDevices::hcl.colors(n = nb.cols, type =  "qualitative", palette = palette, alpha = 0.6)
+  mycolors <- grDevices::hcl.colors(n = nb.cols, palette = palette, alpha = 0.6)
 
   # Define time series frequency with argument "by"--------------------------------------------
   if (is.null(by)) {
