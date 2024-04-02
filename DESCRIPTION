@@ -30,6 +30,9 @@ Imports:
     osmdata,
     raster,
     rlang,
+    openssl,
+    httr,
+    curl,
     sf,
     stars,
     terra,
@@ -46,10 +49,6 @@ Imports:
     lubridate
 Suggests:
     knitr,
-    openssl,
-    httr,
-    curl,
-    RColorBrewer,
     rmarkdown,
     htmltools,
     htmlwidgets,

@@ -246,8 +246,9 @@ lcz_ts <- function(x,
   # Define LCZ labels
   lcz.lables <- lcz_df$station
 
+  hcl.pals()
   nb.cols <- base::length(my_stations$station)
-  mycolors <- grDevices::colorRampPalette(RColorBrewer::brewer.pal(8, "Paired"))(nb.cols)
+  mycolors <- grDevices::hcl.colors(n = nb.cols, palette = "Berlin")
 
   # Define time series frequency with argument "by"--------------------------------------------
   if (is.null(by)) {
