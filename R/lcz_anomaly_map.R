@@ -73,7 +73,7 @@ lcz_anomaly_map <- function(x,
     dplyr::group_by(.data$latitude, .data$longitude) %>%
     dplyr::mutate(lcz_id = dplyr::cur_group_id(),
                   lcz_id = base::as.factor(.data$lcz_id),
-                  var_interp = base::as.numeric(var_interp)) %>%
+                  var_interp = base::as.numeric(.data$var_interp)) %>%
     dplyr::ungroup()
   df_variable$latitude <- base::as.numeric(df_variable$latitude)
   df_variable$longitude <- base::as.numeric(df_variable$longitude)

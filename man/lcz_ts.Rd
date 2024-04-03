@@ -15,7 +15,7 @@ lcz_ts(
   impute = NULL,
   iplot = FALSE,
   isave = FALSE,
-  palette = "Dark 2",
+  palette = "Spectral",
   inclusive = FALSE,
   ylab = "Air temperature [Degree Celsius]",
   xlab = "Time",
@@ -47,7 +47,7 @@ Can either be numeric e.g. month = 1:6 to select months 1-6 (January to June), o
 
 \item{isave}{Save the plot into your directory.}
 
-\item{palette}{Define your qualitative color palette. Default is "Dark 2". The options are: "Pastel 1", Dark 3", "Set 2", "Set 3", "Warm", "Cold", "Harmonic", "Dynamic".}
+\item{palette}{Define your qualitative color palette. Default is "Spectral". There are more 100 color-palettes grDevices::hcl.pals()}
 
 \item{inclusive}{Set to TRUE to a colorblind-friendly palette.}
 

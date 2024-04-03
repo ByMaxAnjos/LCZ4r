@@ -68,7 +68,6 @@ lcz_get_map_euro <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_eur
     }
 
     lcz_ras <- terra::mask(lcz_ras, terra::vect(study_area))
-    lcz_ras <- terra::project(lcz_ras, "+proj=longlat +datum=WGS84 +no_defs")
     base::names(lcz_ras) <- "lcz"
 
     if(isave_map==TRUE){
@@ -123,7 +122,6 @@ lcz_get_map_euro <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_eur
            You can crop a smaller region first to see if the operation succeeds.")
 
       lcz_ras <- terra::mask(lcz_ras, terra::vect(roi_crs))
-      lcz_ras <- terra::project(lcz_ras, "+proj=longlat +datum=WGS84 +no_defs")
       base::names(lcz_ras) <- "lcz"
 
       if(isave_map==TRUE){

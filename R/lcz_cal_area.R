@@ -41,7 +41,7 @@ lcz_cal_area <- function(x, iplot=TRUE, isave=FALSE, inclusive = FALSE, ...){
     freq_df$lcz[freq_df$lcz==0] <- 17
 
     freq_df <- dplyr::group_by(freq_df, lcz) %>%
-      dplyr::summarise(count = sum(count)) %>%
+      dplyr::summarise(count = sum(.data$count)) %>%
       dplyr::ungroup()
   }
 

@@ -16,7 +16,7 @@
 #' @param impute Method to impute missing values (\dQuote{mean}, \dQuote{median}, \dQuote{knn}, \dQuote{bag}).
 #' @param iplot Set to TRUE if you want to save the plot in your working directory.
 #' @param isave Save the plot into your directory.
-#' @param palette Define your qualitative color palette. Default is "Dark 2". The options are: "Pastel 1", Dark 3", "Set 2", "Set 3", "Warm", "Cold", "Harmonic", "Dynamic".
+#' @param palette Define your qualitative color palette. Default is "Spectral". There are more 100 color-palettes grDevices::hcl.pals()
 #' @param inclusive Set to TRUE to a colorblind-friendly palette.
 #' @param ylab y-axis name.
 #' @param xlab y-axis name. Default is \dQuote{Time}
@@ -50,7 +50,7 @@ lcz_ts <- function(x,
                    impute = NULL,
                    iplot = FALSE,
                    isave = FALSE,
-                   palette = "Dark 2",
+                   palette = "Spectral",
                    inclusive = FALSE,
                    ylab = "Air temperature [Degree Celsius]",
                    xlab = "Time",
@@ -248,7 +248,7 @@ lcz_ts <- function(x,
   # Define LCZ labels
   lcz.lables <- lcz_df$station
   nb.cols <- base::length(my_stations$station)
-  mycolors <- grDevices::hcl.colors(n = nb.cols, palette = palette, alpha = 0.6)
+  mycolors <- grDevices::hcl.colors(n = nb.cols, palette= palette)
 
   # Define time series frequency with argument "by"--------------------------------------------
   if (is.null(by)) {
@@ -266,6 +266,7 @@ lcz_ts <- function(x,
                         color = .data$station
                       )) +
       ggplot2::geom_line(lwd = .8 ,alpha = 0.9) +
+      ggplot2::geom_point()+
       ggplot2::scale_color_manual(
         name = "Station (LCZ)",
         values = mycolors,
@@ -273,9 +274,8 @@ lcz_ts <- function(x,
         guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
       ) +
       ggplot2::coord_cartesian(expand = FALSE, clip = "off") +
-      ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ"
-      ) +
-      ggplot2::labs(caption = caption) +
+      ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ",
+                    caption = caption) +
       ggplot2::theme_bw() +
       ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
                      plot.subtitle = ggplot2::element_text(color = "black", size = 18, hjust = 0.5),
@@ -352,6 +352,7 @@ lcz_ts <- function(x,
                           color = .data$station
                         )) +
         ggplot2::geom_line(lwd= .8, alpha = 0.9) +
+        ggplot2::geom_point()+
         ggplot2::scale_color_manual(
           name = "Station (LCZ)",
           values = mycolors,
@@ -361,9 +362,8 @@ lcz_ts <- function(x,
         #geom_text(data = merged_data, label = paste0(round(merged_data$temp_anomaly, 1), " ºC"), vjust = -1)+
         ggplot2::coord_cartesian(expand = FALSE, clip = "off") +
         #scale_x_datetime(breaks = '1 hour', date_labels = "%B\n%Y")+
-        ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ"
-        ) +
-        ggplot2::labs(caption = caption) +
+        ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ",
+                      caption = caption) +
         ggplot2::theme_bw()+
         ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
                        plot.subtitle = ggplot2::element_text(color = "black", size = 18, hjust = 0.5),
@@ -457,6 +457,7 @@ lcz_ts <- function(x,
                             color = .data$station
                           )) +
           ggplot2::geom_line(lwd=.8, alpha = 0.9) +
+          ggplot2::geom_point()+
           ggplot2::scale_color_manual(
             name = "Station (LCZ)",
             values = mycolors,
@@ -466,9 +467,8 @@ lcz_ts <- function(x,
           #geom_text(data = merged_data, label = paste0(round(merged_data$temp_anomaly, 1), " ºC"), vjust = -1)+
           ggplot2::coord_cartesian(expand = FALSE, clip = "off") +
           #scale_x_datetime(breaks = '1 hour', date_labels = "%B\n%Y")+
-          ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ"
-          ) +
-          ggplot2::labs(caption = caption) +
+          ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ",
+                        caption = caption) +
           ggplot2::theme_bw()+
           ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
                          plot.subtitle = ggplot2::element_text(color = "black", size = 18, hjust = 0.5),
@@ -556,6 +556,7 @@ lcz_ts <- function(x,
                             color = .data$station
                           )) +
           ggplot2::geom_line(lwd = .8, alpha = 0.9) +
+          ggplot2::geom_point()+
           ggplot2::scale_color_manual(
             name = "Station (LCZ)",
             values = mycolors,
@@ -563,9 +564,8 @@ lcz_ts <- function(x,
             guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
           ) +
           ggplot2::coord_cartesian(expand = FALSE, clip = "off") +
-          ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ"
-          ) +
-          ggplot2::labs(caption = caption) +
+          ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ",
+                        caption = caption) +
           ggplot2::theme_bw()+
           ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
                          plot.subtitle = ggplot2::element_text(color = "black", size = 18, hjust = 0.5),
