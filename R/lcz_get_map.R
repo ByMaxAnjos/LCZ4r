@@ -124,6 +124,7 @@ lcz_get_map <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_global=F
            subset of the data to reduce the memory and processing requirements.
            You can crop a smaller region first to see if the operation succeeds.")
 
+      }
     lcz_ras <- terra::mask(lcz_ras, terra::vect(roi_crs))
 
     base::names(lcz_ras) <- "lcz"
@@ -160,10 +161,7 @@ lcz_get_map <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_global=F
       terra::writeRaster(lcz_download, file, overwrite = TRUE)
     }
 
-    base::cat("Congratulations! You've successfully got",roi,"LCZ map.\n")
     return(lcz_ras)
-
-  }
 
   }
 
