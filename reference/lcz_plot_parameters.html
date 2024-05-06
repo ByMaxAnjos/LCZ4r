@@ -56,7 +56,14 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">lcz_plot_parameters</span><span class="op">(</span><span class="va">x</span>, iselect <span class="op">=</span> <span class="st">""</span>, all <span class="op">=</span> <span class="cn">FALSE</span>, isave <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">lcz_plot_parameters</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  iselect <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  all <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  inclusive <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  isave <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -67,12 +74,16 @@
 
 <dt>iselect</dt>
 <dd><p>Character vector. Specify one or more parameter names to retrieve specific
-parameters. For example, "SVF1" to get the minimum Sky View Factor,
-or c("z0", "VEG3") to select multiple parameters.</p></dd>
+parameters. For example, "SVF2" to get the minimum Sky View Factor,
+or c("z0", "BSF2") to select multiple parameters.</p></dd>
 
 
 <dt>all</dt>
 <dd><p>Logical, specifying whether to save all selected parameters into LCZ4r_output. Default is FALSE.</p></dd>
+
+
+<dt>inclusive</dt>
+<dd><p>Set to TRUE to a colorblind-friendly palette.</p></dd>
 
 
 <dt>isave</dt>
