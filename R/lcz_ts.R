@@ -312,7 +312,7 @@ lcz_ts <- function(x,
                                  latitude = my_latitude, longitude = my_longitude) %>% stats::na.omit() %>%
         dplyr::rename(my_time = dplyr::last_col())
       mydata <- openair::timeAverage(
-        mydata %>% openair::selectByDate(year=2019, month=7, day=2),
+        mydata,
         pollutant = "var_interp",
         avg.time = time.freq,
         hemisphere= hemisphere,

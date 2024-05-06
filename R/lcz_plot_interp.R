@@ -92,7 +92,7 @@ lcz_plot_interp <- function(x,
   } else {
 
     final_graph <-  ggplot2::ggplot() +
-      tidyterra::geom_spatraster(data={{my_interp_map}}) +
+      tidyterra::geom_spatraster(data={{x}}) +
       #MetBrewer::scale_fill_met_c(name = palette, direction=direction)+
       tidyterra::scale_fill_whitebox_c(palette = palette, direction = direction)+
       ggplot2::guides(fill = ggplot2::guide_colorbar(title.position = "top")) +
