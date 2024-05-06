@@ -30,6 +30,7 @@ lcz_cal_area <- function(x, iplot=TRUE, isave=FALSE, inclusive = FALSE, ...){
 
   if(!inherits(x, "SpatRaster")) {x <- terra::rast({{x}}) }
 
+  x<- x[[1]]
 # Calculate raster area ---------------------------------------------------
 
   freq_df <- tibble::as_tibble(terra::freq({{x}}, bylayer=FALSE, usenames=TRUE)) %>%
@@ -114,7 +115,7 @@ lcz_cal_area <- function(x, iplot=TRUE, isave=FALSE, inclusive = FALSE, ...){
                                  guide = ggplot2::guide_legend(reverse = FALSE,
                                                       title.position = "top")) +
       ggplot2::geom_text(data = lcz_df,
-                         label = paste0(round(lcz_df$area_perc, 1), "%"), vjust = -0.2, size = 6, fontface = "bold") +
+                         label = paste0(round(lcz_df$area_perc, 1), "%"), vjust = -0.2, size = 5) +
       ggplot2::coord_cartesian(expand = FALSE, clip = "off") +
       ggplot2::scale_y_continuous(limits = c(0, base::max(lcz_df$area_km2) + 50)) +
        ggplot2::labs(...,
@@ -122,12 +123,13 @@ lcz_cal_area <- function(x, iplot=TRUE, isave=FALSE, inclusive = FALSE, ...){
            y = "Area [square kilometer]",
            fill = "LCZ") +
       ggplot2::theme_bw()+
-      ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
-                     plot.subtitle = ggplot2::element_text(color = "black", size = 17, hjust = 0.5),
-        panel.background = ggplot2::element_rect(),
-                     panel.grid.major = ggplot2::element_line(color = "grey90"),
-                     panel.grid.minor = ggplot2::element_line(color = "grey90"),
-                     panel.grid.major.y = ggplot2::element_line(color = "grey90"),
+      ggplot2::theme(
+        plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
+        plot.subtitle = ggplot2::element_text(color = "black", size = 17, hjust = 0.5),
+        panel.background = ggplot2::element_rect(color = NA, fill = "grey97"),
+        panel.grid.major = ggplot2::element_line(color = "grey90"),
+        panel.grid.minor = ggplot2::element_line(color = "grey90"),
+        panel.grid.major.y = ggplot2::element_line(color = "grey90"),
         axis.text.x = ggplot2::element_text(size = 16),
         axis.title.x =ggplot2::element_text(size = 16, face = "bold"),
         axis.text.y = ggplot2::element_text(size = 16),
@@ -150,7 +152,7 @@ lcz_cal_area <- function(x, iplot=TRUE, isave=FALSE, inclusive = FALSE, ...){
       }
 
       file <- base::paste0(folder,"lcz_area.png")
-      ggplot2::ggsave(file, graph, height = 9, width = 14, units="in", dpi=300)
+      ggplot2::ggsave(file, graph, height = 9, width = 14, units="in", dpi=600)
 
     }
 

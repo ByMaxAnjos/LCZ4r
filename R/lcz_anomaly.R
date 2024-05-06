@@ -72,6 +72,7 @@ lcz_anomaly <- function(x,
     x <- terra::project(x, "+proj=longlat +datum=WGS84 +no_defs")
 
   }
+  x<- x[[1]]
   # Validate the time series -----------------------------------------------
 
   # Pre-processing time series ----------------------------------------------
@@ -293,7 +294,7 @@ lcz_anomaly <- function(x,
       ggplot2::theme_bw() +
       ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
                      plot.subtitle = ggplot2::element_text(color = "black", size = 18, hjust = 0.5),
-        panel.background = ggplot2::element_rect(),
+                     panel.background = ggplot2::element_rect(color = NA, fill = "grey97"),
         # plot.background = ggplot2::element_rect(fill = "grey90"),
         # panel.grid.minor = ggplot2::element_line(color = "grey90"),
         # panel.grid.major.y = ggplot2::element_line(color = "grey90"),
@@ -344,12 +345,12 @@ lcz_anomaly <- function(x,
       my_latitude <- lcz_model$latitude[1]
       my_longitude <- lcz_model$longitude[1]
       mydata <- openair::cutData(lcz_model, type = by, hemisphere= hemisphere,
-                                 latitude = my_latitude, longitude = my_longitude) %>% tidyr::drop_na() %>%
+                                 latitude = my_latitude, longitude = my_longitude) %>% stats::na.omit() %>%
         dplyr::rename(my_time = dplyr::last_col())
       mydata <- openair::timeAverage(mydata, pollutant = "var_interp",
                                      avg.time = time.freq,
                                      type = c("station", "my_time")) %>%
-        tidyr::drop_na()
+        stats::na.omit()
 
       anomlay_lcz <- function(input = NULL){
 
@@ -395,7 +396,7 @@ lcz_anomaly <- function(x,
         ggplot2::theme_bw() +
         ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
                        plot.subtitle = ggplot2::element_text(color = "black", size = 18, hjust = 0.5),
-          panel.background = ggplot2::element_rect(),
+                       panel.background = ggplot2::element_rect(color = NA, fill = "grey97"),
           #plot.background = ggplot2::element_rect(fill = "grey90"),
           # panel.grid.minor = ggplot2::element_line(color = "grey90"),
           # panel.grid.major.y = ggplot2::element_line(color = "grey90"),
@@ -448,13 +449,13 @@ lcz_anomaly <- function(x,
       my_latitude <- lcz_model$latitude[1]
       my_longitude <- lcz_model$longitude[1]
       mydata <- openair::cutData(lcz_model, type = by, hemisphere= hemisphere,
-                                 latitude = my_latitude, longitude = my_longitude) %>% tidyr::drop_na() %>%
+                                 latitude = my_latitude, longitude = my_longitude) %>% stats::na.omit() %>%
         dplyr::rename(my_time = dplyr::last_col())
       mydata <- openair::timeAverage(mydata,
         pollutant = "var_interp",
         avg.time = time.freq,
         type = c("station", "daylight", "my_time")
-      ) %>% tidyr::drop_na()
+      ) %>% stats::na.omit()
 
       anomlay_lcz <- function(input = NULL){
 
@@ -503,7 +504,7 @@ lcz_anomaly <- function(x,
         ggplot2::theme_bw() +
         ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
                        plot.subtitle = ggplot2::element_text(color = "black", size = 18, hjust = 0.5),
-          panel.background = ggplot2::element_rect(),
+                       panel.background = ggplot2::element_rect(color = NA, fill = "grey97"),
           #plot.background = ggplot2::element_rect(fill = "grey90"),
           # panel.grid.minor = ggplot2::element_line(color = "grey90"),
           # panel.grid.major.y = ggplot2::element_line(color = "grey90"),
@@ -554,7 +555,7 @@ lcz_anomaly <- function(x,
         pollutant = "var_interp",
         avg.time = time.freq,
         type = c("station", "my_time")) %>%
-        tidyr::drop_na()
+        stats::na.omit()
 
       anomlay_lcz <- function(input = NULL){
 
@@ -602,7 +603,7 @@ lcz_anomaly <- function(x,
         ggplot2::theme_bw() +
         ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
                        plot.subtitle = ggplot2::element_text(color = "black", size = 18, hjust = 0.5),
-          panel.background = ggplot2::element_rect(),
+                       panel.background = ggplot2::element_rect(color = NA, fill = "grey97"),
           #plot.background = ggplot2::element_rect(fill = "grey90"),
           # panel.grid.minor = ggplot2::element_line(color = "grey90"),
           # panel.grid.major.y = ggplot2::element_line(color = "grey90"),

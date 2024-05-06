@@ -4,16 +4,25 @@
 \alias{lcz_plot_parameters}
 \title{Visualize LCZ parameters}
 \usage{
-lcz_plot_parameters(x, iselect = "", all = FALSE, isave = FALSE, ...)
+lcz_plot_parameters(
+  x,
+  iselect = "",
+  all = FALSE,
+  inclusive = FALSE,
+  isave = FALSE,
+  ...
+)
 }
 \arguments{
 \item{x}{The LCZ map in SpatRaster in a stack format.}
 
 \item{iselect}{Character vector. Specify one or more parameter names to retrieve specific
-parameters. For example, "SVF1" to get the minimum Sky View Factor,
-or c("z0", "VEG3") to select multiple parameters.}
+parameters. For example, "SVF2" to get the minimum Sky View Factor,
+or c("z0", "BSF2") to select multiple parameters.}
 
 \item{all}{Logical, specifying whether to save all selected parameters into LCZ4r_output. Default is FALSE.}
+
+\item{inclusive}{Set to TRUE to a colorblind-friendly palette.}
 
 \item{isave}{Logical, indicating whether to save the plot to your directory. Default is FALSE.}
 

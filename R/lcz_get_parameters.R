@@ -50,6 +50,7 @@ lcz_get_parameters <- function(x,  iselect = "", istack = TRUE, ishp = FALSE, is
 
   if(!inherits(x, "SpatRaster")) { x <- terra::rast({{x}}) }
 
+  x<- x[[1]]
   lcz.name <- c("Compact highrise", "Compact midrise", "Compact lowrise", "Open highrise",
                 "Open midrise", "Open lowrise", "Lightweight low-rise", "Large lowrise",
                 "Sparsely built", "Heavy Industry", "Dense trees", "Scattered trees",

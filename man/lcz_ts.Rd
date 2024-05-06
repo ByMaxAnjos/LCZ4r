@@ -15,8 +15,7 @@ lcz_ts(
   impute = NULL,
   iplot = FALSE,
   isave = FALSE,
-  palette = "Spectral",
-  inclusive = FALSE,
+  palette = "VanGogh2",
   ylab = "Air temperature [Degree Celsius]",
   xlab = "Time",
   title = "",
@@ -47,9 +46,7 @@ Can either be numeric e.g. month = 1:6 to select months 1-6 (January to June), o
 
 \item{isave}{Save the plot into your directory.}
 
-\item{palette}{Define your qualitative color palette. Default is "Spectral". There are more 100 color-palettes grDevices::hcl.pals()}
-
-\item{inclusive}{Set to TRUE to a colorblind-friendly palette.}
+\item{palette}{Default is "VanGogh2". Define your color palette from MetBrewer https://github.com/BlakeRMills/MetBrewer?tab=readme-ov-file#palettes.}
 
 \item{ylab}{y-axis name.}
 

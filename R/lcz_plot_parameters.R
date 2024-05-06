@@ -5,9 +5,10 @@
 #'
 #' @param x The LCZ map in SpatRaster in a stack format.
 #' @param iselect Character vector. Specify one or more parameter names to retrieve specific
-#'                parameters. For example, "SVF1" to get the minimum Sky View Factor,
-#'                or c("z0", "VEG3") to select multiple parameters.
+#'                parameters. For example, "SVF2" to get the minimum Sky View Factor,
+#'                or c("z0", "BSF2") to select multiple parameters.
 #' @param isave Logical, indicating whether to save the plot to your directory. Default is FALSE.
+#' @param inclusive Set to TRUE to a colorblind-friendly palette.
 #' @param all Logical, specifying whether to save all selected parameters into LCZ4r_output. Default is FALSE.
 #' @param ... An optional modify axis, legend, and plot labels: title, subtitle, and caption.
 #'
@@ -31,7 +32,7 @@
 #' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis
 
 
-lcz_plot_parameters <- function(x, iselect = "", all = FALSE, isave = FALSE, ...) {
+lcz_plot_parameters <- function(x, iselect = "", all = FALSE, inclusive = FALSE, isave = FALSE, ...) {
 
   # Validate inputs
   if (is.null(x)) {
@@ -117,48 +118,96 @@ lcz_plot_parameters <- function(x, iselect = "", all = FALSE, isave = FALSE, ...
     if(x == "z0") return("[m]")
   }
 
-  take_color <- function(x) {
+  if(inclusive == TRUE) {
+    take_color <- function(x) {
 
-    if(x == "SVF1") return("magma")
-    if(x == "SVF2") return("magma")
-    if(x == "SVF3") return("magma")
-    if(x == "AR1") return("inferno")
-    if(x == "AR2") return("inferno")
-    if(x == "AR3") return("inferno")
-    if(x == "BSF1") return("cividis")
-    if(x == "BSF2") return("cividis")
-    if(x == "BSF3") return("cividis")
-    if(x == "ISF1") return("plasma")
-    if(x == "ISF2") return("plasma")
-    if(x == "ISF3") return("plasma")
-    if(x == "PSF1") return("viridis")
-    if(x == "PSF2") return("viridis")
-    if(x == "PSF3") return("viridis")
-    if(x == "TSF1") return("viridis")
-    if(x == "TSF2") return("viridis")
-    if(x == "TSF3") return("viridis")
-    if(x == "HRE1") return("cividis")
-    if(x == "HRE2") return("cividis")
-    if(x == "HRE3") return("cividis")
-    if(x == "TRC1") return("magma")
-    if(x == "TRC2") return("magma")
-    if(x == "TRC3") return("magma")
-    if(x == "SAD1") return("cividis")
-    if(x == "SAD2") return("cividis")
-    if(x == "SAD3") return("cividis")
-    if(x == "SAL1") return("plasma")
-    if(x == "SAL2") return("plasma")
-    if(x == "SAL3") return("plasma")
-    if(x == "AH1") return("inferno")
-    if(x == "AH2") return("inferno")
-    if(x == "AH3") return("inferno")
-    if(x == "z0") return("cividis")
+      if(x == "SVF1") return("Archambault")
+      if(x == "SVF2") return("Archambault")
+      if(x == "SVF3") return("Archambault")
+      if(x == "AR1") return("Ingres")
+      if(x == "AR2") return("Ingres")
+      if(x == "AR3") return("Ingres")
+      if(x == "BSF1") return("Cassatt1")
+      if(x == "BSF2") return("Cassatt1")
+      if(x == "BSF3") return("Cassatt1")
+      if(x == "ISF1") return("Cassatt2")
+      if(x == "ISF2") return("Cassatt2")
+      if(x == "ISF3") return("Cassatt2")
+      if(x == "PSF1") return("VanGogh3")
+      if(x == "PSF2") return("VanGogh3")
+      if(x == "PSF3") return("VanGogh3")
+      if(x == "TSF1") return("Hokusai3")
+      if(x == "TSF2") return("Hokusai3")
+      if(x == "TSF3") return("Hokusai3")
+      if(x == "HRE1") return("Hokusai2")
+      if(x == "HRE2") return("Hokusai2")
+      if(x == "HRE3") return("Hokusai2")
+      if(x == "TRC1") return("Pissaro")
+      if(x == "TRC2") return("Pissaro")
+      if(x == "TRC3") return("Pissaro")
+      if(x == "SAD1") return("Tam")
+      if(x == "SAD2") return("Tam")
+      if(x == "SAD3") return("Tam")
+      if(x == "SAL1") return("Renoir")
+      if(x == "SAL2") return("Renoir")
+      if(x == "SAL3") return("Renoir")
+      if(x == "AH1") return("Demuth")
+      if(x == "AH2") return("Demuth")
+      if(x == "AH3") return("Demuth")
+      if(x == "z0") return("Troy")
 
+    }
+    names_par <- tibble::as_tibble(names(LCZpar))
+    names_par$name <- base::sapply(names_par$value, take_names)
+    names_par$unit <- base::sapply(names_par$value, take_unit)
+    names_par$color <- base::sapply(names_par$value, take_color)
+    }
+
+  else {
+      take_color <- function(x) {
+
+        if(x == "SVF1") return("Archambault")
+        if(x == "SVF2") return("Archambault")
+        if(x == "SVF3") return("Archambault")
+        if(x == "AR1") return("Greek")
+        if(x == "AR2") return("Greek")
+        if(x == "AR3") return("Greek")
+        if(x == "BSF1") return("VanGogh1")
+        if(x == "BSF2") return("VanGogh1")
+        if(x == "BSF3") return("VanGogh1")
+        if(x == "ISF1") return("VanGogh2")
+        if(x == "ISF2") return("VanGogh2")
+        if(x == "ISF3") return("VanGogh2")
+        if(x == "PSF1") return("VanGogh3")
+        if(x == "PSF2") return("VanGogh3")
+        if(x == "PSF3") return("VanGogh3")
+        if(x == "TSF1") return("Hokusai3")
+        if(x == "TSF2") return("Hokusai3")
+        if(x == "TSF3") return("Hokusai3")
+        if(x == "HRE1") return("Hokusai2")
+        if(x == "HRE2") return("Hokusai2")
+        if(x == "HRE3") return("Hokusai2")
+        if(x == "TRC1") return("Pissaro")
+        if(x == "TRC2") return("Pissaro")
+        if(x == "TRC3") return("Pissaro")
+        if(x == "SAD1") return("Tam")
+        if(x == "SAD2") return("Tam")
+        if(x == "SAD3") return("Tam")
+        if(x == "SAL1") return("Renoir")
+        if(x == "SAL2") return("Renoir")
+        if(x == "SAL3") return("Renoir")
+        if(x == "AH1") return("Manet")
+        if(x == "AH2") return("Manet")
+        if(x == "AH3") return("Manet")
+        if(x == "z0") return("Troy")
+
+      }
+      names_par <- tibble::as_tibble(names(LCZpar))
+      names_par$name <- base::sapply(names_par$value, take_names)
+      names_par$unit <- base::sapply(names_par$value, take_unit)
+      names_par$color <- base::sapply(names_par$value, take_color)
   }
-  names_par <- tibble::as_tibble(names(LCZpar))
-  names_par$name <- base::sapply(names_par$value, take_names)
-  names_par$unit <- base::sapply(names_par$value, take_unit)
-  names_par$color <- base::sapply(names_par$value, take_color)
+
 
   if(all == TRUE) {
 
@@ -166,14 +215,15 @@ lcz_plot_parameters <- function(x, iselect = "", all = FALSE, isave = FALSE, ...
 
       # Convert the raster layer to a data frame
       parameter_df <- terra::as.data.frame(LCZpar[[i]], xy=TRUE) %>%
-        tidyr::drop_na()%>%
+        stats::na.omit() %>%
         purrr::set_names(c("x", "y", "values"))
 
       #Plot the lcz parameters
       fig_par <- ggplot2::ggplot() +
         ggplot2::geom_tile(ggplot2::aes(x=x, y=.data$y, fill=.data$values), data = parameter_df, show.legend = TRUE) +
-        ggplot2::scale_fill_viridis_c(option = paste0(names_par$color[i]), name=paste0(names_par$unit[i]))+
-        ggplot2::labs(title = paste0(names_par$name[i]),...) +
+        # ggplot2::scale_fill_viridis_c(option = paste0(names_par$color[i]), name=paste0(names_par$unit[i]))+
+        MetBrewer::scale_fill_met_c(name = paste0(names_par$color[i])) +
+        ggplot2::labs(title = paste0(names_par$name[i]), fill = paste0(names_par$unit[i]), ...) +
         ggplot2::coord_equal(expand = TRUE, clip = "off")+
         ggplot2::theme_void() +
         ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
@@ -203,7 +253,7 @@ lcz_plot_parameters <- function(x, iselect = "", all = FALSE, isave = FALSE, ...
         }
 
         file <- base::paste0(folder, names_par$value[i], ".png")
-        ggplot2::ggsave(file, fig_par, height = 7, width = 10, units="in", dpi=300)
+        ggplot2::ggsave(file, fig_par, height = 7, width = 9, units="in", dpi=600)
 
       }
 
@@ -230,14 +280,15 @@ lcz_plot_parameters <- function(x, iselect = "", all = FALSE, isave = FALSE, ...
 
         # Convert the raster layer to a data frame
         parameter_df <- terra::as.data.frame(select_raster[[i]], xy=TRUE) %>%
-          tidyr::drop_na() %>%
+          stats::na.omit() %>%
           purrr::set_names(c("x", "y", "values"))
 
         #Plot the lcz parameters
         fig_par <- ggplot2::ggplot() +
           ggplot2::geom_tile(ggplot2::aes(x=x, y=.data$y, fill=.data$values), data = parameter_df, show.legend = TRUE) +
-          ggplot2::scale_fill_viridis_c(option = paste0(names_par_select$color[i]), name=paste0(names_par_select$unit[i]))+
-          ggplot2::labs(title = paste0(names_par_select$name[i]),...) +
+          #ggplot2::scale_fill_viridis_c(option = paste0(names_par_select$color[i]), name=paste0(names_par_select$unit[i]))+
+          MetBrewer::scale_fill_met_c(name = paste0(names_par_select$color[i])) +
+          ggplot2::labs(title = paste0(names_par_select$name[i]), fill = paste0(names_par_select$unit[i]), ...) +
           ggplot2::coord_equal(expand = TRUE, clip = "off")+
           ggplot2::theme_void() +
           ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
@@ -267,7 +318,7 @@ lcz_plot_parameters <- function(x, iselect = "", all = FALSE, isave = FALSE, ...
           }
 
           file <- base::paste0(folder, names_par_select$value[i], ".png")
-          ggplot2::ggsave(file, fig_par, height = 7, width = 10, units="in", dpi=300)
+          ggplot2::ggsave(file, fig_par, height = 7, width = 9, units="in", dpi=600)
 
         }
 
@@ -287,14 +338,15 @@ lcz_plot_parameters <- function(x, iselect = "", all = FALSE, isave = FALSE, ...
 
       # Convert the raster layer to a data frame
       parameter_df <- terra::as.data.frame(select_raster, xy=TRUE) %>%
-        tidyr::drop_na() %>%
+        stats::na.omit() %>%
         purrr::set_names(c("x", "y", "values"))
 
       #Plot the lcz parameters
       fig_par <- ggplot2::ggplot() +
         ggplot2::geom_tile(ggplot2::aes(x=x, y=.data$y, fill=.data$values), data = parameter_df, show.legend = TRUE) +
-        ggplot2::scale_fill_viridis_c(option = paste0(names_par_select$color), name=paste0(names_par_select$unit))+
-        ggplot2::labs(title = paste0(names_par_select$name),...) +
+        #ggplot2::scale_fill_viridis_c(option = paste0(names_par_select$color), name=paste0(names_par_select$unit))+
+        MetBrewer::scale_fill_met_c(name = paste0(names_par_select$color)) +
+        ggplot2::labs(title = paste0(names_par_select$name), fill =paste0(names_par_select$unit), ...) +
         ggplot2::coord_equal(expand = TRUE, clip = "off")+
         ggplot2::theme_void() +
         ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
@@ -324,7 +376,7 @@ lcz_plot_parameters <- function(x, iselect = "", all = FALSE, isave = FALSE, ...
         }
 
         file <- base::paste0(folder, names_par_select$value, ".png")
-        ggplot2::ggsave(file, fig_par, height = 7, width = 10, units="in", dpi=300)
+        ggplot2::ggsave(file, fig_par, height = 7, width = 9, units="in", dpi=600)
 
         base::cat("Wow! You've salved",iselect,"LCZ parameter map into folder LCZ4r_output.\n")
 

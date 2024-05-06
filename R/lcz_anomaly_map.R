@@ -62,6 +62,7 @@ lcz_anomaly_map <- function(x,
     x <- terra::project(x, "+proj=longlat +datum=WGS84 +no_defs")
 
   }
+  x<- x[[1]]
   # Validate the time series -----------------------------------------------
 
   # Pre-processing time series ----------------------------------------------
@@ -802,12 +803,12 @@ lcz_anomaly_map <- function(x,
       my_latitude <- df_processed$latitude[1]
       my_longitude <- df_processed$longitude[1]
       mydata <- openair::cutData(df_processed, type = by, hemisphere= hemisphere,
-                                 latitude = my_latitude, longitude = my_longitude) %>% tidyr::drop_na() %>%
+                                 latitude = my_latitude, longitude = my_longitude) %>% stats::na.omit() %>%
         dplyr::rename(my_time = dplyr::last_col())
       mydata <- openair::timeAverage(mydata, pollutant = "var_interp",
                                      avg.time = tp.res,
                                      type = c("station", "my_time")) %>%
-        tidyr::drop_na()
+        stats::na.omit()
       iby <- mydata %>%
         dplyr::group_by(.data$my_time) %>%
         dplyr::ungroup() %>%
@@ -928,12 +929,12 @@ lcz_anomaly_map <- function(x,
       my_latitude <- df_processed$latitude[1]
       my_longitude <- df_processed$longitude[1]
       mydata <- openair::cutData(df_processed, type = by, hemisphere= hemisphere,
-                                 latitude = my_latitude, longitude = my_longitude) %>% tidyr::drop_na() %>%
+                                 latitude = my_latitude, longitude = my_longitude) %>% stats::na.omit() %>%
         dplyr::rename(my_time = dplyr::last_col())
       mydata <- openair::timeAverage(mydata,
                                      pollutant = "var_interp",
                                      avg.time = tp.res,
-                                     type = c("station", "daylight", "my_time")) %>% tidyr::drop_na()
+                                     type = c("station", "daylight", "my_time")) %>% stats::na.omit()
 
       iby <- mydata %>%
         dplyr::group_by(.data$my_time) %>%
@@ -1054,7 +1055,7 @@ lcz_anomaly_map <- function(x,
                                      pollutant = "var_interp",
                                      avg.time = tp.res,
                                      type = c("station", "my_time")) %>%
-        tidyr::drop_na()
+        stats::na.omit()
       iby <- mydata %>%
         dplyr::group_by(.data$my_time) %>%
         dplyr::ungroup() %>%

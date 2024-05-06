@@ -36,16 +36,17 @@ Imports:
     ggplot2,
     purrr,
     tibble,
-    tidyr,
     openair,
     recipes,
     janitor,
     data.table,
     automap,
     gstat,
+    MetBrewer,
     lubridate
 Suggests:
     knitr,
+    tidyr,
     openssl,
     httr2,
     curl,

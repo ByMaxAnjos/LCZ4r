@@ -62,6 +62,7 @@ lcz_interp_map <- function(x,
     x <- terra::project(x, "+proj=longlat +datum=WGS84 +no_defs")
 
   }
+  x<- x[[1]]
   # Validate the time series -----------------------------------------------
 
   # Pre-processing time series ----------------------------------------------

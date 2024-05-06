@@ -4,12 +4,22 @@
 \alias{lcz_plot_interp}
 \title{Visualize Interpolated LCZ map}
 \usage{
-lcz_plot_interp(x, palette = "muted", ncol = 2, nrow = 3, isave = FALSE, ...)
+lcz_plot_interp(
+  x,
+  palette = "muted",
+  direction = 1,
+  ncol = 2,
+  nrow = 3,
+  isave = FALSE,
+  ...
+)
 }
 \arguments{
 \item{x}{The LCZ map in SpatRaster format, either as a single raster or a raster stack, obtained from functions like lcz_anomaly_map() or lcz_interp_map().}
 
 \item{palette}{Gradient palettes available in the tidyterra package. Default is "muted". More palettes can be found in the tidyterra documentation: https://dieghernan.github.io/tidyterra/articles/palettes.html#scale_fill_whitebox_}
+
+\item{direction}{Sets order of colors. Default palette is 1. If direction is -1, palette color order is reversed}
 
 \item{ncol}{Number of columns in the plot. Default is 2}
 

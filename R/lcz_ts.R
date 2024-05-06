@@ -16,8 +16,7 @@
 #' @param impute Method to impute missing values (\dQuote{mean}, \dQuote{median}, \dQuote{knn}, \dQuote{bag}).
 #' @param iplot Set to TRUE if you want to save the plot in your working directory.
 #' @param isave Save the plot into your directory.
-#' @param palette Define your qualitative color palette. Default is "Spectral". There are more 100 color-palettes grDevices::hcl.pals()
-#' @param inclusive Set to TRUE to a colorblind-friendly palette.
+#' @param palette Default is "VanGogh2". Define your color palette from MetBrewer https://github.com/BlakeRMills/MetBrewer?tab=readme-ov-file#palettes.
 #' @param ylab y-axis name.
 #' @param xlab y-axis name. Default is \dQuote{Time}
 #' @param title y-axis name. Default is \dQuote{" "}.
@@ -50,8 +49,7 @@ lcz_ts <- function(x,
                    impute = NULL,
                    iplot = FALSE,
                    isave = FALSE,
-                   palette = "Spectral",
-                   inclusive = FALSE,
+                   palette = "VanGogh2",
                    ylab = "Air temperature [Degree Celsius]",
                    xlab = "Time",
                    title = "",
@@ -72,6 +70,8 @@ lcz_ts <- function(x,
     x <- terra::project(x, "+proj=longlat +datum=WGS84 +no_defs")
 
   }
+
+  x<- x[[1]]
   # Validate the time series -----------------------------------------------
 
   # Pre-processing time series ----------------------------------------------
@@ -219,36 +219,14 @@ lcz_ts <- function(x,
     tibble::as_tibble() %>%
     purrr::set_names("lcz.col")
 
-  lcz_colorblind <- c("#E16A86", "#D8755E", "#C98027", "#B48C00",
-                      "#989600", "#739F00", "#36A631", "#00AA63",
-                      "#00AD89", "#00ACAA", "#00A7C5", "#009EDA",
-                      "#6290E5", "#9E7FE5", "#C36FDA", "#D965C6",
-                      "#E264A9") %>%
-    tibble::as_tibble() %>%
-    purrr::set_names("lcz_colorblind")
-
-  lcz_df <- dplyr::bind_cols(lcz, lcz.name, lcz.col, lcz_colorblind) %>%
+  lcz_df <- dplyr::bind_cols(lcz, lcz.name, lcz.col) %>%
     dplyr::mutate(lcz = base::as.factor(.data$lcz)) %>%
     dplyr::inner_join(my_stations,  by = "lcz")
-
-  # Define qualitative palette
-  if(inclusive == TRUE) {
-    color_values <- lcz_df %>%
-      dplyr::select(.data$station, .data$lcz_colorblind) %>%
-      dplyr::distinct(.data$station, .data$lcz_colorblind) %>%
-      dplyr::pull(.data$lcz_colorblind, .data$station)
-
-  } else {
-    color_values <- lcz_df %>%
-      dplyr::select(.data$station, .data$lcz.col) %>%
-      dplyr::distinct(.data$station, .data$lcz.col) %>%
-      dplyr::pull(.data$lcz.col, .data$station)
-  }
 
   # Define LCZ labels
   lcz.lables <- lcz_df$station
   nb.cols <- base::length(my_stations$station)
-  mycolors <- grDevices::hcl.colors(n = nb.cols, palette= palette)
+  mycolors <- MetBrewer::met.brewer(name = palette, nb.cols)
 
   # Define time series frequency with argument "by"--------------------------------------------
   if (is.null(by)) {
@@ -265,8 +243,7 @@ lcz_ts <- function(x,
                         y = .data$var_interp,
                         color = .data$station
                       )) +
-      ggplot2::geom_line(lwd = .8 ,alpha = 0.9) +
-      ggplot2::geom_point()+
+      ggplot2::geom_line(alpha = 0.8, lineend = "round") +
       ggplot2::scale_color_manual(
         name = "Station (LCZ)",
         values = mycolors,
@@ -279,7 +256,7 @@ lcz_ts <- function(x,
       ggplot2::theme_bw() +
       ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
                      plot.subtitle = ggplot2::element_text(color = "black", size = 18, hjust = 0.5),
-        panel.background = ggplot2::element_rect(),
+        panel.background = ggplot2::element_rect(color = NA, fill = "grey97"),
         #plot.background = ggplot2::element_rect(fill = "grey90"),
         panel.grid.minor = ggplot2::element_line(color = "grey90"),
         panel.grid.major.y = ggplot2::element_line(color = "grey90"),
@@ -307,7 +284,8 @@ lcz_ts <- function(x,
       }
 
       file <- base::paste0(folder,"lcz_ts.png")
-      ggplot2::ggsave(file, final_graph, height = 9, width = 14, units="in", dpi=300)
+      ggplot2::ggsave(file, final_graph, height = 7, width = 10, units="in", dpi=600)
+      base::cat("Looking your save into folder called LCZ4r_output")
 
     }
     base::cat(
@@ -328,21 +306,20 @@ lcz_ts <- function(x,
       axis_matches <- terra::crs({{x}}, parse = TRUE)[14]
       # Extract hemisphere from AXIS definition
       hemisphere <- base::ifelse(base::grepl("north", axis_matches), "northern", "southern")
-
       my_latitude <- lcz_model$latitude[1]
       my_longitude <- lcz_model$longitude[1]
       mydata <- openair::cutData(lcz_model, type = by, hemisphere= hemisphere,
-                                 latitude = my_latitude, longitude = my_longitude) %>% tidyr::drop_na() %>%
+                                 latitude = my_latitude, longitude = my_longitude) %>% stats::na.omit() %>%
         dplyr::rename(my_time = dplyr::last_col())
       mydata <- openair::timeAverage(
-        mydata,
+        mydata %>% openair::selectByDate(year=2019, month=7, day=2),
         pollutant = "var_interp",
         avg.time = time.freq,
         hemisphere= hemisphere,
         latitude = my_latitude,
         longitude = my_longitude,
         type = c("station", "my_time")
-      ) %>% tidyr::drop_na()
+      ) %>% stats::na.omit()
 
       graph <-
         ggplot2::ggplot(mydata,
@@ -351,23 +328,21 @@ lcz_ts <- function(x,
                           y = .data$var_interp,
                           color = .data$station
                         )) +
-        ggplot2::geom_line(lwd= .8, alpha = 0.9) +
-        ggplot2::geom_point()+
+        ggplot2::geom_line(alpha = 0.9) +
         ggplot2::scale_color_manual(
           name = "Station (LCZ)",
           values = mycolors,
           labels = lcz.lables,
           guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
         ) +
-        #geom_text(data = merged_data, label = paste0(round(merged_data$temp_anomaly, 1), " ºC"), vjust = -1)+
         ggplot2::coord_cartesian(expand = FALSE, clip = "off") +
-        #scale_x_datetime(breaks = '1 hour', date_labels = "%B\n%Y")+
+       # ggplot2::scale_x_datetime()+
         ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ",
                       caption = caption) +
         ggplot2::theme_bw()+
         ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
                        plot.subtitle = ggplot2::element_text(color = "black", size = 18, hjust = 0.5),
-          panel.background = ggplot2::element_rect(),
+          panel.background = ggplot2::element_rect(color = NA, fill = "grey97"),
           #plot.background = ggplot2::element_rect(fill = "grey90"),
           panel.grid.major = ggplot2::element_line(color = "grey90"),
           panel.grid.minor = ggplot2::element_line(color = "grey90"),
@@ -384,7 +359,7 @@ lcz_ts <- function(x,
           plot.caption = ggplot2::element_text(color = "grey30", hjust = 1, size = 9)
         )
       final_graph <-
-        graph + ggplot2::facet_wrap(~ my_time, scales = "free_x") +
+        graph + ggplot2::facet_wrap(~ my_time, scales = "free_x", shrink = TRUE) +
         ggplot2::theme(
           strip.text = ggplot2::element_text(
             face = "bold",
@@ -407,7 +382,8 @@ lcz_ts <- function(x,
         }
 
         file <- base::paste0(folder,"lcz_ts.png")
-        ggplot2::ggsave(file, final_graph, height = 9, width = 14, units="in", dpi=300)
+        ggplot2::ggsave(file, final_graph, height = 7, width = 10, units="in", dpi=600)
+        base::cat("Looking your save into folder called LCZ4r_output")
 
       }
       base::cat(
@@ -431,7 +407,7 @@ lcz_ts <- function(x,
       my_latitude <- lcz_model$latitude[1]
         my_longitude <- lcz_model$longitude[1]
         mydata <- openair::cutData(lcz_model, type = by, hemisphere= hemisphere,
-                                   latitude = my_latitude, longitude = my_longitude) %>% tidyr::drop_na() %>%
+                                   latitude = my_latitude, longitude = my_longitude) %>% stats::na.omit() %>%
           dplyr::rename(my_time = dplyr::last_col())
         mydata <- openair::timeAverage(
           mydata,
@@ -441,7 +417,7 @@ lcz_ts <- function(x,
           latitude = my_latitude,
           longitude = my_longitude,
           type = c("station", by)
-        ) %>% tidyr::drop_na()
+        ) %>% stats::na.omit()
 
         # convert the vector to a string
         by_str <- base::paste(by, collapse = " ~ ")
@@ -456,8 +432,7 @@ lcz_ts <- function(x,
                             y = .data$var_interp,
                             color = .data$station
                           )) +
-          ggplot2::geom_line(lwd=.8, alpha = 0.9) +
-          ggplot2::geom_point()+
+          ggplot2::geom_line(alpha = 0.9) +
           ggplot2::scale_color_manual(
             name = "Station (LCZ)",
             values = mycolors,
@@ -472,7 +447,7 @@ lcz_ts <- function(x,
           ggplot2::theme_bw()+
           ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
                          plot.subtitle = ggplot2::element_text(color = "black", size = 18, hjust = 0.5),
-            panel.background = ggplot2::element_rect(),
+            panel.background = ggplot2::element_rect(color = NA, fill = "grey97"),
             #plot.background = ggplot2::element_rect(fill = "grey90"),
             panel.grid.minor = ggplot2::element_line(color = "grey90"),
             panel.grid.major.y = ggplot2::element_line(color = "grey90"),
@@ -514,7 +489,8 @@ lcz_ts <- function(x,
           }
 
           file <- base::paste0(folder,"lcz_ts.png")
-          ggplot2::ggsave(file, final_graph, height = 9, width = 14, units="in", dpi=300)
+          ggplot2::ggsave(file, final_graph, height = 7, width = 10, units="in", dpi=600)
+          base::cat("Looking your save into folder called LCZ4r_output")
 
         }
         base::cat(
@@ -538,8 +514,7 @@ lcz_ts <- function(x,
             hemisphere = hemisphere,
             latitude = my_latitude,
             longitude = my_longitude
-          ) %>%
-          tidyr::drop_na() %>%
+          ) %>% stats::na.omit() %>%
           dplyr::rename(my_time = dplyr::last_col())
         mydata <- openair::timeAverage(
           mydata,
@@ -547,7 +522,7 @@ lcz_ts <- function(x,
           avg.time = time.freq,
           type = c("station", "my_time")
         ) %>%
-          tidyr::drop_na()
+          stats::na.omit()
 
         graph <-
           ggplot2::ggplot(mydata, ggplot2::aes(
@@ -555,8 +530,7 @@ lcz_ts <- function(x,
                             y = .data$var_interp,
                             color = .data$station
                           )) +
-          ggplot2::geom_line(lwd = .8, alpha = 0.9) +
-          ggplot2::geom_point()+
+          ggplot2::geom_line(alpha = 0.9) +
           ggplot2::scale_color_manual(
             name = "Station (LCZ)",
             values = mycolors,
@@ -569,7 +543,7 @@ lcz_ts <- function(x,
           ggplot2::theme_bw()+
           ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
                          plot.subtitle = ggplot2::element_text(color = "black", size = 18, hjust = 0.5),
-            panel.background = ggplot2::element_rect(),
+            panel.background = ggplot2::element_rect(color = NA, fill = "grey97"),
             #plot.background = ggplot2::element_rect(fill = "grey90"),
             panel.grid.minor = ggplot2::element_line(color = "grey90"),
             panel.grid.major.y = ggplot2::element_line(color = "grey90"),
@@ -612,11 +586,13 @@ lcz_ts <- function(x,
           }
 
           file <- base::paste0(folder,"lcz_ts.png")
-          ggplot2::ggsave(file, final_graph, height = 9, width = 14, units="in", dpi=300)
+          ggplot2::ggsave(file, final_graph, height = 7, width = 10, units="in", dpi=600)
+          base::cat("Looking your save into folder called LCZ4r_output")
 
         }
         base::cat(
           "Congrats! You've successfully performed a",time.freq,"time series by",by,"based on LCZ classes.\n")
+
         return(final_graph)
 
         if (iplot == FALSE) {

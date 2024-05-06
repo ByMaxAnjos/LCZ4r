@@ -92,7 +92,7 @@ lcz_plot_map <- function(x, isave = FALSE, inclusive = FALSE, ...) {
 
 
   dataPlot <- terra::as.data.frame(x, xy=TRUE) %>%
-    tidyr::drop_na()
+    stats::na.omit()
 
   if (any(rat$ID == 0)) {
     rat$ID[rat$ID == 0] <- 17

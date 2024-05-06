@@ -47,6 +47,8 @@ lcz_get_map2 <- function(x, city=NULL, roi = NULL, isave_map = FALSE) {
 
   }
 
+  x<- x[[1]]
+
   if (is.null(city) & is.null(roi)) {
     stop("Error: provide either a city name or a roi polygon")
   }
@@ -71,7 +73,8 @@ lcz_get_map2 <- function(x, city=NULL, roi = NULL, isave_map = FALSE) {
         sf::st_transform(crs="+proj=longlat +datum=WGS84 +no_defs")
     }
 
-    options(warn=-1)
+      options(warn=-1)
+
       # Crop the raster to the study area extent
       lcz_ras <- terra::crop(x, terra::ext(study_area))
 
