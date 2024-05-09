@@ -75,8 +75,10 @@ With the `lcz_ts()` function, you can analyze the air temperature associated wit
 lcz_map <- lcz_get_map(city="Berlin")
 
 #Let's get LCZ air temperature time series
-lcz_ts(lcz_map, data_frame = lcz_data, 
-       var = "airT", station_id = "station",
+lcz_ts(lcz_map, 
+       data_frame = lcz_data, 
+       var = "airT", 
+       station_id = "station",
        time.freq = "month") # Monthly temporal frequency. Let's change to "hour, "day", "week", and so on.
 
 ```
@@ -117,8 +119,10 @@ The thermal anomaly is a great way to evaluate the intra-urban air temperatures 
 ```{r echo=TRUE, fig.height=7, fig.width=11, message=FALSE, warning=FALSE}
 
 # If you want the thermal anomalies 1 sept 2020 on hourly basis.
-lcz_anomaly(lcz_map, data_frame = lcz_data, 
-            var = "airT", station_id = "station", 
+lcz_anomaly(lcz_map, 
+            data_frame = lcz_data, 
+            var = "airT", 
+            station_id = "station", 
             time.freq = "hour", #Let's change the frequency to "day", "month", "year"
             year = 2020, month = 9, day = 1)
 
@@ -129,7 +133,8 @@ lcz_anomaly(lcz_map, data_frame = lcz_data,
 
 # If you want the thermal anomalies by months of 2020 on daily basis.
 lcz_anomaly(lcz_map, data_frame = lcz_data, 
-            var = "airT", station_id = "station", 
+            var = "airT", 
+            station_id = "station", 
             time.freq = "day", #Let's change the frequency to "day", "month", "year"
             year = 2020, by = "month")
 
@@ -138,16 +143,17 @@ lcz_anomaly(lcz_map, data_frame = lcz_data,
 
 ## Visualize LCZ Thermal Anomaly map
 
-If you're still with us and everything is running rightly, you can proceed to generate a map of LCZ thermal anomalies using the `lcz_anomaly_map()` function. This function employs interpolation techniques such as Kriging and IDW to calculate and interpolate anomalies. The settings for time frequency and data splitting, as utilized in the `lcz_ts` and `lcz_anomaly()` functions, remain relatively unchanged. But, there are two new arguments to consider: **sp.res** (the spatial resolution of the map in meters) and **tp.res** (the frequency at which values are averaged). The `lcz_anomaly_map` function returns either a single raster file or a stack of raster files. Subsequently, you can visualize the anomaly map using the `lcz_plot_interp()` function.
+If you're still with us and everything is running rightly, you can proceed to generate a map of LCZ thermal anomalies using the `lcz_anomaly_map()` function. This function employs interpolation techniques such as Kriging ato calculate and interpolate anomalies. The settings for time frequency and data splitting, as utilized in the `lcz_ts` and `lcz_anomaly()` functions, remain relatively unchanged. But, there are two new arguments to consider: **sp.res** (the spatial resolution of the map in meters) and **tp.res** (the frequency at which values are averaged). The `lcz_anomaly_map` function returns either a single raster file or a stack of raster files. Subsequently, you can visualize the anomaly map using the `lcz_plot_interp()` function.
 
 ```{r echo=TRUE, fig.height=7, fig.width=11, message=FALSE, warning=FALSE}
 
 #Mapping anomalies for 1st Sep 2020 at 09:00h using kriging
 my_anomaly_map <- lcz_anomaly_map(lcz_map,
-                                data_frame = lcz_data, var = "airT", station_id = "station",
+                                data_frame = lcz_data, 
+                                var = "airT", station_id = "station",
                                 sp.res = 100, tp.res = "hour",
-                                year = 2020, month = 9, day = 1, hour = 9,
-                                method = "kriging")
+                                year = 2020, month = 9, day = 1, hour = 9
+                                )
 
 #Plot anomaly map. Note that the argument ... is used to title etc..
 lcz_plot_interp(my_anomaly_map, 
@@ -163,11 +169,13 @@ lcz_plot_interp(my_anomaly_map,
 
 # Active the by argument! Mapping daytime and nighttime anomalies for 1st Sep 2020
 my_anomlay_daylight <- lcz_anomaly_map(lcz_map,
-                              data_frame = lcz_data, var = "airT", station_id = "station",
-                              sp.res = 100, tp.res = "hour",
+                              data_frame = lcz_data, 
+                              var = "airT", 
+                              station_id = "station",
+                              sp.res = 100, 
+                              tp.res = "hour",
                               year = 2020, month = 9, day = 1,
-                              by="daylight",
-                              method = "kriging")
+                              by="daylight")
 
 my_anomlay_daylight
 
@@ -188,14 +196,15 @@ Let's interpolate air temperature using the `lcz_interp_map()`, that follows the
 
 ```{r echo=TRUE, fig.height=7, fig.width=11, message=FALSE, warning=FALSE}
 
-my_interp_map <- lcz_interp_map(lcz_map,
-                           data_frame = lcz_data, var = "airT", station_id = "station",
-                           sp.res = 100, tp.res = "hour",
-                           year = 2019, month = 2, day=6, hour=5,
-                           method = "kriging",
-                           isave = FALSE)
-
-lcz_plot_interp(my_interp_map)
+air_map <- lcz_interp_map(lcz_map,
+                          data_frame = lcz_data,
+                          var = "airT",
+                          station_id = "station",
+                          sp.res = 500,
+                          tp.res = "hour",
+                          year = 2019, month = 2, day=6, hour=5,
+                          LCZinterp = TRUE)
+lcz_plot_interp(air_map)
 
 ```
 

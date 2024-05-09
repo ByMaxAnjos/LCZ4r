@@ -61,13 +61,14 @@
 <span>  data_frame <span class="op">=</span> <span class="st">""</span>,</span>
 <span>  var <span class="op">=</span> <span class="st">""</span>,</span>
 <span>  station_id <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  <span class="va">...</span>,</span>
 <span>  sp.res <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>  tp.res <span class="op">=</span> <span class="st">"hour"</span>,</span>
-<span>  method <span class="op">=</span> <span class="st">"kriging"</span>,</span>
-<span>  <span class="va">...</span>,</span>
+<span>  vg.model <span class="op">=</span> <span class="st">"Sph"</span>,</span>
 <span>  by <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  impute <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  isave <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span>  isave <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  LCZinterp <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -89,6 +90,12 @@
 <dd><p>Name of the station ID variable in the dataframe.</p></dd>
 
 
+<dt>...</dt>
+<dd><p>Utilities from <code>selectBydata</code> from <code>openair</code> package. A start date string in the form e.g. “1/2/1999” or in format i.e. “YYYY-mm-dd”, “1999-02-01”.
+A year or years to select e.g. year = 1998:2004 to select 1998-2004 inclusive or year = c(1998, 2004) to select 1998 and 2004. A month or months to select.
+Can either be numeric e.g. month = 1:6 to select months 1-6 (January to June), or by name e.g. month = c(“January”, “December”).</p></dd>
+
+
 <dt>sp.res</dt>
 <dd><p>Spatial resolution in unit of meters for interpolation. Default is 100.</p></dd>
 
@@ -97,14 +104,8 @@
 <dd><p>Temporal resolution, the time period to average to. Default is “hour”, but includes “day”, “week”, “month” or “year”.</p></dd>
 
 
-<dt>method</dt>
-<dd><p>Statistical technique used in the interpolation, such as kriging and IDW. Default is "kriging".</p></dd>
-
-
-<dt>...</dt>
-<dd><p>Utilities from <code>selectBydata</code> from <code>openair</code> package. A start date string in the form e.g. “1/2/1999” or in format i.e. “YYYY-mm-dd”, “1999-02-01”.
-A year or years to select e.g. year = 1998:2004 to select 1998-2004 inclusive or year = c(1998, 2004) to select 1998 and 2004. A month or months to select.
-Can either be numeric e.g. month = 1:6 to select months 1-6 (January to June), or by name e.g. month = c(“January”, “December”).</p></dd>
+<dt>vg.model</dt>
+<dd><p>If kriging is selected, the list of viogrammodels that will be tested and interpolated with kriging. Default is "Sph". The model are "Sph", "Exp", "Gau", "Ste". They names respective shperical, exponential,gaussian,Matern familiy, Matern, M. Stein's parameterization.</p></dd>
 
 
 <dt>by</dt>
@@ -118,6 +119,10 @@ Can either be numeric e.g. month = 1:6 to select months 1-6 (January to June), o
 
 <dt>isave</dt>
 <dd><p>Save the plot into your directory.</p></dd>
+
+
+<dt>LCZinterp</dt>
+<dd><p>If set to TRUE (default), the LCZ interpolation approach is used. If set to FALSE, conventional interpolation without LCZ is used.</p></dd>
 
 </dl></div>
     <div class="section level2">

@@ -73,7 +73,7 @@
       <img src="" class="logo" alt=""><h1>LCZ4r Local Functions</h1>
                         <h4 data-toc-skip class="author">Max Anjos</h4>
             
-            <h4 data-toc-skip class="date">May 06, 2024</h4>
+            <h4 data-toc-skip class="date">May 09, 2024</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ByMaxAnjos/LCZ4r/blob/HEAD/vignettes/Introd_local_LCZ4r.Rmd" class="external-link"><code>vignettes/Introd_local_LCZ4r.Rmd</code></a></small>
       <div class="d-none name"><code>Introd_local_LCZ4r.Rmd</code></div>
@@ -208,8 +208,10 @@ perform hourly frequency analysis of air temperature for the years
 <span><span class="co">#&gt; Congratulations! You've successfully got Berlin LCZ map.</span></span>
 <span></span>
 <span><span class="co">#Let's get LCZ air temperature time series</span></span>
-<span><span class="fu"><a href="../reference/lcz_ts.html">lcz_ts</a></span><span class="op">(</span><span class="va">lcz_map</span>, data_frame <span class="op">=</span> <span class="va">lcz_data</span>, </span>
-<span>       var <span class="op">=</span> <span class="st">"airT"</span>, station_id <span class="op">=</span> <span class="st">"station"</span>,</span>
+<span><span class="fu"><a href="../reference/lcz_ts.html">lcz_ts</a></span><span class="op">(</span><span class="va">lcz_map</span>, </span>
+<span>       data_frame <span class="op">=</span> <span class="va">lcz_data</span>, </span>
+<span>       var <span class="op">=</span> <span class="st">"airT"</span>, </span>
+<span>       station_id <span class="op">=</span> <span class="st">"station"</span>,</span>
 <span>       time.freq <span class="op">=</span> <span class="st">"month"</span><span class="op">)</span> <span class="co"># Monthly temporal frequency. Let's change to "hour, "day", "week", and so on.</span></span>
 <span><span class="co">#&gt; Congrats! You've successfully performed a month time series based on LCZ classes.</span></span></code></pre></div>
 <p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-3-1.png" width="3300"></p>
@@ -263,8 +265,10 @@ window or site</strong>.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># If you want the thermal anomalies 1 sept 2020 on hourly basis.</span></span>
-<span><span class="fu"><a href="../reference/lcz_anomaly.html">lcz_anomaly</a></span><span class="op">(</span><span class="va">lcz_map</span>, data_frame <span class="op">=</span> <span class="va">lcz_data</span>, </span>
-<span>            var <span class="op">=</span> <span class="st">"airT"</span>, station_id <span class="op">=</span> <span class="st">"station"</span>, </span>
+<span><span class="fu"><a href="../reference/lcz_anomaly.html">lcz_anomaly</a></span><span class="op">(</span><span class="va">lcz_map</span>, </span>
+<span>            data_frame <span class="op">=</span> <span class="va">lcz_data</span>, </span>
+<span>            var <span class="op">=</span> <span class="st">"airT"</span>, </span>
+<span>            station_id <span class="op">=</span> <span class="st">"station"</span>, </span>
 <span>            time.freq <span class="op">=</span> <span class="st">"hour"</span>, <span class="co">#Let's change the frequency to "day", "month", "year"</span></span>
 <span>            year <span class="op">=</span> <span class="fl">2020</span>, month <span class="op">=</span> <span class="fl">9</span>, day <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; You've successfully generated anomalies based on LCZ classes.</span></span></code></pre></div>
@@ -273,7 +277,8 @@ window or site</strong>.</p>
 <code class="sourceCode R"><span></span>
 <span><span class="co"># If you want the thermal anomalies by months of 2020 on daily basis.</span></span>
 <span><span class="fu"><a href="../reference/lcz_anomaly.html">lcz_anomaly</a></span><span class="op">(</span><span class="va">lcz_map</span>, data_frame <span class="op">=</span> <span class="va">lcz_data</span>, </span>
-<span>            var <span class="op">=</span> <span class="st">"airT"</span>, station_id <span class="op">=</span> <span class="st">"station"</span>, </span>
+<span>            var <span class="op">=</span> <span class="st">"airT"</span>, </span>
+<span>            station_id <span class="op">=</span> <span class="st">"station"</span>, </span>
 <span>            time.freq <span class="op">=</span> <span class="st">"day"</span>, <span class="co">#Let's change the frequency to "day", "month", "year"</span></span>
 <span>            year <span class="op">=</span> <span class="fl">2020</span>, by <span class="op">=</span> <span class="st">"month"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; You've successfully generated anomalies by month based on LCZ classes.</span></span></code></pre></div>
@@ -285,25 +290,25 @@ window or site</strong>.</p>
 <p>If you’re still with us and everything is running rightly, you can
 proceed to generate a map of LCZ thermal anomalies using the
 <code><a href="../reference/lcz_anomaly_map.html">lcz_anomaly_map()</a></code> function. This function employs
-interpolation techniques such as Kriging and IDW to calculate and
-interpolate anomalies. The settings for time frequency and data
-splitting, as utilized in the <code>lcz_ts</code> and
-<code><a href="../reference/lcz_anomaly.html">lcz_anomaly()</a></code> functions, remain relatively unchanged. But,
-there are two new arguments to consider: <strong>sp.res</strong> (the
-spatial resolution of the map in meters) and <strong>tp.res</strong>
-(the frequency at which values are averaged). The
-<code>lcz_anomaly_map</code> function returns either a single raster
-file or a stack of raster files. Subsequently, you can visualize the
-anomaly map using the <code><a href="../reference/lcz_plot_interp.html">lcz_plot_interp()</a></code> function.</p>
+interpolation techniques such as Kriging ato calculate and interpolate
+anomalies. The settings for time frequency and data splitting, as
+utilized in the <code>lcz_ts</code> and <code><a href="../reference/lcz_anomaly.html">lcz_anomaly()</a></code>
+functions, remain relatively unchanged. But, there are two new arguments
+to consider: <strong>sp.res</strong> (the spatial resolution of the map
+in meters) and <strong>tp.res</strong> (the frequency at which values
+are averaged). The <code>lcz_anomaly_map</code> function returns either
+a single raster file or a stack of raster files. Subsequently, you can
+visualize the anomaly map using the <code><a href="../reference/lcz_plot_interp.html">lcz_plot_interp()</a></code>
+function.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co">#Mapping anomalies for 1st Sep 2020 at 09:00h using kriging</span></span>
 <span><span class="va">my_anomaly_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lcz_anomaly_map.html">lcz_anomaly_map</a></span><span class="op">(</span><span class="va">lcz_map</span>,</span>
-<span>                                data_frame <span class="op">=</span> <span class="va">lcz_data</span>, var <span class="op">=</span> <span class="st">"airT"</span>, station_id <span class="op">=</span> <span class="st">"station"</span>,</span>
+<span>                                data_frame <span class="op">=</span> <span class="va">lcz_data</span>, </span>
+<span>                                var <span class="op">=</span> <span class="st">"airT"</span>, station_id <span class="op">=</span> <span class="st">"station"</span>,</span>
 <span>                                sp.res <span class="op">=</span> <span class="fl">100</span>, tp.res <span class="op">=</span> <span class="st">"hour"</span>,</span>
-<span>                                year <span class="op">=</span> <span class="fl">2020</span>, month <span class="op">=</span> <span class="fl">9</span>, day <span class="op">=</span> <span class="fl">1</span>, hour <span class="op">=</span> <span class="fl">9</span>,</span>
-<span>                                method <span class="op">=</span> <span class="st">"kriging"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [ordinary or weighted least squares prediction]</span></span>
+<span>                                year <span class="op">=</span> <span class="fl">2020</span>, month <span class="op">=</span> <span class="fl">9</span>, day <span class="op">=</span> <span class="fl">1</span>, hour <span class="op">=</span> <span class="fl">9</span></span>
+<span>                                <span class="op">)</span></span>
 <span><span class="co">#&gt; That's cool! Let's explore your LCZ anomaly map.</span></span>
 <span></span>
 <span><span class="co">#Plot anomaly map. Note that the argument ... is used to title etc..</span></span>
@@ -317,13 +322,13 @@ anomaly map using the <code><a href="../reference/lcz_plot_interp.html">lcz_plot
 <code class="sourceCode R"><span></span>
 <span><span class="co"># Active the by argument! Mapping daytime and nighttime anomalies for 1st Sep 2020</span></span>
 <span><span class="va">my_anomlay_daylight</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lcz_anomaly_map.html">lcz_anomaly_map</a></span><span class="op">(</span><span class="va">lcz_map</span>,</span>
-<span>                              data_frame <span class="op">=</span> <span class="va">lcz_data</span>, var <span class="op">=</span> <span class="st">"airT"</span>, station_id <span class="op">=</span> <span class="st">"station"</span>,</span>
-<span>                              sp.res <span class="op">=</span> <span class="fl">100</span>, tp.res <span class="op">=</span> <span class="st">"hour"</span>,</span>
+<span>                              data_frame <span class="op">=</span> <span class="va">lcz_data</span>, </span>
+<span>                              var <span class="op">=</span> <span class="st">"airT"</span>, </span>
+<span>                              station_id <span class="op">=</span> <span class="st">"station"</span>,</span>
+<span>                              sp.res <span class="op">=</span> <span class="fl">100</span>, </span>
+<span>                              tp.res <span class="op">=</span> <span class="st">"hour"</span>,</span>
 <span>                              year <span class="op">=</span> <span class="fl">2020</span>, month <span class="op">=</span> <span class="fl">9</span>, day <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>                              by<span class="op">=</span><span class="st">"daylight"</span>,</span>
-<span>                              method <span class="op">=</span> <span class="st">"kriging"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [ordinary or weighted least squares prediction]</span></span>
-<span><span class="co">#&gt; [ordinary or weighted least squares prediction]</span></span>
+<span>                              by<span class="op">=</span><span class="st">"daylight"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; That's cool! Let's explore your LCZ anomaly map.</span></span>
 <span></span>
 <span><span class="va">my_anomlay_daylight</span></span>
@@ -334,9 +339,9 @@ anomaly map using the <code><a href="../reference/lcz_plot_interp.html">lcz_plot
 <span><span class="co">#&gt; coord. ref. : WGS 84 / Pseudo-Mercator (EPSG:3857) </span></span>
 <span><span class="co">#&gt; sources     : memory  </span></span>
 <span><span class="co">#&gt;               memory  </span></span>
-<span><span class="co">#&gt; names       : krige_20200901050000_daylight, krige_20200901_nighttime </span></span>
-<span><span class="co">#&gt; min values  :                    -0.9652088,               -2.3448153 </span></span>
-<span><span class="co">#&gt; max values  :                     0.7134152,                1.7331243</span></span>
+<span><span class="co">#&gt; names       : krige_20200901050000, krige_20200901 </span></span>
+<span><span class="co">#&gt; min values  :           -0.8186773,     -2.3649625 </span></span>
+<span><span class="co">#&gt; max values  :            0.8051069,      2.8987056</span></span>
 <span></span>
 <span><span class="co">#Plot anomaly map. Note that I renamed the raster layers</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">my_anomlay_daylight</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"daytime"</span>, <span class="st">"nighttime"</span><span class="op">)</span></span>
@@ -356,16 +361,16 @@ anomaly map using the <code><a href="../reference/lcz_plot_interp.html">lcz_plot
 <code><a href="../reference/lcz_anomaly_map.html">lcz_anomaly_map()</a></code>.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="va">my_interp_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lcz_interp_map.html">lcz_interp_map</a></span><span class="op">(</span><span class="va">lcz_map</span>,</span>
-<span>                           data_frame <span class="op">=</span> <span class="va">lcz_data</span>, var <span class="op">=</span> <span class="st">"airT"</span>, station_id <span class="op">=</span> <span class="st">"station"</span>,</span>
-<span>                           sp.res <span class="op">=</span> <span class="fl">100</span>, tp.res <span class="op">=</span> <span class="st">"hour"</span>,</span>
-<span>                           year <span class="op">=</span> <span class="fl">2019</span>, month <span class="op">=</span> <span class="fl">2</span>, day<span class="op">=</span><span class="fl">6</span>, hour<span class="op">=</span><span class="fl">5</span>,</span>
-<span>                           method <span class="op">=</span> <span class="st">"kriging"</span>,</span>
-<span>                           isave <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [ordinary or weighted least squares prediction]</span></span>
+<span><span class="va">air_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lcz_interp_map.html">lcz_interp_map</a></span><span class="op">(</span><span class="va">lcz_map</span>,</span>
+<span>                          data_frame <span class="op">=</span> <span class="va">lcz_data</span>,</span>
+<span>                          var <span class="op">=</span> <span class="st">"airT"</span>,</span>
+<span>                          station_id <span class="op">=</span> <span class="st">"station"</span>,</span>
+<span>                          sp.res <span class="op">=</span> <span class="fl">500</span>,</span>
+<span>                          tp.res <span class="op">=</span> <span class="st">"hour"</span>,</span>
+<span>                          year <span class="op">=</span> <span class="fl">2019</span>, month <span class="op">=</span> <span class="fl">2</span>, day<span class="op">=</span><span class="fl">6</span>, hour<span class="op">=</span><span class="fl">5</span>,</span>
+<span>                          LCZinterp <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="co">#&gt; That's cool! Let's explore your LCZ interp map.</span></span>
-<span></span>
-<span><span class="fu"><a href="../reference/lcz_plot_interp.html">lcz_plot_interp</a></span><span class="op">(</span><span class="va">my_interp_map</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/lcz_plot_interp.html">lcz_plot_interp</a></span><span class="op">(</span><span class="va">air_map</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-10-1.png" width="3300"></p>
 </div>
 <div class="section level2">

@@ -9,13 +9,14 @@ lcz_interp_map(
   data_frame = "",
   var = "",
   station_id = "",
+  ...,
   sp.res = 100,
   tp.res = "hour",
-  method = "Kriging",
-  ...,
+  vg.model = "Sph",
   by = NULL,
   impute = NULL,
-  isave = FALSE
+  isave = FALSE,
+  LCZinterp = TRUE
 )
 }
 \arguments{
@@ -27,15 +28,15 @@ lcz_interp_map(
 
 \item{station_id}{Name of the station ID variable in the dataframe.}
 
+\item{...}{Utilities from \code{selectBydata} from \code{openair} package. A start date string in the form e.g. \dQuote{1/2/1999} or in format i.e. \dQuote{YYYY-mm-dd}, \dQuote{1999-02-01}.
+A year or years to select e.g. year = 1998:2004 to select 1998-2004 inclusive or year = c(1998, 2004) to select 1998 and 2004. A month or months to select.
+Can either be numeric e.g. month = 1:6 to select months 1-6 (January to June), or by name e.g. month = c(\dQuote{January}, \dQuote{December}).}
+
 \item{sp.res}{Spatial resolution in unit of meters for interpolation. Default is 100.}
 
 \item{tp.res}{Temporal resolution, the time period to average to. Default is \dQuote{hour}, but includes \dQuote{day}, \dQuote{week}, \dQuote{month} or \dQuote{year}.}
 
-\item{method}{Statistical technique used in the interpolation, such as kriging and IDW. Default is "kriging".}
-
-\item{...}{Utilities from \code{selectBydata} from \code{openair} package. A start date string in the form e.g. \dQuote{1/2/1999} or in format i.e. \dQuote{YYYY-mm-dd}, \dQuote{1999-02-01}.
-A year or years to select e.g. year = 1998:2004 to select 1998-2004 inclusive or year = c(1998, 2004) to select 1998 and 2004. A month or months to select.
-Can either be numeric e.g. month = 1:6 to select months 1-6 (January to June), or by name e.g. month = c(\dQuote{January}, \dQuote{December}).}
+\item{vg.model}{If kriging is selected, the list of viogrammodels that will be tested and interpolated with kriging. Default is "Sph". The model are "Sph", "Exp", "Gau", "Ste". They names respective shperical, exponential,gaussian,Matern familiy, Matern, M. Stein's parameterization.}
 
 \item{by}{data frame time-serie split: \dQuote{year}, \dQuote{season}, \dQuote{seasonyear},  \dQuote{month}, \dQuote{monthyear}, \dQuote{weekday}, \dQuote{weekend},  \dQuote{site},
 \dQuote{daylight}(daytime and nighttime).See argument \emph{type} in openair package: https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option}
@@ -43,18 +44,20 @@ Can either be numeric e.g. month = 1:6 to select months 1-6 (January to June), o
 \item{impute}{Method to impute missing values (\dQuote{mean}, \dQuote{median}, \dQuote{knn}, \dQuote{bag}).}
 
 \item{isave}{Save the plot into your directory.}
+
+\item{LCZinterp}{If set to TRUE (default), the LCZ interpolation approach is used. If set to FALSE, conventional interpolation without LCZ is used.}
 }
 \value{
 A map of LCZ-interpolatation in \code{terra raster.tif} format
 }
 \description{
-This function generates a spatial interpolation of any air temperature (or other variable) for different Local Climate Zones (LCZs). More details: https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html
+This function generates a spatial interpolation of air temperature (or other variable) using Local Climate Zones (LCZs) and Kriging. More details: https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html
 }
 \examples{
 
 # Daily air temperature values in September 2019 .
  #my_interp <- lcz_interp_map(lcz_map, data_frame = lcz_data, var = "airT",
- #                              station_id = "station", tp.res = "day", sp.res= "100",
+ #                              station_id = "station", tp.res = "day", sp.res= 100,
  #                              year = 2019, month=9)
 }
 \seealso{
