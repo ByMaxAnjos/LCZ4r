@@ -1,4 +1,3 @@
-
 #' Calculate LCZ areas
 #'
 #' This function calculates the areas of LCZ classes in both percentage and square kilometers.
@@ -7,17 +6,17 @@
 #' @param iplot Logical, indicating whether to create a plot (default is TRUE).
 #' @param isave Save the plot into your directory.
 #' @param inclusive Set to TRUE to a colorblind-friendly palette.
-#' @param ... Additional arguments to modify axis, legend, and plot labels, including title, subtitle, and caption.
+#' @param ... Additional arguments to modify axis, legend, and plot labels, including title, subtitle and caption.
 #'
 #' @return A summary table of LCZ class areas if iplot is FALSE, otherwise, a bar plot.
 #'
 #' @export
 #'
 #' @examples
-#'
-#' #Calcute the LCZ area
-#' #my_lcz_area <- lcz_cal_area(x= my_lcz_map, iplot = TRUE, isave = TRUE)
-#'
+#' \dontrun{
+#' #Calculate the LCZ area
+#' my_lcz_area <- lcz_cal_area(my_lcz_map, iplot = TRUE, isave = TRUE)
+#' }
 #' @importFrom rlang .data
 #'
 #' @seealso
@@ -58,7 +57,7 @@ lcz_cal_area <- function(x, iplot=TRUE, isave=FALSE, inclusive = FALSE, ...){
   summary_resul <- dplyr::inner_join(freq_df, lcz_areas_df, by="lcz") %>%
     dplyr::mutate(area_perc = base::round(.data$area_km2/sum(.data$area_km2)*100, digits = 2))
 
-  if(iplot == TRUE) {
+  if (iplot == TRUE) {
 
     lcz <- c(base::seq(1, 10, 1), base::seq(11, 17)) %>%
       tibble::as_tibble() %>% purrr::set_names("ID")
@@ -116,7 +115,6 @@ lcz_cal_area <- function(x, iplot=TRUE, isave=FALSE, inclusive = FALSE, ...){
                                                       title.position = "top")) +
       ggplot2::geom_text(data = lcz_df,
                          label = paste0(round(lcz_df$area_perc, 1), "%"), vjust = -0.2, size = 5) +
-      ggplot2::coord_cartesian(expand = FALSE, clip = "off") +
       ggplot2::scale_y_continuous(limits = c(0, base::max(lcz_df$area_km2) + 50)) +
        ggplot2::labs(...,
            x = "LCZ code",
@@ -138,9 +136,9 @@ lcz_cal_area <- function(x, iplot=TRUE, isave=FALSE, inclusive = FALSE, ...){
         legend.title = ggplot2::element_text(size = 17),
         legend.spacing.y = ggplot2::unit(0.02, "cm"),
         plot.margin = ggplot2::margin(25, 25, 10, 25),
-        plot.caption = ggplot2::element_text(color = "grey30", size = 9, hjust = 0))
+        plot.caption = ggplot2::element_text(color = "grey40", size = 10, hjust = 0))
 
-    if(isave == TRUE){
+    if (isave == TRUE){
 
       # Create a folder name using paste0
       folder <- base::paste0("LCZ4r_output/")
@@ -151,18 +149,19 @@ lcz_cal_area <- function(x, iplot=TRUE, isave=FALSE, inclusive = FALSE, ...){
         base::dir.create(folder)
       }
 
-      file <- base::paste0(folder,"lcz_area.png")
-      ggplot2::ggsave(file, graph, height = 9, width = 14, units="in", dpi=600)
+      file.1 <- base::paste0(getwd(), "/", folder,"lcz4r_area_plot.png")
+      ggplot2::ggsave(file.1, graph, height = 7, width = 12, dpi=600)
+      file.2 <- base::paste0(getwd(),"/", folder,"lcz4r_area_df.csv")
+      utils::write.csv(lcz_df, file.2)
+      base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
 
     }
 
-    base::cat("That's cool! You've successfully calculated the LCZ area classes.\n")
     return(graph)
 
   } else {
 
-    base::cat("That's cool! You've successfully calculated the LCZ area classes.\n")
-    return(summary_resul)
+    return(lcz_df)
 
   }
 

@@ -35,7 +35,7 @@ Enter one or more numbers, or an empty line to skip updates: **3**
 
 #if(!require(devtools)) install.packages("devtools")
 #devtools::install_github("ByMaxAnjos/LCZ4r")
-#library(LCZ4r)
+library(LCZ4r)
 
 ```
 
@@ -58,4 +58,11 @@ To convert from day-month-year to year-month-day:
 
 ```
 
+Example data frame
+```{r include=TRUE}
+data("lcz_data")
+
+lcz_data %>% head(10)
+
+```
 

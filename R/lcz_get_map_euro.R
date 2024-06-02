@@ -13,14 +13,15 @@
 #' @export
 #'
 #' @examples
-#'
+#' \dontrun{
 #' # Example 1: Load the LCZ map for a city
-#' # my_lcz_city <- lcz_get_map_euro(city = "London")
+#' my_lcz_city <- lcz_get_map_euro(city = "Berlin")
 #'
 #' # Example 2: Get LCZ map for a custom region of interest
-#' # custom_roi <- sf::st_read("custom_roi.shp")
-#' # roi_lcz <- lcz_get_map_euro(roi = custom_roi)
-#'
+#' custom_roi <- sf::st_read("custom_roi.shp")
+#' roi_lcz <- lcz_get_map_euro(roi = custom_roi)
+#' }
+#' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis
 
 lcz_get_map_euro <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_euro=FALSE) {
 
@@ -29,11 +30,11 @@ lcz_get_map_euro <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_eur
     stop("Error: provide either a city name or a roi polygon")
   }
 
-  if(!is.null(city)) {
+  if (!is.null(city)) {
     # Get study area polygon from OpenStreetMap data
     shp_verify <- osmdata::getbb({{city}}, format_out = "sf_polygon", limit = 1)
 
-    if(is.null(shp_verify)){
+    if (is.null(shp_verify)){
       stop(paste0("No polygonal boundary for",city,".See https://nominatim.openstreetmap.org"))
     }
     # Check if polygon was obtained successfully
@@ -81,9 +82,9 @@ lcz_get_map_euro <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_eur
         base::dir.create(folder)
       }
 
-      file <- base::paste0(folder,"lcz_map.tif")
-
+      file <- base::paste0(getwd(), "/", folder,"lcz_map.tif")
       terra::writeRaster(lcz_ras, file, overwrite = TRUE)
+      base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
     }
 
     if(isave_euro==TRUE){
@@ -97,12 +98,11 @@ lcz_get_map_euro <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_eur
         base::dir.create(folder)
       }
 
-      file <- base::paste0(folder,"lcz_euro_map.tif")
-
+      file <- base::paste0(getwd(), "/", folder,"lcz_euro_map.tif")
       terra::writeRaster(lcz_download, file, overwrite = TRUE)
+      base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
     }
 
-    base::cat("Congratulations! You've successfully got",city,"LCZ map.\n")
     return(lcz_ras)
 
   } else {
@@ -116,7 +116,7 @@ lcz_get_map_euro <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_eur
 
     lcz_ras <- terra::crop(lcz_download, terra::ext(roi_crs))
 
-    if(is.null(lcz_ras)) {
+    if (is.null(lcz_ras)) {
       stop("Large Data: If you are working with very large raster datasets, consider working on a
            subset of the data to reduce the memory and processing requirements.
            You can crop a smaller region first to see if the operation succeeds.")
@@ -124,7 +124,7 @@ lcz_get_map_euro <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_eur
       lcz_ras <- terra::mask(lcz_ras, terra::vect(roi_crs))
       base::names(lcz_ras) <- "lcz"
 
-      if(isave_map==TRUE){
+      if (isave_map==TRUE){
 
         # Create a folder name using paste0
         folder <- base::paste0("LCZ4r_output/")
@@ -135,9 +135,9 @@ lcz_get_map_euro <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_eur
           base::dir.create(folder)
         }
 
-        file <- base::paste0(folder,"lcz_map.tif")
-
+        file <- base::paste0(getwd(), "/", folder,"lcz_map.tif")
         terra::writeRaster(lcz_ras, file, overwrite = TRUE)
+        base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
       }
 
       if(isave_euro==TRUE){
@@ -151,12 +151,11 @@ lcz_get_map_euro <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_eur
           base::dir.create(folder)
         }
 
-        file <- base::paste0(folder,"lcz_euro_map.tif")
-
+        file <- base::paste0(getwd(), "/", folder,"lcz_euro_map.tif")
         terra::writeRaster(lcz_download, file, overwrite = TRUE)
+        base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
       }
 
-      base::cat("Congratulations! You've successfully got",roi,"LCZ map.\n")
       return(lcz_ras)
 
     }

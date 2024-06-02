@@ -93,17 +93,18 @@ Then, it suggested use terra::rast(path/lcz_filter_v3.tif") to import the raster
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Load the LCZ map from you pc</span></span></span>
-<span class="r-in"><span><span class="co"># my_map &lt;- terra::rast(path/lcz_filter_v3.tif")</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span><span class="co"># Load the LCZ map from your PC</span></span></span>
+<span class="r-in"><span><span class="va">my_map</span> <span class="op">&lt;-</span> <span class="fu">terra</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/terra/man/rast.html" class="external-link">rast</a></span><span class="op">(</span><span class="st">"path/lcz_filter_v3.tif"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Example 2: Get LCZ map for a custom region of interest</span></span></span>
-<span class="r-in"><span><span class="co"># custom_roi &lt;- sf::st_read("custom_roi.shp")</span></span></span>
-<span class="r-in"><span><span class="co"># roi_lcz &lt;- lcz_get_map2(my_map, roi = custom_roi)</span></span></span>
+<span class="r-in"><span><span class="co"># Get LCZ map for a custom region of interest</span></span></span>
+<span class="r-in"><span><span class="va">custom_roi</span> <span class="op">&lt;-</span> <span class="fu">sf</span><span class="fu">::</span><span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html" class="external-link">st_read</a></span><span class="op">(</span><span class="st">"custom_roi.shp"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">roi_lcz</span> <span class="op">&lt;-</span> <span class="fu">lcz_get_map2</span><span class="op">(</span><span class="va">my_map</span>, roi <span class="op">=</span> <span class="va">custom_roi</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Example 3: Retrieve the LCZ map for a country (no custom ROI specified)</span></span></span>
-<span class="r-in"><span><span class="co"># my_lcz_country &lt;- lcz_get_map2(my_map, city = "Brazil")</span></span></span>
-<span class="r-in"></span>
+<span class="r-in"><span><span class="co"># Retrieve the LCZ map for a country (no custom ROI specified)</span></span></span>
+<span class="r-in"><span><span class="va">my_lcz_country</span> <span class="op">&lt;-</span> <span class="fu">lcz_get_map2</span><span class="op">(</span><span class="va">my_map</span>, city <span class="op">=</span> <span class="st">"Brazil"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

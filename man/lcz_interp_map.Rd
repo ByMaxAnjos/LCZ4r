@@ -20,7 +20,7 @@ lcz_interp_map(
 )
 }
 \arguments{
-\item{x}{A SpatRaster object containing the LCZ map. The LCZ map can be obtained using the lcz_get_map() function.}
+\item{x}{A \code{SpatRaster} object containing the LCZ map. The LCZ map can be obtained using the \code{lcz_get_map()} function.}
 
 \item{data_frame}{A data frame containing air temperature measurements and station IDs. The data frame should have a date field in hourly or higher resolution format.}
 
@@ -28,9 +28,12 @@ lcz_interp_map(
 
 \item{station_id}{Name of the station ID variable in the dataframe.}
 
-\item{...}{Utilities from \code{selectBydata} from \code{openair} package. A start date string in the form e.g. \dQuote{1/2/1999} or in format i.e. \dQuote{YYYY-mm-dd}, \dQuote{1999-02-01}.
-A year or years to select e.g. year = 1998:2004 to select 1998-2004 inclusive or year = c(1998, 2004) to select 1998 and 2004. A month or months to select.
-Can either be numeric e.g. month = 1:6 to select months 1-6 (January to June), or by name e.g. month = c(\dQuote{January}, \dQuote{December}).}
+\item{...}{Additional arguments for the \code{selectBydata} from \code{openair} package. These include:
+\itemize{
+\item A start date string in the form "1/2/1999" or in format "YYYY-mm-dd", e.g., "1999-02-01".
+\item A year or years to select, e.g., year = 1998:2004 to select 1998-2004 inclusive, or year = c(1998, 2004) to select 1998 and 2004.
+\item A month or months to select. Can either be numeric, e.g., month = 1:6 to select January to June, or by name, e.g., month = c("January", "December").
+}}
 
 \item{sp.res}{Spatial resolution in unit of meters for interpolation. Default is 100.}
 
@@ -39,7 +42,7 @@ Can either be numeric e.g. month = 1:6 to select months 1-6 (January to June), o
 \item{vg.model}{If kriging is selected, the list of viogrammodels that will be tested and interpolated with kriging. Default is "Sph". The model are "Sph", "Exp", "Gau", "Ste". They names respective shperical, exponential,gaussian,Matern familiy, Matern, M. Stein's parameterization.}
 
 \item{by}{data frame time-serie split: \dQuote{year}, \dQuote{season}, \dQuote{seasonyear},  \dQuote{month}, \dQuote{monthyear}, \dQuote{weekday}, \dQuote{weekend},  \dQuote{site},
-\dQuote{daylight}(daytime and nighttime).See argument \emph{type} in openair package: https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option}
+\dQuote{daylight}(daytime and nighttime).See argument \emph{type} in openair package:\url{https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option}}
 
 \item{impute}{Method to impute missing values (\dQuote{mean}, \dQuote{median}, \dQuote{knn}, \dQuote{bag}).}
 
@@ -48,20 +51,21 @@ Can either be numeric e.g. month = 1:6 to select months 1-6 (January to June), o
 \item{LCZinterp}{If set to TRUE (default), the LCZ interpolation approach is used. If set to FALSE, conventional interpolation without LCZ is used.}
 }
 \value{
-A map of LCZ-interpolatation in \code{terra raster.tif} format
+A map of LCZ-air temperature in \code{terra raster GeoTIF} format
 }
 \description{
-This function generates a spatial interpolation of air temperature (or other variable) using Local Climate Zones (LCZs) and Kriging. More details: https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html
+This function generates a spatial interpolation of air temperature (or other variable) using Local Climate Zones (LCZs) and Kriging.  More details: \url{https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html}
 }
 \examples{
-
+\dontrun{
 # Daily air temperature values in September 2019 .
- #my_interp <- lcz_interp_map(lcz_map, data_frame = lcz_data, var = "airT",
- #                              station_id = "station", tp.res = "day", sp.res= 100,
- #                              year = 2019, month=9)
+ my_interp <- lcz_interp_map(lcz_map, data_frame = lcz_data, var = "airT",
+                               station_id = "station", tp.res = "day", sp.res= 100,
+                               year = 2019, month=9)
+ }
 }
 \seealso{
-See the documentation for lcz_get_map() to obtain an LCZ map.
+See the documentation for \code{lcz_get_map()} to obtain an LCZ map.
 }
 \keyword{Climate}
 \keyword{LCZ,}

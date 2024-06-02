@@ -15,7 +15,7 @@ lcz_cal_area(x, iplot = TRUE, isave = FALSE, inclusive = FALSE, ...)
 
 \item{inclusive}{Set to TRUE to a colorblind-friendly palette.}
 
-\item{...}{Additional arguments to modify axis, legend, and plot labels, including title, subtitle, and caption.}
+\item{...}{Additional arguments to modify axis, legend, and plot labels, including title, subtitle and caption.}
 }
 \value{
 A summary table of LCZ class areas if iplot is FALSE, otherwise, a bar plot.
@@ -24,10 +24,10 @@ A summary table of LCZ class areas if iplot is FALSE, otherwise, a bar plot.
 This function calculates the areas of LCZ classes in both percentage and square kilometers.
 }
 \examples{
-
-#Calcute the LCZ area
-#my_lcz_area <- lcz_cal_area(x= my_lcz_map, iplot = TRUE, isave = TRUE)
-
+\dontrun{
+#Calculate the LCZ area
+my_lcz_area <- lcz_cal_area(my_lcz_map, iplot = TRUE, isave = TRUE)
+}
 }
 \seealso{
 See the documentation for lcz_get_map() to obtain an LCZ map.

@@ -107,14 +107,13 @@ or c("z0", "BSF2") to select multiple parameters.</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
 <span class="r-in"><span><span class="co"># Plot the minimum Sky View Factor (SVF1) for your city</span></span></span>
-<span class="r-in"><span><span class="co"># lcz_plot_parameters(lcz_map, iselect = "SVF1")</span></span></span>
+<span class="r-in"><span><span class="fu">lcz_plot_parameters</span><span class="op">(</span><span class="va">lcz_map</span>, iselect <span class="op">=</span> <span class="st">"SVF1"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Plot multiple parameters and save them to the LCZ4r_output directory</span></span></span>
-<span class="r-in"><span><span class="co"># lcz_plot_parameters(lcz_map, iselect = c("BSF3", "AH3"))</span></span></span>
-<span class="r-in"><span></span></span>
-<span class="r-in"></span>
+<span class="r-in"><span><span class="fu">lcz_plot_parameters</span><span class="op">(</span><span class="va">lcz_map</span>, iselect <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"BSF3"</span>, <span class="st">"AH3"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

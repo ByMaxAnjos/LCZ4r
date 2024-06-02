@@ -35,13 +35,13 @@ A plot of the selected LCZ parameters in ggplot2 format
 This function plots the parameters of an Local Climate Zone map.
 }
 \examples{
-
+\dontrun{
 # Plot the minimum Sky View Factor (SVF1) for your city
-# lcz_plot_parameters(lcz_map, iselect = "SVF1")
+lcz_plot_parameters(lcz_map, iselect = "SVF1")
 
 # Plot multiple parameters and save them to the LCZ4r_output directory
-# lcz_plot_parameters(lcz_map, iselect = c("BSF3", "AH3"))
-
+lcz_plot_parameters(lcz_map, iselect = c("BSF3", "AH3"))
+}
 }
 \seealso{
 See the documentation for lcz_get_parameters() to obtain LCZ parameters.

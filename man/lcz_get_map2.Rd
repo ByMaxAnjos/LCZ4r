@@ -25,14 +25,24 @@ created by Demuzere et al. (2022) and available at https://doi.org/10.5194/essd-
 It allows you to obtain the LCZ map for a specific area of interest, which can be a city, state, region, or custom-defined shape.
 }
 \examples{
+\dontrun{
+# Load the LCZ map from your PC
+my_map <- terra::rast("path/lcz_filter_v3.tif")
 
-# Load the LCZ map from you pc
-# my_map <- terra::rast(path/lcz_filter_v3.tif")
+# Get LCZ map for a custom region of interest
+custom_roi <- sf::st_read("custom_roi.shp")
+roi_lcz <- lcz_get_map2(my_map, roi = custom_roi)
 
-# Example 2: Get LCZ map for a custom region of interest
-# custom_roi <- sf::st_read("custom_roi.shp")
-# roi_lcz <- lcz_get_map2(my_map, roi = custom_roi)
-
-# Example 3: Retrieve the LCZ map for a country (no custom ROI specified)
-# my_lcz_country <- lcz_get_map2(my_map, city = "Brazil")
+# Retrieve the LCZ map for a country (no custom ROI specified)
+my_lcz_country <- lcz_get_map2(my_map, city = "Brazil")
 }
+
+}
+\keyword{Climate}
+\keyword{LCZ,}
+\keyword{Local}
+\keyword{Zone,}
+\keyword{analysis}
+\keyword{climate,}
+\keyword{spatial}
+\keyword{urban}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/lcz_get_parameters.R
 \name{lcz_get_parameters}
 \alias{lcz_get_parameters}
-\title{Retrieve LCZ parameters}
+\title{Retrieve urban canopy LCZ parameters}
 \usage{
 lcz_get_parameters(x, iselect = "", istack = TRUE, ishp = FALSE, isave = FALSE)
 }
@@ -32,19 +32,28 @@ scheme developed by Stewart and Oke (2012). LCZs provide valuable information ab
 morphology and are useful for urban climate and environmental studies.
 }
 \examples{
+\dontrun{
 # Load the LCZ map
-#lcz_map <- raster::raster("path/to/lcz_map.tif")
+lcz_map <- raster::raster("path/to/lcz_map.tif")
 
 # Get LCZ parameters as a raster stack
-#lcz_params_stack <- lcz_get_parameters(lcz_map, istack = TRUE)
+lcz_params_stack <- lcz_get_parameters(lcz_map, istack = TRUE)
 
 # Get LCZ parameters as a list of individual parameter rasters
-#lcz_params_list <- lcz_get_parameters(lcz_map, istack = FALSE)
+lcz_params_list <- lcz_get_parameters(lcz_map, istack = FALSE)
 
 # Access individual parameters from the list
-#specific_param <- lcz_params_list$parameter_name
+specific_param <- lcz_params_list$parameter_name
 
 # Get specific parameters as a raster or shapefile
-#selected_params <- lcz_get_parameters(lcz_map, iselect = c("SVF1", "VEG1"))
-
+selected_params <- lcz_get_parameters(lcz_map, iselect = c("SVF1", "VEG1"))
 }
+}
+\keyword{Climate}
+\keyword{LCZ,}
+\keyword{Local}
+\keyword{Zone,}
+\keyword{analysis}
+\keyword{climate,}
+\keyword{spatial}
+\keyword{urban}

@@ -47,7 +47,7 @@ lcz_plot_interp <- function(x,
     x <- terra::rast({{x}})
   }
 
-  if(terra::nlyr({{x}})>1) {
+  if (terra::nlyr({{x}}) > 1) {
     final_graph <- ggplot2::ggplot() +
       tidyterra::geom_spatraster(data={{x}}) +
       #MetBrewer::scale_fill_met_c(name = palette, direction=direction)+
@@ -66,11 +66,11 @@ lcz_plot_interp <- function(x,
         #plot.background = ggplot2::element_rect(fill = "grey98", color = NA),
         plot.title = ggplot2::element_text(face = "bold", size = 20),
         plot.subtitle = ggplot2::element_text(margin = ggplot2::margin(5, 0, 15, 0), size = 17),
-        plot.caption = ggplot2::element_text(color = "grey30", size = 12),
+        plot.caption = ggplot2::element_text(color = "grey40", size = 10),
         plot.margin = ggplot2::margin(0, 10, 0, 10)
       )
 
-    if(isave == TRUE){
+    if (isave == TRUE){
 
       # Create a folder name using paste0
       folder <- base::paste0("LCZ4r_output/")
@@ -82,8 +82,9 @@ lcz_plot_interp <- function(x,
       }
 
       #Save map as figure.png
-      file <- base::paste0(folder, "lcz_interp_map.png")
+      file <- base::paste0(getwd(), "/", folder,"lcz_interp_map.png")
       ggplot2::ggsave(file, final_graph, height = 8, width = 10, units="in", dpi=600)
+      base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
 
     }
 
@@ -111,7 +112,7 @@ lcz_plot_interp <- function(x,
                      plot.caption = ggplot2::element_text(color = "grey30", size = 12),
                      plot.margin = ggplot2::margin(0, 10, 0, 10)
       )
-    if(isave == TRUE){
+    if (isave == TRUE){
 
       # Create a folder name using paste0
       folder <- base::paste0("LCZ4r_output/")
@@ -123,9 +124,9 @@ lcz_plot_interp <- function(x,
       }
 
       #Save map as figure.png
-      file <- base::paste0(folder, "lcz_interp_map.png")
+      file <- base::paste0(getwd(), "/", folder, "lcz_interp_map.png")
       ggplot2::ggsave(file, final_graph, height = 8, width = 10, units="in", dpi=600)
-
+      base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
     }
 
     return(final_graph)

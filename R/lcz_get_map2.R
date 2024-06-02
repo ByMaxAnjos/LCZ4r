@@ -1,4 +1,3 @@
-
 #' Obtain the LCZ map (with downloaded global LCZ map)
 #'
 #' This function retrieves the Local Climate Zone (LCZ) global mapping dataset
@@ -15,16 +14,19 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
+#' # Load the LCZ map from your PC
+#' my_map <- terra::rast("path/lcz_filter_v3.tif")
 #'
-#' # Load the LCZ map from you pc
-#' # my_map <- terra::rast(path/lcz_filter_v3.tif")
+#' # Get LCZ map for a custom region of interest
+#' custom_roi <- sf::st_read("custom_roi.shp")
+#' roi_lcz <- lcz_get_map2(my_map, roi = custom_roi)
 #'
-#' # Example 2: Get LCZ map for a custom region of interest
-#' # custom_roi <- sf::st_read("custom_roi.shp")
-#' # roi_lcz <- lcz_get_map2(my_map, roi = custom_roi)
+#' # Retrieve the LCZ map for a country (no custom ROI specified)
+#' my_lcz_country <- lcz_get_map2(my_map, city = "Brazil")
+#' }
 #'
-#' # Example 3: Retrieve the LCZ map for a country (no custom ROI specified)
-#' # my_lcz_country <- lcz_get_map2(my_map, city = "Brazil")
+#' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis
 
 
 lcz_get_map2 <- function(x, city=NULL, roi = NULL, isave_map = FALSE) {
@@ -53,15 +55,15 @@ lcz_get_map2 <- function(x, city=NULL, roi = NULL, isave_map = FALSE) {
     stop("Error: provide either a city name or a roi polygon")
   }
 
-  if(!is.null(city)) {
+  if (!is.null(city)) {
     # Get study area polygon from OpenStreetMap data
     shp_verify <- osmdata::getbb({{city}}, format_out = "sf_polygon", limit = 1)
 
-    if(is.null(shp_verify)){
+    if (is.null(shp_verify)){
       stop(paste0("No polygonal boundary for", city, ".See https://nominatim.openstreetmap.org"))
     }
     # Check if polygon was obtained successfully
-    if(!is.null(shp_verify$geometry) & !inherits(shp_verify, "list")) {
+    if (!is.null(shp_verify$geometry) & !inherits(shp_verify, "list")) {
       study_area <- shp_verify$geometry
       study_area <- sf::st_make_valid(study_area) %>%
         sf::st_as_sf() %>%
@@ -79,7 +81,7 @@ lcz_get_map2 <- function(x, city=NULL, roi = NULL, isave_map = FALSE) {
       lcz_ras <- terra::crop(x, terra::ext(study_area))
 
       # Check if the cropped raster is null
-      if(is.null(lcz_ras)) {
+      if (is.null(lcz_ras)) {
         stop("Oops! If you are working with very large raster datasets, consider working on a
            smaller area to reduce the memory and processing requirements.
            You can crop a smaller region first to see if the operation succeeds.")
@@ -91,7 +93,7 @@ lcz_get_map2 <- function(x, city=NULL, roi = NULL, isave_map = FALSE) {
       # Rename the raster layer to "lcz"
       base::names(lcz_ras) <- "lcz"
 
-    if(isave_map==TRUE){
+    if (isave_map==TRUE){
 
       # Create a folder name using paste0
       folder <- base::paste0("LCZ4r_output/")
@@ -102,12 +104,10 @@ lcz_get_map2 <- function(x, city=NULL, roi = NULL, isave_map = FALSE) {
         base::dir.create(folder)
       }
 
-      file <- base::paste0(folder,"lcz_map.tif")
-
+      file <- base::paste0(getwd(), "/", folder,"lcz_map.tif")
       terra::writeRaster(lcz_ras, file, overwrite = TRUE)
+      base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
     }
-
-    base::cat("Congratulations! You've successfully got",city,"LCZ map.\n")
 
     return(lcz_ras)
 
@@ -121,7 +121,7 @@ lcz_get_map2 <- function(x, city=NULL, roi = NULL, isave_map = FALSE) {
 
     #Crop the raster
       lcz_ras <- terra::crop(x, terra::ext(roi_crs))
-      if(is.null(lcz_ras)) {
+      if (is.null(lcz_ras)) {
         stop("oops! If you are working with very large raster datasets, consider working on a
            smaller area to reduce the memory and processing requirements.
            You can crop a smaller region first to see if the operation succeeds.")
@@ -130,7 +130,7 @@ lcz_get_map2 <- function(x, city=NULL, roi = NULL, isave_map = FALSE) {
       base::names(lcz_ras) <- "lcz"
     }
 
-    if(isave_map==TRUE){
+    if (isave_map==TRUE){
 
       # Create a folder name using paste0
       folder <- base::paste0("LCZ4r_output/")
@@ -141,12 +141,11 @@ lcz_get_map2 <- function(x, city=NULL, roi = NULL, isave_map = FALSE) {
         base::dir.create(folder)
       }
 
-      file <- base::paste0(folder,"lcz_map.tif")
-
+      file <- base::paste0(getwd(), "/", folder,"lcz_map.tif")
       terra::writeRaster(lcz_ras, file, overwrite = TRUE)
+      base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
     }
 
-    base::cat("Congratulations! You've successfully got",roi,"LCZ map.\n")
     return(lcz_ras)
 
 }

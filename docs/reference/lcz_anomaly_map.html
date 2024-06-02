@@ -51,7 +51,7 @@
     </div>
 
     <div class="ref-description section level2">
-    <p>This function generates a spatial interpolation of thermal anomaly for different Local Climate Zones (LCZs). More details: https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html</p>
+    <p>This function generates a spatial interpolation of thermal anomaly for different Local Climate Zones (LCZs). More details: <a href="https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html">https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html</a></p>
     </div>
 
     <div class="section level2">
@@ -75,7 +75,7 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>x</dt>
-<dd><p>A SpatRaster object containing the LCZ map. The LCZ map can be obtained using the lcz_get_map() function.</p></dd>
+<dd><p>A <code>SpatRaster</code> object containing the LCZ map. The LCZ map can be obtained using the <code><a href="lcz_get_map.html">lcz_get_map()</a></code> function.</p></dd>
 
 
 <dt>data_frame</dt>
@@ -91,9 +91,10 @@
 
 
 <dt>...</dt>
-<dd><p>Utilities from <code>selectBydata</code> from <code>openair</code> package. A start date string in the form e.g. “1/2/1999” or in format i.e. “YYYY-mm-dd”, “1999-02-01”.
-A year or years to select e.g. year = 1998:2004 to select 1998-2004 inclusive or year = c(1998, 2004) to select 1998 and 2004. A month or months to select.
-Can either be numeric e.g. month = 1:6 to select months 1-6 (January to June), or by name e.g. month = c(“January”, “December”).</p></dd>
+<dd><p>Additional arguments for the <code>selectBydata</code> from <code>openair</code> package. These include:</p><ul><li><p>A start date string in the form "1/2/1999" or in format "YYYY-mm-dd", e.g., "1999-02-01".</p></li>
+<li><p>A year or years to select, e.g., year = 1998:2004 to select 1998-2004 inclusive, or year = c(1998, 2004) to select 1998 and 2004.</p></li>
+<li><p>A month or months to select. Can either be numeric, e.g., month = 1:6 to select January to June, or by name, e.g., month = c("January", "December").</p></li>
+</ul></dd>
 
 
 <dt>sp.res</dt>
@@ -105,12 +106,12 @@ Can either be numeric e.g. month = 1:6 to select months 1-6 (January to June), o
 
 
 <dt>vg.model</dt>
-<dd><p>If kriging is selected, the list of viogrammodels that will be tested and interpolated with kriging. Default is "Sph". The model are "Sph", "Exp", "Gau", "Ste". They names respective shperical, exponential,gaussian,Matern familiy, Matern, M. Stein's parameterization.</p></dd>
+<dd><p>If kriging is selected, the list of viogrammodels that will be tested and interpolated with kriging. Default is "Sph". The model are "Sph", "Exp", "Gau", "Ste". They names respective shperical, exponential, gaussian,Matern familiy, Matern, M. Stein's parameterization.</p></dd>
 
 
 <dt>by</dt>
 <dd><p>data frame time-serie split: “year”, “season”, “seasonyear”,  “month”, “monthyear”, “weekday”, “weekend”,  “site”,
-“daylight”(daytime and nighttime).See argument <em>type</em> in openair package: https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option</p></dd>
+“daylight”(daytime and nighttime).See argument <em>type</em> in openair package:  <a href="https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option" class="external-link">https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option</a></p></dd>
 
 
 <dt>impute</dt>
@@ -118,7 +119,7 @@ Can either be numeric e.g. month = 1:6 to select months 1-6 (January to June), o
 
 
 <dt>isave</dt>
-<dd><p>Save the plot into your directory.</p></dd>
+<dd><p>Save the map into your directory.</p></dd>
 
 
 <dt>LCZinterp</dt>
@@ -129,21 +130,22 @@ Can either be numeric e.g. month = 1:6 to select months 1-6 (January to June), o
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>A map of LCZ-thermal anomalies in <code>terra raster.tif</code> format</p>
+<p>A map of LCZ-thermal anomalies in <code>terra raster GeoTIF</code> format</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p>See the documentation for lcz_get_map() to obtain an LCZ map.</p></div>
+    <div class="dont-index"><p>See the documentation for <code><a href="lcz_get_map.html">lcz_get_map()</a></code> to obtain an LCZ map.</p></div>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co"># Daily air temperature values in September 2019 .</span></span></span>
-<span class="r-in"><span> <span class="co">#my_anomaly &lt;- lcz_anomaly_map(lcz_map, data_frame = lcz_data, var = "airT",</span></span></span>
-<span class="r-in"><span> <span class="co">#                              station_id = "station", tp.res = "day", sp.res= "100",</span></span></span>
-<span class="r-in"><span> <span class="co">#                              year = 2019, month=9)</span></span></span>
-<span class="r-in"></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
+<span class="r-in"><span> <span class="co">#Daily air temperature values in September 2019 .</span></span></span>
+<span class="r-in"><span> <span class="va">my_anomaly</span> <span class="op">&lt;-</span> <span class="fu">lcz_anomaly_map</span><span class="op">(</span><span class="va">lcz_map</span>, data_frame <span class="op">=</span> <span class="va">lcz_data</span>, var <span class="op">=</span> <span class="st">"airT"</span>,</span></span>
+<span class="r-in"><span>                              station_id <span class="op">=</span> <span class="st">"station"</span>, tp.res <span class="op">=</span> <span class="st">"day"</span>, sp.res<span class="op">=</span> <span class="st">"100"</span>,</span></span>
+<span class="r-in"><span>                               year <span class="op">=</span> <span class="fl">2019</span>, month<span class="op">=</span><span class="fl">9</span><span class="op">)</span></span></span>
+<span class="r-in"><span> <span class="op">}</span></span></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

@@ -17,13 +17,13 @@
 #' @export
 #'
 #' @examples
-#'
+#' \dontrun{
 #' # Plot the minimum Sky View Factor (SVF1) for your city
-#' # lcz_plot_parameters(lcz_map, iselect = "SVF1")
+#' lcz_plot_parameters(lcz_map, iselect = "SVF1")
 #'
 #' # Plot multiple parameters and save them to the LCZ4r_output directory
-#' # lcz_plot_parameters(lcz_map, iselect = c("BSF3", "AH3"))
-#'
+#' lcz_plot_parameters(lcz_map, iselect = c("BSF3", "AH3"))
+#' }
 #' @importFrom rlang .data
 #'
 #' @seealso
@@ -224,7 +224,6 @@ lcz_plot_parameters <- function(x, iselect = "", all = FALSE, inclusive = FALSE,
         # ggplot2::scale_fill_viridis_c(option = paste0(names_par$color[i]), name=paste0(names_par$unit[i]))+
         MetBrewer::scale_fill_met_c(name = paste0(names_par$color[i])) +
         ggplot2::labs(title = paste0(names_par$name[i]), fill = paste0(names_par$unit[i]), ...) +
-        ggplot2::coord_equal(expand = TRUE, clip = "off")+
         ggplot2::theme_void() +
         ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
                        plot.subtitle = ggplot2::element_text(color = "black", size = 18, hjust = 0.5),
@@ -252,14 +251,14 @@ lcz_plot_parameters <- function(x, iselect = "", all = FALSE, inclusive = FALSE,
           base::dir.create(folder)
         }
 
-        file <- base::paste0(folder, names_par$value[i], ".png")
+        file <- base::paste0(getwd(), "/", folder, names_par$value[i], ".png")
         ggplot2::ggsave(file, fig_par, height = 7, width = 9, units="in", dpi=600)
+        base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
 
       }
 
     }
 
-    base::cat("Wow! You've salved all the LCZ parameter maps into folder LCZ4r_output.\n")
     return(fig_par)
 
   }
@@ -289,7 +288,6 @@ lcz_plot_parameters <- function(x, iselect = "", all = FALSE, inclusive = FALSE,
           #ggplot2::scale_fill_viridis_c(option = paste0(names_par_select$color[i]), name=paste0(names_par_select$unit[i]))+
           MetBrewer::scale_fill_met_c(name = paste0(names_par_select$color[i])) +
           ggplot2::labs(title = paste0(names_par_select$name[i]), fill = paste0(names_par_select$unit[i]), ...) +
-          ggplot2::coord_equal(expand = TRUE, clip = "off")+
           ggplot2::theme_void() +
           ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
                          plot.subtitle = ggplot2::element_text(color = "black", size = 18, hjust = 0.5),
@@ -306,7 +304,7 @@ lcz_plot_parameters <- function(x, iselect = "", all = FALSE, inclusive = FALSE,
                          #panel.grid.minor = ggplot2::element_line(color = "white", size = 0.3),
                          plot.margin = ggplot2::margin(25, 25, 10, 25))
 
-        if(isave == TRUE) {
+        if (isave == TRUE) {
 
           # Create a folder name using paste0
           folder <- base::paste0("LCZ4r_output/")
@@ -317,14 +315,14 @@ lcz_plot_parameters <- function(x, iselect = "", all = FALSE, inclusive = FALSE,
             base::dir.create(folder)
           }
 
-          file <- base::paste0(folder, names_par_select$value[i], ".png")
+          file <- base::paste0(getwd(), "/", folder, names_par_select$value[i], ".png")
           ggplot2::ggsave(file, fig_par, height = 7, width = 9, units="in", dpi=600)
+          base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
 
         }
 
       }
 
-      base::cat("Wow! You've salved the",iselect,"LCZ parameter maps into folder LCZ4r_output.\n")
       return(fig_par)
 
 
@@ -347,7 +345,6 @@ lcz_plot_parameters <- function(x, iselect = "", all = FALSE, inclusive = FALSE,
         #ggplot2::scale_fill_viridis_c(option = paste0(names_par_select$color), name=paste0(names_par_select$unit))+
         MetBrewer::scale_fill_met_c(name = paste0(names_par_select$color)) +
         ggplot2::labs(title = paste0(names_par_select$name), fill =paste0(names_par_select$unit), ...) +
-        ggplot2::coord_equal(expand = TRUE, clip = "off")+
         ggplot2::theme_void() +
         ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
                        plot.subtitle = ggplot2::element_text(color = "black", size = 18, hjust = 0.5),
@@ -364,7 +361,7 @@ lcz_plot_parameters <- function(x, iselect = "", all = FALSE, inclusive = FALSE,
                        #panel.grid.minor = ggplot2::element_line(color = "white", size = 0.3),
                        plot.margin = ggplot2::margin(25, 25, 10, 25))
 
-      if(isave == TRUE) {
+      if (isave == TRUE) {
 
         # Create a folder name using paste0
         folder <- base::paste0("LCZ4r_output/")
@@ -375,16 +372,14 @@ lcz_plot_parameters <- function(x, iselect = "", all = FALSE, inclusive = FALSE,
           base::dir.create(folder)
         }
 
-        file <- base::paste0(folder, names_par_select$value, ".png")
+        file <- base::paste0(getwd(), "/", folder, names_par_select$value, ".png")
         ggplot2::ggsave(file, fig_par, height = 7, width = 9, units="in", dpi=600)
-
-        base::cat("Wow! You've salved",iselect,"LCZ parameter map into folder LCZ4r_output.\n")
+        base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
 
       }
 
     }
 
-    base::cat("You've generated",iselect,"LCZ parameter map.\n")
     return(fig_par)
 
   }

@@ -24,12 +24,20 @@ created by Demuzere et al. (2020) and available at https://doi.org/10.1038/s4159
 It allows you to obtain the LCZ map for a specific area of interest, which can be a city, state, region, or custom-defined shape.
 }
 \examples{
-
+\dontrun{
 # Example 1: Load the LCZ map for a city
-# my_lcz_city <- lcz_get_map_usa(city = "New York")
+my_lcz_city <- lcz_get_map_usa(city = "New York")
 
 # Example 2: Get LCZ map for a custom region of interest
-# custom_roi <- sf::st_read("custom_roi.shp")
-# roi_lcz <- lcz_get_map_usa(roi = custom_roi)
-
+custom_roi <- sf::st_read("custom_roi.shp")
+roi_lcz <- lcz_get_map_usa(roi = custom_roi)
 }
+}
+\keyword{Climate}
+\keyword{LCZ,}
+\keyword{Local}
+\keyword{Zone,}
+\keyword{analysis}
+\keyword{climate,}
+\keyword{spatial}
+\keyword{urban}

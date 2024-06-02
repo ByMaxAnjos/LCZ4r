@@ -1,26 +1,25 @@
-
 #' Visualize the LCZ Map
 #'
-#' This function generates a graphical representation of an LCZ (Local Climate Zone) map provided as a SpatRaster object.
+#' This function generates a graphical representation of a Local Climate Zone (LCZ) map provided as a `SpatRaster` object.
 #'
 #' @param x A SpatRaster object containing the LCZ map to be plotted.
-#' @param isave Logical. Set to TRUE if you want to save the plot in your working directory.
-#' @param inclusive Set to TRUE to a colorblind-friendly palette.
-#' @param ... An optional modify axis, legend, and plot labels: title, subtitle, and caption.
+#' @param isave Logical. Set to TRUE to save the plot in your working directory.
+#' @param inclusive Logical. Set to TRUE to use a colorblind-friendly palette.
+#' @param ... Optional arguments to modify axis labels, legend, plot title, subtitle, and caption.
 #'
-#' @return A visual representation of the LCZ map in ggplot format
+#' @return A visual representation of the LCZ map in ggplot format.
 #'
 #' @export
 #'
 #' @examples
-#'
-#' # Example: Plot an LCZ map with the legend showing LCZ codes and specify a subtitle.
-#' # lcz_plot_map(LCZmap)
+#' \dontrun{
+#' lcz_plot_map(LCZmap)
+#' }
 #'
 #' @importFrom rlang .data
 #'
 #' @seealso
-#' See the documentation for lcz_get_map() to obtain an LCZ map.
+#' See the documentation for \code{lcz_get_map()} to obtain an LCZ map.
 #'
 #' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis
 
@@ -68,7 +67,7 @@ lcz_plot_map <- function(x, isave = FALSE, inclusive = FALSE, ...) {
 
     lcz_df <- dplyr::bind_cols(ID, lcz.name, lcz.col, lcz_colorblind) %>%
       dplyr::inner_join(rat, by = "ID") %>%
-      dplyr::distinct(ID, .keep_all = T)
+      dplyr::distinct(ID, .keep_all = TRUE)
 
     base::names(x) <- "class"
 
@@ -87,10 +86,7 @@ lcz_plot_map <- function(x, isave = FALSE, inclusive = FALSE, ...) {
     # Define LCZ labels
     lcz.lables <- lcz_df$lcz.name
 
-
   # ggplot using the same data
-
-
   dataPlot <- terra::as.data.frame(x, xy=TRUE) %>%
     stats::na.omit()
 
@@ -100,17 +96,12 @@ lcz_plot_map <- function(x, isave = FALSE, inclusive = FALSE, ...) {
 
   my_plot <-
     ggplot2::ggplot() +
-    # Add the raster layer
-    #ggplot2::geom_sf(data=boundary, fill='transparent', lwd = 2, inherit.aes = FALSE) +
     ggplot2::geom_tile(ggplot2::aes(x = x, y = .data$y, fill = base::as.factor(class)),
                        data = dataPlot,  inherit.aes = FALSE) +
-
-    # Set the color palette to a qualitative one and add labels, title and legend.hist
     ggplot2::scale_fill_manual(values = color_values, name = "LCZ class",
                                labels = lcz.lables,
                                guide = ggplot2::guide_legend(reverse = FALSE,
                                                              title.position = "top")) +
-    ggplot2::coord_sf(expand = FALSE, clip = "off") +
     ggplot2::labs(...) +
     ggplot2::theme_void() +
     ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
@@ -118,18 +109,16 @@ lcz_plot_map <- function(x, isave = FALSE, inclusive = FALSE, ...) {
                    plot.background = ggplot2::element_blank(),
                    legend.title = ggplot2::element_text(size = 17, color = "black", face = "bold"),
                    legend.text = ggplot2::element_text(size = 16, color = "black"),
-                   plot.caption = ggplot2::element_text(colour = "grey30", size = 9, hjust = 0), # move caption to the left
+                   plot.caption = ggplot2::element_text(colour = "grey40", size = 10, hjust = 0), # move caption to the left
                    axis.line = ggplot2::element_blank(),
                    axis.text.x = ggplot2::element_blank(),
                    axis.text.y = ggplot2::element_blank(),
                    axis.ticks = ggplot2::element_blank(),
                    legend.spacing.y = ggplot2::unit(0.02, "cm"),
                    plot.margin = ggplot2::margin(25, 25, 10, 25)
-                   #panel.grid.major = ggplot2::element_line(color = "white", size = 0.3),
-                   #panel.grid.minor = ggplot2::element_line(color = "white", size = 0.3),
     )
 
-  if(isave == TRUE){
+  if (isave == TRUE){
 
     # Create a folder name using paste0
     folder <- base::paste0("LCZ4r_output/")
@@ -140,12 +129,12 @@ lcz_plot_map <- function(x, isave = FALSE, inclusive = FALSE, ...) {
       base::dir.create(folder)
     }
 
-    file <- base::paste0(folder,"lcz_PlotMap.png")
-    ggplot2::ggsave(file, my_plot, height = 7, width = 10, units="in", dpi=300)
+    file <- base::paste0(getwd(), "/", folder,"lcz_plot_map.png")
+    ggplot2::ggsave(file, my_plot, height = 7, width = 10, dpi=600)
+    base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
 
   }
 
-  base::cat("Congratulations! You've successfully generated the LCZ map.\n")
   return(my_plot)
 
 }

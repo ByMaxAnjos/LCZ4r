@@ -1,37 +1,41 @@
 #' Visualize the LCZ - interpolated map
 #'
-#' This function generates a spatial interpolation of air temperature (or other variable) using Local Climate Zones (LCZs) and Kriging. More details: https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html
+#' This function generates a spatial interpolation of air temperature (or other variable) using Local Climate Zones (LCZs) and Kriging.  More details: \url{https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html}
 #'
-#' @param x A SpatRaster object containing the LCZ map. The LCZ map can be obtained using the lcz_get_map() function.
+#' @param x A \code{SpatRaster} object containing the LCZ map. The LCZ map can be obtained using the \code{lcz_get_map()} function.
 #' @param data_frame A data frame containing air temperature measurements and station IDs. The data frame should have a date field in hourly or higher resolution format.
 #' @param var Name of the variable for interpolation, e.g. air temperature, in the dataframe.
 #' @param station_id Name of the station ID variable in the dataframe.
-#' @param ... Utilities from \code{selectBydata} from \code{openair} package. A start date string in the form e.g. \dQuote{1/2/1999} or in format i.e. \dQuote{YYYY-mm-dd}, \dQuote{1999-02-01}.
-#'            A year or years to select e.g. year = 1998:2004 to select 1998-2004 inclusive or year = c(1998, 2004) to select 1998 and 2004. A month or months to select.
-#'            Can either be numeric e.g. month = 1:6 to select months 1-6 (January to June), or by name e.g. month = c(\dQuote{January}, \dQuote{December}).
+#' @param ... Additional arguments for the \code{selectBydata} from \code{openair} package. These include:
+#' \itemize{
+#'   \item A start date string in the form "1/2/1999" or in format "YYYY-mm-dd", e.g., "1999-02-01".
+#'   \item A year or years to select, e.g., year = 1998:2004 to select 1998-2004 inclusive, or year = c(1998, 2004) to select 1998 and 2004.
+#'   \item A month or months to select. Can either be numeric, e.g., month = 1:6 to select January to June, or by name, e.g., month = c("January", "December").
+#' }
 #' @param vg.model If kriging is selected, the list of viogrammodels that will be tested and interpolated with kriging. Default is "Sph". The model are "Sph", "Exp", "Gau", "Ste". They names respective shperical, exponential,gaussian,Matern familiy, Matern, M. Stein's parameterization.
 #' @param sp.res Spatial resolution in unit of meters for interpolation. Default is 100.
 #' @param tp.res Temporal resolution, the time period to average to. Default is \dQuote{hour}, but includes \dQuote{day}, \dQuote{week}, \dQuote{month} or \dQuote{year}.
 #' @param by data frame time-serie split: \dQuote{year}, \dQuote{season}, \dQuote{seasonyear},  \dQuote{month}, \dQuote{monthyear}, \dQuote{weekday}, \dQuote{weekend},  \dQuote{site},
-#'           \dQuote{daylight}(daytime and nighttime).See argument \emph{type} in openair package: https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option
+#'           \dQuote{daylight}(daytime and nighttime).See argument \emph{type} in openair package:\url{https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option}
 #' @param impute Method to impute missing values (\dQuote{mean}, \dQuote{median}, \dQuote{knn}, \dQuote{bag}).
 #' @param isave Save the plot into your directory.
 #' @param LCZinterp If set to TRUE (default), the LCZ interpolation approach is used. If set to FALSE, conventional interpolation without LCZ is used.
 #'
-#' @return A map of LCZ-interpolatation in \code{terra raster.tif} format
+#' @return A map of LCZ-air temperature in \code{terra raster GeoTIF} format
 #'
 #' @export
 #'
 #' @examples
-#'
+#' \dontrun{
 #' # Daily air temperature values in September 2019 .
-#'  #my_interp <- lcz_interp_map(lcz_map, data_frame = lcz_data, var = "airT",
-#'  #                              station_id = "station", tp.res = "day", sp.res= 100,
-#'  #                              year = 2019, month=9)
+#'  my_interp <- lcz_interp_map(lcz_map, data_frame = lcz_data, var = "airT",
+#'                                station_id = "station", tp.res = "day", sp.res= 100,
+#'                                year = 2019, month=9)
+#'  }
 #' @importFrom rlang .data
 #'
 #' @seealso
-#' See the documentation for lcz_get_map() to obtain an LCZ map.
+#' See the documentation for \code{lcz_get_map()} to obtain an LCZ map.
 #'
 #' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis
 
@@ -55,7 +59,7 @@ lcz_interp_map <- function(x,
   }
 
   if (!inherits(x, "SpatRaster")) {
-    x <- terra::rast({{x}})
+    x <- terra::rast(x)
   }
 
   if(terra::crs(x, proj=TRUE) != "+proj=longlat +datum=WGS84 +no_defs") {
@@ -78,52 +82,26 @@ lcz_interp_map <- function(x,
                   my_id = base::as.factor(.data$my_id),
                   var_interp = base::as.numeric(.data$var_interp)) %>%
     dplyr::ungroup()
-  df_variable$latitude <- base::as.numeric(df_variable$latitude)
-  df_variable$longitude <- base::as.numeric(df_variable$longitude)
 
-  #Impute missing values if it is necessary
+
+  # Impute missing values if necessary
   if (!is.null(impute)) {
-    if (impute == "mean") {
-      lcz_recipe <-
-        recipes::recipe(var_interp ~ ., data = df_variable) %>%
-        recipes::step_impute_mean(.data$var_interp)
-
-      df_variable <- lcz_recipe %>%
-        recipes::prep(df_variable) %>%
-        recipes::bake(new_data = NULL)
+    impute_methods <- c("mean", "median", "knn", "bag")
+    if (!(impute %in% impute_methods)) {
+      stop("Invalid impute method. Choose from 'mean', 'median', 'knn', or 'bag'.")
     }
-
-    if (impute == "median") {
-      lcz_recipe <-
-        recipes::recipe(var_interp ~ ., data = df_variable) %>%
-        recipes::step_impute_median(.data$var_interp)
-
-      df_variable <- lcz_recipe %>%
-        recipes::prep(df_variable) %>%
-        recipes::bake(new_data = NULL)
-    }
-
-    if (impute == "knn") {
-      lcz_recipe <-
-        recipes::recipe(var_interp ~ ., data = df_variable) %>%
-        recipes::step_impute_knn(.data$var_interp)
-
-      df_variable <- lcz_recipe %>%
-        recipes::prep(df_variable) %>%
-        recipes::bake(new_data = NULL)
-    }
-
-    if (impute == "bag") {
-      lcz_recipe <-
-        recipes::recipe(var_interp ~ ., data = df_variable) %>%
-        recipes::step_impute_bag(.data$var_interp)
-
-      df_variable <- lcz_recipe %>%
-        recipes::prep(df_variable) %>%
-        recipes::bake(new_data = NULL)
-    }
-
-    base::cat("Hooray! The missing values have been imputed with ", impute,"\n")
+    impute_function <- switch(impute,
+                              "mean" = recipes::step_impute_mean,
+                              "median" = recipes::step_impute_median,
+                              "knn" = recipes::step_impute_knn,
+                              "bag" = recipes::step_impute_bag
+    )
+    lcz_recipe <- recipes::recipe(var_interp ~ ., data = df_variable) %>%
+      impute_function(.data$var_interp)
+    df_variable <- lcz_recipe %>%
+      recipes::prep(df_variable) %>%
+      recipes::bake(new_data = NULL)
+    base::message("The missing values have been imputed with ", impute)
   }
 
   #Define the period
@@ -138,7 +116,7 @@ lcz_interp_map <- function(x,
 
   # Geospatial operations ---------------------------------------------------
   #Convert lcz_map to polygon
-  lcz_shp <- terra::as.polygons({{x}}) %>%
+  lcz_shp <- terra::as.polygons(x) %>%
     sf::st_as_sf() %>%
     sf::st_transform(crs = 4326)
 
@@ -149,14 +127,14 @@ lcz_interp_map <- function(x,
     stars::st_as_stars(dx = sp.res)
   ras_resolution <- terra::rast(ras_resolution)
 
-  ras_project <- terra::project({{x}}, "EPSG:3857")
+  ras_project <- terra::project(x, "EPSG:3857")
   ras_resample <- terra::resample(ras_project, ras_resolution, method = "mode")
   ras_grid <- stars::st_as_stars(ras_resample, dimensions = "XY")
   base::names(ras_grid) <- "lcz"
 
 
   # Calculate interp temporal resolution  ------------------------------------------------------
-  if(is.null(by) & tp.res %in% c("hour", "day")) {  #Downscale to hour or day
+  if (is.null(by) & tp.res %in% c("hour", "day")) {  #Downscale to hour or day
     iday <- df_processed %>%
       dplyr::group_by(.data$date) %>%
       dplyr::select(.data$date) %>% dplyr::ungroup() %>%
@@ -196,7 +174,7 @@ lcz_interp_map <- function(x,
           sf::st_intersection(lcz_shp) %>%
           sf::st_transform(crs = 3857)
 
-        if(LCZinterp == TRUE) {
+        if (LCZinterp == TRUE) {
           # [using ordinary kriging]
           krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, df_interp_mod, model = vg.model)
           krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = df_interp_mod)
@@ -236,7 +214,7 @@ lcz_interp_map <- function(x,
     interp_day <- base::unlist(MapDay)
     interp_stack <- terra::rast(interp_day)
 
-    if(isave == TRUE){
+    if (isave == TRUE){
 
       # Create a folder name using paste0
       folder <- base::paste0("LCZ4r_output/")
@@ -248,17 +226,16 @@ lcz_interp_map <- function(x,
       }
 
       #Save map as raster.tif
-      file <- base::paste0(folder,"lcz4r_interp_map.tif")
+      file <- base::paste0(getwd(), "/", folder, "lcz4r_interp_map.tif")
       terra::writeRaster(interp_stack, file, overwrite = TRUE)
-      base::cat("The interp map rasters are saved into your pc. Look at 'LCZ4r_output' folder.\n")
+      base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
 
     }
 
-    base::cat("That's cool! Let's explore your LCZ interp map.\n")
+    return(interp_stack)
+    }
 
-    return(interp_stack) }
-
-  if(is.null(by) & tp.res %in% c("week")) {  #Downscale to week
+  if (is.null(by) & tp.res %in% c("week")) {  #Downscale to week
 
     iweek <- df_processed %>%
       dplyr::group_by(.data$date) %>%
@@ -283,7 +260,7 @@ lcz_interp_map <- function(x,
         sf::st_intersection(lcz_shp) %>%
         sf::st_transform(crs = 3857)
 
-      if(LCZinterp == TRUE) {
+      if (LCZinterp == TRUE) {
         # [using ordinary kriging]
         krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, df_interp_mod, model = vg.model)
         krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = df_interp_mod)
@@ -329,19 +306,17 @@ lcz_interp_map <- function(x,
       }
 
       #Save map as raster.tif
-      file <- base::paste0(folder,"lcz4r_interp_map.tif")
+      file <- base::paste0(getwd(), "/", folder, "lcz4r_interp_map.tif")
       terra::writeRaster(interp_stack, file, overwrite = TRUE)
-      base::cat("The interp map rasters are saved into your pc. Look at 'LCZ4r_output' folder.\n")
+      base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
 
     }
-
-    base::cat("That's cool! Let's explore your LCZ interp map.\n")
 
     return(interp_stack)
 
   }
 
-  if(is.null(by) & tp.res %in% c("month")) {  #Downscale to month
+  if (is.null(by) & tp.res %in% c("month")) {  #Downscale to month
 
     imonth <- df_processed %>%
       dplyr::group_by(.data$date) %>%
@@ -366,7 +341,7 @@ lcz_interp_map <- function(x,
         sf::st_intersection(lcz_shp) %>%
         sf::st_transform(crs = 3857)
 
-      if(LCZinterp == TRUE) {
+      if (LCZinterp == TRUE) {
         # [using ordinary kriging]
         krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, df_interp_mod, model = vg.model)
         krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = df_interp_mod)
@@ -412,13 +387,11 @@ lcz_interp_map <- function(x,
       }
 
       #Save map as raster.tif
-      file <- base::paste0(folder,"lcz4r_interp_map.tif")
+      file <- base::paste0(getwd(), "/", folder, "lcz4r_interp_map.tif")
       terra::writeRaster(interp_stack, file, overwrite = TRUE)
-      base::cat("The interp map rasters are saved into your pc. Look at 'LCZ4r_output' folder.\n")
+      base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
 
     }
-
-    base::cat("That's cool! Let's explore your LCZ interp map.\n")
 
     return(interp_stack)
 
@@ -449,7 +422,7 @@ lcz_interp_map <- function(x,
         sf::st_intersection(lcz_shp) %>%
         sf::st_transform(crs = 3857)
 
-      if(LCZinterp == TRUE) {
+      if (LCZinterp == TRUE) {
         # [using ordinary kriging]
         krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, df_interp_mod, model = vg.model)
         krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = df_interp_mod)
@@ -483,7 +456,7 @@ lcz_interp_map <- function(x,
     interp_quarter <- base::unlist(mapQuarter)
     interp_stack <- terra::rast(interp_quarter)
 
-    if(isave == TRUE){
+    if (isave == TRUE){
 
       # Create a folder name using paste0
       folder <- base::paste0("LCZ4r_output/")
@@ -495,19 +468,17 @@ lcz_interp_map <- function(x,
       }
 
       #Save map as raster.tif
-      file <- base::paste0(folder,"lcz4r_interp_map.tif")
+      file <- base::paste0(getwd(), "/", folder, "lcz4r_interp_map.tif")
       terra::writeRaster(interp_stack, file, overwrite = TRUE)
-      base::cat("The interp map rasters are saved into your pc. Look at 'LCZ4r_output' folder.\n")
+      base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
 
     }
-
-    base::cat("That's cool! Let's explore your LCZ interp map.\n")
 
     return(interp_stack)
 
   }
 
-  if(is.null(by) & tp.res %in% c("year")) {  #Downscale to year
+  if (is.null(by) & tp.res %in% c("year")) {  #Downscale to year
 
     iyear <- df_processed %>%
       dplyr::group_by(.data$date) %>%
@@ -532,7 +503,7 @@ lcz_interp_map <- function(x,
         sf::st_intersection(lcz_shp) %>%
         sf::st_transform(crs = 3857)
 
-      if(LCZinterp == TRUE) {
+      if (LCZinterp == TRUE) {
         # [using ordinary kriging]
         krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, df_interp_mod, model = vg.model)
         krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = df_interp_mod)
@@ -567,7 +538,7 @@ lcz_interp_map <- function(x,
     interp_year <- base::unlist(mapYear)
     interp_stack <- terra::rast(interp_year)
 
-    if(isave == TRUE){
+    if (isave == TRUE){
 
       # Create a folder name using paste0
       folder <- base::paste0("LCZ4r_output/")
@@ -579,13 +550,11 @@ lcz_interp_map <- function(x,
       }
 
       #Save map as raster.tif
-      file <- base::paste0(folder,"lcz4r_interp_map.tif")
+      file <- base::paste0(getwd(), "/", folder, "lcz4r_interp_map.tif")
       terra::writeRaster(interp_stack, file, overwrite = TRUE)
-      base::cat("The interp map rasters are saved into your pc. Look at 'LCZ4r_output' folder.\n")
+      base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
 
     }
-
-    base::cat("That's cool! Let's explore your LCZ interp map.\n")
 
     return(interp_stack)
 
@@ -593,7 +562,7 @@ lcz_interp_map <- function(x,
 
   if (!is.null(by)) {
 
-    if(length(by)<2 & by %in% c("daylight", "season", "seasonyear")) {
+    if (length(by) < 2 & by %in% c("daylight", "season", "seasonyear")) {
 
       # Extract AXIS information from CRS
       axis_matches <- terra::crs({{x}}, parse = TRUE)[14]
@@ -663,7 +632,7 @@ lcz_interp_map <- function(x,
       interp_by <- base::unlist(mapBy)
       interp_stack <- terra::rast(interp_by)
 
-      if(isave == TRUE){
+      if (isave == TRUE){
 
         # Create a folder name using paste0
         folder <- base::paste0("LCZ4r_output/")
@@ -675,19 +644,16 @@ lcz_interp_map <- function(x,
         }
 
         #Save map as raster.tif
-        file <- base::paste0(folder,"lcz4r_interp_map.tif")
+        file <- base::paste0(getwd(), "/", folder, "lcz4r_interp_map.tif")
         terra::writeRaster(interp_stack, file, overwrite = TRUE)
-        base::cat("The interp map rasters are saved into your pc. Look at 'LCZ4r_output' folder.\n")
+        base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
 
       }
-
-      base::cat("That's cool! Let's explore your LCZ interp map.\n")
-
       return(interp_stack)
 
     }
 
-    if(length(by)>1 & by %in% "daylight") {
+    if (length(by) > 1 & by %in% "daylight") {
 
       # Extract AXIS information from CRS
       axis_matches <- terra::crs(x, parse = TRUE)[14]
@@ -724,7 +690,7 @@ lcz_interp_map <- function(x,
           sf::st_intersection(lcz_shp) %>%
           sf::st_transform(crs = 3857)
 
-        if(LCZinterp == TRUE) {
+        if (LCZinterp == TRUE) {
           # [using ordinary kriging]
           krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, df_interp_mod, model = vg.model)
           krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = df_interp_mod)
@@ -758,7 +724,7 @@ lcz_interp_map <- function(x,
       interp_by <- base::unlist(mapBy)
       interp_stack <- terra::rast(interp_by)
 
-      if(isave == TRUE){
+      if (isave == TRUE){
 
         # Create a folder name using paste0
         folder <- base::paste0("LCZ4r_output/")
@@ -770,13 +736,11 @@ lcz_interp_map <- function(x,
         }
 
         #Save map as raster.tif
-        file <- base::paste0(folder,"lcz4r_interp_map.tif")
+        file <- base::paste0(getwd(), "/", folder, "lcz4r_interp_map.tif")
         terra::writeRaster(interp_stack, file, overwrite = TRUE)
-        base::cat("The interp map rasters are saved into your pc. Look at 'LCZ4r_output' folder.\n")
+        base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
 
       }
-
-      base::cat("That's cool! Let's explore your LCZ interp map.\n")
 
       return(interp_stack)
 
@@ -846,7 +810,7 @@ lcz_interp_map <- function(x,
       interp_by <- base::unlist(mapBy)
       interp_stack <- terra::rast(interp_by)
 
-      if(isave == TRUE){
+      if (isave == TRUE){
 
         # Create a folder name using paste0
         folder <- base::paste0("LCZ4r_output/")
@@ -863,8 +827,6 @@ lcz_interp_map <- function(x,
         base::cat("The interp map rasters are saved into your pc. Look at 'LCZ4r_output' folder.\n")
 
       }
-
-      base::cat("That's cool! Let's explore your LCZ interp map.\n")
 
       return(interp_stack)
 

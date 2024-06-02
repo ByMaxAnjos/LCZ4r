@@ -13,14 +13,15 @@
 #' @export
 #'
 #' @examples
-#'
+#' \dontrun{
 #' # Example 1: Load the LCZ map for a city
-#' # my_lcz_city <- lcz_get_map_usa(city = "New York")
+#' my_lcz_city <- lcz_get_map_usa(city = "New York")
 #'
 #' # Example 2: Get LCZ map for a custom region of interest
-#' # custom_roi <- sf::st_read("custom_roi.shp")
-#' # roi_lcz <- lcz_get_map_usa(roi = custom_roi)
-#'
+#' custom_roi <- sf::st_read("custom_roi.shp")
+#' roi_lcz <- lcz_get_map_usa(roi = custom_roi)
+#' }
+#' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis
 
 lcz_get_map_usa <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_usa=FALSE) {
 
@@ -29,7 +30,7 @@ lcz_get_map_usa <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_usa=
     stop("Error: provide either a city name or a roi polygon")
   }
 
-  if(!is.null(city)) {
+  if (!is.null(city)) {
     # Get study area polygon from OpenStreetMap data
     shp_verify <- osmdata::getbb({{city}}, format_out = "sf_polygon", limit = 1)
 
@@ -37,7 +38,7 @@ lcz_get_map_usa <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_usa=
       stop(paste0("No polygonal boundary for",city,".See https://nominatim.openstreetmap.org"))
     }
     # Check if polygon was obtained successfully
-    if(!is.null(shp_verify$geometry) & !inherits(shp_verify, "list")) {
+    if (!is.null(shp_verify$geometry) & !inherits(shp_verify, "list")) {
       study_area <- shp_verify$geometry
       study_area <- sf::st_make_valid(study_area) %>%
         sf::st_as_sf() %>%
@@ -53,7 +54,7 @@ lcz_get_map_usa <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_usa=
     lcz_url <- "https://zenodo.org/records/10835692/files/CONUS_LCZ_map_NLCD_v1.0_epsg4326.tif?download=1"
     lcz_download <- terra::rast(base::paste0("/vsicurl/", lcz_url))
 
-    if(base::is.null(lcz_download)) {
+    if (base::is.null(lcz_download)) {
       stop("This error might be due to server restrictions. In such cases, you may need to download the file manually using this link:
            https://zenodo.org/records/10835692/files/CONUS_LCZ_map_NLCD_v1.0_epsg4326.tif?download=1.
            Then read it using the terra package, eg., my_map <- rast('path/CONUS_LCZ_map_NLCD_v1.0_epsg4326.tif'), and use the function lcz_get_map2()")
@@ -61,7 +62,7 @@ lcz_get_map_usa <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_usa=
 
     lcz_ras <- terra::crop(lcz_download, terra::ext(study_area))
 
-    if(is.null(lcz_ras)) {
+    if (is.null(lcz_ras)) {
       stop("Large Data: If you are working with very large raster datasets, consider working on a
            subset of the data to reduce the memory and processing requirements.
            You can crop a smaller region first to see if the operation succeeds.")
@@ -70,7 +71,7 @@ lcz_get_map_usa <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_usa=
     lcz_ras <- terra::mask(lcz_ras, terra::vect(study_area))
     base::names(lcz_ras) <- "lcz"
 
-    if(isave_map==TRUE){
+    if (isave_map==TRUE){
 
       # Create a folder name using paste0
       folder <- base::paste0("LCZ4r_output/")
@@ -81,12 +82,12 @@ lcz_get_map_usa <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_usa=
         base::dir.create(folder)
       }
 
-      file <- base::paste0(folder,"lcz_map.tif")
-
+      file <- base::paste0(getwd(), "/", folder,"lcz_map.tif")
       terra::writeRaster(lcz_ras, file, overwrite = TRUE)
+      base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
     }
 
-    if(isave_usa==TRUE){
+    if (isave_usa==TRUE){
 
       # Create a folder name using paste0
       folder <- base::paste0("LCZ4r_output/")
@@ -97,12 +98,11 @@ lcz_get_map_usa <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_usa=
         base::dir.create(folder)
       }
 
-      file <- base::paste0(folder,"lcz_usa_map.tif")
-
+      file <- base::paste0(getwd(), "/", folder,"lcz_usa_map.tif")
       terra::writeRaster(lcz_download, file, overwrite = TRUE)
+      base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
     }
 
-    base::cat("Congratulations! You've successfully got",city,"LCZ map.\n")
     return(lcz_ras)
 
   } else {
@@ -116,7 +116,7 @@ lcz_get_map_usa <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_usa=
 
     lcz_ras <- terra::crop(lcz_download, terra::ext(roi_crs))
 
-    if(is.null(lcz_ras)) {
+    if (is.null(lcz_ras)) {
       stop("Large Data: If you are working with very large raster datasets, consider working on a
            subset of the data to reduce the memory and processing requirements.
            You can crop a smaller region first to see if the operation succeeds.")
@@ -125,7 +125,7 @@ lcz_get_map_usa <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_usa=
 
       base::names(lcz_ras) <- "lcz"
 
-      if(isave_map==TRUE){
+      if (isave_map==TRUE){
 
         # Create a folder name using paste0
         folder <- base::paste0("LCZ4r_output/")
@@ -136,9 +136,9 @@ lcz_get_map_usa <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_usa=
           base::dir.create(folder)
         }
 
-        file <- base::paste0(folder,"lcz_map.tif")
-
+        file <- base::paste0(getwd(), "/", folder,"lcz_map.tif")
         terra::writeRaster(lcz_ras, file, overwrite = TRUE)
+        base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
       }
 
       if(isave_usa==TRUE){
@@ -152,12 +152,11 @@ lcz_get_map_usa <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_usa=
           base::dir.create(folder)
         }
 
-        file <- base::paste0(folder,"lcz_usa_map.tif")
-
+        file <- base::paste0(getwd(), "/", folder,"lcz_usa_map.tif")
         terra::writeRaster(lcz_download, file, overwrite = TRUE)
+        base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
       }
 
-      base::cat("Congratulations! You've successfully got",roi,"LCZ map.\n")
       return(lcz_ras)
 
     }

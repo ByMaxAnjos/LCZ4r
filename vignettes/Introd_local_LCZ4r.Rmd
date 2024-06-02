@@ -186,7 +186,7 @@ lcz_plot_interp(my_anomlay_daylight,
                 title = "LCZ-thermal anomalies", 
                 subtitle = "Berlin - daytime and nighttime (01.09.2020)",
                 caption = "Source: LCZ4r, 2024.",
-                fill = "[ºC]")
+                fill = "AirT [ºC]")
 ```
 
 
@@ -211,8 +211,40 @@ lcz_plot_interp(air_map)
 
 ## Assess LCZ for Urban Heat Island Intensity
 
-It is coming soon..
-```{r, eval=TRUE}
+The `lcz_uhi_intensity()` function is designed to calculate the Urban Heat Island (UHI) intensity based on air temperature measurements and Local Climate Zones (LCZ). Here's a detailed description of the function call provided:
+
+```{r, eval=TRUE, fig.height=7, fig.width=11, message=FALSE, warning=FALSE}
+
+#Calculate the hourly UHI intensity for 2019 using the LCZ method
+lcz_uhi_intensity(lcz_map,
+                  data_frame = lcz_data,
+                  var = "airT",
+                  station_id = "station",
+                  time.freq  = "hour",
+                  method = "LCZ",
+                  year = 2019)
+
+
+#Calculate the hourly UHI intensity for 13-15 Feb 2019 using the LCZ method grouping Urban and Rural temperatures 
+lcz_uhi_intensity(lcz_map,
+                  data_frame = lcz_data,
+                  var = "airT",
+                  station_id = "station",
+                  time.freq  = "hour",
+                  method = "LCZ",
+                  group = TRUE,
+                  year = 2019, month = 2, day=13:15)
+
+
+#Calculate the UHI intensity during daytime and nighttime in April 2019
+lcz_uhi_intensity(lcz_map,
+                  data_frame = lcz_data,
+                  var = "airT",
+                  station_id = "station",
+                  time.freq  = "hour",
+                  method = "LCZ",
+                  year = 2019, month = 4,
+                  by = "daylight")
 
 
 ```

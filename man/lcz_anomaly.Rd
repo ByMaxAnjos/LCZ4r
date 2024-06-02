@@ -12,42 +12,42 @@ lcz_anomaly(
   ...,
   time.freq = "hour",
   by = NULL,
-  hemisphere = "northern",
   impute = NULL,
   iplot = FALSE,
   isave = FALSE,
   inclusive = FALSE,
-  ylab = "Air temperature anomaly in Degree Celsius",
-  xlab = "Meterological station",
+  ylab = "Air temperature anomaly",
+  xlab = "Stations",
   title = "",
   caption = ""
 )
 }
 \arguments{
-\item{x}{A SpatRaster object containing the LCZ map. The LCZ map can be obtained using the lcz_get_map() function.}
+\item{x}{A \code{SpatRaster} object containing the LCZ map. The LCZ map can be obtained using the \code{lcz_get_map()} function.}
 
 \item{data_frame}{A data frame containing air temperature measurements and station IDs. The data frame should have a date field in hourly or higher resolution format.}
 
-\item{var}{Name of the variable, e.g. air temperature, in the dataframe.}
+\item{var}{The name of the variable in the data frame representing air temperature.}
 
-\item{station_id}{Name of the station ID variable in the dataframe.}
+\item{station_id}{The name of the variable in the data frame representing station IDs.}
 
-\item{...}{Utilities from \code{selectBydata} from \code{openair} package. A start date string in the form e.g. \dQuote{1/2/1999} or in format i.e. \dQuote{YYYY-mm-dd}, \dQuote{1999-02-01}.
-A year or years to select e.g. year = 1998:2004 to select 1998-2004 inclusive or year = c(1998, 2004) to select 1998 and 2004. A month or months to select.
-Can either be numeric e.g. month = 1:6 to select months 1-6 (January to June), or by name e.g. month = c(\dQuote{January}, \dQuote{December}).}
+\item{...}{Additional arguments for the \code{selectBydata} from \code{openair} package. These include:
+\itemize{
+\item A start date string in the form "1/2/1999" or in format "YYYY-mm-dd", e.g., "1999-02-01".
+\item A year or years to select, e.g., year = 1998:2004 to select 1998-2004 inclusive, or year = c(1998, 2004) to select 1998 and 2004.
+\item A month or months to select. Can either be numeric, e.g., month = 1:6 to select January to June, or by name, e.g., month = c("January", "December").
+}}
 
 \item{time.freq}{Defines the time period to average to. Default is \dQuote{hour}, but includes \dQuote{day}, \dQuote{week}, \dQuote{month} or \dQuote{year}.}
 
 \item{by}{data frame time-serie split: \dQuote{year}, \dQuote{season}, \dQuote{seasonyear},  \dQuote{month}, \dQuote{monthyear}, \dQuote{weekday}, \dQuote{weekend},  \dQuote{site},
-\dQuote{daylight} (daytime and nighttime).See argument \emph{type} in openair package: https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option}
-
-\item{hemisphere}{Hemisphere \dQuote{northern} or \dQuote{southern} for splitting data into \dQuote{season}, \dQuote{seasonyear}, \dQuote{daylight}, and \dQuote{dst}.}
+\dQuote{daylight}, \dQuote{dst} (daylight saving time).See argument \emph{type} in openair package: \url{https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option}}
 
 \item{impute}{Method to impute missing values (\dQuote{mean}, \dQuote{median}, \dQuote{knn}, \dQuote{bag}).}
 
-\item{iplot}{Set to TRUE if you want to save the plot in your working directory.}
+\item{iplot}{Set to \code{TRUE} to return a plot. If \code{FALSE}, a data frame is returned.}
 
-\item{isave}{Save the plot into your directory.}
+\item{isave}{Set to \code{TRUE} to save all results (plot, time-series) into your directory.}
 
 \item{inclusive}{Set to TRUE to a colorblind-friendly palette.}
 
@@ -60,20 +60,20 @@ Can either be numeric e.g. month = 1:6 to select months 1-6 (January to June), o
 \item{caption}{source data. Default can be \dQuote{Source: LCZ4r, Stewart and Oke, 2012; Demuzere et al.2022."}.}
 }
 \value{
-A visual representation of the time series of air temperature of LCZ in \code{ggplot} format
+A visual representation of the anomalies of air temperature of LCZ in \code{ggplot} or data frame .csv format.
 }
 \description{
-This function generates a graphical representation of thermal anomaly for different Local Climate Zones (LCZs). More details: https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html
+This function generates a graphical representation of thermal anomaly for different Local Climate Zones (LCZs). More details: \url{https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html}
 }
 \examples{
-
+\dontrun{
 # Hourly air temperature values in 2019.
-# my_res <- lcz_anomaly(lcz_map, data_frame = lcz_data, var = "airT",
-#                       station_id = "station", year = 2019)
-
+my_res <- lcz_anomaly(lcz_map, data_frame = lcz_data, var = "airT",
+                       station_id = "station", year = 2019)
+}
 }
 \seealso{
-See the documentation for lcz_get_map() to obtain an LCZ map.
+See the documentation for \code{lcz_get_map()} to obtain an LCZ map.
 }
 \keyword{Climate}
 \keyword{LCZ,}

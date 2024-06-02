@@ -1,5 +1,4 @@
-
-#' Retrieve LCZ parameters
+#' Retrieve urban canopy LCZ parameters
 #'
 #' This function extracts 34 LCZ parameters based on the classification
 #' scheme developed by Stewart and Oke (2012). LCZs provide valuable information about urban
@@ -22,23 +21,25 @@
 #' @export
 #'
 #' @examples
+#' \dontrun{
 #' # Load the LCZ map
-#' #lcz_map <- raster::raster("path/to/lcz_map.tif")
+#' lcz_map <- raster::raster("path/to/lcz_map.tif")
 #'
 #' # Get LCZ parameters as a raster stack
-#' #lcz_params_stack <- lcz_get_parameters(lcz_map, istack = TRUE)
+#' lcz_params_stack <- lcz_get_parameters(lcz_map, istack = TRUE)
 #'
 #' # Get LCZ parameters as a list of individual parameter rasters
-#' #lcz_params_list <- lcz_get_parameters(lcz_map, istack = FALSE)
+#' lcz_params_list <- lcz_get_parameters(lcz_map, istack = FALSE)
 #'
 #' # Access individual parameters from the list
-#' #specific_param <- lcz_params_list$parameter_name
+#' specific_param <- lcz_params_list$parameter_name
 #'
 #' # Get specific parameters as a raster or shapefile
-#' #selected_params <- lcz_get_parameters(lcz_map, iselect = c("SVF1", "VEG1"))
-#'
+#' selected_params <- lcz_get_parameters(lcz_map, iselect = c("SVF1", "VEG1"))
+#' }
 #' @importFrom rlang .data
-
+#'
+#' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis
 
 
 lcz_get_parameters <- function(x,  iselect = "", istack = TRUE, ishp = FALSE, isave = FALSE) {
@@ -126,9 +127,9 @@ lcz_get_parameters <- function(x,  iselect = "", istack = TRUE, ishp = FALSE, is
   lcz_result <- dplyr::inner_join(lcz_shp, lcz.df, by="lcz") %>%
     dplyr::select(-.data$lcz.code, -lcz.name, -lcz.col)
 
-  if(ishp==TRUE) {
+  if (ishp==TRUE) {
 
-    if(isave==TRUE){
+    if (isave==TRUE){
 
       string_list <- c(
         "lcz_class", "svf_min", "svf_max", "AR_min", "AR_max", "BSF_min",
@@ -150,16 +151,15 @@ lcz_get_parameters <- function(x,  iselect = "", istack = TRUE, ishp = FALSE, is
         base::dir.create(folder)
       }
 
-      file <- base::paste0(folder,"lcz_par.shp")
-
+      file <- base::paste0(getwd(), "/", folder,"lcz_par.shp")
       sf::st_write(lcz_result, file,  append = FALSE)
+      base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
 
     }
-      base::cat("You've successfully generated the  shapfile of all LCZ parameters.\n")
       return(lcz_result)
   }
 
-  if(istack==TRUE){
+  if (istack==TRUE) {
 
       # Initialize a list to store rasterized and resampled maps
     ras <- base::lapply(1:ncol(lcz_result), FUN = function(i) {
@@ -171,7 +171,7 @@ lcz_get_parameters <- function(x,  iselect = "", istack = TRUE, ishp = FALSE, is
       # Set names for the layers in the raster stack
       base::names(ras_stack) <- base::colnames(lcz_result)[1:ncol(lcz_result)-1]
 
-    if(isave==TRUE){
+    if (isave==TRUE) {
 
       # Create a folder name using paste0
       folder <- base::paste0("LCZ4r_output/")
@@ -182,18 +182,18 @@ lcz_get_parameters <- function(x,  iselect = "", istack = TRUE, ishp = FALSE, is
         base::dir.create(folder)
       }
 
-      file <- base::paste0(folder,"lcz_par_stack.tif")
-
+      file <- base::paste0(getwd(), "/", folder,"lcz_par_stack.tif")
       raster::writeRaster(ras_stack, file, format="GTiff", overwrite = TRUE)
+      base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
+
     }
 
-    base::cat("You've successfully generated a raster stack of all LCZ parameters.\n")
     return(ras_stack)
   }
 
-  if(!base::is.null(iselect)){
+  if (!base::is.null(iselect)){
 
-    if(length(iselect)>1) {
+    if (length(iselect) > 1) {
 
       # Remove the 'lcz' column from lcz_result
       lcz_df_pre <- lcz_result %>%
@@ -207,7 +207,7 @@ lcz_get_parameters <- function(x,  iselect = "", istack = TRUE, ishp = FALSE, is
       ras_stack_selec <- terra::rast(ras_select)
       base::names(ras_stack_selec) <-  base::colnames(lcz_df_pre)[1:ncol(lcz_df_pre)-1]
 
-      if(isave==TRUE){
+      if (isave==TRUE) {
 
         # Create a folder name using paste0
         folder <- base::paste0("LCZ4r_output/")
@@ -218,12 +218,12 @@ lcz_get_parameters <- function(x,  iselect = "", istack = TRUE, ishp = FALSE, is
           base::dir.create(folder)
         }
 
-        file <- base::paste0(folder,"lcz_par_stack_select.tif")
-
+        file <- base::paste0(getwd(), "/", folder,"lcz_par_stack_select.tif")
         raster::writeRaster(ras_stack_selec, file, format="GTiff", overwrite = TRUE)
+        base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
+
       }
 
-      base::cat("You've successfully generated a raster stack of selected LCZ parameters.\n")
       return(ras_stack_selec)
 
     } else {
@@ -236,7 +236,7 @@ lcz_get_parameters <- function(x,  iselect = "", istack = TRUE, ishp = FALSE, is
       ras_select_raster <- terra::rast(ras_select)
       base::names(ras_select_raster) <-  base::colnames(lcz_df_pre)[1:ncol(lcz_df_pre)-1]
 
-      if(isave==TRUE){
+      if (isave==TRUE) {
 
         # Create a folder name using paste0
         folder <- base::paste0("LCZ4r_output/")
@@ -247,12 +247,11 @@ lcz_get_parameters <- function(x,  iselect = "", istack = TRUE, ishp = FALSE, is
           base::dir.create(folder)
         }
 
-        file <- base::paste0(folder,"lcz_par_select.tif")
-
+        file <- base::paste0(getwd(), "/", folder,"lcz_par_select.tif")
         raster::writeRaster(ras_select_raster, file, format="GTiff", overwrite = TRUE)
+        base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
       }
 
-      base::cat("You've successfully generated a raster of selected LCZ parameters.\n")
       return(ras_select_raster)
     }
 
