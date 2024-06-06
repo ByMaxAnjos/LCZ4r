@@ -39,30 +39,5 @@ library(LCZ4r)
 
 ```
 
-## Input data requirements: formating dates and times
 
-It's important to note that the users should standardize the date-time format to R's conventions, such as "2023-03-13 11:00:00" or "2023-03-13". It also includes: e.g. “1/2/1999” or in format i.e. “YYYY-mm-dd”, “1999-02-01”.
-
-The date/time field should be called **date**. No other name is acceptable.
-
-If your date format is 2/8/2022 11:00: 
-
-To convert from day-month-year to year-month-day:
-
-```{r include=TRUE}
-
-#Note that date column is in the my_data.
-
-#my_data$date <- as.POSIXct(my_data$date, format = "%d-%m-%Y")
-#my_data$date <- as.POSIXct(my_data$date, format = "%d-%m-%Y %H:%M:%S")
-
-```
-
-Example data frame
-```{r include=TRUE}
-data("lcz_data")
-
-lcz_data %>% head(10)
-
-```
 

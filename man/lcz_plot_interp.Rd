@@ -8,8 +8,8 @@ lcz_plot_interp(
   x,
   palette = "muted",
   direction = 1,
-  ncol = 2,
-  nrow = 3,
+  ncol = NULL,
+  nrow = NULL,
   isave = FALSE,
   ...
 )
@@ -21,9 +21,9 @@ lcz_plot_interp(
 
 \item{direction}{Sets order of colors. Default palette is 1. If direction is -1, palette color order is reversed}
 
-\item{ncol}{Number of columns in the plot. Default is 2}
+\item{ncol}{Number of columns in the plot.}
 
-\item{nrow}{Number of rows in the plot. Default is 3}
+\item{nrow}{Number of rows in the plot.}
 
 \item{isave}{Logical, indicating whether to save the plot to your directory. Default is FALSE.}
 

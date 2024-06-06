@@ -5,8 +5,8 @@
 #' @param x The LCZ map in SpatRaster format, either as a single raster or a raster stack, obtained from functions like lcz_anomaly_map() or lcz_interp_map().
 #' @param palette Gradient palettes available in the tidyterra package. Default is "muted". More palettes can be found in the tidyterra documentation: https://dieghernan.github.io/tidyterra/articles/palettes.html#scale_fill_whitebox_
 #' @param direction Sets order of colors. Default palette is 1. If direction is -1, palette color order is reversed
-#' @param ncol Number of columns in the plot. Default is 2
-#' @param nrow Number of rows in the plot. Default is 3
+#' @param ncol Number of columns in the plot.
+#' @param nrow Number of rows in the plot.
 #' @param isave Logical, indicating whether to save the plot to your directory. Default is FALSE.
 #' @param ... Additional arguments to modify axis, legend, and plot labels, including title, subtitle, and caption.
 #'
@@ -37,7 +37,7 @@
 lcz_plot_interp <- function(x,
                             palette = "muted",
                             direction = 1,
-                            ncol = 2, nrow = 3,
+                            ncol = NULL, nrow = NULL,
                             isave=FALSE, ...) {
 
   # Validate inputs

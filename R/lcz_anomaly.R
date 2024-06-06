@@ -58,23 +58,47 @@ lcz_anomaly <- function(x,
                    title = "",
                    caption = "") {
 
-  # Check and validate inputs -----------------------------------------------
-  if (is.null(x)) {
-    stop("The input must be raster object. Please, use the lcz_get_map( )")
-  }
+  # Check and validate raster inputs -----------------------------------------------
 
-  if (!inherits(x, "SpatRaster")) {
-    x <- terra::rast(x)
-  }
-
-  if(terra::crs(x, proj=TRUE) != "+proj=longlat +datum=WGS84 +no_defs") {
-
-    # If not, project it to WGS84
-    x <- terra::project(x, "+proj=longlat +datum=WGS84 +no_defs")
-
-  }
   x<- x[[1]]
-  # Validate the time series -----------------------------------------------
+
+  if (missing(x)) {
+    stop("The input must be raster object. Please, use the lcz_get_map* functions")
+  }
+  if (!inherits(x, "SpatRaster")) {
+    warning("The input 'x' is not a SpatRaster object. Attempting to convert it using terra::rast()")
+    x <- try(terra::rast(x), silent = TRUE)
+    if (inherits(x, "try-error")) {
+      stop("Failed to convert input 'x' to SpatRaster. Please provide a valid SpatRaster object.")
+    }
+  }
+
+  if (terra::crs(x, proj = TRUE) != "+proj=longlat +datum=WGS84 +no_defs") {
+    warning("The input 'x' is not in WGS84 projection. Reprojecting to WGS84.")
+    x <- terra::project(x, "+proj=longlat +datum=WGS84 +no_defs")
+  }
+
+
+  # Check data inputs -------------------------------------------------------
+  if (!is.data.frame(data_frame)) {
+    stop("The 'data_frame' input must be a data frame containing air temperature measurements,station IDs, latitude, and longitude.")
+  }
+
+  if (missing(var) || !var %in% colnames(data_frame)) {
+    stop("The 'var' input must be a column name in 'data_frame' representing air temperature.")
+  }
+
+  if (missing(station_id) || !station_id %in% colnames(data_frame)) {
+    stop("The 'station_id' input must be a column name in 'data_frame' representing stations.")
+  }
+
+  if (!("Latitude" %in% tolower(colnames(data_frame)) || "latitude" %in% tolower(colnames(data_frame)))) {
+    stop("The 'latitude' input must be a column name in 'data_frame' representing each station's latitude.")
+  }
+
+  if (!("Longitude" %in% tolower(colnames(data_frame)) || "longitude" %in% tolower(colnames(data_frame)))) {
+    stop("The 'longitude' input must be a column name in 'data_frame' representing each station's longitude")
+  }
 
   # Pre-processing time series ----------------------------------------------
 
@@ -198,9 +222,9 @@ lcz_anomaly <- function(x,
     panel.background = ggplot2::element_rect(color = NA, fill = "grey97"),
     panel.grid.minor = ggplot2::element_line(color = "grey90"),
     panel.grid.major.y = ggplot2::element_line(color = "grey90"),
-    axis.text.x = ggplot2::element_text(size = 12),
+    axis.text.x = ggplot2::element_text(size = ggplot2::rel(1.5)),
     axis.title.x = ggplot2::element_text(size = 14, face = "bold"),
-    axis.text.y = ggplot2::element_text(size = 12),
+    axis.text.y = ggplot2::element_text(size = ggplot2::rel(1.5)),
     axis.title.y = ggplot2::element_text(size = 14, face = "bold"),
     legend.text = ggplot2::element_text(size = 13),
     legend.title = ggplot2::element_text(size = 13),
@@ -283,6 +307,10 @@ lcz_anomaly <- function(x,
   }
 
   if (!is.null(by)) {
+
+    if (by %in% "day") {
+      stop("The 'day' does not work with the argument by")
+    }
 
     if (length(by) < 2 & by %in% c("daylight", "season", "seasonyear")) {
 

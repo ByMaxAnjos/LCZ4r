@@ -53,23 +53,51 @@ lcz_interp_map <- function(x,
                             isave = FALSE,
                             LCZinterp = TRUE) {
 
-  # Check and validate inputs -----------------------------------------------
-  if (is.null(x)) {
-    stop("The input must be raster object. Please, use the lcz_get_map( )")
-  }
+  # Check and validate raster inputs -----------------------------------------------
 
-  if (!inherits(x, "SpatRaster")) {
-    x <- terra::rast(x)
-  }
-
-  if(terra::crs(x, proj=TRUE) != "+proj=longlat +datum=WGS84 +no_defs") {
-
-    # If not, project it to WGS84
-    x <- terra::project(x, "+proj=longlat +datum=WGS84 +no_defs")
-
-  }
   x<- x[[1]]
-  # Validate the time series -----------------------------------------------
+
+  if (missing(x)) {
+    stop("The input must be raster object. Please, use the lcz_get_map* functions")
+  }
+  if (!inherits(x, "SpatRaster")) {
+    warning("The input 'x' is not a SpatRaster object. Attempting to convert it using terra::rast()")
+    x <- try(terra::rast(x), silent = TRUE)
+    if (inherits(x, "try-error")) {
+      stop("Failed to convert input 'x' to SpatRaster. Please provide a valid SpatRaster object.")
+    }
+  }
+
+  if (terra::crs(x, proj = TRUE) != "+proj=longlat +datum=WGS84 +no_defs") {
+    warning("The input 'x' is not in WGS84 projection. Reprojecting to WGS84.")
+    x <- terra::project(x, "+proj=longlat +datum=WGS84 +no_defs")
+  }
+
+
+  # Check data inputs -------------------------------------------------------
+  if (!is.data.frame(data_frame)) {
+    stop("The 'data_frame' input must be a data frame containing air temperature measurements,station IDs, latitude, and longitude.")
+  }
+
+  if (missing(var) || !var %in% colnames(data_frame)) {
+    stop("The 'var' input must be a column name in 'data_frame' representing air temperature.")
+  }
+
+  if (missing(station_id) || !station_id %in% colnames(data_frame)) {
+    stop("The 'station_id' input must be a column name in 'data_frame' representing stations.")
+  }
+
+  if (!("Latitude" %in% tolower(colnames(data_frame)) || "latitude" %in% tolower(colnames(data_frame)))) {
+    stop("The 'latitude' input must be a column name in 'data_frame' representing each station's latitude.")
+  }
+
+  if (!("Longitude" %in% tolower(colnames(data_frame)) || "longitude" %in% tolower(colnames(data_frame)))) {
+    stop("The 'longitude' input must be a column name in 'data_frame' representing each station's longitude")
+  }
+
+  if (!(vg.model %in% c("Sph", "Exp", "Gau", "Ste"))) {
+    stop("Invalid viogram model. Choose from 'Sph', 'Exp', 'Gau', or 'Ste'.")
+  }
 
   # Pre-processing time series ----------------------------------------------
 
@@ -561,6 +589,10 @@ lcz_interp_map <- function(x,
   }
 
   if (!is.null(by)) {
+
+    if (by %in% "day") {
+      stop("The 'day' does not work with the argument by")
+    }
 
     if (length(by) < 2 & by %in% c("daylight", "season", "seasonyear")) {
 

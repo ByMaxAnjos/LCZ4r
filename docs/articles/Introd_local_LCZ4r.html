@@ -73,7 +73,7 @@
       <img src="" class="logo" alt=""><h1>LCZ4r Local Functions</h1>
                         <h4 data-toc-skip class="author">Max Anjos</h4>
             
-            <h4 data-toc-skip class="date">June 01, 2024</h4>
+            <h4 data-toc-skip class="date">June 06, 2024</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ByMaxAnjos/LCZ4r/blob/HEAD/vignettes/Introd_local_LCZ4r.Rmd" class="external-link"><code>vignettes/Introd_local_LCZ4r.Rmd</code></a></small>
       <div class="d-none name"><code>Introd_local_LCZ4r.Rmd</code></div>
@@ -178,22 +178,30 @@ to specify the geographical coordinates.</li>
 date-time format to R’s conventions, such as “2023-03-13 11:00:00” or
 “2023-03-13”. It also includes: e.g. “1/2/1999” or in format
 i.e. “YYYY-mm-dd”, “1999-02-01”.</p>
+<p>To convert from day-month-year to year-month-day:</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co">#Note that date column is in the my_data.</span></span>
+<span></span>
+<span><span class="co">#my_data$date &lt;- as.POSIXct(my_data$date, format = "%d-%m-%Y")</span></span>
+<span><span class="co">#my_data$date &lt;- as.POSIXct(my_data$date, format = "%d-%m-%Y %H:%M:%S")</span></span></code></pre></div>
 <p>To streamline this process, LCZ4r offers a sample data frame,
 accessible through the following way:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bymaxanjos.github.io/LCZ4r/">LCZ4r</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">#Load data from LCZ4r package</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"lcz_data"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">#Check data structure out</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">lcz_data</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Classes 'data.table' and 'data.frame':   386354 obs. of  5 variables:</span></span>
-<span><span class="co">#&gt;  $ date     : POSIXct, format: "2019-01-01 00:00:00" "2019-01-01 00:00:00" ...</span></span>
-<span><span class="co">#&gt;  $ station  : chr  "airportthf" "airporttxl" "albrecht" "bamberger" ...</span></span>
-<span><span class="co">#&gt;  $ airT     : num  8.5 7.9 8.05 8.27 8.2 ...</span></span>
-<span><span class="co">#&gt;  $ Latitude : num  52.5 52.6 52.4 52.5 52.1 ...</span></span>
-<span><span class="co">#&gt;  $ Longitude: num  13.4 13.3 13.3 13.3 13.5 ...</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">lcz_data</span><span class="op">)</span></span>
+<span><span class="co">#&gt;              date    station    airT Latitude Longitude</span></span>
+<span><span class="co">#&gt; 806404 2019-01-01 airportthf 8.50000 52.46750  13.40210</span></span>
+<span><span class="co">#&gt; 806405 2019-01-01 airporttxl 7.90000 52.56440  13.30880</span></span>
+<span><span class="co">#&gt; 806406 2019-01-01   albrecht 8.04725 52.44459  13.34861</span></span>
+<span><span class="co">#&gt; 806407 2019-01-01  bamberger 8.27166 52.49649  13.33755</span></span>
+<span><span class="co">#&gt; 806408 2019-01-01     baruth 8.20000 52.06130  13.49970</span></span>
+<span><span class="co">#&gt; 806409 2019-01-01      berge 8.40000 52.61980  12.78670</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="analyze-lcz-time-series">Analyze LCZ Time Series<a class="anchor" aria-label="anchor" href="#analyze-lcz-time-series"></a>
@@ -202,7 +210,7 @@ accessible through the following way:</p>
 temperature associated with LCZ classes over time. For instance, you can
 perform hourly frequency analysis of air temperature for the years
 2019-2020 using the “lcz_data” from the LCZ4r package.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get the LCZ map for your city</span></span>
 <span><span class="va">lcz_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lcz_get_map.html">lcz_get_map</a></span><span class="op">(</span>city<span class="op">=</span><span class="st">"Berlin"</span><span class="op">)</span></span>
 <span></span>
@@ -212,7 +220,7 @@ perform hourly frequency analysis of air temperature for the years
 <span>       var <span class="op">=</span> <span class="st">"airT"</span>, </span>
 <span>       station_id <span class="op">=</span> <span class="st">"station"</span>,</span>
 <span>       time.freq <span class="op">=</span> <span class="st">"month"</span><span class="op">)</span> <span class="co"># Monthly temporal frequency. Let's change to "hour, "day", "week", and so on.</span></span></code></pre></div>
-<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-3-1.png" width="3300"></p>
+<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-4-1.png" width="3300"></p>
 <p>Additionally, you can customize this function:</p>
 <p><strong>1. Flexibility time selection</strong> You have the
 flexibility to select specific years and months for analysis. For
@@ -223,28 +231,28 @@ c(“January”, “December”)). To illustrate, you can select data for
 September 1st, 2019, by including the arguments “year”, “month”, and
 “day” in the function call. See the <a href="https://bookdown.org/david_carslaw/openair/sections/utilities/utility-functions.html#sec-selectByDate" class="external-link">utility
 functions from the openair package</a> for more details.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co">#Selecting one specifique day</span></span>
 <span><span class="fu"><a href="../reference/lcz_ts.html">lcz_ts</a></span><span class="op">(</span><span class="va">lcz_map</span>, data_frame <span class="op">=</span> <span class="va">lcz_data</span>, </span>
 <span>       var <span class="op">=</span> <span class="st">"airT"</span>, station_id <span class="op">=</span> <span class="st">"station"</span>,</span>
 <span>       time.freq <span class="op">=</span> <span class="st">"hour"</span>, </span>
 <span>       year <span class="op">=</span> <span class="fl">2019</span>, month <span class="op">=</span> <span class="fl">9</span>, day <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-4-1.png" width="3300"></p>
+<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-5-1.png" width="3300"></p>
 <p><strong>2. Splitting LCZ time series by temporal window or
 site</strong> You can split data frame calling the <em>by</em> argument.
 The split available are “year”, “season”, “seasonyear”, “month”,
 “monthyear”, “weekday”, “weekend”, “daylight” (daytime and nighttime).
 See argument <a href="https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option" class="external-link">type
 in openair package:</a></p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co">#Splitting by daylight </span></span>
 <span><span class="fu"><a href="../reference/lcz_ts.html">lcz_ts</a></span><span class="op">(</span><span class="va">lcz_map</span>, data_frame <span class="op">=</span> <span class="va">lcz_data</span>, </span>
 <span>       var <span class="op">=</span> <span class="st">"airT"</span>, station_id <span class="op">=</span> <span class="st">"station"</span>,</span>
 <span>       time.freq <span class="op">=</span> <span class="st">"hour"</span>, <span class="co"># frequency changed to hour</span></span>
 <span>       year <span class="op">=</span> <span class="fl">2019</span>, month <span class="op">=</span> <span class="fl">9</span>, day <span class="op">=</span> <span class="fl">1</span>, by <span class="op">=</span> <span class="st">"daylight"</span><span class="op">)</span> </span></code></pre></div>
-<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-5-1.png" width="3600"></p>
+<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-6-1.png" width="3600"></p>
 </div>
 <div class="section level2">
 <h2 id="calculate-lcz-thermal-anomalies">Calculate LCZ Thermal Anomalies<a class="anchor" aria-label="anchor" href="#calculate-lcz-thermal-anomalies"></a>
@@ -258,7 +266,7 @@ LCZs. The <code><a href="../reference/lcz_anomaly.html">lcz_anomaly()</a></code>
 the <code><a href="../reference/lcz_ts.html">lcz_ts()</a></code> regarding <strong>Flexibility time
 selection</strong> and <strong>Splitting LCZ time series by temporal
 window or site</strong>.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># If you want the thermal anomalies 1 sept 2020 on hourly basis.</span></span>
 <span><span class="fu"><a href="../reference/lcz_anomaly.html">lcz_anomaly</a></span><span class="op">(</span><span class="va">lcz_map</span>, </span>
@@ -267,8 +275,8 @@ window or site</strong>.</p>
 <span>            station_id <span class="op">=</span> <span class="st">"station"</span>, </span>
 <span>            time.freq <span class="op">=</span> <span class="st">"hour"</span>, <span class="co">#Let's change the frequency to "day", "month", "year"</span></span>
 <span>            year <span class="op">=</span> <span class="fl">2020</span>, month <span class="op">=</span> <span class="fl">9</span>, day <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-6-1.png" width="3300"></p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-7-1.png" width="3300"></p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># If you want the thermal anomalies by months of 2020 on daily basis.</span></span>
 <span><span class="fu"><a href="../reference/lcz_anomaly.html">lcz_anomaly</a></span><span class="op">(</span><span class="va">lcz_map</span>, data_frame <span class="op">=</span> <span class="va">lcz_data</span>, </span>
@@ -276,7 +284,7 @@ window or site</strong>.</p>
 <span>            station_id <span class="op">=</span> <span class="st">"station"</span>, </span>
 <span>            time.freq <span class="op">=</span> <span class="st">"day"</span>, <span class="co">#Let's change the frequency to "day", "month", "year"</span></span>
 <span>            year <span class="op">=</span> <span class="fl">2020</span>, by <span class="op">=</span> <span class="st">"month"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-7-1.png" width="3300"></p>
+<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-8-1.png" width="3300"></p>
 </div>
 <div class="section level2">
 <h2 id="visualize-lcz-thermal-anomaly-map">Visualize LCZ Thermal Anomaly map<a class="anchor" aria-label="anchor" href="#visualize-lcz-thermal-anomaly-map"></a>
@@ -294,7 +302,7 @@ are averaged). The <code>lcz_anomaly_map</code> function returns either
 a single raster file or a stack of raster files. Subsequently, you can
 visualize the anomaly map using the <code><a href="../reference/lcz_plot_interp.html">lcz_plot_interp()</a></code>
 function.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co">#Mapping anomalies for 1st Sep 2020 at 09:00h using kriging</span></span>
 <span><span class="va">my_anomaly_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lcz_anomaly_map.html">lcz_anomaly_map</a></span><span class="op">(</span><span class="va">lcz_map</span>,</span>
@@ -310,8 +318,8 @@ function.</p>
 <span>                subtitle <span class="op">=</span> <span class="st">"Berlin - 01.09.2020 at 09:00"</span>,</span>
 <span>                caption <span class="op">=</span> <span class="st">"Source: LCZ4r, 2024."</span>,</span>
 <span>                fill <span class="op">=</span> <span class="st">"[ºC]"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-8-1.png" width="3300"></p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-9-1.png" width="3300"></p>
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># Active the by argument! Mapping daytime and nighttime anomalies for 1st Sep 2020</span></span>
 <span><span class="va">my_anomlay_daylight</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lcz_anomaly_map.html">lcz_anomaly_map</a></span><span class="op">(</span><span class="va">lcz_map</span>,</span>
@@ -343,7 +351,7 @@ function.</p>
 <span>                subtitle <span class="op">=</span> <span class="st">"Berlin - daytime and nighttime (01.09.2020)"</span>,</span>
 <span>                caption <span class="op">=</span> <span class="st">"Source: LCZ4r, 2024."</span>,</span>
 <span>                fill <span class="op">=</span> <span class="st">"AirT [ºC]"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-9-1.png" width="3300"></p>
+<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-10-1.png" width="3300"></p>
 </div>
 <div class="section level2">
 <h2 id="perform-lcz-interpolation">Perform LCZ Interpolation<a class="anchor" aria-label="anchor" href="#perform-lcz-interpolation"></a>
@@ -351,7 +359,7 @@ function.</p>
 <p>Let’s interpolate air temperature using the
 <code><a href="../reference/lcz_interp_map.html">lcz_interp_map()</a></code>, that follows the logic of the
 <code><a href="../reference/lcz_anomaly_map.html">lcz_anomaly_map()</a></code>.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">air_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lcz_interp_map.html">lcz_interp_map</a></span><span class="op">(</span><span class="va">lcz_map</span>,</span>
 <span>                          data_frame <span class="op">=</span> <span class="va">lcz_data</span>,</span>
@@ -362,7 +370,7 @@ function.</p>
 <span>                          year <span class="op">=</span> <span class="fl">2019</span>, month <span class="op">=</span> <span class="fl">2</span>, day<span class="op">=</span><span class="fl">6</span>, hour<span class="op">=</span><span class="fl">5</span>,</span>
 <span>                          LCZinterp <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/lcz_plot_interp.html">lcz_plot_interp</a></span><span class="op">(</span><span class="va">air_map</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-10-1.png" width="3300"></p>
+<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-11-1.png" width="3300"></p>
 </div>
 <div class="section level2">
 <h2 id="assess-lcz-for-urban-heat-island-intensity">Assess LCZ for Urban Heat Island Intensity<a class="anchor" aria-label="anchor" href="#assess-lcz-for-urban-heat-island-intensity"></a>
@@ -371,21 +379,34 @@ function.</p>
 calculate the Urban Heat Island (UHI) intensity based on air temperature
 measurements and Local Climate Zones (LCZ). Here’s a detailed
 description of the function call provided:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="co">#Calculate the hourly UHI intensity for 2019 using the LCZ method</span></span>
+<span><span class="co">#Calculate the hourly UHI intensity for 2019-2020 using the LCZ method</span></span>
 <span><span class="fu"><a href="../reference/lcz_uhi_intensity.html">lcz_uhi_intensity</a></span><span class="op">(</span><span class="va">lcz_map</span>,</span>
 <span>                  data_frame <span class="op">=</span> <span class="va">lcz_data</span>,</span>
 <span>                  var <span class="op">=</span> <span class="st">"airT"</span>,</span>
 <span>                  station_id <span class="op">=</span> <span class="st">"station"</span>,</span>
 <span>                  time.freq  <span class="op">=</span> <span class="st">"hour"</span>,</span>
 <span>                  method <span class="op">=</span> <span class="st">"LCZ"</span>,</span>
-<span>                  year <span class="op">=</span> <span class="fl">2019</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-11-1.png" width="3300"></p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<span>                  year <span class="op">=</span> <span class="fl">2019</span><span class="op">:</span><span class="fl">2020</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-12-1.png" width="3300"></p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span></span>
-<span><span class="co">#Calculate the hourly UHI intensity for 13-15 Feb 2019 using the LCZ method grouping Urban and Rural temperatures </span></span>
+<span><span class="co">#Calculate the hourly UHI intensity for 2020 using the manual method</span></span>
+<span><span class="fu"><a href="../reference/lcz_uhi_intensity.html">lcz_uhi_intensity</a></span><span class="op">(</span><span class="va">lcz_map</span>,</span>
+<span>                  data_frame <span class="op">=</span> <span class="va">lcz_data</span>,</span>
+<span>                  var <span class="op">=</span> <span class="st">"airT"</span>,</span>
+<span>                  station_id <span class="op">=</span> <span class="st">"station"</span>,</span>
+<span>                  time.freq  <span class="op">=</span> <span class="st">"hour"</span>,</span>
+<span>                  method <span class="op">=</span> <span class="st">"manual"</span>,</span>
+<span>                  Turban <span class="op">=</span> <span class="st">"bamberger"</span>,</span>
+<span>                  Trural <span class="op">=</span> <span class="st">"buch"</span>,</span>
+<span>                  year <span class="op">=</span> <span class="fl">2020</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-12-2.png" width="3300"></p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co">#Calculate the hourly UHI intensity by months of 2019 using the LCZ method grouping Urban and Rural temperatures </span></span>
 <span><span class="fu"><a href="../reference/lcz_uhi_intensity.html">lcz_uhi_intensity</a></span><span class="op">(</span><span class="va">lcz_map</span>,</span>
 <span>                  data_frame <span class="op">=</span> <span class="va">lcz_data</span>,</span>
 <span>                  var <span class="op">=</span> <span class="st">"airT"</span>,</span>
@@ -393,9 +414,9 @@ description of the function call provided:</p>
 <span>                  time.freq  <span class="op">=</span> <span class="st">"hour"</span>,</span>
 <span>                  method <span class="op">=</span> <span class="st">"LCZ"</span>,</span>
 <span>                  group <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                  year <span class="op">=</span> <span class="fl">2019</span>, month <span class="op">=</span> <span class="fl">2</span>, day<span class="op">=</span><span class="fl">13</span><span class="op">:</span><span class="fl">15</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-11-2.png" width="3300"></p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<span>                  year <span class="op">=</span> <span class="fl">2019</span>, by <span class="op">=</span> <span class="st">"month"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-12-3.png" width="3300"></p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span></span>
 <span><span class="co">#Calculate the UHI intensity during daytime and nighttime in April 2019</span></span>
@@ -405,9 +426,24 @@ description of the function call provided:</p>
 <span>                  station_id <span class="op">=</span> <span class="st">"station"</span>,</span>
 <span>                  time.freq  <span class="op">=</span> <span class="st">"hour"</span>,</span>
 <span>                  method <span class="op">=</span> <span class="st">"LCZ"</span>,</span>
-<span>                  year <span class="op">=</span> <span class="fl">2019</span>, month <span class="op">=</span> <span class="fl">4</span>,</span>
+<span>                  year <span class="op">=</span> <span class="fl">2019</span>, month <span class="op">=</span> <span class="fl">4</span>, day <span class="op">=</span> <span class="fl">5</span>,</span>
 <span>                  by <span class="op">=</span> <span class="st">"daylight"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-11-3.png" width="3300"></p>
+<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-12-4.png" width="3300"></p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span></span>
+<span><span class="co">#Calculate the UHI intensity during daytime and nighttime by months of 2019</span></span>
+<span><span class="fu"><a href="../reference/lcz_uhi_intensity.html">lcz_uhi_intensity</a></span><span class="op">(</span><span class="va">lcz_map</span>,</span>
+<span>                  data_frame <span class="op">=</span> <span class="va">lcz_data</span>,</span>
+<span>                  var <span class="op">=</span> <span class="st">"airT"</span>,</span>
+<span>                  station_id <span class="op">=</span> <span class="st">"station"</span>,</span>
+<span>                  time.freq  <span class="op">=</span> <span class="st">"hour"</span>,</span>
+<span>                  method <span class="op">=</span> <span class="st">"LCZ"</span>,</span>
+<span>                  group <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>                  year <span class="op">=</span> <span class="fl">2019</span>, </span>
+<span>                  by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"daylight"</span>, <span class="st">"month"</span><span class="op">)</span></span>
+<span>                  <span class="op">)</span></span></code></pre></div>
+<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-12-5.png" width="3300"></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

@@ -48,28 +48,51 @@
 
 
 lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ..., time.freq = "hour",
-                              method = "LCZ", Turban = "", Trural = "", by = NULL, impute = NULL,
+                              method = "LCZ", Turban = NULL, Trural = NULL, by = NULL, impute = NULL,
                               group = FALSE, iplot = TRUE, isave = FALSE, ylab = "Air temperature [C]",
                               xlab = "Time", ylab2 = "UHI [C]", title = "", caption = "LCZ4r,2024") {
 
-  # Check and validate inputs -----------------------------------------------
-  if (is.null(x)) {
-    stop("The input must be raster object. Please, use the lcz_get_map( )")
-  }
+  # Check and validate raster inputs -----------------------------------------------
 
+    x<- x[[1]]
+
+   if (missing(x)) {
+    stop("The input must be raster object. Please, use the lcz_get_map* functions")
+  }
   if (!inherits(x, "SpatRaster")) {
-    x <- terra::rast(x)
+    warning("The input 'x' is not a SpatRaster object. Attempting to convert it using terra::rast()")
+    x <- try(terra::rast(x), silent = TRUE)
+    if (inherits(x, "try-error")) {
+      stop("Failed to convert input 'x' to SpatRaster. Please provide a valid SpatRaster object.")
+    }
   }
 
-  if (terra::crs(x, proj=TRUE) != "+proj=longlat +datum=WGS84 +no_defs") {
-
-    # If not, project it to WGS84
+  if (terra::crs(x, proj = TRUE) != "+proj=longlat +datum=WGS84 +no_defs") {
+    warning("The input 'x' is not in WGS84 projection. Reprojecting to WGS84.")
     x <- terra::project(x, "+proj=longlat +datum=WGS84 +no_defs")
-
   }
 
-  x<- x[[1]]
 
+# Check data inputs -------------------------------------------------------
+  if (!is.data.frame(data_frame)) {
+    stop("The 'data_frame' input must be a data frame containing air temperature measurements,station IDs, latitude, and longitude.")
+  }
+
+  if (missing(var) || !var %in% colnames(data_frame)) {
+    stop("The 'var' input must be a column name in 'data_frame' representing air temperature.")
+  }
+
+  if (missing(station_id) || !station_id %in% colnames(data_frame)) {
+    stop("The 'station_id' input must be a column name in 'data_frame' representing stations.")
+    }
+
+  if (!("Latitude" %in% tolower(colnames(data_frame)) || "latitude" %in% tolower(colnames(data_frame)))) {
+    stop("The 'latitude' input must be a column name in 'data_frame' representing each station's latitude.")
+  }
+
+  if (!("Longitude" %in% tolower(colnames(data_frame)) || "longitude" %in% tolower(colnames(data_frame)))) {
+    stop("The 'longitude' input must be a column name in 'data_frame' representing each station's longitude")
+  }
 
   # Pre-processing time series ----------------------------------------------
 
@@ -82,6 +105,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
     openair::selectByDate(...)
 
   df_processed$var_interp <- base::as.numeric(df_processed$var_interp)
+
 
   # Impute missing values if necessary
   if (!is.null(impute)) {
@@ -127,9 +151,21 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
       lcz = base::as.factor(.data$lcz),
       my_id = base::as.factor(.data$my_id))
 
-  # Select station urban and rural ------------------------------------------
   my_stations <- df_model %>%
     dplyr::distinct(.data$my_id, .data$lcz, .data$station)
+
+  # check urban and rural stations ------------------------------------------
+
+  if (method != "LCZ" && method != "manual") {
+    stop("The 'method' input must be either 'LCZ' or 'manual'.")
+  }
+
+  if (method == "manual" && (is.null(Turban) || is.null(Trural))) {
+    stop("When using the 'manual' method, both 'Turban' and 'Trural' must be provided.")
+  }
+
+
+# Select urban and rural stations -----------------------------------------
 
   if (method == "LCZ") {
     select_stations <- function(data) {
@@ -157,7 +193,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
     rural_station <- result$rural
 
     if (is.null(urban_station) || is.null(rural_station)) {
-      stop("Unable to find suitable urban or rural station. Please, try the manual method")
+      stop("Unable to find suitable urban or rural stations based on urban-LCZs (1, 2, 3, and 4) and rural-LCZs (12, 13, 14, 9, and 6). Please, try the manual method")
     }
 
     lcz_model <- df_model %>%
@@ -166,7 +202,15 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
   }
 
-  else if (method == "manual") {
+  if (method == "manual") {
+
+    if (!(Turban %in% tolower(df_model$station))) {
+      stop("The name or ID of the urban station(s) was not found in the data frame.")
+    }
+
+    if (!(Trural %in% tolower(df_model$station))) {
+      stop("The name or ID of the rural station(s) was not found in the data frame.")
+    }
 
     urban_station <- Turban
     rural_station <- Trural
@@ -174,8 +218,12 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
     lcz_model <- df_model %>%
       dplyr::filter(.data$station %in% c(paste0(urban_station), paste0(rural_station))) %>%
       dplyr::mutate(reference = base::ifelse(.data$station == paste0(urban_station), "urban", "rural"))
-  }
 
+    if (is.null(lcz_model) || nrow(lcz_model)==0) {
+      stop("Unable to find suitable urban or rural station. Please, try the LCZ method")
+    }
+
+  }
 
   # Settings for plots ------------------------------------------------------
 
@@ -233,9 +281,9 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
     panel.background = ggplot2::element_rect(color = NA, fill = "grey97"),
     panel.grid.minor = ggplot2::element_line(color = "grey90"),
     panel.grid.major.y = ggplot2::element_line(color = "grey90"),
-    axis.text.x = ggplot2::element_text(size = 12),
+    axis.text.x = ggplot2::element_text(size = ggplot2::rel(1.5)),
     axis.title.x = ggplot2::element_text(size = 14, face = "bold"),
-    axis.text.y = ggplot2::element_text(size = 12),
+    axis.text.y = ggplot2::element_text(size = ggplot2::rel(1.5)),
     axis.title.y = ggplot2::element_text(size = 14, face = "bold"),
     legend.text = ggplot2::element_text(size = 13),
     legend.title = ggplot2::element_text(size = 14, face = "bold"),
@@ -247,8 +295,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
   # Function for Y-dual if group == TRUE
 
-  if (group == TRUE) {
-    transformer_dual_y_axis <- function(data, primary_column, secondary_column, include_y_zero = FALSE) {
+  transformer_dual_y_axis <- function(data, primary_column, secondary_column, include_y_zero = FALSE) {
     params_tbl <- data %>%
       dplyr::summarise(
         max_primary = max(!! dplyr::enquo(primary_column)),
@@ -282,9 +329,9 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
       params_tbl = params_tbl
     )
   }
-  }
 
-  # Define time series frequency with argument "by"--------------------------------------------
+
+  # Define time series frequency with without "by"--------------------------------------------
   if (is.null(by)) {
     mydata <- openair::timeAverage(
       lcz_model,
@@ -292,7 +339,6 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
       avg.time = time.freq,
       type = c("reference")
     ) %>% stats::na.omit() %>%
-      dplyr::ungroup(.data$reference) %>%
       tidyr::pivot_wider(id_cols = .data$date, names_from = .data$reference, values_from = .data$var_interp) %>%
       dplyr::mutate(uhi = .data$urban - .data$rural)
     # pivot_longer(c(rural, urban, uhi), names_to = "reference")
@@ -354,9 +400,17 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
   }
 
+
+  # Define with by  ---------------------------------------------------------
+
   if (!is.null(by)) {
 
+    if (by %in% "day") {
+      stop("The 'day' does not work with the argument by")
+    }
+
     if (length(by) < 2 & by %in% c("daylight", "season", "seasonyear")) {
+
       # Extract AXIS information from CRS
       axis_matches <- terra::crs({{x}}, parse = TRUE)[14]
       # Extract hemisphere from AXIS definition
@@ -375,7 +429,6 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
         longitude = my_longitude,
         type = c("reference", "my_time")
       ) %>% stats::na.omit() %>%
-        dplyr::ungroup(.data$my_time) %>%
         tidyr::pivot_wider(id_cols = c(.data$date, .data$my_time), names_from = .data$reference, values_from = .data$var_interp) %>%
         dplyr::mutate(uhi = .data$urban - .data$rural)
 
@@ -383,6 +436,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
         # Make A Y-Axis Transformer ----
         transformer <- mydata %>%
+          dplyr::ungroup(.data$my_time) %>%
           transformer_dual_y_axis(
             primary_column   = .data$rural,
             secondary_column = .data$uhi,
@@ -402,7 +456,8 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
           ggplot2::theme_bw()+ lcz_theme
         final_graph <-
           graph + ggplot2::facet_wrap(~ my_time, scales = "free_x", shrink = TRUE) +
-          ggplot2::theme(strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 12),
+          ggplot2::scale_x_datetime(guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
+          ggplot2::theme(strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
                          strip.background = ggplot2::element_rect(linetype = "dotted")
           )
       } else {
@@ -414,7 +469,8 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
           ggplot2::theme_bw()+ lcz_theme
         final_graph <-
           graph + ggplot2::facet_wrap(~ my_time, scales = "free_x", shrink = TRUE) +
-          ggplot2::theme(strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 12),
+          ggplot2::scale_x_datetime(guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
+          ggplot2::theme(strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
                          strip.background = ggplot2::element_rect(linetype = "dotted")
           )
       }
@@ -466,7 +522,6 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
         longitude = my_longitude,
         type = c("reference", by)
       ) %>% stats::na.omit() %>%
-        dplyr::ungroup(by) %>%
         tidyr::pivot_wider(id_cols = c(.data$date, by), names_from = .data$reference, values_from = .data$var_interp) %>%
         dplyr::mutate(uhi = .data$urban - .data$rural)
 
@@ -479,6 +534,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
       if (group == TRUE) {
         # Make A Y-Axis Transformer ----
         transformer <- mydata %>%
+          dplyr::ungroup(by) %>%
           transformer_dual_y_axis(
             primary_column   = .data$rural,
             secondary_column = .data$uhi,
@@ -497,7 +553,8 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
         final_graph <-
           graph + ggplot2::facet_grid(by_formula, scales = "free_x") +
-          ggplot2::theme( strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 12),
+          ggplot2::scale_x_datetime(guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
+          ggplot2::theme( strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
                           strip.background = ggplot2::element_rect(linetype = "dotted")
           )
       } else {
@@ -510,7 +567,8 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
         final_graph <-
           graph + ggplot2::facet_grid(by_formula, scales = "free_x") +
-          ggplot2::theme( strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 12),
+          ggplot2::scale_x_datetime(guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
+          ggplot2::theme( strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
                           strip.background = ggplot2::element_rect(linetype = "dotted")
           )
       }
@@ -553,13 +611,14 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
         pollutant = "var_interp",
         avg.time = time.freq,
         type = c("reference", "my_time")
-      ) %>% stats::na.omit() %>% dplyr::ungroup(.data$my_time) %>%
+      ) %>% stats::na.omit() %>%
         tidyr::pivot_wider(id_cols = c(.data$date, .data$my_time), names_from = .data$reference, values_from = .data$var_interp) %>%
         dplyr::mutate(uhi = .data$urban - .data$rural)
 
       if (group == TRUE) {
 
         transformer <- mydata %>%
+          dplyr::ungroup(.data$my_time) %>%
           transformer_dual_y_axis(
             primary_column   = .data$rural,
             secondary_column = .data$uhi,
@@ -579,7 +638,8 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
         final_graph <-
           graph + ggplot2::facet_wrap(~ my_time, scales = "free_x") +
-          ggplot2::theme(strip.text = ggplot2::element_text(face = "bold",hjust = 0,size = 12),
+          ggplot2::scale_x_datetime(guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
+          ggplot2::theme(strip.text = ggplot2::element_text(face = "bold",hjust = 0,size = 10),
                          strip.background = ggplot2::element_rect(linetype = "dotted")
           )
       } else {
@@ -592,7 +652,8 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
         final_graph <-
           graph + ggplot2::facet_wrap(~ my_time, scales = "free_x") +
-          ggplot2::theme(strip.text = ggplot2::element_text(face = "bold",hjust = 0,size = 12),
+          ggplot2::scale_x_datetime(guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
+          ggplot2::theme(strip.text = ggplot2::element_text(face = "bold",hjust = 0, size = 10),
                          strip.background = ggplot2::element_rect(linetype = "dotted")
           )
       }
@@ -626,6 +687,5 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
     }
 
   }
-
 
 }

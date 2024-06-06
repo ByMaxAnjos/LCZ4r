@@ -53,6 +53,18 @@ For the local functions to operate smoothly, you should import the air temperatu
 
 It's important to note that the users should standardize the date-time format to R's conventions, such as "2023-03-13 11:00:00" or "2023-03-13". It also includes: e.g. “1/2/1999” or in format i.e. “YYYY-mm-dd”, “1999-02-01”.
 
+To convert from day-month-year to year-month-day:
+
+```{r include=TRUE}
+
+#Note that date column is in the my_data.
+
+#my_data$date <- as.POSIXct(my_data$date, format = "%d-%m-%Y")
+#my_data$date <- as.POSIXct(my_data$date, format = "%d-%m-%Y %H:%M:%S")
+
+```
+
+
 To streamline this process, LCZ4r offers a sample data frame, accessible through the following way:
 
 ```{r echo=TRUE, fig.height=7, fig.width=11, message=FALSE, warning=FALSE}
@@ -62,7 +74,7 @@ library(LCZ4r)
 data("lcz_data")
 
 #Check data structure out
-str(lcz_data)
+head(lcz_data)
 
 ```
 
@@ -215,17 +227,28 @@ The `lcz_uhi_intensity()` function is designed to calculate the Urban Heat Islan
 
 ```{r, eval=TRUE, fig.height=7, fig.width=11, message=FALSE, warning=FALSE}
 
-#Calculate the hourly UHI intensity for 2019 using the LCZ method
+#Calculate the hourly UHI intensity for 2019-2020 using the LCZ method
 lcz_uhi_intensity(lcz_map,
                   data_frame = lcz_data,
                   var = "airT",
                   station_id = "station",
                   time.freq  = "hour",
                   method = "LCZ",
-                  year = 2019)
+                  year = 2019:2020)
 
 
-#Calculate the hourly UHI intensity for 13-15 Feb 2019 using the LCZ method grouping Urban and Rural temperatures 
+#Calculate the hourly UHI intensity for 2020 using the manual method
+lcz_uhi_intensity(lcz_map,
+                  data_frame = lcz_data,
+                  var = "airT",
+                  station_id = "station",
+                  time.freq  = "hour",
+                  method = "manual",
+                  Turban = "bamberger",
+                  Trural = "buch",
+                  year = 2020)
+
+#Calculate the hourly UHI intensity by months of 2019 using the LCZ method grouping Urban and Rural temperatures 
 lcz_uhi_intensity(lcz_map,
                   data_frame = lcz_data,
                   var = "airT",
@@ -233,7 +256,7 @@ lcz_uhi_intensity(lcz_map,
                   time.freq  = "hour",
                   method = "LCZ",
                   group = TRUE,
-                  year = 2019, month = 2, day=13:15)
+                  year = 2019, by = "month")
 
 
 #Calculate the UHI intensity during daytime and nighttime in April 2019
@@ -243,9 +266,21 @@ lcz_uhi_intensity(lcz_map,
                   station_id = "station",
                   time.freq  = "hour",
                   method = "LCZ",
-                  year = 2019, month = 4,
+                  year = 2019, month = 4, day = 5,
                   by = "daylight")
 
+
+#Calculate the UHI intensity during daytime and nighttime by months of 2019
+lcz_uhi_intensity(lcz_map,
+                  data_frame = lcz_data,
+                  var = "airT",
+                  station_id = "station",
+                  time.freq  = "hour",
+                  method = "LCZ",
+                  group = TRUE,
+                  year = 2019, 
+                  by = c("daylight", "month")
+                  )
 
 ```
 

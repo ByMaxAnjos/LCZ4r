@@ -73,7 +73,7 @@
       <img src="" class="logo" alt=""><h1>Install LCZ4r and input data requirements</h1>
                         <h4 data-toc-skip class="author">Max Anjos</h4>
             
-            <h4 data-toc-skip class="date">June 01, 2024</h4>
+            <h4 data-toc-skip class="date">June 06, 2024</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ByMaxAnjos/LCZ4r/blob/HEAD/vignettes/instalation_lcz4r.Rmd" class="external-link"><code>vignettes/instalation_lcz4r.Rmd</code></a></small>
       <div class="d-none name"><code>instalation_lcz4r.Rmd</code></div>
@@ -95,40 +95,6 @@ or an empty line to skip updates: <strong>3</strong></p>
 <span><span class="co">#if(!require(devtools)) install.packages("devtools")</span></span>
 <span><span class="co">#devtools::install_github("ByMaxAnjos/LCZ4r")</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bymaxanjos.github.io/LCZ4r/">LCZ4r</a></span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="input-data-requirements-formating-dates-and-times">Input data requirements: formating dates and times<a class="anchor" aria-label="anchor" href="#input-data-requirements-formating-dates-and-times"></a>
-</h2>
-<p>It’s important to note that the users should standardize the
-date-time format to R’s conventions, such as “2023-03-13 11:00:00” or
-“2023-03-13”. It also includes: e.g. “1/2/1999” or in format
-i.e. “YYYY-mm-dd”, “1999-02-01”.</p>
-<p>The date/time field should be called <strong>date</strong>. No other
-name is acceptable.</p>
-<p>If your date format is 2/8/2022 11:00:</p>
-<p>To convert from day-month-year to year-month-day:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="co">#Note that date column is in the my_data.</span></span>
-<span></span>
-<span><span class="co">#my_data$date &lt;- as.POSIXct(my_data$date, format = "%d-%m-%Y")</span></span>
-<span><span class="co">#my_data$date &lt;- as.POSIXct(my_data$date, format = "%d-%m-%Y %H:%M:%S")</span></span></code></pre></div>
-<p>Example data frame</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"lcz_data"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">lcz_data</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fl">10</span><span class="op">)</span></span>
-<span><span class="co">#&gt;              date      station    airT Latitude Longitude</span></span>
-<span><span class="co">#&gt; 806404 2019-01-01   airportthf 8.50000 52.46750  13.40210</span></span>
-<span><span class="co">#&gt; 806405 2019-01-01   airporttxl 7.90000 52.56440  13.30880</span></span>
-<span><span class="co">#&gt; 806406 2019-01-01     albrecht 8.04725 52.44459  13.34861</span></span>
-<span><span class="co">#&gt; 806407 2019-01-01    bamberger 8.27166 52.49649  13.33755</span></span>
-<span><span class="co">#&gt; 806408 2019-01-01       baruth 8.20000 52.06130  13.49970</span></span>
-<span><span class="co">#&gt; 806409 2019-01-01        berge 8.40000 52.61980  12.78670</span></span>
-<span><span class="co">#&gt; 806410 2019-01-01  brandenburg 8.40000 52.38070  13.53060</span></span>
-<span><span class="co">#&gt; 806411 2019-01-01         buch 8.10000 52.63090  13.50220</span></span>
-<span><span class="co">#&gt; 806412 2019-01-01       dahlem 8.20000 52.45370  13.30170</span></span>
-<span><span class="co">#&gt; 806413 2019-01-01 dahlemerfeld 7.84750 52.47762  13.22534</span></span></code></pre></div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

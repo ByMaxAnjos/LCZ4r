@@ -6,6 +6,8 @@
 #' @param iplot Logical, indicating whether to create a plot (default is TRUE).
 #' @param isave Save the plot into your directory.
 #' @param inclusive Set to TRUE to a colorblind-friendly palette.
+#' @param ylab y-axis name.
+#' @param xlab x-axis name.
 #' @param ... Additional arguments to modify axis, legend, and plot labels, including title, subtitle and caption.
 #'
 #' @return A summary table of LCZ class areas if iplot is FALSE, otherwise, a bar plot.
@@ -22,7 +24,9 @@
 #' @seealso
 #' See the documentation for lcz_get_map() to obtain an LCZ map.
 
-lcz_cal_area <- function(x, iplot=TRUE, isave=FALSE, inclusive = FALSE, ...){
+lcz_cal_area <- function(x, iplot=TRUE, isave=FALSE, inclusive = FALSE,
+                         xlab = "LCZ code",
+                         ylab = "Area [square kilometer]", ...){
 
 
 # Validate inputs ---------------------------------------------------------
@@ -30,6 +34,7 @@ lcz_cal_area <- function(x, iplot=TRUE, isave=FALSE, inclusive = FALSE, ...){
   if(!inherits(x, "SpatRaster")) {x <- terra::rast({{x}}) }
 
   x<- x[[1]]
+
 # Calculate raster area ---------------------------------------------------
 
   freq_df <- tibble::as_tibble(terra::freq({{x}}, bylayer=FALSE, usenames=TRUE)) %>%
@@ -117,9 +122,8 @@ lcz_cal_area <- function(x, iplot=TRUE, isave=FALSE, inclusive = FALSE, ...){
                          label = paste0(round(lcz_df$area_perc, 1), "%"), vjust = -0.2, size = 5) +
       ggplot2::scale_y_continuous(limits = c(0, base::max(lcz_df$area_km2) + 50)) +
        ggplot2::labs(...,
-           x = "LCZ code",
-           y = "Area [square kilometer]",
-           fill = "LCZ") +
+           x = xlab,
+           y = ylab) +
       ggplot2::theme_bw()+
       ggplot2::theme(
         plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
