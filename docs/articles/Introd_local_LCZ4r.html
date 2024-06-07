@@ -73,7 +73,7 @@
       <img src="" class="logo" alt=""><h1>LCZ4r Local Functions</h1>
                         <h4 data-toc-skip class="author">Max Anjos</h4>
             
-            <h4 data-toc-skip class="date">June 06, 2024</h4>
+            <h4 data-toc-skip class="date">June 07, 2024</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ByMaxAnjos/LCZ4r/blob/HEAD/vignettes/Introd_local_LCZ4r.Rmd" class="external-link"><code>vignettes/Introd_local_LCZ4r.Rmd</code></a></small>
       <div class="d-none name"><code>Introd_local_LCZ4r.Rmd</code></div>
@@ -194,22 +194,21 @@ accessible through the following way:</p>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"lcz_data"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">#Check data structure out</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">lcz_data</span><span class="op">)</span></span>
-<span><span class="co">#&gt;              date    station    airT Latitude Longitude</span></span>
-<span><span class="co">#&gt; 806404 2019-01-01 airportthf 8.50000 52.46750  13.40210</span></span>
-<span><span class="co">#&gt; 806405 2019-01-01 airporttxl 7.90000 52.56440  13.30880</span></span>
-<span><span class="co">#&gt; 806406 2019-01-01   albrecht 8.04725 52.44459  13.34861</span></span>
-<span><span class="co">#&gt; 806407 2019-01-01  bamberger 8.27166 52.49649  13.33755</span></span>
-<span><span class="co">#&gt; 806408 2019-01-01     baruth 8.20000 52.06130  13.49970</span></span>
-<span><span class="co">#&gt; 806409 2019-01-01      berge 8.40000 52.61980  12.78670</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">lcz_data</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Classes 'data.table' and 'data.frame':   386354 obs. of  5 variables:</span></span>
+<span><span class="co">#&gt;  $ date     : POSIXct, format: "2019-01-01 00:00:00" "2019-01-01 00:00:00" ...</span></span>
+<span><span class="co">#&gt;  $ station  : chr  "airportthf" "airporttxl" "albrecht" "bamberger" ...</span></span>
+<span><span class="co">#&gt;  $ airT     : num  8.5 7.9 8.05 8.27 8.2 ...</span></span>
+<span><span class="co">#&gt;  $ Latitude : num  52.5 52.6 52.4 52.5 52.1 ...</span></span>
+<span><span class="co">#&gt;  $ Longitude: num  13.4 13.3 13.3 13.3 13.5 ...</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="analyze-lcz-time-series">Analyze LCZ Time Series<a class="anchor" aria-label="anchor" href="#analyze-lcz-time-series"></a>
 </h2>
 <p>With the <code><a href="../reference/lcz_ts.html">lcz_ts()</a></code> function, you can analyze the air
 temperature associated with LCZ classes over time. For instance, you can
-perform hourly frequency analysis of air temperature for the years
-2019-2020 using the “lcz_data” from the LCZ4r package.</p>
+perform hourly frequency analysis of air temperature in Berlin for the
+years 2019-2020 using the “lcz_data” from the LCZ4r package.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get the LCZ map for your city</span></span>
 <span><span class="va">lcz_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lcz_get_map.html">lcz_get_map</a></span><span class="op">(</span>city<span class="op">=</span><span class="st">"Berlin"</span><span class="op">)</span></span>
@@ -377,11 +376,16 @@ function.</p>
 </h2>
 <p>The <code><a href="../reference/lcz_uhi_intensity.html">lcz_uhi_intensity()</a></code> function is designed to
 calculate the Urban Heat Island (UHI) intensity based on air temperature
-measurements and Local Climate Zones (LCZ). Here’s a detailed
-description of the function call provided:</p>
+measurements and Local Climate Zones (LCZ). It provides two methods to
+calculate UHI intensity (UHII): LCZ and manual. In the LCZ method, the
+functions automatically identifies the LCZ build types, starting from
+LCZ 1 and progressing to LCZ 8, to represent the LCZxurban area, whilst
+it starts from LCZ natural (B, C, D) to LCZ 9 to represent the LCZyrural
+area. In the manual method users have the freedom to select stations as
+references for the urban and rural areas.</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="co">#Calculate the hourly UHI intensity for 2019-2020 using the LCZ method</span></span>
+<span><span class="co">#Calculate the hourly UHI intensity for 2019-2020 in Berlin using the LCZ method </span></span>
 <span><span class="fu"><a href="../reference/lcz_uhi_intensity.html">lcz_uhi_intensity</a></span><span class="op">(</span><span class="va">lcz_map</span>,</span>
 <span>                  data_frame <span class="op">=</span> <span class="va">lcz_data</span>,</span>
 <span>                  var <span class="op">=</span> <span class="st">"airT"</span>,</span>
@@ -393,7 +397,7 @@ description of the function call provided:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span></span>
-<span><span class="co">#Calculate the hourly UHI intensity for 2020 using the manual method</span></span>
+<span><span class="co">#Calculate the hourly UHI intensity for 2020 in Berlin using the manual method</span></span>
 <span><span class="fu"><a href="../reference/lcz_uhi_intensity.html">lcz_uhi_intensity</a></span><span class="op">(</span><span class="va">lcz_map</span>,</span>
 <span>                  data_frame <span class="op">=</span> <span class="va">lcz_data</span>,</span>
 <span>                  var <span class="op">=</span> <span class="st">"airT"</span>,</span>
@@ -406,7 +410,7 @@ description of the function call provided:</p>
 <p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-12-2.png" width="3300"></p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="co">#Calculate the hourly UHI intensity by months of 2019 using the LCZ method grouping Urban and Rural temperatures </span></span>
+<span><span class="co">#Calculate the hourly UHI intensity by months of 2019 in Berlin using the LCZ method grouping Urban and Rural temperatures </span></span>
 <span><span class="fu"><a href="../reference/lcz_uhi_intensity.html">lcz_uhi_intensity</a></span><span class="op">(</span><span class="va">lcz_map</span>,</span>
 <span>                  data_frame <span class="op">=</span> <span class="va">lcz_data</span>,</span>
 <span>                  var <span class="op">=</span> <span class="st">"airT"</span>,</span>
@@ -419,7 +423,7 @@ description of the function call provided:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span></span>
-<span><span class="co">#Calculate the UHI intensity during daytime and nighttime in April 2019</span></span>
+<span><span class="co">#Calculate the UHI intensity during daytime and nighttime in April 2019 in Berlin</span></span>
 <span><span class="fu"><a href="../reference/lcz_uhi_intensity.html">lcz_uhi_intensity</a></span><span class="op">(</span><span class="va">lcz_map</span>,</span>
 <span>                  data_frame <span class="op">=</span> <span class="va">lcz_data</span>,</span>
 <span>                  var <span class="op">=</span> <span class="st">"airT"</span>,</span>

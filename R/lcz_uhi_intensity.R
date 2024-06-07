@@ -106,7 +106,6 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
   df_processed$var_interp <- base::as.numeric(df_processed$var_interp)
 
-
   # Impute missing values if necessary
   if (!is.null(impute)) {
     impute_methods <- c("mean", "median", "knn", "bag")
