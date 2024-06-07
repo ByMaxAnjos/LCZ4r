@@ -64,7 +64,7 @@ We highly recommend that users explore the following tutorials to gain a deeper 
 
 Have look at this:
 
-<img width="1367" alt="Screenshot 2023-08-13 at 19 33 02" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/ecc209b1-0ef5-4554-a141-3feb26d0a623">
+![ber_interp_comp](https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/449c9def-1140-4a27-bdc1-754f314c6bda)
 
 
 ## Calculate UHI intensity
