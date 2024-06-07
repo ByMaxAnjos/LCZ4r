@@ -169,8 +169,8 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
   if (method == "LCZ") {
     select_stations <- function(data) {
-      urban_preference <- c("1", "2", "3", "4")
-      rural_preference <- c("12", "13", "14", "9", "6")
+      urban_preference <- c("1", "2", "3", "4", "5", "6", "7", "8")
+      rural_preference <- c("12", "13", "14", "9")
 
       find_station <- function(stations, preferences) {
         for (pref in preferences) {
@@ -193,7 +193,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
     rural_station <- result$rural
 
     if (is.null(urban_station) || is.null(rural_station)) {
-      stop("Unable to find suitable urban or rural stations based on urban-LCZs (1, 2, 3, and 4) and rural-LCZs (12, 13, 14, 9, and 6). Please, try the manual method")
+      stop("Unable to find suitable urban or rural stations based on urban-LCZs (1, 2, 3, 4, 5, 6, 7, and 8) and rural-LCZs (12, 13, 14, and 9). Please, try the manual method")
     }
 
     lcz_model <- df_model %>%
@@ -204,13 +204,13 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
   if (method == "manual") {
 
-    if (!(Turban %in% tolower(df_model$station))) {
-      stop("The name or ID of the urban station(s) was not found in the data frame.")
-    }
-
-    if (!(Trural %in% tolower(df_model$station))) {
-      stop("The name or ID of the rural station(s) was not found in the data frame.")
-    }
+    # if (!(Turban %in% tolower(df_model$station))) {
+    #   stop("The name or ID of the urban station(s) was not found in the data frame.")
+    # }
+    #
+    # if (!(Trural %in% tolower(df_model$station))) {
+    #   stop("The name or ID of the rural station(s) was not found in the data frame.")
+    # }
 
     urban_station <- Turban
     rural_station <- Trural
