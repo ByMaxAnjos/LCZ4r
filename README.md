@@ -52,12 +52,12 @@ We highly recommend that users explore the following tutorials to gain a deeper 
 
 ## Time serires of air tempearture from LCZ classes
 
-<img width="1440" alt="ts_berlin" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/8b86432e-a372-4c05-82b0-60c1e231596f">
+![lcz_ts](https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/991a6cd9-0b12-45be-9a2e-f1cf85ef61eb)
 
 
 ## Calculate thermal anomaly between LCZ
 
-<img width="1440" alt="thermal_berlin" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/3fdb3509-eaa1-43a0-832c-bfbc8b38ac52">
+![lcz_anomaly](https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/68e51428-5131-4d94-89cc-e6955f23911d)
 
 
 ## Interpolate air temperature with LCZ
@@ -69,7 +69,9 @@ Have look at this:
 
 ## Calculate UHI intensity
 
-it's coming soon...
+![lcz4r_uhi_plot](https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/cb562c64-0804-4cb7-aca4-8bac8fc1b9d0)
+
+![lcz4r_uhi](https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/ed6e5648-adae-4d70-a5df-60438574196a)
 
 
 ### People
