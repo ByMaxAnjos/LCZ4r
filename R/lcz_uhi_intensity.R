@@ -168,8 +168,8 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
   if (method == "LCZ") {
     select_stations <- function(data) {
-      urban_preference <- c("1", "2", "3", "4", "5", "6", "7", "8")
-      rural_preference <- c("12", "13", "14", "9")
+      urban_preference <- c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10")
+      rural_preference <- c("12", "13", "14", "15", "16")
 
       find_station <- function(stations, preferences) {
         for (pref in preferences) {
@@ -202,14 +202,6 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
   }
 
   if (method == "manual") {
-
-    # if (!(Turban %in% tolower(df_model$station))) {
-    #   stop("The name or ID of the urban station(s) was not found in the data frame.")
-    # }
-    #
-    # if (!(Trural %in% tolower(df_model$station))) {
-    #   stop("The name or ID of the rural station(s) was not found in the data frame.")
-    # }
 
     urban_station <- Turban
     rural_station <- Trural
@@ -293,7 +285,6 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
   )
 
   # Function for Y-dual if group == TRUE
-
   transformer_dual_y_axis <- function(data, primary_column, secondary_column, include_y_zero = FALSE) {
     params_tbl <- data %>%
       dplyr::summarise(
@@ -346,6 +337,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
       # Make A Y-Axis Transformer ----
       transformer <- mydata %>%
+        stats::na.omit() %>%
         transformer_dual_y_axis(
           primary_column   = .data$rural,
           secondary_column = .data$uhi,
@@ -436,6 +428,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
         # Make A Y-Axis Transformer ----
         transformer <- mydata %>%
           dplyr::ungroup(.data$my_time) %>%
+          stats::na.omit() %>%
           transformer_dual_y_axis(
             primary_column   = .data$rural,
             secondary_column = .data$uhi,
@@ -534,6 +527,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
         # Make A Y-Axis Transformer ----
         transformer <- mydata %>%
           dplyr::ungroup(by) %>%
+          stats::na.omit() %>%
           transformer_dual_y_axis(
             primary_column   = .data$rural,
             secondary_column = .data$uhi,
@@ -618,6 +612,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
         transformer <- mydata %>%
           dplyr::ungroup(.data$my_time) %>%
+          stats::na.omit() %>%
           transformer_dual_y_axis(
             primary_column   = .data$rural,
             secondary_column = .data$uhi,
