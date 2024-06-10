@@ -37,6 +37,8 @@
 #' my_uhi <- lcz_uhi_intensity(lcz_map, data_frame = lcz_data, var = "airT",
 #'                             station_id = "station", year = 2019,
 #'                             time.freq = "hour", method = "LCZ")
+#'
+#'
 #' }
 #'
 #' @importFrom rlang .data
@@ -284,43 +286,6 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
     plot.caption = ggplot2::element_text(color = "grey40", hjust = 1, size = 10)
   )
 
-  # Function for Y-dual if group == TRUE
-  transformer_dual_y_axis <- function(data, primary_column, secondary_column, include_y_zero = FALSE) {
-    params_tbl <- data %>%
-      dplyr::summarise(
-        max_primary = max(!! dplyr::enquo(primary_column)),
-        min_primary = min(!! dplyr::enquo(primary_column)),
-        max_secondary = max(!! dplyr::enquo(secondary_column)),
-        min_secondary = min(!! dplyr::enquo(secondary_column))
-      )
-
-    if (include_y_zero) {
-      params_tbl$min_primary <- 0
-      params_tbl$min_secondary <- 0
-    }
-
-    params_tbl <- params_tbl %>%
-      dplyr::mutate(
-        scale = (.data$max_secondary - .data$min_secondary) / (.data$max_primary - .data$min_primary),
-        shift = .data$min_primary - .data$min_secondary
-      )
-
-    scale_func <- function(x) {
-      x * params_tbl$scale - params_tbl$shift
-    }
-
-    inv_func <- function(x) {
-      (x + params_tbl$shift) / params_tbl$scale
-    }
-
-    list(
-      scale_func = scale_func,
-      inv_func = inv_func,
-      params_tbl = params_tbl
-    )
-  }
-
-
   # Define time series frequency with without "by"--------------------------------------------
   if (is.null(by)) {
     mydata <- openair::timeAverage(
@@ -330,26 +295,34 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
       type = c("reference")
     ) %>% stats::na.omit() %>%
       tidyr::pivot_wider(id_cols = .data$date, names_from = .data$reference, values_from = .data$var_interp) %>%
-      dplyr::mutate(uhi = .data$urban - .data$rural)
-    # pivot_longer(c(rural, urban, uhi), names_to = "reference")
+      dplyr::mutate(uhi = .data$urban - .data$rural) %>%
+      stats::na.omit()
 
     if (group == TRUE) {
 
       # Make A Y-Axis Transformer ----
-      transformer <- mydata %>%
-        stats::na.omit() %>%
-        transformer_dual_y_axis(
-          primary_column   = .data$rural,
-          secondary_column = .data$uhi,
-          include_y_zero   = TRUE
-        )
+      train_sec <- function(primary, secondary, na.rm = TRUE) {
+        # Thanks Henry Holm for including the na.rm argument!
+        from <- base::range(secondary, na.rm = na.rm)
+        to   <- base::range(primary, na.rm = na.rm)
+        # Forward transform for the data
+        forward <- function(x) {
+          scales::rescale(x, from = from, to = to)
+        }
+        # Reverse transform for the secondary axis
+        reverse <- function(x) {
+          scales::rescale(x, from = to, to = from)
+        }
+        base::list(fwd = forward, rev = reverse)
+      }
+      sec <- train_sec(mydata$urban, mydata$uhi)
 
       final_graph <-
         ggplot2::ggplot(mydata, ggplot2::aes(x = .data$date)) +
         ggplot2::geom_line(ggplot2::aes(y = .data$urban, color = "Urban Temperature"), alpha = 0.8) +
         ggplot2::geom_line(ggplot2::aes(y = .data$rural, color = "Rural Temperature"), alpha = 0.8) +
-        ggplot2::geom_line(ggplot2::aes(y = transformer$inv_func(.data$uhi), color = "UHI")) +
-        ggplot2::scale_y_continuous( sec.axis = ggplot2::sec_axis(~ transformer$scale_func(.), name = ylab2)) +
+        ggplot2::geom_line(ggplot2::aes(y = sec$fwd(.data$uhi), color = "UHI")) +
+        ggplot2::scale_y_continuous(sec.axis = ggplot2::sec_axis(~ sec$rev(.), name = ylab2)) +
         ggplot2::scale_color_manual(name = "", values = c("Urban Temperature" = urban_col, "Rural Temperature" = rural_col, "UHI" = "black")
         ) +
         ggplot2::labs(title = title, x = xlab, y = ylab, fill = "", caption = caption) +
@@ -421,28 +394,35 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
         type = c("reference", "my_time")
       ) %>% stats::na.omit() %>%
         tidyr::pivot_wider(id_cols = c(.data$date, .data$my_time), names_from = .data$reference, values_from = .data$var_interp) %>%
-        dplyr::mutate(uhi = .data$urban - .data$rural)
+        dplyr::mutate(uhi = .data$urban - .data$rural) %>%
+        stats::na.omit()
 
       if (group == TRUE) {
 
-        # Make A Y-Axis Transformer ----
-        transformer <- mydata %>%
-          dplyr::ungroup(.data$my_time) %>%
-          stats::na.omit() %>%
-          transformer_dual_y_axis(
-            primary_column   = .data$rural,
-            secondary_column = .data$uhi,
-            include_y_zero   = TRUE
-          )
+        # Make A Y-Axis Transformer
+        train_sec <- function(primary, secondary, na.rm = TRUE) {
+          # Thanks Henry Holm for including the na.rm argument!
+          from <- base::range(secondary, na.rm = na.rm)
+          to   <- base::range(primary, na.rm = na.rm)
+          # Forward transform for the data
+          forward <- function(x) {
+            scales::rescale(x, from = from, to = to)
+          }
+          # Reverse transform for the secondary axis
+          reverse <- function(x) {
+            scales::rescale(x, from = to, to = from)
+          }
+          base::list(fwd = forward, rev = reverse)
+        }
+        sec <- train_sec(mydata$urban, mydata$uhi)
 
         graph <-
           ggplot2::ggplot(mydata, ggplot2::aes(x = .data$date)) +
           ggplot2::geom_line(ggplot2::aes(y = .data$urban, color = "Urban Temperature"), alpha = 0.8) +
           ggplot2::geom_line(ggplot2::aes(y = .data$rural, color = "Rural Temperature"), alpha = 0.8) +
-          ggplot2::geom_line(ggplot2::aes(y = transformer$inv_func(.data$uhi), color = "UHI")) +
-          ggplot2::scale_y_continuous(sec.axis = ggplot2::sec_axis(~ transformer$scale_func(.), name = ylab2)) +
-          ggplot2::scale_color_manual(name = "",
-                                      values = c("Urban Temperature" = urban_col, "Rural Temperature" = rural_col, "UHI" = "black")
+          ggplot2::geom_line(ggplot2::aes(y = sec$fwd(.data$uhi), color = "UHI")) +
+          ggplot2::scale_y_continuous(sec.axis = ggplot2::sec_axis(~ sec$rev(.), name = ylab2)) +
+          ggplot2::scale_color_manual(name = "",values = c("Urban Temperature" = urban_col, "Rural Temperature" = rural_col, "UHI" = "black")
           ) +
           ggplot2::labs(title = title, x = xlab, y = ylab, fill = "", caption = caption) +
           ggplot2::theme_bw()+ lcz_theme
@@ -496,6 +476,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
     }
 
     if (length(by) > 1 & by %in% "daylight") {
+
       # Extract AXIS information from CRS
       axis_matches <- terra::crs({{x}}, parse = TRUE)[14]
       # Extract hemisphere from AXIS definition
@@ -515,7 +496,8 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
         type = c("reference", by)
       ) %>% stats::na.omit() %>%
         tidyr::pivot_wider(id_cols = c(.data$date, by), names_from = .data$reference, values_from = .data$var_interp) %>%
-        dplyr::mutate(uhi = .data$urban - .data$rural)
+        dplyr::mutate(uhi = .data$urban - .data$rural) %>%
+        stats::na.omit()
 
       # convert the vector to a string
       by_str <- base::paste(by, collapse = " ~ ")
@@ -524,21 +506,30 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
       by_formula <- base::eval(base::parse(text = by_str))
 
       if (group == TRUE) {
-        # Make A Y-Axis Transformer ----
-        transformer <- mydata %>%
-          dplyr::ungroup(by) %>%
-          stats::na.omit() %>%
-          transformer_dual_y_axis(
-            primary_column   = .data$rural,
-            secondary_column = .data$uhi,
-            include_y_zero   = TRUE
-          )
+
+        # Make A Y-Axis Transformer
+        train_sec <- function(primary, secondary, na.rm = TRUE) {
+          # Thanks Henry Holm for including the na.rm argument!
+          from <- base::range(secondary, na.rm = na.rm)
+          to   <- base::range(primary, na.rm = na.rm)
+          # Forward transform for the data
+          forward <- function(x) {
+            scales::rescale(x, from = from, to = to)
+          }
+          # Reverse transform for the secondary axis
+          reverse <- function(x) {
+            scales::rescale(x, from = to, to = from)
+          }
+          base::list(fwd = forward, rev = reverse)
+        }
+        sec <- train_sec(mydata$urban, mydata$uhi)
+
         graph <-
           ggplot2::ggplot(mydata, ggplot2::aes(x = .data$date)) +
           ggplot2::geom_line(ggplot2::aes(y = .data$urban, color = "Urban Temperature"), alpha = 0.8) +
           ggplot2::geom_line(ggplot2::aes(y = .data$rural, color = "Rural Temperature"), alpha = 0.8) +
-          ggplot2::geom_line(ggplot2::aes(y = transformer$inv_func(.data$uhi), color = "UHI")) +
-          ggplot2::scale_y_continuous(sec.axis = ggplot2::sec_axis(~ transformer$scale_func(.), name = ylab2)) +
+          ggplot2::geom_line(ggplot2::aes(y = sec$fwd(.data$uhi), color = "UHI")) +
+          ggplot2::scale_y_continuous(sec.axis = ggplot2::sec_axis(~ sec$rev(.), name = ylab2)) +
           ggplot2::scale_color_manual(name = "", values = c("Urban Temperature" = urban_col, "Rural Temperature" = rural_col, "UHI" = "black")
           ) +
           ggplot2::labs(title = title, x = xlab, y = ylab, fill = "", caption = caption) +
@@ -606,25 +597,34 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
         type = c("reference", "my_time")
       ) %>% stats::na.omit() %>%
         tidyr::pivot_wider(id_cols = c(.data$date, .data$my_time), names_from = .data$reference, values_from = .data$var_interp) %>%
-        dplyr::mutate(uhi = .data$urban - .data$rural)
+        dplyr::mutate(uhi = .data$urban - .data$rural) %>%
+        stats::na.omit()
 
       if (group == TRUE) {
 
-        transformer <- mydata %>%
-          dplyr::ungroup(.data$my_time) %>%
-          stats::na.omit() %>%
-          transformer_dual_y_axis(
-            primary_column   = .data$rural,
-            secondary_column = .data$uhi,
-            include_y_zero   = TRUE
-          )
+       # Dual y-axis
+        train_sec <- function(primary, secondary, na.rm = TRUE) {
+          # Thanks Henry Holm for including the na.rm argument!
+          from <- base::range(secondary, na.rm = na.rm)
+          to   <- base::range(primary, na.rm = na.rm)
+          # Forward transform for the data
+          forward <- function(x) {
+            scales::rescale(x, from = from, to = to)
+          }
+          # Reverse transform for the secondary axis
+          reverse <- function(x) {
+            scales::rescale(x, from = to, to = from)
+          }
+          base::list(fwd = forward, rev = reverse)
+        }
+        sec <- train_sec(mydata$urban, mydata$uhi)
 
         graph <-
           ggplot2::ggplot(mydata, ggplot2::aes(x = .data$date)) +
           ggplot2::geom_line(ggplot2::aes(y = .data$urban, color = "Urban Temperature"), alpha = 0.8) +
           ggplot2::geom_line(ggplot2::aes(y = .data$rural, color = "Rural Temperature"), alpha = 0.8) +
-          ggplot2::geom_line(ggplot2::aes(y = transformer$inv_func(.data$uhi), color = "UHI")) +
-          ggplot2::scale_y_continuous(sec.axis = ggplot2::sec_axis(~ transformer$scale_func(.), name = ylab2)) +
+          ggplot2::geom_line(ggplot2::aes(y = sec$fwd(.data$uhi), color = "UHI")) +
+          ggplot2::scale_y_continuous(sec.axis = ggplot2::sec_axis(~ sec$rev(.), name = ylab2)) +
           ggplot2::scale_color_manual(name = "", values = c("Urban Temperature" = urban_col, "Rural Temperature" = rural_col, "UHI" = "black")
           ) +
           ggplot2::labs(title = title, x = xlab, y = ylab, fill = "",caption = caption) +

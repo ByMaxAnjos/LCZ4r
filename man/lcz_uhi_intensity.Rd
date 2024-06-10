@@ -82,6 +82,8 @@ This function calculates the Urban Heat Island (UHI) intensity based on air temp
 my_uhi <- lcz_uhi_intensity(lcz_map, data_frame = lcz_data, var = "airT",
                             station_id = "station", year = 2019,
                             time.freq = "hour", method = "LCZ")
+
+
 }
 
 }
