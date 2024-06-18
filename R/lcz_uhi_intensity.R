@@ -428,6 +428,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
           ggplot2::theme_bw()+ lcz_theme
         final_graph <-
           graph + ggplot2::facet_wrap(~ my_time, scales = "free_x", shrink = TRUE) +
+          ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
           ggplot2::scale_x_datetime(guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
           ggplot2::theme(strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
                          strip.background = ggplot2::element_rect(linetype = "dotted")
@@ -441,6 +442,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
           ggplot2::theme_bw()+ lcz_theme
         final_graph <-
           graph + ggplot2::facet_wrap(~ my_time, scales = "free_x", shrink = TRUE) +
+          ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
           ggplot2::scale_x_datetime(guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
           ggplot2::theme(strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
                          strip.background = ggplot2::element_rect(linetype = "dotted")
@@ -537,6 +539,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
         final_graph <-
           graph + ggplot2::facet_grid(by_formula, scales = "free_x") +
+          ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
           ggplot2::scale_x_datetime(guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
           ggplot2::theme( strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
                           strip.background = ggplot2::element_rect(linetype = "dotted")
@@ -551,6 +554,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
         final_graph <-
           graph + ggplot2::facet_grid(by_formula, scales = "free_x") +
+          ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
           ggplot2::scale_x_datetime(guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
           ggplot2::theme( strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
                           strip.background = ggplot2::element_rect(linetype = "dotted")
@@ -632,6 +636,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
         final_graph <-
           graph + ggplot2::facet_wrap(~ my_time, scales = "free_x") +
+          ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
           ggplot2::scale_x_datetime(guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
           ggplot2::theme(strip.text = ggplot2::element_text(face = "bold",hjust = 0,size = 10),
                          strip.background = ggplot2::element_rect(linetype = "dotted")
@@ -646,6 +651,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
         final_graph <-
           graph + ggplot2::facet_wrap(~ my_time, scales = "free_x") +
+          ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
           ggplot2::scale_x_datetime(guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
           ggplot2::theme(strip.text = ggplot2::element_text(face = "bold",hjust = 0, size = 10),
                          strip.background = ggplot2::element_rect(linetype = "dotted")

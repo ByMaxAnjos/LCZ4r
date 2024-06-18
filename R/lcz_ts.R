@@ -312,6 +312,7 @@ lcz_ts <- function(x,
         ggplot2::theme_bw() + lcz_theme
       final_graph <-
         graph + ggplot2::facet_wrap(~ my_time, scales = "free_x", shrink = TRUE) +
+        ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
         ggplot2::scale_x_datetime(guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
         ggplot2::theme(
           strip.text = ggplot2::element_text(
@@ -395,6 +396,7 @@ lcz_ts <- function(x,
           ggplot2::theme_bw() + lcz_theme
         final_graph <-
           graph + ggplot2::facet_grid(by_formula, scales = "free_x") +
+          ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
           ggplot2::scale_x_datetime(guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
           ggplot2::theme(
             strip.text = ggplot2::element_text(
@@ -470,6 +472,7 @@ lcz_ts <- function(x,
 
         final_graph <-
           graph + ggplot2::facet_wrap(~ my_time, scales = "free_x") +
+          ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
           ggplot2::scale_x_datetime(guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
           ggplot2::theme(
             strip.text = ggplot2::element_text(

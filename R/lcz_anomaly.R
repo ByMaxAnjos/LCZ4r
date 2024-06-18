@@ -271,11 +271,12 @@ lcz_anomaly <- function(x,
       ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = .data$station, y = .data$anomaly, fill = .data$lcz)) +
       ggplot2::geom_bar(stat='identity', width=.5) +
       ggplot2::geom_hline(data=anomaly_cal$anomaly, yintercept = 0, linetype="dashed", color = "black") +
-      ggplot2::geom_text(data = subset_high, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4, fontface = "bold") +
-      ggplot2::geom_text(data = subset_low, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4, fontface = "bold") +
+      ggplot2::geom_text(data = subset_high, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4) +
+      ggplot2::geom_text(data = subset_low, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4) +
       ggplot2::scale_fill_manual(values = color_values, name = "LCZ class", labels = lcz.lables) +
       ggplot2::coord_flip(clip = "off")+
       ggplot2::scale_y_continuous(limits = c(-0.4-max(anomaly_cal$anomaly), max(anomaly_cal$anomaly) + 0.4)) +
+      ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
       ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption) +
       ggplot2::theme_bw() + lcz_theme
 
@@ -360,17 +361,19 @@ lcz_anomaly <- function(x,
         ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = .data$station, y = .data$anomaly, fill = .data$lcz)) +
         ggplot2::geom_bar(stat='identity', width=.4) +
         ggplot2::geom_hline(data=anomaly_cal$anomaly, yintercept = 0, linetype="dashed", color = "black") +
-        ggplot2::geom_text(data = subset_high, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4, fontface = "bold") +
-        ggplot2::geom_text(data = subset_low, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4, fontface = "bold") +
+        ggplot2::geom_text(data = subset_high, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4) +
+        ggplot2::geom_text(data = subset_low, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4) +
         ggplot2::scale_fill_manual(values = color_values, name = "LCZ class", labels = lcz.lables,
                                    guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")) +
         ggplot2::coord_flip(clip = "off")+
-        ggplot2::scale_y_continuous(limits = c(-0.4 -max(anomaly_cal$anomaly), max(anomaly_cal$anomaly) + 0.4)) +
+        ggplot2::scale_y_continuous(limits = c(-0.4 -max(anomaly_cal$anomaly), max(anomaly_cal$anomaly) + 0.4),
+                                    guide = ggplot2::guide_axis(check.overlap = TRUE)) +
         ggplot2::labs( title = title, x = xlab, y = ylab, fill = "LCZ",caption = caption) +
         ggplot2::theme_bw() + lcz_theme
       final_graph <-
         graph + ggplot2::facet_wrap(~ my_time, scales = "fixed") +
-        ggplot2::theme(strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 12),
+        ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
+        ggplot2::theme(strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
                        strip.background = ggplot2::element_rect(linetype = "dotted"))
 
       if (isave == TRUE){
@@ -453,17 +456,19 @@ lcz_anomaly <- function(x,
         ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = .data$station, y = .data$anomaly, fill = .data$lcz)) +
         ggplot2::geom_bar(stat='identity', width=.5) +
         ggplot2::geom_hline(data=anomaly_cal$anomaly, yintercept = 0, linetype="dashed", color = "black") +
-        ggplot2::geom_text(data = subset_high, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4, fontface = "bold") +
-        ggplot2::geom_text(data = subset_low, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4, fontface = "bold") +
+        ggplot2::geom_text(data = subset_high, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4) +
+        ggplot2::geom_text(data = subset_low, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4) +
         ggplot2::scale_fill_manual(values = color_values, name = "LCZ class", labels = lcz.lables,
                                    guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")) +
         ggplot2::coord_flip(clip = "off")+
-        ggplot2::scale_y_continuous(limits = c(-0.4 -max(anomaly_cal$anomaly), max(anomaly_cal$anomaly) + 0.4)) +
+        ggplot2::scale_y_continuous(limits = c(-0.4 -max(anomaly_cal$anomaly), max(anomaly_cal$anomaly) + 0.4),
+                                    guide = ggplot2::guide_axis(check.overlap = TRUE)) +
         ggplot2::labs( title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption) +
         ggplot2::theme_bw() + lcz_theme
       final_graph <-
         graph + ggplot2::facet_grid(my_time ~ daylight, scales = "fixed") +
-        ggplot2::theme(strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 9),
+        ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
+        ggplot2::theme(strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
                        strip.background = ggplot2::element_rect(linetype = "dotted"))
 
       if (isave == TRUE){
@@ -537,16 +542,18 @@ lcz_anomaly <- function(x,
         ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = .data$station, y = .data$anomaly, fill = .data$lcz)) +
         ggplot2::geom_bar(stat='identity', width=.4) +
         ggplot2::geom_hline(data=anomaly_cal$anomaly, yintercept = 0, linetype="dashed", color = "black") +
-        ggplot2::geom_text(data = subset_high, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4, fontface = "bold") +
-        ggplot2::geom_text(data = subset_low, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4, fontface = "bold") +
+        ggplot2::geom_text(data = subset_high, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4) +
+        ggplot2::geom_text(data = subset_low, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4) +
         ggplot2::scale_fill_manual(values = color_values, name = "LCZ class", labels = lcz.lables,
                                    guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")) +
         ggplot2::coord_flip(clip = "off")+
-        ggplot2::scale_y_continuous(limits = c(-0.4 -max(anomaly_cal$anomaly), max(anomaly_cal$anomaly) + 0.4)) +
+        ggplot2::scale_y_continuous(limits = c(-0.4 -max(anomaly_cal$anomaly), max(anomaly_cal$anomaly) + 0.4),
+                                    guide = ggplot2::guide_axis(check.overlap = TRUE)) +
         ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption) +
         ggplot2::theme_bw() + lcz_theme
       final_graph <-
         graph + ggplot2::facet_wrap(~ my_time, scales = "free_x") +
+        ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
         ggplot2::theme(strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
                        strip.background = ggplot2::element_rect(linetype = "dotted"))
 
