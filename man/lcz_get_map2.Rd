@@ -2,13 +2,13 @@
 % Please edit documentation in R/lcz_get_map2.R
 \name{lcz_get_map2}
 \alias{lcz_get_map2}
-\title{Obtain the LCZ map (with downloaded global LCZ map)}
+\title{Obtain the LCZ map from LCZ generator or with downloaded global LCZ map}
 \usage{
 lcz_get_map2(x, city = NULL, roi = NULL, isave_map = FALSE)
 }
 \arguments{
-\item{x}{A SpatRaster object containing the LCZ map. It can be download using this link: https://zenodo.org/records/8419340/files/lcz_filter_v3.tif?download=1".
-Then, it suggested use terra::rast(path/lcz_filter_v3.tif") to import the raster .tif into R.}
+\item{x}{A SpatRaster object containing the LCZ map. It can be download using these links: https://lcz-generator.rub.de/ , https://zenodo.org/records/8419340/files/lcz_filter_v3.tif?download=1".
+Then, it suggested use terra::rast(path/name.tif") to import the raster .tif into R.}
 
 \item{city}{A character string specifying the name of your target area based on the OpenStreetMap project.}
 
@@ -26,6 +26,10 @@ It allows you to obtain the LCZ map for a specific area of interest, which can b
 }
 \examples{
 \dontrun{
+# Go to https://lcz-generator.rub.de/
+my_map <- terra::rast("path/name.tif")
+my_lcz_map <- lcz_get_map2(my_map, city = "Name")
+
 # Load the LCZ map from your PC
 my_map <- terra::rast("path/lcz_filter_v3.tif")
 
@@ -34,7 +38,7 @@ custom_roi <- sf::st_read("custom_roi.shp")
 roi_lcz <- lcz_get_map2(my_map, roi = custom_roi)
 
 # Retrieve the LCZ map for a country (no custom ROI specified)
-my_lcz_country <- lcz_get_map2(my_map, city = "Brazil")
+my_lcz_country <- lcz_get_map2(my_map, city = "Lisbon")
 }
 
 }

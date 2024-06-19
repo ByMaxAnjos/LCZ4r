@@ -33,7 +33,9 @@ lcz_cal_area <- function(x, iplot=TRUE, isave=FALSE, inclusive = FALSE,
 
   if(!inherits(x, "SpatRaster")) {x <- terra::rast({{x}}) }
 
-  x<- x[[1]]
+  if (terra::nlyr(x) > 1) {
+    x <- x[[2]]
+  }
 
 # Calculate raster area ---------------------------------------------------
 
@@ -52,8 +54,10 @@ lcz_cal_area <- function(x, iplot=TRUE, isave=FALSE, inclusive = FALSE,
 
    lcz_area <- terra::cellSize({{x}}, unit = "km")
 
+
   lcz_areas_df <- base::data.frame(LCZ = terra::values({{x}}),
                                    Area_Km2 = terra::values(lcz_area)) %>%
+    purrr::set_names(c("lcz", "area")) %>%
     stats::na.omit() %>%
     dplyr::group_by(lcz) %>%
     dplyr::summarise(area_km2 = base::round(base::sum(.data$area),digits = 2)) %>%

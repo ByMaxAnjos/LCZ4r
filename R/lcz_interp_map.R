@@ -55,8 +55,6 @@ lcz_interp_map <- function(x,
 
   # Check and validate raster inputs -----------------------------------------------
 
-  x<- x[[1]]
-
   if (missing(x)) {
     stop("The input must be raster object. Please, use the lcz_get_map* functions")
   }
@@ -66,6 +64,9 @@ lcz_interp_map <- function(x,
     if (inherits(x, "try-error")) {
       stop("Failed to convert input 'x' to SpatRaster. Please provide a valid SpatRaster object.")
     }
+  }
+  if (terra::nlyr(x) > 1) {
+    x <- x[[2]]
   }
 
   if (terra::crs(x, proj = TRUE) != "+proj=longlat +datum=WGS84 +no_defs") {

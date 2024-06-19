@@ -31,14 +31,22 @@ lcz_plot_map <- function(x, isave = FALSE, inclusive = FALSE, ...) {
     stop("The input must be raster object. Please, use the lcz_get_map( )")
   }
 
-  if(!inherits(x, "RasterLayer")) { x <- raster::raster(x)}
+  if (!inherits(x, "SpatRaster")) {
+    x <- terra::rast({{x}})
+    }
+  if (terra::nlyr(x) > 1) {
+    x <- x[[2]]
+  }
 
+  if(!inherits(x, "RasterLayer")) {
+    x <- raster::raster(x)
+    }
   if (raster::nlayers(x) > 0) {
     x[raster::values(x) == 0] <- 17
   }
 
-    lczClass <- raster::ratify(x)
-    rat <- raster::levels(lczClass)[[1]]
+  lczClass <- raster::ratify(x)
+  rat <- raster::levels(lczClass)[[1]]
 
     # Check if 'ID' column contains 0 and replace it with 17 if it does
     ID <- c(base::seq(1, 10, 1), base::seq(11, 17)) %>%
