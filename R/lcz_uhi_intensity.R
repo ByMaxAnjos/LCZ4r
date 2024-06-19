@@ -322,7 +322,8 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
         ggplot2::geom_line(ggplot2::aes(y = .data$urban, color = "Urban Temperature"), alpha = 0.8) +
         ggplot2::geom_line(ggplot2::aes(y = .data$rural, color = "Rural Temperature"), alpha = 0.8) +
         ggplot2::geom_line(ggplot2::aes(y = sec$fwd(.data$uhi), color = "UHI")) +
-        ggplot2::scale_y_continuous(sec.axis = ggplot2::sec_axis(~ sec$rev(.), name = ylab2)) +
+        ggplot2::scale_y_continuous(sec.axis = ggplot2::sec_axis(~ sec$rev(.), name = ylab2),
+                                    guide = ggplot2::guide_axis(check.overlap = TRUE)) +
         ggplot2::scale_color_manual(name = "", values = c("Urban Temperature" = urban_col, "Rural Temperature" = rural_col, "UHI" = "black")
         ) +
         ggplot2::labs(title = title, x = xlab, y = ylab, fill = "", caption = caption) +
@@ -421,14 +422,14 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
           ggplot2::geom_line(ggplot2::aes(y = .data$urban, color = "Urban Temperature"), alpha = 0.8) +
           ggplot2::geom_line(ggplot2::aes(y = .data$rural, color = "Rural Temperature"), alpha = 0.8) +
           ggplot2::geom_line(ggplot2::aes(y = sec$fwd(.data$uhi), color = "UHI")) +
-          ggplot2::scale_y_continuous(sec.axis = ggplot2::sec_axis(~ sec$rev(.), name = ylab2)) +
+          ggplot2::scale_y_continuous(sec.axis = ggplot2::sec_axis(~ sec$rev(.), name = ylab2),
+                                      guide = ggplot2::guide_axis(check.overlap = TRUE)) +
           ggplot2::scale_color_manual(name = "",values = c("Urban Temperature" = urban_col, "Rural Temperature" = rural_col, "UHI" = "black")
           ) +
           ggplot2::labs(title = title, x = xlab, y = ylab, fill = "", caption = caption) +
           ggplot2::theme_bw()+ lcz_theme
         final_graph <-
           graph + ggplot2::facet_wrap(~ my_time, scales = "free_x", shrink = TRUE) +
-          ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
           ggplot2::scale_x_datetime(guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
           ggplot2::theme(strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
                          strip.background = ggplot2::element_rect(linetype = "dotted")
@@ -531,7 +532,8 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
           ggplot2::geom_line(ggplot2::aes(y = .data$urban, color = "Urban Temperature"), alpha = 0.8) +
           ggplot2::geom_line(ggplot2::aes(y = .data$rural, color = "Rural Temperature"), alpha = 0.8) +
           ggplot2::geom_line(ggplot2::aes(y = sec$fwd(.data$uhi), color = "UHI")) +
-          ggplot2::scale_y_continuous(sec.axis = ggplot2::sec_axis(~ sec$rev(.), name = ylab2)) +
+          ggplot2::scale_y_continuous(sec.axis = ggplot2::sec_axis(~ sec$rev(.), name = ylab2),
+                                      guide = ggplot2::guide_axis(check.overlap = TRUE)) +
           ggplot2::scale_color_manual(name = "", values = c("Urban Temperature" = urban_col, "Rural Temperature" = rural_col, "UHI" = "black")
           ) +
           ggplot2::labs(title = title, x = xlab, y = ylab, fill = "", caption = caption) +
@@ -539,7 +541,6 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
         final_graph <-
           graph + ggplot2::facet_grid(by_formula, scales = "free_x") +
-          ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
           ggplot2::scale_x_datetime(guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
           ggplot2::theme( strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
                           strip.background = ggplot2::element_rect(linetype = "dotted")
@@ -628,7 +629,8 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
           ggplot2::geom_line(ggplot2::aes(y = .data$urban, color = "Urban Temperature"), alpha = 0.8) +
           ggplot2::geom_line(ggplot2::aes(y = .data$rural, color = "Rural Temperature"), alpha = 0.8) +
           ggplot2::geom_line(ggplot2::aes(y = sec$fwd(.data$uhi), color = "UHI")) +
-          ggplot2::scale_y_continuous(sec.axis = ggplot2::sec_axis(~ sec$rev(.), name = ylab2)) +
+          ggplot2::scale_y_continuous(sec.axis = ggplot2::sec_axis(~ sec$rev(.), name = ylab2),
+                                      guide = ggplot2::guide_axis(check.overlap = TRUE)) +
           ggplot2::scale_color_manual(name = "", values = c("Urban Temperature" = urban_col, "Rural Temperature" = rural_col, "UHI" = "black")
           ) +
           ggplot2::labs(title = title, x = xlab, y = ylab, fill = "",caption = caption) +
@@ -636,7 +638,6 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
         final_graph <-
           graph + ggplot2::facet_wrap(~ my_time, scales = "free_x") +
-          ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
           ggplot2::scale_x_datetime(guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
           ggplot2::theme(strip.text = ggplot2::element_text(face = "bold",hjust = 0,size = 10),
                          strip.background = ggplot2::element_rect(linetype = "dotted")
