@@ -66,8 +66,6 @@ lcz_cal_area <- function(x, iplot=TRUE, isave=FALSE, inclusive = FALSE,
   summary_resul <- dplyr::inner_join(freq_df, lcz_areas_df, by="lcz") %>%
     dplyr::mutate(area_perc = base::round(.data$area_km2/sum(.data$area_km2)*100, digits = 2))
 
-  if (iplot == TRUE) {
-
     lcz <- c(base::seq(1, 10, 1), base::seq(11, 17)) %>%
       tibble::as_tibble() %>% purrr::set_names("ID")
 
@@ -165,13 +163,13 @@ lcz_cal_area <- function(x, iplot=TRUE, isave=FALSE, inclusive = FALSE,
 
     }
 
-    return(graph)
+    if (iplot == FALSE) {
 
-  } else {
+      return(lcz_df)
 
-    return(lcz_df)
-
-  }
+    } else {
+        return(graph)
+      }
 
 
 }

@@ -51,7 +51,7 @@ lcz_ts <- function(x,
                    time.freq = "hour",
                    by = NULL,
                    impute = NULL,
-                   iplot = FALSE,
+                   iplot = TRUE,
                    isave = FALSE,
                    palette = "VanGogh2",
                    ylab = "Air temperature [Degree Celsius]",
@@ -232,6 +232,7 @@ lcz_ts <- function(x,
                         color = .data$station
                       )) +
       ggplot2::geom_line(alpha = 0.8, lineend = "round") +
+      ggplot2::scale_x_datetime(expand = c(0,0))+
       ggplot2::scale_color_manual(
         name = "Station (LCZ)",
         values = mycolors,
@@ -261,26 +262,39 @@ lcz_ts <- function(x,
 
     }
 
-    return(final_graph)
-
     if (iplot == FALSE) {
       return(mydata)
+    } else {
+      return(final_graph)
+
     }
 
   }
 
   if (!is.null(by)) {
 
-
     if (by %in% "day") {
       stop("The 'day' does not work with the argument by")
     }
 
     if (length(by) < 2 & by %in% c("daylight", "season", "seasonyear")) {
-      # Extract AXIS information from CRS
-      axis_matches <- terra::crs({{x}}, parse = TRUE)[14]
-      # Extract hemisphere from AXIS definition
-      hemisphere <- base::ifelse(base::grepl("north", axis_matches), "northern", "southern")
+
+      extract_hemisphere <- function(raster) {
+        # Get the extent of the raster
+        extent <- raster::extent(raster::raster(raster))
+        # Check the ymin value of the extent
+        if (extent@ymin >= 0) {
+          hemisphere <- "northern"
+        } else {
+          hemisphere <- "southern"
+        }
+
+        return(hemisphere)
+      }
+
+      # Extract the hemisphere
+      hemisphere <- extract_hemisphere(raster= {{ x }})
+
       my_latitude <- lcz_model$latitude[1]
       my_longitude <- lcz_model$longitude[1]
       mydata <- openair::cutData(lcz_model, type = by, hemisphere= hemisphere,
@@ -304,6 +318,7 @@ lcz_ts <- function(x,
                           color = .data$station
                         )) +
         ggplot2::geom_line(alpha = 0.9) +
+        ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
         ggplot2::scale_color_manual(
           name = "Station (LCZ)",
           values = mycolors,
@@ -313,9 +328,8 @@ lcz_ts <- function(x,
         ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption) +
         ggplot2::theme_bw() + lcz_theme
       final_graph <-
-        graph + ggplot2::facet_wrap(~ my_time, scales = "free_x", shrink = TRUE) +
-        ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
-        ggplot2::scale_x_datetime(guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
+        graph + ggplot2::facet_wrap(~ my_time, scales = "free_x") +
+        ggplot2::scale_x_datetime(expand = c(0,0), guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
         ggplot2::theme(
           strip.text = ggplot2::element_text(
             face = "bold",
@@ -346,19 +360,32 @@ lcz_ts <- function(x,
         base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
       }
 
-      return(final_graph)
-
       if (iplot == FALSE) {
         return(mydata)
-      }
+      } else {
+        return(final_graph)
 
+      }
     }
 
     if (length(by) > 1 & by %in% "daylight") {
-      # Extract AXIS information from CRS
-      axis_matches <- terra::crs({{x}}, parse = TRUE)[14]
-      # Extract hemisphere from AXIS definition
-      hemisphere <- base::ifelse(base::grepl("north", axis_matches), "northern", "southern")
+
+      extract_hemisphere <- function(raster) {
+        # Get the extent of the raster
+        extent <- raster::extent(raster::raster(raster))
+        # Check the ymin value of the extent
+        if (extent@ymin >= 0) {
+          hemisphere <- "northern"
+        } else {
+          hemisphere <- "southern"
+        }
+
+        return(hemisphere)
+      }
+
+      # Extract the hemisphere
+      hemisphere <- extract_hemisphere(raster= {{ x }})
+
       my_latitude <- lcz_model$latitude[1]
         my_longitude <- lcz_model$longitude[1]
         mydata <- openair::cutData(lcz_model, type = by, hemisphere= hemisphere,
@@ -399,7 +426,7 @@ lcz_ts <- function(x,
         final_graph <-
           graph + ggplot2::facet_grid(by_formula, scales = "free_x") +
           ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
-          ggplot2::scale_x_datetime(guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
+          ggplot2::scale_x_datetime(expand = c(0,0), guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
           ggplot2::theme(
             strip.text = ggplot2::element_text(
               face = "bold",
@@ -430,10 +457,11 @@ lcz_ts <- function(x,
 
         }
 
-        return(final_graph)
-
         if (iplot == FALSE) {
           return(mydata)
+        } else {
+          return(final_graph)
+
         }
 
       }
@@ -475,7 +503,7 @@ lcz_ts <- function(x,
         final_graph <-
           graph + ggplot2::facet_wrap(~ my_time, scales = "free_x") +
           ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
-          ggplot2::scale_x_datetime(guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
+          ggplot2::scale_x_datetime(expand = c(0,0), guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
           ggplot2::theme(
             strip.text = ggplot2::element_text(
               face = "bold",
@@ -506,10 +534,11 @@ lcz_ts <- function(x,
 
         }
 
-        return(final_graph)
-
         if (iplot == FALSE) {
           return(mydata)
+        } else {
+          return(final_graph)
+
         }
 
       }

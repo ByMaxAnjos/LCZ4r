@@ -13,7 +13,7 @@ lcz_ts(
   time.freq = "hour",
   by = NULL,
   impute = NULL,
-  iplot = FALSE,
+  iplot = TRUE,
   isave = FALSE,
   palette = "VanGogh2",
   ylab = "Air temperature [Degree Celsius]",

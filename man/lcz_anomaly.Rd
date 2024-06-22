@@ -13,7 +13,7 @@ lcz_anomaly(
   time.freq = "hour",
   by = NULL,
   impute = NULL,
-  iplot = FALSE,
+  iplot = TRUE,
   isave = FALSE,
   inclusive = FALSE,
   ylab = "Air temperature anomaly",

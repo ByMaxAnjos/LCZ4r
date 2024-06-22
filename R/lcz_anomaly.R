@@ -50,7 +50,7 @@ lcz_anomaly <- function(x,
                    time.freq = "hour",
                    by = NULL,
                    impute = NULL,
-                   iplot = FALSE,
+                   iplot = TRUE,
                    isave = FALSE,
                    inclusive = FALSE,
                    ylab = "Air temperature anomaly",
@@ -303,9 +303,11 @@ lcz_anomaly <- function(x,
 
     }
 
-    return(final_graph)
-
-    if (iplot == FALSE) { return(anomaly_cal)}
+    if (iplot == FALSE) {
+      return(anomaly_cal)
+    } else {
+      return(final_graph)
+      }
 
   }
 
@@ -317,10 +319,22 @@ lcz_anomaly <- function(x,
 
     if (length(by) < 2 & by %in% c("daylight", "season", "seasonyear")) {
 
-      # Extract AXIS information from CRS
-      axis_matches <- terra::crs({{x}}, parse = TRUE)[14]
-      # Extract hemisphere from AXIS definition
-      hemisphere <- base::ifelse(base::grepl("north", axis_matches), "northern", "southern")
+      extract_hemisphere <- function(raster) {
+        # Get the extent of the raster
+        extent <- raster::extent(raster::raster(raster))
+        # Check the ymin value of the extent
+        if (extent@ymin >= 0) {
+          hemisphere <- "northern"
+        } else {
+          hemisphere <- "southern"
+        }
+
+        return(hemisphere)
+      }
+
+      # Extract the hemisphere
+      hemisphere <- extract_hemisphere(raster= {{ x }})
+
       my_latitude <- lcz_model$latitude[1]
       my_longitude <- lcz_model$longitude[1]
       mydata <- openair::cutData(lcz_model, type = by, hemisphere= hemisphere,
@@ -399,18 +413,31 @@ lcz_anomaly <- function(x,
 
       }
 
-      return(final_graph)
-
-      if (iplot == FALSE) {return(anomaly_cal)}
+      if (iplot == FALSE) {
+        return(anomaly_cal)
+      } else {
+        return(final_graph)
+      }
 
     }
 
     if (length(by) > 1 & by %in% "daylight") {
 
-      # Extract AXIS information from CRS
-      axis_matches <- terra::crs({{x}}, parse = TRUE)[14]
-      # Extract hemisphere from AXIS definition
-      hemisphere <- base::ifelse(base::grepl("north", axis_matches), "northern", "southern")
+      extract_hemisphere <- function(raster) {
+        # Get the extent of the raster
+        extent <- raster::extent(raster::raster(raster))
+        # Check the ymin value of the extent
+        if (extent@ymin >= 0) {
+          hemisphere <- "northern"
+        } else {
+          hemisphere <- "southern"
+        }
+
+        return(hemisphere)
+      }
+
+      # Extract the hemisphere
+      hemisphere <- extract_hemisphere(raster= {{ x }})
 
       my_latitude <- lcz_model$latitude[1]
       my_longitude <- lcz_model$longitude[1]
@@ -494,9 +521,11 @@ lcz_anomaly <- function(x,
 
       }
 
-      return(final_graph)
-
-      if (iplot == FALSE) {return(anomaly_cal)}
+      if (iplot == FALSE) {
+        return(anomaly_cal)
+      } else {
+        return(final_graph)
+      }
 
     }
 
@@ -581,9 +610,11 @@ lcz_anomaly <- function(x,
 
       }
 
-      return(final_graph)
-
-      if (iplot == FALSE) {return(anomaly_cal)}
+      if (iplot == FALSE) {
+        return(anomaly_cal)
+      } else {
+        return(final_graph)
+      }
 
     }
 

@@ -295,8 +295,9 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
       type = c("reference")
     ) %>% stats::na.omit() %>%
       tidyr::pivot_wider(id_cols = .data$date, names_from = .data$reference, values_from = .data$var_interp) %>%
-      dplyr::mutate(uhi = .data$urban - .data$rural) %>%
-      stats::na.omit()
+      stats::na.omit() %>%
+      dplyr::mutate(uhi = base::round(.data$urban - .data$rural, digits = 2))
+
 
     if (group == TRUE) {
 
@@ -324,6 +325,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
         ggplot2::geom_line(ggplot2::aes(y = sec$fwd(.data$uhi), color = "UHI")) +
         ggplot2::scale_y_continuous(sec.axis = ggplot2::sec_axis(~ sec$rev(.), name = ylab2),
                                     guide = ggplot2::guide_axis(check.overlap = TRUE)) +
+        ggplot2::scale_x_datetime(expand = c(0,0)) +
         ggplot2::scale_color_manual(name = "", values = c("Urban Temperature" = urban_col, "Rural Temperature" = rural_col, "UHI" = "black")
         ) +
         ggplot2::labs(title = title, x = xlab, y = ylab, fill = "", caption = caption) +
@@ -333,6 +335,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
       final_graph <-
         ggplot2::ggplot(mydata, ggplot2::aes(x = .data$date)) +
         ggplot2::geom_line(ggplot2::aes(y = .data$uhi, color = "UHI"), alpha = 0.8) +
+        ggplot2::scale_x_datetime(expand = c(0,0)) +
         ggplot2::scale_color_manual(name = "", values = c("UHI" = "black")) +
         ggplot2::labs(title = title, x = xlab, y = ylab, fill = "", caption = caption) +
         ggplot2::theme_bw() + lcz_theme
@@ -359,9 +362,13 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
     }
 
-    return(final_graph)
+    if (iplot == FALSE) {
+      return(mydata)
+    } else {
 
-    if (iplot == FALSE) {return(mydata)}
+      return(final_graph)
+
+      }
 
   }
 
@@ -376,10 +383,22 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
     if (length(by) < 2 & by %in% c("daylight", "season", "seasonyear")) {
 
-      # Extract AXIS information from CRS
-      axis_matches <- terra::crs({{x}}, parse = TRUE)[14]
-      # Extract hemisphere from AXIS definition
-      hemisphere <- base::ifelse(base::grepl("north", axis_matches), "northern", "southern")
+      extract_hemisphere <- function(raster) {
+        # Get the extent of the raster
+        extent <- raster::extent(raster::raster(raster))
+        # Check the ymin value of the extent
+        if (extent@ymin >= 0) {
+          hemisphere <- "northern"
+        } else {
+          hemisphere <- "southern"
+        }
+
+        return(hemisphere)
+      }
+
+      # Extract the hemisphere
+      hemisphere <- extract_hemisphere(raster= {{ x }})
+
       my_latitude <- lcz_model$latitude[1]
       my_longitude <- lcz_model$longitude[1]
       mydata <- openair::cutData(lcz_model, type = by, hemisphere= hemisphere,
@@ -395,7 +414,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
         type = c("reference", "my_time")
       ) %>% stats::na.omit() %>%
         tidyr::pivot_wider(id_cols = c(.data$date, .data$my_time), names_from = .data$reference, values_from = .data$var_interp) %>%
-        dplyr::mutate(uhi = .data$urban - .data$rural) %>%
+        dplyr::mutate(uhi = base::round(.data$urban - .data$rural, digits = 2)) %>%
         stats::na.omit()
 
       if (group == TRUE) {
@@ -430,7 +449,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
           ggplot2::theme_bw()+ lcz_theme
         final_graph <-
           graph + ggplot2::facet_wrap(~ my_time, scales = "free_x", shrink = TRUE) +
-          ggplot2::scale_x_datetime(guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
+          ggplot2::scale_x_datetime(expand = c(0,0), guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
           ggplot2::theme(strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
                          strip.background = ggplot2::element_rect(linetype = "dotted")
           )
@@ -444,7 +463,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
         final_graph <-
           graph + ggplot2::facet_wrap(~ my_time, scales = "free_x", shrink = TRUE) +
           ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
-          ggplot2::scale_x_datetime(guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
+          ggplot2::scale_x_datetime(expand = c(0,0), guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
           ggplot2::theme(strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
                          strip.background = ggplot2::element_rect(linetype = "dotted")
           )
@@ -472,18 +491,37 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
       }
 
-      return(final_graph)
+      if (iplot == FALSE) {
 
-      if (iplot == FALSE) {return(mydata)}
+        return(mydata)
+
+      } else {
+
+        return(final_graph)
+
+        }
+
 
     }
 
     if (length(by) > 1 & by %in% "daylight") {
 
-      # Extract AXIS information from CRS
-      axis_matches <- terra::crs({{x}}, parse = TRUE)[14]
-      # Extract hemisphere from AXIS definition
-      hemisphere <- base::ifelse(base::grepl("north", axis_matches), "northern", "southern")
+      extract_hemisphere <- function(raster) {
+        # Get the extent of the raster
+        extent <- raster::extent(raster::raster(raster))
+        # Check the ymin value of the extent
+        if (extent@ymin >= 0) {
+          hemisphere <- "northern"
+        } else {
+          hemisphere <- "southern"
+        }
+
+        return(hemisphere)
+      }
+
+      # Extract the hemisphere
+      hemisphere <- extract_hemisphere(raster= {{ x }})
+
       my_latitude <- lcz_model$latitude[1]
       my_longitude <- lcz_model$longitude[1]
       mydata <- openair::cutData(lcz_model, type = by, hemisphere= hemisphere,
@@ -499,7 +537,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
         type = c("reference", by)
       ) %>% stats::na.omit() %>%
         tidyr::pivot_wider(id_cols = c(.data$date, by), names_from = .data$reference, values_from = .data$var_interp) %>%
-        dplyr::mutate(uhi = .data$urban - .data$rural) %>%
+        dplyr::mutate(uhi = base::round(.data$urban - .data$rural, digits = 2)) %>%
         stats::na.omit()
 
       # convert the vector to a string
@@ -541,7 +579,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
         final_graph <-
           graph + ggplot2::facet_grid(by_formula, scales = "free_x") +
-          ggplot2::scale_x_datetime(guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
+          ggplot2::scale_x_datetime(expand = c(0,0), guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
           ggplot2::theme( strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
                           strip.background = ggplot2::element_rect(linetype = "dotted")
           )
@@ -556,7 +594,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
         final_graph <-
           graph + ggplot2::facet_grid(by_formula, scales = "free_x") +
           ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
-          ggplot2::scale_x_datetime(guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
+          ggplot2::scale_x_datetime(expand = c(0,0), guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
           ggplot2::theme( strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
                           strip.background = ggplot2::element_rect(linetype = "dotted")
           )
@@ -583,9 +621,15 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
       }
 
-      return(final_graph)
+      if (iplot == FALSE) {
 
-      if (iplot == FALSE) { return(mydata) }
+        return(mydata)
+
+      } else {
+
+        return(final_graph)
+
+      }
 
     }
 
@@ -602,7 +646,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
         type = c("reference", "my_time")
       ) %>% stats::na.omit() %>%
         tidyr::pivot_wider(id_cols = c(.data$date, .data$my_time), names_from = .data$reference, values_from = .data$var_interp) %>%
-        dplyr::mutate(uhi = .data$urban - .data$rural) %>%
+        dplyr::mutate(uhi = base::round(.data$urban - .data$rural, digits = 2)) %>%
         stats::na.omit()
 
       if (group == TRUE) {
@@ -638,7 +682,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
         final_graph <-
           graph + ggplot2::facet_wrap(~ my_time, scales = "free_x") +
-          ggplot2::scale_x_datetime(guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
+          ggplot2::scale_x_datetime(expand = c(0,0), guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
           ggplot2::theme(strip.text = ggplot2::element_text(face = "bold",hjust = 0,size = 10),
                          strip.background = ggplot2::element_rect(linetype = "dotted")
           )
@@ -653,7 +697,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
         final_graph <-
           graph + ggplot2::facet_wrap(~ my_time, scales = "free_x") +
           ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
-          ggplot2::scale_x_datetime(guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
+          ggplot2::scale_x_datetime(expand = c(0,0), guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
           ggplot2::theme(strip.text = ggplot2::element_text(face = "bold",hjust = 0, size = 10),
                          strip.background = ggplot2::element_rect(linetype = "dotted")
           )
@@ -681,9 +725,15 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
       }
 
-      return(final_graph)
+      if (iplot == FALSE) {
 
-      if (iplot == FALSE) { return(mydata) }
+        return(mydata)
+
+      } else {
+
+        return(final_graph)
+
+      }
 
     }
 

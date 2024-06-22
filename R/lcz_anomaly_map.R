@@ -728,10 +728,21 @@ lcz_anomaly_map <- function(x,
 
     if (length(by) < 2 & by %in% c("daylight", "season", "seasonyear")) {
 
-      # Extract AXIS information from CRS
-      axis_matches <- terra::crs({{x}}, parse = TRUE)[14]
-      # Extract hemisphere from AXIS definition
-      hemisphere <- ifelse(grepl("north", axis_matches), "northern", "southern")
+      extract_hemisphere <- function(raster) {
+        # Get the extent of the raster
+        extent <- raster::extent(raster::raster(raster))
+        # Check the ymin value of the extent
+        if (extent@ymin >= 0) {
+          hemisphere <- "northern"
+        } else {
+          hemisphere <- "southern"
+        }
+
+        return(hemisphere)
+      }
+
+      # Extract the hemisphere
+      hemisphere <- extract_hemisphere(raster= {{ x }})
 
       my_latitude <- df_processed$latitude[1]
       my_longitude <- df_processed$longitude[1]
@@ -847,10 +858,21 @@ lcz_anomaly_map <- function(x,
 
     if (length(by) > 1 & by %in% "daylight") {
 
-      # Extract AXIS information from CRS
-      axis_matches <- terra::crs(x, parse = TRUE)[14]
-      # Extract hemisphere from AXIS definition
-      hemisphere <- ifelse(grepl("north", axis_matches), "northern", "southern")
+      extract_hemisphere <- function(raster) {
+        # Get the extent of the raster
+        extent <- raster::extent(raster::raster(raster))
+        # Check the ymin value of the extent
+        if (extent@ymin >= 0) {
+          hemisphere <- "northern"
+        } else {
+          hemisphere <- "southern"
+        }
+
+        return(hemisphere)
+      }
+
+      # Extract the hemisphere
+      hemisphere <- extract_hemisphere(raster= {{ x }})
 
       my_latitude <- df_processed$latitude[1]
       my_longitude <- df_processed$longitude[1]
