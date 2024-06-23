@@ -52,11 +52,9 @@
 lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ..., time.freq = "hour",
                               method = "LCZ", Turban = NULL, Trural = NULL, by = NULL, impute = NULL,
                               group = FALSE, iplot = TRUE, isave = FALSE, ylab = "Air temperature [C]",
-                              xlab = "Time", ylab2 = "UHI [C]", title = "", caption = "LCZ4r,2024") {
+                              xlab = "Time", ylab2 = "UHI", title = "", caption = "LCZ4r,2024") {
 
   # Check and validate raster inputs -----------------------------------------------
-
-    x<- x[[1]]
 
    if (missing(x)) {
     stop("The input must be raster object. Please, use the lcz_get_map* functions")
@@ -68,6 +66,9 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
       stop("Failed to convert input 'x' to SpatRaster. Please provide a valid SpatRaster object.")
     }
   }
+    if (terra::nlyr(x) > 1) {
+      x <- x[[2]]
+    }
 
   if (terra::crs(x, proj = TRUE) != "+proj=longlat +datum=WGS84 +no_defs") {
     warning("The input 'x' is not in WGS84 projection. Reprojecting to WGS84.")
@@ -171,7 +172,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
   if (method == "LCZ") {
     select_stations <- function(data) {
       urban_preference <- c("1", "2", "3", "4", "5", "6", "7", "8", "9", "10")
-      rural_preference <- c("12", "13", "14", "15", "16")
+      rural_preference <- c("11", "12", "13", "14", "15", "16")
 
       find_station <- function(stations, preferences) {
         for (pref in preferences) {
@@ -194,7 +195,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
     rural_station <- result$rural
 
     if (is.null(urban_station) || is.null(rural_station)) {
-      stop("Unable to find suitable urban or rural stations based on urban-LCZs (1, 2, 3, 4, 5, 6, 7, and 8) and rural-LCZs (12, 13, 14, and 9). Please, try the manual method")
+      stop("Unable to find suitable urban or rural stations based on urban-LCZs (1 - 10) and rural-LCZs (11 - 16). Please, try the manual method")
     }
 
     lcz_model <- df_model %>%
@@ -286,6 +287,26 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
     plot.caption = ggplot2::element_text(color = "grey40", hjust = 1, size = 10)
   )
 
+  #Define hemisphere
+  extract_hemisphere <- function(raster) {
+    # Get the extent of the raster
+    extent <- raster::extent(raster::raster(raster))
+    # Check the ymin value of the extent
+    if (extent@ymin >= 0) {
+      hemisphere <- "northern"
+    } else {
+      hemisphere <- "southern"
+    }
+
+    return(hemisphere)
+  }
+
+  # Extract the hemisphere
+  hemisphere <- extract_hemisphere(raster= {{ x }})
+
+  my_latitude <- lcz_model$latitude[1]
+  my_longitude <- lcz_model$longitude[1]
+
   # Define time series frequency with without "by"--------------------------------------------
   if (is.null(by)) {
     mydata <- openair::timeAverage(
@@ -363,15 +384,18 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
     }
 
     if (iplot == FALSE) {
+
+      mydata$date <- lubridate::as_datetime(mydata$date)
+
       return(mydata)
+
     } else {
 
       return(final_graph)
 
-      }
+    }
 
   }
-
 
   # Define with by  ---------------------------------------------------------
 
@@ -381,26 +405,8 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
       stop("The 'day' does not work with the argument by")
     }
 
-    if (length(by) < 2 & by %in% c("daylight", "season", "seasonyear")) {
+    if (length(by) < 2 & by %in% c("daylight", "month", "year", "season", "seasonyear", "yearseason")) {
 
-      extract_hemisphere <- function(raster) {
-        # Get the extent of the raster
-        extent <- raster::extent(raster::raster(raster))
-        # Check the ymin value of the extent
-        if (extent@ymin >= 0) {
-          hemisphere <- "northern"
-        } else {
-          hemisphere <- "southern"
-        }
-
-        return(hemisphere)
-      }
-
-      # Extract the hemisphere
-      hemisphere <- extract_hemisphere(raster= {{ x }})
-
-      my_latitude <- lcz_model$latitude[1]
-      my_longitude <- lcz_model$longitude[1]
       mydata <- openair::cutData(lcz_model, type = by, hemisphere= hemisphere,
                                  latitude = my_latitude, longitude = my_longitude) %>% stats::na.omit() %>%
         dplyr::rename(my_time = dplyr::last_col())
@@ -415,7 +421,19 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
       ) %>% stats::na.omit() %>%
         tidyr::pivot_wider(id_cols = c(.data$date, .data$my_time), names_from = .data$reference, values_from = .data$var_interp) %>%
         dplyr::mutate(uhi = base::round(.data$urban - .data$rural, digits = 2)) %>%
-        stats::na.omit()
+        stats::na.omit() %>%
+        dplyr::mutate(date = base::as.factor(date))
+
+      label_format <- switch(
+        by,
+        "daylight" = "%H",
+        "season" = "%b %d",
+        "seasonyear" = "%b %d",
+        "yearseason" = "%b %d",
+        "year" = "%b %d",
+        "month" = "%d",
+        "%b %d"  # Default case if none of the above match
+      )
 
       if (group == TRUE) {
 
@@ -438,9 +456,9 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
         graph <-
           ggplot2::ggplot(mydata, ggplot2::aes(x = .data$date)) +
-          ggplot2::geom_line(ggplot2::aes(y = .data$urban, color = "Urban Temperature"), alpha = 0.8) +
-          ggplot2::geom_line(ggplot2::aes(y = .data$rural, color = "Rural Temperature"), alpha = 0.8) +
-          ggplot2::geom_line(ggplot2::aes(y = sec$fwd(.data$uhi), color = "UHI")) +
+          ggplot2::geom_line(ggplot2::aes(y = .data$urban, color = "Urban Temperature", group = 1), alpha = 0.8) +
+          ggplot2::geom_line(ggplot2::aes(y = .data$rural, color = "Rural Temperature", group = 1), alpha = 0.8) +
+          ggplot2::geom_line(ggplot2::aes(y = sec$fwd(.data$uhi), color = "UHI", group =1)) +
           ggplot2::scale_y_continuous(sec.axis = ggplot2::sec_axis(~ sec$rev(.), name = ylab2),
                                       guide = ggplot2::guide_axis(check.overlap = TRUE)) +
           ggplot2::scale_color_manual(name = "",values = c("Urban Temperature" = urban_col, "Rural Temperature" = rural_col, "UHI" = "black")
@@ -449,23 +467,36 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
           ggplot2::theme_bw()+ lcz_theme
         final_graph <-
           graph + ggplot2::facet_wrap(~ my_time, scales = "free_x", shrink = TRUE) +
-          ggplot2::scale_x_datetime(expand = c(0,0), guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
+          ggplot2::scale_x_discrete(expand = c(0,0),
+                                    labels= function(x) base::format(base::as.POSIXct(x), label_format),
+                                    guide = ggplot2::guide_axis(check.overlap = TRUE
+                                    )) +
           ggplot2::theme(strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
-                         strip.background = ggplot2::element_rect(linetype = "dotted")
+                         strip.background = ggplot2::element_rect(linetype = "dotted"),
+                         legend.box.spacing = ggplot2::unit(20, "pt"),
+                         panel.spacing = ggplot2::unit(3, "lines"),
+                         axis.ticks.x = ggplot2::element_blank()
           )
+
       } else {
         graph <-
           ggplot2::ggplot(mydata, ggplot2::aes(x = .data$date)) +
-          ggplot2::geom_line(ggplot2::aes(y = .data$uhi, color = "UHI"), alpha = 0.8) +
+          ggplot2::geom_line(ggplot2::aes(y = .data$uhi, color = "UHI", group= 1), alpha = 0.8) +
           ggplot2::scale_color_manual(name = "", values = c("UHI" = "black")) +
           ggplot2::labs(title = title, x = xlab, y = ylab, fill = "", caption = caption) +
           ggplot2::theme_bw()+ lcz_theme
         final_graph <-
           graph + ggplot2::facet_wrap(~ my_time, scales = "free_x", shrink = TRUE) +
           ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
-          ggplot2::scale_x_datetime(expand = c(0,0), guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
+          ggplot2::scale_x_discrete(expand = c(0,0),
+                                    labels= function(x) base::format(base::as.POSIXct(x), label_format),
+                                    guide = ggplot2::guide_axis(check.overlap = TRUE
+                                    )) +
           ggplot2::theme(strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
-                         strip.background = ggplot2::element_rect(linetype = "dotted")
+                         strip.background = ggplot2::element_rect(linetype = "dotted"),
+                         legend.box.spacing = ggplot2::unit(20, "pt"),
+                         panel.spacing = ggplot2::unit(3, "lines"),
+                         axis.ticks.x = ggplot2::element_blank()
           )
       }
 
@@ -493,37 +524,21 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
       if (iplot == FALSE) {
 
+        mydata$date <- lubridate::as_datetime(mydata$date)
+
         return(mydata)
 
       } else {
 
         return(final_graph)
 
-        }
+      }
 
 
     }
 
     if (length(by) > 1 & by %in% "daylight") {
 
-      extract_hemisphere <- function(raster) {
-        # Get the extent of the raster
-        extent <- raster::extent(raster::raster(raster))
-        # Check the ymin value of the extent
-        if (extent@ymin >= 0) {
-          hemisphere <- "northern"
-        } else {
-          hemisphere <- "southern"
-        }
-
-        return(hemisphere)
-      }
-
-      # Extract the hemisphere
-      hemisphere <- extract_hemisphere(raster= {{ x }})
-
-      my_latitude <- lcz_model$latitude[1]
-      my_longitude <- lcz_model$longitude[1]
       mydata <- openair::cutData(lcz_model, type = by, hemisphere= hemisphere,
                                  latitude = my_latitude, longitude = my_longitude) %>% stats::na.omit() %>%
         dplyr::rename(my_time = dplyr::last_col())
@@ -538,10 +553,12 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
       ) %>% stats::na.omit() %>%
         tidyr::pivot_wider(id_cols = c(.data$date, by), names_from = .data$reference, values_from = .data$var_interp) %>%
         dplyr::mutate(uhi = base::round(.data$urban - .data$rural, digits = 2)) %>%
-        stats::na.omit()
+        stats::na.omit() %>%
+        dplyr::mutate(date = base::as.factor(date))
 
       # convert the vector to a string
-      by_str <- base::paste(by, collapse = " ~ ")
+      by_reversed <- base::rev(by)
+      by_str <- base::paste(by_reversed, collapse = " ~ ")
 
       # convert the string to a formula
       by_formula <- base::eval(base::parse(text = by_str))
@@ -567,9 +584,9 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
         graph <-
           ggplot2::ggplot(mydata, ggplot2::aes(x = .data$date)) +
-          ggplot2::geom_line(ggplot2::aes(y = .data$urban, color = "Urban Temperature"), alpha = 0.8) +
-          ggplot2::geom_line(ggplot2::aes(y = .data$rural, color = "Rural Temperature"), alpha = 0.8) +
-          ggplot2::geom_line(ggplot2::aes(y = sec$fwd(.data$uhi), color = "UHI")) +
+          ggplot2::geom_line(ggplot2::aes(y = .data$urban, color = "Urban Temperature", group = 1), alpha = 0.8) +
+          ggplot2::geom_line(ggplot2::aes(y = .data$rural, color = "Rural Temperature", group = 1), alpha = 0.8) +
+          ggplot2::geom_line(ggplot2::aes(y = sec$fwd(.data$uhi), color = "UHI", group = 1)) +
           ggplot2::scale_y_continuous(sec.axis = ggplot2::sec_axis(~ sec$rev(.), name = ylab2),
                                       guide = ggplot2::guide_axis(check.overlap = TRUE)) +
           ggplot2::scale_color_manual(name = "", values = c("Urban Temperature" = urban_col, "Rural Temperature" = rural_col, "UHI" = "black")
@@ -578,15 +595,27 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
           ggplot2::theme_bw()+ lcz_theme
 
         final_graph <-
-          graph + ggplot2::facet_grid(by_formula, scales = "free_x") +
-          ggplot2::scale_x_datetime(expand = c(0,0), guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
-          ggplot2::theme( strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
-                          strip.background = ggplot2::element_rect(linetype = "dotted")
+          graph + ggplot2::facet_wrap(by_formula, scales = "free_x") +
+          ggplot2::scale_x_discrete(expand = c(0,0),
+                                    guide = ggplot2::guide_axis(check.overlap = TRUE
+                                    )) +
+          ggplot2::theme(
+            axis.text.x = ggplot2::element_blank(),
+            legend.box.spacing = ggplot2::unit(20, "pt"),
+            panel.spacing = ggplot2::unit(1, "lines"),
+            axis.ticks.x = ggplot2::element_blank(),
+            strip.text = ggplot2::element_text(
+              face = "bold",
+              hjust = 0,
+              size = 10
+            ),
+            strip.background = ggplot2::element_rect(linetype = "dotted")
           )
+
       } else {
         graph <-
           ggplot2::ggplot(mydata, ggplot2::aes(x = .data$date)) +
-          ggplot2::geom_line(ggplot2::aes(y = .data$uhi, color = "UHI"), alpha = 0.8) +
+          ggplot2::geom_line(ggplot2::aes(y = .data$uhi, color = "UHI", group = 1), alpha = 0.8) +
           ggplot2::scale_color_manual(name = "", values = c("UHI" = "black")) +
           ggplot2::labs(title = title, x = xlab, y = ylab, fill = "", caption = caption) +
           ggplot2::theme_bw() + lcz_theme
@@ -594,9 +623,20 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
         final_graph <-
           graph + ggplot2::facet_grid(by_formula, scales = "free_x") +
           ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
-          ggplot2::scale_x_datetime(expand = c(0,0), guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
-          ggplot2::theme( strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
-                          strip.background = ggplot2::element_rect(linetype = "dotted")
+          ggplot2::scale_x_discrete(expand = c(0,0),
+                                    guide = ggplot2::guide_axis(check.overlap = TRUE
+                                    )) +
+          ggplot2::theme(
+            axis.text.x = ggplot2::element_blank(),
+            legend.box.spacing = ggplot2::unit(20, "pt"),
+            panel.spacing = ggplot2::unit(1, "lines"),
+            axis.ticks.x = ggplot2::element_blank(),
+            strip.text = ggplot2::element_text(
+              face = "bold",
+              hjust = 0,
+              size = 10
+            ),
+            strip.background = ggplot2::element_rect(linetype = "dotted")
           )
       }
 
@@ -623,6 +663,8 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
       if (iplot == FALSE) {
 
+        mydata$date <- lubridate::as_datetime(mydata$date)
+
         return(mydata)
 
       } else {
@@ -634,7 +676,9 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
     }
 
     else {
-      mydata <- openair::cutData(lcz_model, type = by, hemisphere = hemisphere,
+
+      mydata <- openair::cutData(lcz_model, type = by,
+                                 hemisphere = hemisphere,
                                  latitude = my_latitude,
                                  longitude = my_longitude
       ) %>% stats::na.omit() %>%
@@ -670,9 +714,9 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
         graph <-
           ggplot2::ggplot(mydata, ggplot2::aes(x = .data$date)) +
-          ggplot2::geom_line(ggplot2::aes(y = .data$urban, color = "Urban Temperature"), alpha = 0.8) +
-          ggplot2::geom_line(ggplot2::aes(y = .data$rural, color = "Rural Temperature"), alpha = 0.8) +
-          ggplot2::geom_line(ggplot2::aes(y = sec$fwd(.data$uhi), color = "UHI")) +
+          ggplot2::geom_line(ggplot2::aes(y = .data$urban, color = "Urban Temperature", group = 1), alpha = 0.8) +
+          ggplot2::geom_line(ggplot2::aes(y = .data$rural, color = "Rural Temperature", group = 1), alpha = 0.8) +
+          ggplot2::geom_line(ggplot2::aes(y = sec$fwd(.data$uhi), color = "UHI", group = 1)) +
           ggplot2::scale_y_continuous(sec.axis = ggplot2::sec_axis(~ sec$rev(.), name = ylab2),
                                       guide = ggplot2::guide_axis(check.overlap = TRUE)) +
           ggplot2::scale_color_manual(name = "", values = c("Urban Temperature" = urban_col, "Rural Temperature" = rural_col, "UHI" = "black")
@@ -689,13 +733,13 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
       } else {
         graph <-
           ggplot2::ggplot(mydata, ggplot2::aes(x = .data$date)) +
-          ggplot2::geom_line(ggplot2::aes(y = .data$uhi, color = "UHI"), alpha = 0.8) +
+          ggplot2::geom_line(ggplot2::aes(y = .data$uhi, color = "UHI", group = 1), alpha = 0.8) +
           ggplot2::scale_color_manual(name = "", values = c("UHI" = "black"))+
           ggplot2::labs(title = title, x = xlab, y = ylab, fill = "",caption = caption) +
           ggplot2::theme_bw() + lcz_theme
 
         final_graph <-
-          graph + ggplot2::facet_wrap(~ my_time, scales = "free_x") +
+          graph + ggplot2::facet_grid(~ my_time, scales = "free_x") +
           ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
           ggplot2::scale_x_datetime(expand = c(0,0), guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
           ggplot2::theme(strip.text = ggplot2::element_text(face = "bold",hjust = 0, size = 10),
@@ -726,6 +770,8 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
       }
 
       if (iplot == FALSE) {
+
+        mydata$date <- lubridate::as_datetime(mydata$date)
 
         return(mydata)
 

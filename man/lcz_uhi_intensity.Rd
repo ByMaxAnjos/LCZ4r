@@ -21,7 +21,7 @@ lcz_uhi_intensity(
   isave = FALSE,
   ylab = "Air temperature [C]",
   xlab = "Time",
-  ylab2 = "UHI [C]",
+  ylab2 = "UHI",
   title = "",
   caption = "LCZ4r,2024"
 )

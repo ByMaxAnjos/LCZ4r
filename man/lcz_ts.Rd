@@ -19,7 +19,7 @@ lcz_ts(
   ylab = "Air temperature [Degree Celsius]",
   xlab = "Time",
   title = "",
-  caption = ""
+  caption = "LCZ4r"
 )
 }
 \arguments{

@@ -57,7 +57,7 @@ lcz_ts <- function(x,
                    ylab = "Air temperature [Degree Celsius]",
                    xlab = "Time",
                    title = "",
-                   caption = "") {
+                   caption = "LCZ4r") {
 
   # Check and validate raster inputs -----------------------------------------------
 
@@ -216,6 +216,26 @@ lcz_ts <- function(x,
                    plot.caption = ggplot2::element_text(color = "grey40", hjust = 1, size = 10)
     )
 
+  #Define hemisphere
+  extract_hemisphere <- function(raster) {
+    # Get the extent of the raster
+    extent <- raster::extent(raster::raster(raster))
+    # Check the ymin value of the extent
+    if (extent@ymin >= 0) {
+      hemisphere <- "northern"
+    } else {
+      hemisphere <- "southern"
+    }
+
+    return(hemisphere)
+  }
+
+  # Extract the hemisphere
+  hemisphere <- extract_hemisphere(raster= {{ x }})
+
+  my_latitude <- lcz_model$latitude[1]
+  my_longitude <- lcz_model$longitude[1]
+
   # Define time series frequency with argument "by"--------------------------------------------
   if (is.null(by)) {
     mydata <- openair::timeAverage(
@@ -232,7 +252,7 @@ lcz_ts <- function(x,
                         color = .data$station
                       )) +
       ggplot2::geom_line(alpha = 0.8, lineend = "round") +
-      ggplot2::scale_x_datetime(expand = c(0,0))+
+      ggplot2::scale_x_datetime(expand = c(0,0)) +
       ggplot2::scale_color_manual(
         name = "Station (LCZ)",
         values = mycolors,
@@ -263,8 +283,13 @@ lcz_ts <- function(x,
     }
 
     if (iplot == FALSE) {
+
+      mydata$date <- lubridate::as_datetime(mydata$date)
+
       return(mydata)
+
     } else {
+
       return(final_graph)
 
     }
@@ -277,26 +302,9 @@ lcz_ts <- function(x,
       stop("The 'day' does not work with the argument by")
     }
 
-    if (length(by) < 2 & by %in% c("daylight", "season", "seasonyear")) {
+    if (length(by) < 2 & by %in% c("daylight", "month", "year", "season", "seasonyear", "yearseason")) {
 
-      extract_hemisphere <- function(raster) {
-        # Get the extent of the raster
-        extent <- raster::extent(raster::raster(raster))
-        # Check the ymin value of the extent
-        if (extent@ymin >= 0) {
-          hemisphere <- "northern"
-        } else {
-          hemisphere <- "southern"
-        }
 
-        return(hemisphere)
-      }
-
-      # Extract the hemisphere
-      hemisphere <- extract_hemisphere(raster= {{ x }})
-
-      my_latitude <- lcz_model$latitude[1]
-      my_longitude <- lcz_model$longitude[1]
       mydata <- openair::cutData(lcz_model, type = by, hemisphere= hemisphere,
                                  latitude = my_latitude, longitude = my_longitude) %>% stats::na.omit() %>%
         dplyr::rename(my_time = dplyr::last_col())
@@ -308,14 +316,27 @@ lcz_ts <- function(x,
         latitude = my_latitude,
         longitude = my_longitude,
         type = c("station", "my_time")
-      ) %>% stats::na.omit()
+      ) %>% stats::na.omit() %>%
+        dplyr::mutate(date = base::as.factor(date))
+
+      label_format <- switch(
+        by,
+        "daylight" = "%H",
+        "season" = "%b %d",
+        "seasonyear" = "%b %d",
+        "yearseason" = "%b %d",
+        "year" = "%b %d",
+        "month" = "%d",
+        "%b %d"  # Default case if none of the above match
+      )
 
       graph <-
         ggplot2::ggplot(mydata,
                         ggplot2::aes(
                           x = .data$date,
                           y = .data$var_interp,
-                          color = .data$station
+                          color = .data$station,
+                          group = .data$station
                         )) +
         ggplot2::geom_line(alpha = 0.9) +
         ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
@@ -329,8 +350,14 @@ lcz_ts <- function(x,
         ggplot2::theme_bw() + lcz_theme
       final_graph <-
         graph + ggplot2::facet_wrap(~ my_time, scales = "free_x") +
-        ggplot2::scale_x_datetime(expand = c(0,0), guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
+        ggplot2::scale_x_discrete(expand = c(0,0),
+                                  labels= function(x) base::format(base::as.POSIXct(x), label_format),
+                                  guide = ggplot2::guide_axis(check.overlap = TRUE
+                                                              )) +
         ggplot2::theme(
+          legend.box.spacing = ggplot2::unit(20, "pt"),
+          panel.spacing = ggplot2::unit(3, "lines"),
+          axis.ticks.x = ggplot2::element_blank(),
           strip.text = ggplot2::element_text(
             face = "bold",
             hjust = 0,
@@ -361,8 +388,13 @@ lcz_ts <- function(x,
       }
 
       if (iplot == FALSE) {
+
+        mydata$date <- lubridate::as_datetime(mydata$date)
+
         return(mydata)
+
       } else {
+
         return(final_graph)
 
       }
@@ -370,28 +402,10 @@ lcz_ts <- function(x,
 
     if (length(by) > 1 & by %in% "daylight") {
 
-      extract_hemisphere <- function(raster) {
-        # Get the extent of the raster
-        extent <- raster::extent(raster::raster(raster))
-        # Check the ymin value of the extent
-        if (extent@ymin >= 0) {
-          hemisphere <- "northern"
-        } else {
-          hemisphere <- "southern"
-        }
-
-        return(hemisphere)
-      }
-
-      # Extract the hemisphere
-      hemisphere <- extract_hemisphere(raster= {{ x }})
-
-      my_latitude <- lcz_model$latitude[1]
-        my_longitude <- lcz_model$longitude[1]
-        mydata <- openair::cutData(lcz_model, type = by, hemisphere= hemisphere,
+      mydata <- openair::cutData(lcz_model, type = by, hemisphere= hemisphere,
                                    latitude = my_latitude, longitude = my_longitude) %>% stats::na.omit() %>%
           dplyr::rename(my_time = dplyr::last_col())
-        mydata <- openair::timeAverage(
+      mydata <- openair::timeAverage(
           mydata,
           pollutant = "var_interp",
           avg.time = time.freq,
@@ -399,10 +413,12 @@ lcz_ts <- function(x,
           latitude = my_latitude,
           longitude = my_longitude,
           type = c("station", by)
-        ) %>% stats::na.omit()
+        ) %>% stats::na.omit() %>%
+        dplyr::mutate(date = base::as.factor(date))
 
         # convert the vector to a string
-        by_str <- base::paste(by, collapse = " ~ ")
+        by_reversed <- base::rev(by)
+        by_str <- base::paste(by_reversed, collapse = " ~ ")
 
         # convert the string to a formula
         by_formula <- base::eval(base::parse(text = by_str))
@@ -412,7 +428,8 @@ lcz_ts <- function(x,
                           ggplot2::aes(
                             x = .data$date,
                             y = .data$var_interp,
-                            color = .data$station
+                            color = .data$station,
+                            group = .data$station
                           )) +
           ggplot2::geom_line(alpha = 0.9) +
           ggplot2::scale_color_manual(
@@ -424,10 +441,16 @@ lcz_ts <- function(x,
           ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption) +
           ggplot2::theme_bw() + lcz_theme
         final_graph <-
-          graph + ggplot2::facet_grid(by_formula, scales = "free_x") +
+          graph + ggplot2::facet_wrap(by_formula, scales = "free_x") +
           ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
-          ggplot2::scale_x_datetime(expand = c(0,0), guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
+          ggplot2::scale_x_discrete(expand = c(0,0),
+                                    guide = ggplot2::guide_axis(check.overlap = TRUE
+                                    )) +
           ggplot2::theme(
+            axis.text.x = ggplot2::element_blank(),
+            legend.box.spacing = ggplot2::unit(20, "pt"),
+            panel.spacing = ggplot2::unit(1, "lines"),
+            axis.ticks.x = ggplot2::element_blank(),
             strip.text = ggplot2::element_text(
               face = "bold",
               hjust = 0,
@@ -458,16 +481,22 @@ lcz_ts <- function(x,
         }
 
         if (iplot == FALSE) {
+
+          mydata$date <- lubridate::as_datetime(mydata$date)
+
           return(mydata)
+
         } else {
+
           return(final_graph)
 
         }
 
-      }
+    }
 
     else {
-        mydata <-
+
+      mydata <-
           openair::cutData(
             lcz_model,
             type = by,
@@ -484,7 +513,7 @@ lcz_ts <- function(x,
         ) %>%
           stats::na.omit()
 
-        graph <-
+      graph <-
           ggplot2::ggplot(mydata, ggplot2::aes(
                             x = .data$date,
                             y = .data$var_interp,
@@ -503,8 +532,12 @@ lcz_ts <- function(x,
         final_graph <-
           graph + ggplot2::facet_wrap(~ my_time, scales = "free_x") +
           ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
-          ggplot2::scale_x_datetime(expand = c(0,0), guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
+          ggplot2::scale_x_datetime(expand = c(0,0),
+                                    guide = ggplot2::guide_axis(check.overlap = TRUE)) +
           ggplot2::theme(
+            legend.box.spacing = ggplot2::unit(20, "pt"),
+            panel.spacing = ggplot2::unit(3, "lines"),
+            axis.ticks.x = ggplot2::element_blank(),
             strip.text = ggplot2::element_text(
               face = "bold",
               hjust = 0,
@@ -535,8 +568,13 @@ lcz_ts <- function(x,
         }
 
         if (iplot == FALSE) {
+
+          mydata$date <- lubridate::as_datetime(mydata$date)
+
           return(mydata)
+
         } else {
+
           return(final_graph)
 
         }

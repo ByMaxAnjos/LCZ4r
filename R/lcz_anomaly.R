@@ -317,7 +317,7 @@ lcz_anomaly <- function(x,
       stop("The 'day' does not work with the argument by")
     }
 
-    if (length(by) < 2 & by %in% c("daylight", "season", "seasonyear")) {
+    if (length(by) < 2 & by %in% c("daylight", "season", "seasonyear", "yearseason")) {
 
       extract_hemisphere <- function(raster) {
         # Get the extent of the raster
@@ -390,7 +390,9 @@ lcz_anomaly <- function(x,
         graph + ggplot2::facet_wrap(~ my_time, scales = "fixed") +
         ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
         ggplot2::theme(strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
-                       strip.background = ggplot2::element_rect(linetype = "dotted"))
+                       strip.background = ggplot2::element_rect(linetype = "dotted"),
+                       legend.box.spacing = ggplot2::unit(20, "pt"),
+                       panel.spacing = ggplot2::unit(3, "lines"))
 
       if (isave == TRUE){
 
@@ -498,7 +500,9 @@ lcz_anomaly <- function(x,
         graph + ggplot2::facet_grid(my_time ~ daylight, scales = "fixed") +
         ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
         ggplot2::theme(strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
-                       strip.background = ggplot2::element_rect(linetype = "dotted"))
+                       strip.background = ggplot2::element_rect(linetype = "dotted"),
+                       legend.box.spacing = ggplot2::unit(20, "pt"),
+                       panel.spacing = ggplot2::unit(3, "lines"))
 
       if (isave == TRUE){
 
@@ -586,7 +590,9 @@ lcz_anomaly <- function(x,
         graph + ggplot2::facet_wrap(~ my_time, scales = "free_x") +
         ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
         ggplot2::theme(strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
-                       strip.background = ggplot2::element_rect(linetype = "dotted"))
+                       strip.background = ggplot2::element_rect(linetype = "dotted"),
+                       legend.box.spacing = ggplot2::unit(20, "pt"),
+                       panel.spacing = ggplot2::unit(1, "lines"))
 
 
       if (isave == TRUE){
