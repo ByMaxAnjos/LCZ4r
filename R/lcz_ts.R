@@ -243,7 +243,7 @@ lcz_ts <- function(x,
       pollutant = "var_interp",
       avg.time = time.freq,
       type = c("station")
-    )
+    ) %>% stats::na.omit()
 
     final_graph <-
       ggplot2::ggplot(mydata, ggplot2::aes(
@@ -251,7 +251,7 @@ lcz_ts <- function(x,
                         y = .data$var_interp,
                         color = .data$station
                       )) +
-      ggplot2::geom_line(alpha = 0.8, lineend = "round") +
+      ggplot2::geom_line(alpha = 0.9, lineend = "round") +
       ggplot2::scale_x_datetime(expand = c(0,0)) +
       ggplot2::scale_color_manual(
         name = "Station (LCZ)",
@@ -297,6 +297,7 @@ lcz_ts <- function(x,
   }
 
   if (!is.null(by)) {
+
 
     if (by %in% "day") {
       stop("The 'day' does not work with the argument by")
@@ -351,7 +352,7 @@ lcz_ts <- function(x,
       final_graph <-
         graph + ggplot2::facet_wrap(~ my_time, scales = "free_x") +
         ggplot2::scale_x_discrete(expand = c(0,0),
-                                  labels= function(x) base::format(base::as.POSIXct(x), label_format),
+                                  labels= function(x) base::format(lubridate::as_datetime(x), label_format),
                                   guide = ggplot2::guide_axis(check.overlap = TRUE
                                                               )) +
         ggplot2::theme(

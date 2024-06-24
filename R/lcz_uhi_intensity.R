@@ -468,7 +468,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
         final_graph <-
           graph + ggplot2::facet_wrap(~ my_time, scales = "free_x", shrink = TRUE) +
           ggplot2::scale_x_discrete(expand = c(0,0),
-                                    labels= function(x) base::format(base::as.POSIXct(x), label_format),
+                                    labels= function(x) base::format(lubridate::as_datetime(x), label_format),
                                     guide = ggplot2::guide_axis(check.overlap = TRUE
                                     )) +
           ggplot2::theme(strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
@@ -489,7 +489,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
           graph + ggplot2::facet_wrap(~ my_time, scales = "free_x", shrink = TRUE) +
           ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
           ggplot2::scale_x_discrete(expand = c(0,0),
-                                    labels= function(x) base::format(base::as.POSIXct(x), label_format),
+                                    labels= function(x) base::format(lubridate::as_datetime(x), label_format),
                                     guide = ggplot2::guide_axis(check.overlap = TRUE
                                     )) +
           ggplot2::theme(strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
