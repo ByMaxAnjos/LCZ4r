@@ -146,6 +146,7 @@ lcz_anomaly <- function(x,
   #Get shp LCZ stations from lat and long
   shp_stations <- df_processed %>%
     dplyr::distinct(.data$latitude, .data$longitude, .keep_all = T) %>%
+    stats::na.omit() %>%
     sf::st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
 
   #Intersect poi shp stations with lcz shp

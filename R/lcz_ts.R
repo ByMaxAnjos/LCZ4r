@@ -147,6 +147,7 @@ lcz_ts <- function(x,
   #Get shp LCZ stations from lat and long
   shp_stations <- df_processed %>%
     dplyr::distinct(.data$latitude, .data$longitude, .keep_all = T) %>%
+    stats::na.omit() %>%
     sf::st_as_sf(coords = c("longitude", "latitude"), crs = "+proj=longlat +datum=WGS84 +no_defs")
 
   #Intersect poi shp stations with lcz shp

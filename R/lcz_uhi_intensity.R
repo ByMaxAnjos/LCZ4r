@@ -141,12 +141,13 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
   #Get shp LCZ stations from lat and long
   shp_stations <- df_processed %>%
     dplyr::distinct(.data$latitude, .data$longitude, .keep_all = T) %>%
+    stats::na.omit() %>%
     sf::st_as_sf(coords = c("longitude", "latitude"), crs = "+proj=longlat +datum=WGS84 +no_defs")
-  #Intersect poi shp stations with lcz shp
+
+   #Intersect poi shp stations with lcz shp
   lcz_stations <- sf::st_intersection(shp_stations, lcz_shp) %>%
     sf::st_drop_geometry() %>%
     dplyr::select(.data$my_id, .data$station, .data$lcz)
-
   #merge data-model with lcz_station to get lcz class
   df_model <-
     dplyr::inner_join(df_processed, lcz_stations, by = c("station", "my_id")) %>%
@@ -408,9 +409,13 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
     if (length(by) < 2 & by %in% c("daylight", "month", "year", "season", "seasonyear", "yearseason")) {
 
-      mydata <- openair::cutData(lcz_model, type = by, hemisphere= hemisphere,
-                                 latitude = my_latitude, longitude = my_longitude) %>% stats::na.omit() %>%
+      mydata <- openair::cutData(lcz_model, type = by,
+                                 hemisphere= hemisphere,
+                                 latitude = my_latitude,
+                                 longitude = my_longitude) %>%
+        stats::na.omit() %>%
         dplyr::rename(my_time = dplyr::last_col())
+
       mydata <- openair::timeAverage(
         mydata,
         pollutant = "var_interp",
