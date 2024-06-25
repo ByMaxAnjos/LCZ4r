@@ -110,7 +110,7 @@ lcz_interp_map <- function(x,
     dplyr::mutate(my_id = dplyr::cur_group_id(),
                   my_id = base::as.factor(.data$my_id),
                   var_interp = base::as.numeric(.data$var_interp),
-                  date = lubridate::as_datetime(date)) %>%
+                  date = lubridate::as_datetime(.data$date)) %>%
     dplyr::ungroup()
 
 

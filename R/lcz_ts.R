@@ -111,7 +111,7 @@ lcz_ts <- function(x,
     janitor::clean_names() %>%
     dplyr::group_by(.data$latitude, .data$longitude) %>%
     dplyr::mutate(lcz_id = dplyr::cur_group_id(),
-                  date = lubridate::as_datetime(date)) %>%
+                  date = lubridate::as_datetime(.data$date)) %>%
     openair::selectByDate(...)
 
   df_processed$var_interp <- base::as.numeric(df_processed$var_interp)
