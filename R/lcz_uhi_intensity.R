@@ -560,11 +560,11 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
         tidyr::pivot_wider(id_cols = c(.data$date, by), names_from = .data$reference, values_from = .data$var_interp) %>%
         dplyr::mutate(uhi = base::round(.data$urban - .data$rural, digits = 2)) %>%
         stats::na.omit() %>%
-        dplyr::mutate(date = base::as.factor(date))
+        dplyr::mutate(date = as.factor(date))
 
       # convert the vector to a string
-      by_reversed <- base::rev(by)
-      by_str <- base::paste(by_reversed, collapse = " ~ ")
+      #by_reversed <- base::rev(by)
+      by_str <- base::paste(by, collapse = " ~ ")
 
       # convert the string to a formula
       by_formula <- base::eval(base::parse(text = by_str))
@@ -590,9 +590,9 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
         graph <-
           ggplot2::ggplot(mydata, ggplot2::aes(x = .data$date)) +
-          ggplot2::geom_line(ggplot2::aes(y = .data$urban, color = "Urban Temperature", group = 1), alpha = 0.8) +
-          ggplot2::geom_line(ggplot2::aes(y = .data$rural, color = "Rural Temperature", group = 1), alpha = 0.8) +
-          ggplot2::geom_line(ggplot2::aes(y = sec$fwd(.data$uhi), color = "UHI", group = 1)) +
+          ggplot2::geom_line(ggplot2::aes(y = .data$urban, color = "Urban Temperature", group=1), alpha = 0.8) +
+          ggplot2::geom_line(ggplot2::aes(y = .data$rural, color = "Rural Temperature", group= 1), alpha = 0.8) +
+          ggplot2::geom_line(ggplot2::aes(y = sec$fwd(.data$uhi), color = "UHI", group=1)) +
           ggplot2::scale_y_continuous(sec.axis = ggplot2::sec_axis(~ sec$rev(.), name = ylab2),
                                       guide = ggplot2::guide_axis(check.overlap = TRUE)) +
           ggplot2::scale_color_manual(name = "", values = c("Urban Temperature" = urban_col, "Rural Temperature" = rural_col, "UHI" = "black")
@@ -627,7 +627,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
           ggplot2::theme_bw() + lcz_theme
 
         final_graph <-
-          graph + ggplot2::facet_grid(by_formula, scales = "free_x") +
+          graph + ggplot2::facet_wrap(by_formula, scales = "free_x") +
           ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
           ggplot2::scale_x_discrete(expand = c(0,0),
                                     guide = ggplot2::guide_axis(check.overlap = TRUE

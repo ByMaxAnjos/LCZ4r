@@ -24,26 +24,26 @@ Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.0
 Imports: 
-    dplyr,
-    tidyterra,
-    magrittr,
-    osmdata,
-    raster,
-    rlang,
-    sf,
-    stars,
-    terra,
-    ggplot2,
-    scales,
-    purrr,
-    tibble,
-    openair,
-    recipes,
-    janitor,
-    automap,
-    gstat,
-    MetBrewer,
-    lubridate
+    dplyr (>= 1.1.2),
+    tidyterra (>= 0.3.1),
+    magrittr (>= 2.0.3),
+    osmdata (>= 0.2.5),
+    raster (>= 3.5.15),
+    rlang (>= 1.1.1),
+    sf (>= 1.0.7),
+    stars (>= 0.5.5),
+    terra (>= 1.5.21),
+    ggplot2 (>= 3.5.1),
+    scales (>= 1.3.0),
+    purrr (>= 1.0.1),
+    tibble (>= 3.2.1),
+    openair (>= 2.9.0),
+    recipes (>= 1.0.9),
+    janitor (>= 2.1.0),
+    automap (>= 1.1.9),
+    gstat (>= 2.1.0),
+    MetBrewer (>= 0.2.0),
+    lubridate (>= 1.9.2)
 Suggests:
     knitr,
     tidyr,
@@ -56,3 +56,5 @@ Suggests:
     covr
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
+Remotes: 
+    tidyverse/purrr
