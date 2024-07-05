@@ -84,7 +84,7 @@ With the `lcz_ts()` function, you can analyze the air temperature associated wit
 
 ```{r echo=TRUE, fig.height=7, fig.width=11, message=FALSE, warning=FALSE}
 # Get the LCZ map for your city
-lcz_map <- lcz_get_map(city="Berlin")
+lcz_map <- lcz_get_map_euro(city="Berlin")
 
 #Let's get LCZ air temperature time series
 lcz_ts(lcz_map, 
@@ -119,7 +119,8 @@ You can split data frame  calling the *by* argument. The split available are “
 lcz_ts(lcz_map, data_frame = lcz_data, 
        var = "airT", station_id = "station",
        time.freq = "hour", # frequency changed to hour
-       year = 2019, month = 9, day = 1, by = "daylight") 
+       year = 2019,
+       by = "month") 
 
 ```
 
@@ -130,14 +131,13 @@ The thermal anomaly is a great way to evaluate the intra-urban air temperatures 
 
 ```{r echo=TRUE, fig.height=7, fig.width=11, message=FALSE, warning=FALSE}
 
-# If you want the thermal anomalies 1 sept 2020 on hourly basis.
+# If you want the thermal anomalies
 lcz_anomaly(lcz_map, 
             data_frame = lcz_data, 
             var = "airT", 
             station_id = "station", 
             time.freq = "hour", #Let's change the frequency to "day", "month", "year"
-            year = 2020, month = 9, day = 1)
-
+            year = 2019, month = 2, day = 6, hour=5)
 ```
 
 
