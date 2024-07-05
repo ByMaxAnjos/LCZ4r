@@ -407,7 +407,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
       stop("The 'day' does not work with the argument by")
     }
 
-    if (length(by) < 2 & by %in% c("daylight", "month", "year", "season", "seasonyear", "yearseason")) {
+    if (length(by) < 2 & by %in% c("daylight", "year", "season", "seasonyear", "yearseason")) {
 
       mydata <- openair::cutData(lcz_model, type = by,
                                  hemisphere= hemisphere,
@@ -420,9 +420,6 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
         mydata,
         pollutant = "var_interp",
         avg.time = time.freq,
-        hemisphere= hemisphere,
-        latitude = my_latitude,
-        longitude = my_longitude,
         type = c("reference", "my_time")
       ) %>% stats::na.omit() %>%
         tidyr::pivot_wider(id_cols = c(.data$date, .data$my_time), names_from = .data$reference, values_from = .data$var_interp) %>%
@@ -437,7 +434,6 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
         "seasonyear" = "%b %d",
         "yearseason" = "%b %d",
         "year" = "%b %d",
-        "month" = "%d",
         "%b %d"  # Default case if none of the above match
       )
 
@@ -552,9 +548,6 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
         mydata,
         pollutant = "var_interp",
         avg.time = time.freq,
-        hemisphere= hemisphere,
-        latitude = my_latitude,
-        longitude = my_longitude,
         type = c("reference", by)
       ) %>% stats::na.omit() %>%
         tidyr::pivot_wider(id_cols = c(.data$date, by), names_from = .data$reference, values_from = .data$var_interp) %>%

@@ -304,8 +304,7 @@ lcz_ts <- function(x,
       stop("The 'day' does not work with the argument by")
     }
 
-    if (length(by) < 2 & by %in% c("daylight", "month", "year", "season", "seasonyear", "yearseason")) {
-
+    if (length(by) < 2 & by %in% c("daylight", "year", "season", "seasonyear", "yearseason")) {
 
       mydata <- openair::cutData(lcz_model, type = by, hemisphere= hemisphere,
                                  latitude = my_latitude, longitude = my_longitude) %>% stats::na.omit() %>%
@@ -325,7 +324,6 @@ lcz_ts <- function(x,
         "seasonyear" = "%b %d",
         "yearseason" = "%b %d",
         "year" = "%b %d",
-        "month" = "%d",
         "%b %d"  # Default case if none of the above match
       )
 
