@@ -118,9 +118,9 @@ You can split data frame  calling the *by* argument. The split available are “
 #Splitting by daylight 
 lcz_ts(lcz_map, data_frame = lcz_data, 
        var = "airT", station_id = "station",
-       time.freq = "hour", # frequency changed to hour
-       year = 2019,
-       by = "month") 
+       time.freq = "hour",
+       year = 2019, month = 9, day = 1,
+       by = "daylight") 
 
 ```
 
