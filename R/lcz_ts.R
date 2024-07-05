@@ -300,7 +300,6 @@ lcz_ts <- function(x,
 
   if (!is.null(by)) {
 
-
     if (by %in% "day") {
       stop("The 'day' does not work with the argument by")
     }
@@ -315,9 +314,6 @@ lcz_ts <- function(x,
         mydata,
         pollutant = "var_interp",
         avg.time = time.freq,
-        hemisphere= hemisphere,
-        latitude = my_latitude,
-        longitude = my_longitude,
         type = c("station", "my_time")
       ) %>% stats::na.omit() %>%
         dplyr::mutate(date = base::as.factor(date))
@@ -355,8 +351,7 @@ lcz_ts <- function(x,
         graph + ggplot2::facet_wrap(~ my_time, scales = "free_x") +
         ggplot2::scale_x_discrete(expand = c(0,0),
                                   labels= function(x) base::format(lubridate::as_datetime(x), label_format),
-                                  guide = ggplot2::guide_axis(check.overlap = TRUE
-                                                              )) +
+                                  guide = ggplot2::guide_axis(check.overlap = TRUE)) +
         ggplot2::theme(
           legend.box.spacing = ggplot2::unit(20, "pt"),
           panel.spacing = ggplot2::unit(3, "lines"),
@@ -406,15 +401,13 @@ lcz_ts <- function(x,
     if (length(by) > 1 & by %in% "daylight") {
 
       mydata <- openair::cutData(lcz_model, type = by, hemisphere= hemisphere,
-                                   latitude = my_latitude, longitude = my_longitude) %>% stats::na.omit() %>%
+                                   latitude = my_latitude, longitude = my_longitude) %>%
+        stats::na.omit() %>%
           dplyr::rename(my_time = dplyr::last_col())
       mydata <- openair::timeAverage(
           mydata,
           pollutant = "var_interp",
           avg.time = time.freq,
-          hemisphere= hemisphere,
-          latitude = my_latitude,
-          longitude = my_longitude,
           type = c("station", by)
         ) %>% stats::na.omit() %>%
         dplyr::mutate(date = base::as.factor(date))
@@ -447,8 +440,7 @@ lcz_ts <- function(x,
           graph + ggplot2::facet_wrap(by_formula, scales = "free_x") +
           ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
           ggplot2::scale_x_discrete(expand = c(0,0),
-                                    guide = ggplot2::guide_axis(check.overlap = TRUE
-                                    )) +
+                                    guide = ggplot2::guide_axis(check.overlap = TRUE)) +
           ggplot2::theme(
             axis.text.x = ggplot2::element_blank(),
             legend.box.spacing = ggplot2::unit(20, "pt"),
