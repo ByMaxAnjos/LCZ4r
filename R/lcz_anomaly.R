@@ -315,11 +315,11 @@ lcz_anomaly <- function(x,
 
   if (!is.null(by)) {
 
-    if (by %in% "day") {
+    if ("day" %in% by) {
       stop("The 'day' does not work with the argument by")
     }
 
-    if (length(by) < 2 & by %in% c("daylight", "season", "seasonyear", "yearseason")) {
+    if (length(by) < 2 && c("daylight", "month","year", "season", "seasonyear", "yearseason") %in% by) {
 
       extract_hemisphere <- function(raster) {
         # Get the extent of the raster
@@ -425,7 +425,7 @@ lcz_anomaly <- function(x,
 
     }
 
-    if (length(by) > 1 & by %in% "daylight") {
+    if (length(by) > 1 && "daylight" %in% by) {
 
       extract_hemisphere <- function(raster) {
         # Get the extent of the raster
