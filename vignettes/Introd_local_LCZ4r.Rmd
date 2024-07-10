@@ -211,8 +211,10 @@ lcz_uhi_intensity(lcz_map,
                   time.freq  = "hour",
                   method = "LCZ",
                   year = 2019:2020)
+```
 
 
+```{r}
 #Calculate the hourly UHI intensity for 2020 in Berlin using the manual method
 lcz_uhi_intensity(lcz_map,
                   data_frame = lcz_data,
@@ -224,17 +226,10 @@ lcz_uhi_intensity(lcz_map,
                   Trural = "buch",
                   year = 2020)
 
-#Calculate the hourly UHI intensity by months of 2019 in Berlin using the LCZ method grouping Urban and Rural temperatures 
-lcz_uhi_intensity(lcz_map,
-                  data_frame = lcz_data,
-                  var = "airT",
-                  station_id = "station",
-                  time.freq  = "hour",
-                  method = "LCZ",
-                  group = TRUE,
-                  year = 2019, by = "month")
+```
 
 
+```{r}
 #Calculate the UHI intensity during daytime and nighttime in April 2019 in Berlin
 lcz_uhi_intensity(lcz_map,
                   data_frame = lcz_data,
@@ -244,20 +239,5 @@ lcz_uhi_intensity(lcz_map,
                   method = "LCZ",
                   year = 2019, month = 4, day = 5,
                   by = "daylight")
-
-
-#Calculate the UHI intensity during daytime and nighttime by months of 2019
-lcz_uhi_intensity(lcz_map,
-                  data_frame = lcz_data,
-                  var = "airT",
-                  station_id = "station",
-                  time.freq  = "hour",
-                  method = "LCZ",
-                  group = TRUE,
-                  year = 2019, 
-                  by = c("daylight", "month")
-                  )
-
 ```
-
 
