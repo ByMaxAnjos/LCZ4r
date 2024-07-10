@@ -113,17 +113,6 @@ lcz_ts(lcz_map, data_frame = lcz_data,
 **2. Splitting LCZ time series by temporal window or site**
 You can split data frame  calling the *by* argument. The split available are “year”, “season”, “seasonyear”, “month”, “monthyear”, “weekday”, “weekend”, “daylight” (daytime and nighttime). See argument [type in openair package:](https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option)
 
-```{r echo=TRUE, fig.height=7, fig.width=12, message=FALSE, warning=FALSE}
-#Splitting by daylight 
-lcz_ts(lcz_map, data_frame = lcz_data, 
-       var = "airT", station_id = "station",
-       time.freq = "hour",
-       year = 2019, month = 9, day = 1,
-       by = "daylight") 
-
-```
-
-
 ## Calculate LCZ Thermal Anomalies
 
 The thermal anomaly is a great way to evaluate the intra-urban air temperatures differences. At each LCZ station, the thermal anomaly is defined as the difference between its temperature and the overall mean temperature of all LCZ stations. For instance, a positive temperature anomaly indicates that a particular LCZ is warmer compared to all other LCZs. The `lcz_anomaly()` function has the same utilities of the `lcz_ts()` regarding **Flexibility time selection** and **Splitting LCZ time series by temporal window or site**.
