@@ -25,7 +25,6 @@
 #' @param caption source data. Default can be \dQuote{Source: LCZ4r, Stewart and Oke, 2012; Demuzere et al.2022."}.
 #'
 #' @return A visual representation of the anomalies of air temperature of LCZ in \code{ggplot} or data frame .csv format.
-#'
 #' @export
 #'
 #' @examples
