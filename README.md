@@ -1,4 +1,4 @@
-# Tools for Local Climate Zone and Urban Heat Island Analysis in R
+![Screen Shot 2024-06-07 at 14 12 04](https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/aea9b983-aa58-4f76-be0b-7113ffa181ed)# Tools for Local Climate Zone and Urban Heat Island Analysis in R
 
 <img align="right" src="https://github.com/ByMaxAnjos/LCZ4r/blob/main/inst/figures/logo.png?raw=true" alt="logo" width="140"> 
 
@@ -7,6 +7,8 @@
   <!-- badges: end -->
 
 The [LCZ4r package](https://github.com/ByMaxAnjos/LCZ4r) offers a suite of R functions designed to analyze and visualize Local Climate Zones and Urban Heat Islands.
+
+https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/a534cfaa-37d2-4c1d-8cec-e5e2a17e8806
 
 ## Package Overview
 
