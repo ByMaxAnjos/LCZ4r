@@ -228,16 +228,3 @@ lcz_uhi_intensity(lcz_map,
 
 ```
 
-
-```{r}
-#Calculate the UHI intensity during daytime and nighttime in April 2019 in Berlin
-lcz_uhi_intensity(lcz_map,
-                  data_frame = lcz_data,
-                  var = "airT",
-                  station_id = "station",
-                  time.freq  = "hour",
-                  method = "LCZ",
-                  year = 2019, month = 4, day = 5,
-                  by = "daylight")
-```
-
