@@ -2,6 +2,10 @@
 
 <img align="right" src="https://github.com/ByMaxAnjos/LCZ4r/blob/main/inst/figures/logo.png?raw=true" alt="logo" width="140"> 
 
+  <!-- badges: start -->
+  [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+  <!-- badges: end -->
+
 The [LCZ4r package](https://github.com/ByMaxAnjos/LCZ4r) offers a suite of R functions designed to analyze and visualize Local Climate Zones and Urban Heat Islands.
 
 ## Package Overview

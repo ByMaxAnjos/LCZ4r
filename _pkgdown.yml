@@ -1,15 +1,9 @@
 url: https://bymaxanjos.github.io/LCZ4r/
 
-figures:
-  dpi: 300
-  fig.retina: 2
-
-development:
-  mode: auto
-
 template:
   bootstrap: 5
   bootswatch: sandstone
+
 navbar:
   bg: primary
   structure:
@@ -21,9 +15,6 @@ navbar:
     - search
     - github
   components:
-    reference:
-      text: Reference
-      href: reference/index.html
     github:
       icon: fab fa-github fa-lg
       href: https://github.com/ByMaxAnjos/LCZ4r/
@@ -38,4 +29,34 @@ navbar:
       - text: Install LCZ4r
         href: articles/instalation_lcz4r.html
 
-destination: docs
+reference:
+- title: "General Functions"
+  desc: >
+    The following functions enable you to extract LCZ map and related parameters:
+  contents:
+  - lcz_get_map
+  - lcz_get_map_euro
+  - lcz_get_map_usa
+  - lcz_get_map2
+  - lcz_plot_map
+  - lcz_cal_area
+  - lcz_get_parameters
+  - lcz_plot_parameters
+
+- title: "Local Functions"
+  desc: >
+    The following functions enable you to model air temperature and UHI:
+  contents:
+  - lcz_ts
+  - lcz_anomaly
+  - lcz_interp_map
+  - lcz_anomaly_map
+  - lcz_plot_interp
+  - lcz_uhi_intensity
+
+- title: "LCZ tutorials"
+  desc: >
+    The following functions enable you to acess to tutorials and data:
+  contents:
+  - lcz_tutorial
+  - lcz_data
