@@ -1,4 +1,4 @@
-![Screen Shot 2024-06-07 at 14 12 04](https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/aea9b983-aa58-4f76-be0b-7113ffa181ed)# Tools for Local Climate Zone and Urban Heat Island Analysis in R
+# Tools for Local Climate Zone and Urban Heat Island Analysis in R
 
 <img align="right" src="https://github.com/ByMaxAnjos/LCZ4r/blob/main/inst/figures/logo.png?raw=true" alt="logo" width="140"> 
 
