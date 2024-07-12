@@ -160,7 +160,8 @@ lcz_anomaly <- function(x,
       lcz = base::as.factor(.data$lcz),
       lcz_id = base::as.factor(.data$lcz_id),
       station = base::as.factor(paste0(.data$station, "(", lcz, ")"))
-    )
+    ) %>%
+    dplyr::ungroup()
 
   # Settings for plots ------------------------------------------------------
 
@@ -222,8 +223,8 @@ lcz_anomaly <- function(x,
   lcz_theme <-
     ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
     plot.subtitle = ggplot2::element_text(color = "black", size = 16, hjust = 0.5),
-    panel.background = ggplot2::element_rect(color = NA, fill = "grey97"),
-    panel.grid.minor = ggplot2::element_line(color = "grey90"),
+    panel.background = ggplot2::element_rect(color = NA, fill = "white"),
+    panel.grid.minor = ggplot2::element_line(color = "white"),
     panel.grid.major.y = ggplot2::element_line(color = "grey90"),
     axis.text.x = ggplot2::element_text(size = ggplot2::rel(1.5)),
     axis.title.x = ggplot2::element_text(size = 14, face = "bold"),
@@ -266,6 +267,7 @@ lcz_anomaly <- function(x,
 
     anomaly_cal <- anomaly_cal %>%
       dplyr::left_join(lcz_df %>% dplyr::select(.data$lcz_id, .data$station), by = "lcz_id")
+
     # Subset the data outside the ggplot call for clarity
     subset_high <- anomaly_cal %>% dplyr::filter(.data$anomaly > 0)
     subset_low <- anomaly_cal %>% dplyr::filter(.data$anomaly < 0)
@@ -274,10 +276,10 @@ lcz_anomaly <- function(x,
       ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = .data$station, y = .data$anomaly, fill = .data$lcz)) +
       ggplot2::geom_bar(stat='identity', width=.5) +
       ggplot2::geom_hline(data=anomaly_cal$anomaly, yintercept = 0, linetype="dashed", color = "black") +
-      ggplot2::geom_text(data = subset_high, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4) +
-      ggplot2::geom_text(data = subset_low, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4) +
+      ggplot2::geom_text(data = subset_high, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4, check_overlap = TRUE) +
+      ggplot2::geom_text(data = subset_low, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4, check_overlap = TRUE) +
       ggplot2::scale_fill_manual(values = color_values, name = "LCZ class", labels = lcz.lables) +
-      ggplot2::coord_flip(clip = "off")+
+      ggplot2::coord_flip(clip = "off") +
       ggplot2::scale_y_continuous(limits = c(-0.4-max(anomaly_cal$anomaly), max(anomaly_cal$anomaly) + 0.4)) +
       ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
       ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption) +
@@ -344,6 +346,7 @@ lcz_anomaly <- function(x,
       mydata <- openair::timeAverage(mydata, pollutant = "var_interp",
                                      avg.time = time.freq,
                                      type = c("station", "my_time")) %>%
+        dplyr::ungroup() %>%
         stats::na.omit()
 
       anomlay_lcz <- function(input = NULL){
@@ -376,10 +379,11 @@ lcz_anomaly <- function(x,
       subset_low <- anomaly_cal %>% dplyr::filter(.data$anomaly < 0)
       graph <-
         ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = .data$station, y = .data$anomaly, fill = .data$lcz)) +
+        ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
         ggplot2::geom_bar(stat='identity', width=.4) +
         ggplot2::geom_hline(data=anomaly_cal$anomaly, yintercept = 0, linetype="dashed", color = "black") +
-        ggplot2::geom_text(data = subset_high, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4) +
-        ggplot2::geom_text(data = subset_low, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4) +
+        ggplot2::geom_text(data = subset_high, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4, check_overlap = TRUE) +
+        ggplot2::geom_text(data = subset_low, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4, check_overlap = TRUE) +
         ggplot2::scale_fill_manual(values = color_values, name = "LCZ class", labels = lcz.lables,
                                    guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")) +
         ggplot2::coord_flip(clip = "off")+
@@ -389,7 +393,6 @@ lcz_anomaly <- function(x,
         ggplot2::theme_bw() + lcz_theme
       final_graph <-
         graph + ggplot2::facet_wrap(~ my_time, scales = "fixed") +
-        ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
         ggplot2::theme(strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
                        strip.background = ggplot2::element_rect(linetype = "dotted"),
                        legend.box.spacing = ggplot2::unit(20, "pt"),
@@ -450,8 +453,9 @@ lcz_anomaly <- function(x,
       mydata <- openair::timeAverage(mydata,
         pollutant = "var_interp",
         avg.time = time.freq,
-        type = c("station", "daylight", "my_time")
-      ) %>% stats::na.omit()
+        type = c("station", "daylight", "my_time")) %>%
+        dplyr::ungroup() %>%
+        stats::na.omit()
 
       anomlay_lcz <- function(input = NULL){
 
@@ -486,10 +490,11 @@ lcz_anomaly <- function(x,
 
       graph <-
         ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = .data$station, y = .data$anomaly, fill = .data$lcz)) +
+        ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
         ggplot2::geom_bar(stat='identity', width=.5) +
         ggplot2::geom_hline(data=anomaly_cal$anomaly, yintercept = 0, linetype="dashed", color = "black") +
-        ggplot2::geom_text(data = subset_high, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4) +
-        ggplot2::geom_text(data = subset_low, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4) +
+        ggplot2::geom_text(data = subset_high, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4, check_overlap = TRUE) +
+        ggplot2::geom_text(data = subset_low, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4, check_overlap = TRUE) +
         ggplot2::scale_fill_manual(values = color_values, name = "LCZ class", labels = lcz.lables,
                                    guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")) +
         ggplot2::coord_flip(clip = "off")+
@@ -499,7 +504,6 @@ lcz_anomaly <- function(x,
         ggplot2::theme_bw() + lcz_theme
       final_graph <-
         graph + ggplot2::facet_grid(my_time ~ daylight, scales = "fixed") +
-        ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
         ggplot2::theme(strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
                        strip.background = ggplot2::element_rect(linetype = "dotted"),
                        legend.box.spacing = ggplot2::unit(20, "pt"),
@@ -542,6 +546,7 @@ lcz_anomaly <- function(x,
         pollutant = "var_interp",
         avg.time = time.freq,
         type = c("station", "my_time")) %>%
+        dplyr::ungroup() %>%
         stats::na.omit()
 
       anomlay_lcz <- function(input = NULL){
@@ -578,8 +583,8 @@ lcz_anomaly <- function(x,
         ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = .data$station, y = .data$anomaly, fill = .data$lcz)) +
         ggplot2::geom_bar(stat='identity', width=.4) +
         ggplot2::geom_hline(data=anomaly_cal$anomaly, yintercept = 0, linetype="dashed", color = "black") +
-        ggplot2::geom_text(data = subset_high, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4) +
-        ggplot2::geom_text(data = subset_low, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4) +
+        ggplot2::geom_text(data = subset_high, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4, check_overlap = TRUE) +
+        ggplot2::geom_text(data = subset_low, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4, check_overlap = TRUE) +
         ggplot2::scale_fill_manual(values = color_values, name = "LCZ class", labels = lcz.lables,
                                    guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")) +
         ggplot2::coord_flip(clip = "off")+

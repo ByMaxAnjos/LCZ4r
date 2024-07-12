@@ -121,7 +121,8 @@ lcz_cal_area <- function(x, iplot=TRUE, isave=FALSE, inclusive = FALSE,
                                  guide = ggplot2::guide_legend(reverse = FALSE,
                                                       title.position = "top")) +
       ggplot2::geom_text(data = lcz_df,
-                         label = paste0(round(lcz_df$area_perc, 1), "%"), vjust = -0.2, size = 5) +
+                         label = paste0(round(lcz_df$area_perc, 1), "%"),
+                         vjust = -0.2, size = 5, check_overlap = TRUE) +
       ggplot2::scale_y_continuous(limits = c(0, base::max(lcz_df$area_km2) + 50)) +
        ggplot2::labs(...,
            x = xlab,

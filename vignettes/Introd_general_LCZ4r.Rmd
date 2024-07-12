@@ -4,6 +4,7 @@ author: "Max Anjos"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output:
     rmarkdown::html_vignette:
+      code_folding: hide
     toc: true
     toc_float: TRUE
     toc_depth: 2
@@ -24,6 +25,10 @@ knitr::opts_chunk$set(
 ```
 
 The **`LCZ4r` general functions** are designed to facilitate the retrieval, analysis, and visualization of Local Climate Zones (LCZ) when LCZ related data is not readily available. They are engineered to get the LZ map, compute LCZ classes, and extract specific parameters of interest, including Sky View Factor (SVF), impervious surface fraction, and roughness element height, among others.
+
+## DEMO video
+
+https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/a534cfaa-37d2-4c1d-8cec-e5e2a17e8806
 
 ## Getting Started
 
@@ -64,7 +69,7 @@ Here are some tips to enhance your experience:
 
 This `lcz_cal_area()` function calculates the area for each LCZ classes, as follows:
 
-```{r echo=TRUE, fig.height=7, fig.width=12, message=FALSE, warning=FALSE}
+```{r echo=TRUE, fig.height=5, fig.width=9, message=FALSE, warning=FALSE}
 lcz_cal_area(lcz_map)
 
 ```
@@ -114,12 +119,36 @@ Here's a glimpse of the available LCZ parameters:
 | AH3  | Anthropogenic Heat Outupt   | Mean Anthropogenic Heat Outupt      | [W m-2]          |
 | z0   | Roughness Lenght            | Roughness Lenght class              | [meters]         |
 
+
+## Rio de Janeiro LCZ parameters {.tabset}
+
 ```{r echo=TRUE, fig.height=7, fig.width=11, message=FALSE, warning=FALSE}
-
+#| code-fold: false
 # Extract the LCZ parameters for raster stack format
+lcz_map <- lcz_get_map(city="Rio de Janeiro")
 LCZpar <- lcz_get_parameters(lcz_map, istack = TRUE)
-
-# Visualize the selected parameter, using SVF3 code for Mean Sky View Factor values
-lcz_plot_parameters(LCZpar, iselect = "SVF3", subtitle = "Rio de Janeiro")
-
+LCZpar
 ```
+
+### Sky View Factor 
+
+```{r echo=TRUE, fig.height=5, fig.width=9, message=FALSE, warning=FALSE}
+lcz_plot_parameters(LCZpar, iselect = "SVF3")
+```
+
+### Building Surface Fraction 
+
+```{r echo=TRUE, fig.height=5, fig.width=9, message=FALSE, warning=FALSE}
+lcz_plot_parameters(LCZpar, iselect = "BSF2")
+```
+
+### Roughness Lenght
+
+```{r echo=TRUE, fig.height=5, fig.width=9, message=FALSE, warning=FALSE}
+lcz_plot_parameters(LCZpar, iselect = "z0")
+```
+
+
+
+
+

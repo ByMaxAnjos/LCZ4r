@@ -4,6 +4,7 @@ author: "Max Anjos"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output:
     rmarkdown::html_vignette:
+      code_folding: hide
     toc: true
     toc_float: TRUE
     toc_depth: 2

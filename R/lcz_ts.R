@@ -162,7 +162,8 @@ lcz_ts <- function(x,
       lcz = base::as.factor(.data$lcz),
       lcz_id = base::as.factor(.data$lcz_id),
       station = base::as.factor(paste0(.data$station, "(", lcz, ")"))
-    )
+    ) %>%
+    dplyr::ungroup()
 
   # Settings for plots ------------------------------------------------------
 
@@ -202,9 +203,8 @@ lcz_ts <- function(x,
   lcz_theme <-
     ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
                    plot.subtitle = ggplot2::element_text(color = "black", size = 16, hjust = 0.5),
-                   panel.background = ggplot2::element_rect(color = NA, fill = "grey97"),
-                   #plot.background = ggplot2::element_rect(fill = "grey90"),
-                   panel.grid.minor = ggplot2::element_line(color = "grey90"),
+                   panel.background = ggplot2::element_rect(color = NA, fill = "white"),
+                   panel.grid.minor = ggplot2::element_line(color = "white"),
                    panel.grid.major.y = ggplot2::element_line(color = "grey90"),
                    axis.text.x = ggplot2::element_text(size = ggplot2::rel(1.5)),
                    axis.title.x = ggplot2::element_text(size = 14, face = "bold"),
@@ -238,6 +238,9 @@ lcz_ts <- function(x,
   my_latitude <- lcz_model$latitude[1]
   my_longitude <- lcz_model$longitude[1]
 
+  lcz_model$latitude <- NULL
+  lcz_model$longitude <- NULL
+
   # Define time series frequency with argument "by"--------------------------------------------
   if (is.null(by)) {
     mydata <- openair::timeAverage(
@@ -245,7 +248,8 @@ lcz_ts <- function(x,
       pollutant = "var_interp",
       avg.time = time.freq,
       type = c("station")
-    ) %>% stats::na.omit()
+    ) %>% stats::na.omit() %>%
+      dplyr::ungroup()
 
     final_graph <-
       ggplot2::ggplot(mydata, ggplot2::aes(
@@ -253,7 +257,7 @@ lcz_ts <- function(x,
                         y = .data$var_interp,
                         color = .data$station
                       )) +
-      ggplot2::geom_line(alpha = 0.9, lineend = "round") +
+      ggplot2::geom_line(lwd=1) +
       ggplot2::scale_x_datetime(expand = c(0,0)) +
       ggplot2::scale_color_manual(
         name = "Station (LCZ)",
@@ -304,22 +308,23 @@ lcz_ts <- function(x,
       stop("The 'day' does not work with the argument by")
     }
 
-    if (length(by) < 2 && c("daylight", "month","year", "season", "seasonyear", "yearseason") %in% by) {
+    if (length(by) < 2 && c("month","year", "season", "seasonyear", "yearseason") %in% by) {
 
       mydata <- openair::cutData(lcz_model, type = by, hemisphere= hemisphere,
-                                 latitude = my_latitude, longitude = my_longitude) %>% stats::na.omit() %>%
+                                 latitude = my_latitude, longitude = my_longitude) %>%
+        stats::na.omit() %>%
         dplyr::rename(my_time = dplyr::last_col())
       mydata <- openair::timeAverage(
         mydata,
         pollutant = "var_interp",
         avg.time = time.freq,
-        type = c("station", "my_time")
-      ) %>% stats::na.omit() %>%
+        type = c("station", "my_time")) %>%
+        stats::na.omit() %>%
+        dplyr::ungroup() %>%
         dplyr::mutate(date = base::as.factor(date))
 
       label_format <- switch(
         by,
-        "daylight" = "%H",
         "season" = "%b %d",
         "seasonyear" = "%b %d",
         "yearseason" = "%b %d",
@@ -336,7 +341,11 @@ lcz_ts <- function(x,
                           color = .data$station,
                           group = .data$station
                         )) +
-        ggplot2::geom_line(alpha = 0.9) +
+        ggplot2::scale_x_discrete(expand = c(0,0),
+                                  breaks = function(x) x[seq(1, length(x), by = 3*24)],
+                                  labels= function(x) base::format(lubridate::as_datetime(x), label_format),
+                                  guide = ggplot2::guide_axis(check.overlap = TRUE)) +
+        ggplot2::geom_line(lwd=1) +
         ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
         ggplot2::scale_color_manual(
           name = "Station (LCZ)",
@@ -348,9 +357,6 @@ lcz_ts <- function(x,
         ggplot2::theme_bw() + lcz_theme
       final_graph <-
         graph + ggplot2::facet_wrap(~ my_time, scales = "free_x") +
-        ggplot2::scale_x_discrete(expand = c(0,0),
-                                  labels= function(x) base::format(lubridate::as_datetime(x), label_format),
-                                  guide = ggplot2::guide_axis(check.overlap = TRUE)) +
         ggplot2::theme(
           legend.box.spacing = ggplot2::unit(20, "pt"),
           panel.spacing = ggplot2::unit(3, "lines"),
@@ -397,51 +403,147 @@ lcz_ts <- function(x,
       }
     }
 
+    if (length(by) < 2 && c("daylight") %in% by) {
+
+      mydata <- openair::cutData(lcz_model,
+                                 type = by,
+                                 hemisphere= hemisphere,
+                                 latitude = my_latitude,
+                                 longitude = my_longitude) %>%
+        stats::na.omit() %>%
+        dplyr::rename(my_time = dplyr::last_col())
+      mydata <- openair::timeAverage(
+        mydata,
+        pollutant = "var_interp",
+        avg.time = time.freq,
+        type = c("station", "my_time")) %>%
+        dplyr::ungroup() %>%
+        stats::na.omit()
+
+      rec_df <- mydata %>%
+        dplyr::group_by(.data$my_time) %>%
+        dplyr::summarize(
+          xmin = base::min(.data$date),
+          xmax = base::max(.data$date),
+          labs = base::unique(.data$my_time)) %>%
+        dplyr::ungroup()
+
+      final_graph <-
+        ggplot2::ggplot(mydata,
+                        ggplot2::aes(
+                          x = .data$date,
+                          y = .data$var_interp,
+                          color = .data$station,
+                          group = .data$station
+                        )) +
+        ggplot2::geom_rect(ggplot2::aes(xmin = .data$xmin, xmax = .data$xmax, ymin = -Inf, ymax = Inf, fill = .data$labs),
+                           alpha = 0.3, data = rec_df, inherit.aes = FALSE) +
+        ggplot2::scale_fill_manual(name= "", values = c("lightblue", "grey")) +
+        ggplot2::scale_x_datetime(expand = c(0, 0),
+                                  breaks = scales::date_breaks("3 hour"),
+                                  labels = scales::date_format("%H"),
+                                  guide = ggplot2::guide_axis(check.overlap = TRUE)) +
+        ggplot2::geom_line(lwd=1) +
+        ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
+        ggplot2::scale_color_manual(
+          name = "Station (LCZ)",
+          values = mycolors,
+          labels = lcz.lables,
+          guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")) +
+        ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption) +
+        ggplot2::theme_bw() + lcz_theme
+
+      if (isave == TRUE){
+
+        # Create a folder name using paste0
+        folder <- base::paste0("LCZ4r_output/")
+
+        # Check if the folder exists
+        if (!base::dir.exists(folder)) {
+          # Create the folder if it does not exist
+          base::dir.create(folder)
+        }
+
+        file.1 <- base::paste0(getwd(), "/", folder,"lcz4r_ts_plot.png")
+        ggplot2::ggsave(file.1, final_graph, height = 7, width = 12, units="in", dpi=600)
+        file.2 <- base::paste0(getwd(),"/", folder,"lcz4r_ts_df.csv")
+        utils::write.csv(mydata, file.2)
+        file.3 <- base::paste0(getwd(),"/", folder,"lcz4r_ts_stations.csv")
+        utils::write.csv(lcz_df, file.3)
+        base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
+      }
+
+      if (iplot == FALSE) {
+
+        mydata$date <- lubridate::as_datetime(mydata$date)
+
+        return(mydata)
+
+      } else {
+
+        return(final_graph)
+
+      }
+    }
+
     if (length(by) > 1 && "daylight" %in% by) {
 
-      mydata <- openair::cutData(lcz_model, type = by, hemisphere= hemisphere,
-                                   latitude = my_latitude, longitude = my_longitude) %>%
-        stats::na.omit() %>%
+      mydata <- openair::cutData(lcz_model,
+                                 type = by,
+                                 hemisphere= hemisphere,
+                                 latitude = my_latitude,
+                                 longitude = my_longitude) %>%
+          stats::na.omit() %>%
           dplyr::rename(my_time = dplyr::last_col())
       mydata <- openair::timeAverage(
           mydata,
           pollutant = "var_interp",
           avg.time = time.freq,
-          type = c("station", by)
-        ) %>% stats::na.omit() %>%
-        dplyr::mutate(date = base::as.factor(date))
+          type = c("station", by)) %>%
+        dplyr::ungroup() %>%
+        stats::na.omit()
 
-        # convert the vector to a string
-        by_reversed <- base::rev(by)
-        by_str <- base::paste(by_reversed, collapse = " ~ ")
+      new_var <- rlang::syms(by)
 
-        # convert the string to a formula
-        by_formula <- base::eval(base::parse(text = by_str))
+      mydata2 <- mydata %>%
+        dplyr::mutate(hour = lubridate::hour(.data$date)) %>%
+        dplyr::group_by(.data$station, !!!new_var, .data$hour) %>%
+        dplyr::summarize(var_interp= base::mean(.data$var_interp), .groups = "drop") %>%
+        dplyr::ungroup()
 
-        graph <-
-          ggplot2::ggplot(mydata,
-                          ggplot2::aes(
-                            x = .data$date,
-                            y = .data$var_interp,
+      rec_df <- mydata %>%
+        dplyr::group_by(!!!new_var) %>%
+        dplyr::summarize(
+          xmin = base::min(.data$date),
+          xmax = base::max(.data$date),
+          labs = base::unique(.data$daylight), .groups = "drop") %>%
+        dplyr::ungroup() %>%
+        dplyr::mutate(min_hour = lubridate::hour(.data$xmin),
+               max_hour = lubridate::hour(.data$xmax))
+
+      # convert the string to a formula
+      by_formula <- stats::as.formula(base::paste("~", base::paste(by[2], collapse = " + ")))
+
+      graph <-
+          ggplot2::ggplot(mydata2, ggplot2::aes(x = .data$hour, y = .data$var_interp,
                             color = .data$station,
-                            group = .data$station
-                          )) +
-          ggplot2::geom_line(alpha = 0.9) +
+                            group = .data$station)) +
+        ggplot2::geom_rect(ggplot2::aes(xmin = .data$min_hour, xmax = .data$max_hour, ymin = -Inf, ymax = Inf, fill = .data$labs),
+                           alpha = 0.3, data = rec_df, inherit.aes = FALSE) +
+        ggplot2::scale_fill_manual(name= "", values = c("lightblue", "grey")) +
+        ggplot2::scale_x_continuous(expand = c(0,0), guide = ggplot2::guide_axis(check.overlap = TRUE)) +
+        ggplot2::geom_line(lwd=1) +
+        ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
           ggplot2::scale_color_manual(
             name = "Station (LCZ)",
             values = mycolors,
             labels = lcz.lables,
-            guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
-          ) +
+            guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")) +
           ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption) +
           ggplot2::theme_bw() + lcz_theme
         final_graph <-
-          graph + ggplot2::facet_wrap(by_formula, scales = "free_x") +
-          ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
-          ggplot2::scale_x_discrete(expand = c(0,0),
-                                    guide = ggplot2::guide_axis(check.overlap = TRUE)) +
+          graph + ggplot2::facet_wrap(by_formula, scales = "free_y") +
           ggplot2::theme(
-            axis.text.x = ggplot2::element_blank(),
             legend.box.spacing = ggplot2::unit(20, "pt"),
             panel.spacing = ggplot2::unit(1, "lines"),
             axis.ticks.x = ggplot2::element_blank(),
@@ -467,7 +569,7 @@ lcz_ts <- function(x,
           file.1 <- base::paste0(getwd(), "/", folder,"lcz4r_ts_plot.png")
           ggplot2::ggsave(file.1, final_graph, height = 7, width = 12, units="in", dpi=600)
           file.2 <- base::paste0(getwd(),"/", folder,"lcz4r_ts_df.csv")
-          utils::write.csv(mydata, file.2)
+          utils::write.csv(mydata2, file.2)
           file.3 <- base::paste0(getwd(),"/", folder,"lcz4r_ts_stations.csv")
           utils::write.csv(lcz_df, file.3)
           base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
@@ -476,9 +578,9 @@ lcz_ts <- function(x,
 
         if (iplot == FALSE) {
 
-          mydata$date <- lubridate::as_datetime(mydata$date)
+          mydata2$date <- lubridate::as_datetime(mydata2$date)
 
-          return(mydata)
+          return(mydata2)
 
         } else {
 
@@ -496,25 +598,26 @@ lcz_ts <- function(x,
             type = by,
             hemisphere = hemisphere,
             latitude = my_latitude,
-            longitude = my_longitude
-          ) %>% stats::na.omit() %>%
-          dplyr::rename(my_time = dplyr::last_col())
+            longitude = my_longitude) %>%
+        stats::na.omit() %>%
+        dplyr::rename(my_time = dplyr::last_col())
         mydata <- openair::timeAverage(
           mydata,
           pollutant = "var_interp",
           avg.time = time.freq,
-          type = c("station", "my_time")
-        ) %>%
+          type = c("station", "my_time")) %>%
+          dplyr::ungroup() %>%
           stats::na.omit()
 
       graph <-
           ggplot2::ggplot(mydata, ggplot2::aes(
                             x = .data$date,
                             y = .data$var_interp,
-                            color = .data$station
-                          )) +
-          ggplot2::geom_line(alpha = 0.9) +
-          ggplot2::scale_color_manual(
+                            color = .data$station)) +
+        ggplot2::geom_line(lwd=1) +
+        ggplot2::scale_x_datetime(expand = c(0,0),guide = ggplot2::guide_axis(check.overlap = TRUE)) +
+        ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
+        ggplot2::scale_color_manual(
             name = "Station (LCZ)",
             values = mycolors,
             labels = lcz.lables,
@@ -525,9 +628,6 @@ lcz_ts <- function(x,
 
         final_graph <-
           graph + ggplot2::facet_wrap(~ my_time, scales = "free_x") +
-          ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
-          ggplot2::scale_x_datetime(expand = c(0,0),
-                                    guide = ggplot2::guide_axis(check.overlap = TRUE)) +
           ggplot2::theme(
             legend.box.spacing = ggplot2::unit(20, "pt"),
             panel.spacing = ggplot2::unit(3, "lines"),
