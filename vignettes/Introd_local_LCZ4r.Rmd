@@ -201,33 +201,6 @@ lcz_plot_interp(air_map)
 
 The `lcz_uhi_intensity()` function is designed to calculate the Urban Heat Island (UHI) intensity based on air temperature measurements and Local Climate Zones (LCZ). It provides two methods to calculate UHI intensity (UHII): LCZ and manual. In the LCZ method, the functions automatically identifies the LCZ build types, starting from LCZ 1 and progressing to LCZ 8, to represent the LCZxurban area, whilst it starts from LCZ natural (B, C, D) to LCZ 9 to represent the LCZyrural area. In the manual method  users have the freedom to select stations as references for the urban and rural areas.
 
-```{r, eval=TRUE, fig.height=5, fig.width=9, message=FALSE, warning=FALSE}
-
-#Calculate the hourly UHI intensity for 2019-2020 in Berlin using the LCZ method 
-lcz_uhi_intensity(lcz_map,
-                  data_frame = lcz_data,
-                  var = "airT",
-                  station_id = "station",
-                  time.freq  = "hour",
-                  method = "LCZ",
-                  year = 2019:2020)
-```
-
-
-```{r eval=TRUE, fig.height=5, fig.width=9, message=FALSE, warning=FALSE}
-#Calculate the hourly UHI intensity for 2020 in Berlin using the manual method
-lcz_uhi_intensity(lcz_map,
-                  data_frame = lcz_data,
-                  var = "airT",
-                  station_id = "station",
-                  time.freq  = "hour",
-                  method = "manual",
-                  Turban = "bamberger",
-                  Trural = "buch",
-                  year = 2020)
-
-```
-
 
 ```{r eval=TRUE, fig.height=5, fig.width=9, message=FALSE, warning=FALSE}
 #Calculate the hourly daytime and nighttime of UHI intensity for 6, Feb 2019 in Berlin  
