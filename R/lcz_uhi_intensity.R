@@ -214,8 +214,8 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
     rural_station <- Trural
 
     lcz_model <- df_model %>%
-      dplyr::filter(.data$station %in% c(urban_station$station, rural_station$station)) %>%
-      dplyr::mutate(reference = ifelse(.data$station %in% c(urban_station$station), "urban", "rural"))
+      dplyr::filter(.data$station %in% c(urban_station, rural_station)) %>%
+      dplyr::mutate(reference = ifelse(.data$station %in% c(urban_station), "urban", "rural"))
 
     if (is.null(lcz_model) || nrow(lcz_model)==0) {
       stop("Unable to find suitable urban or rural station. Please, try the LCZ method")

@@ -214,7 +214,7 @@ lcz_uhi_intensity(lcz_map,
 ```
 
 
-```{r}
+```{r eval=TRUE, fig.height=7, fig.width=11, message=FALSE, warning=FALSE}
 #Calculate the hourly UHI intensity for 2020 in Berlin using the manual method
 lcz_uhi_intensity(lcz_map,
                   data_frame = lcz_data,
@@ -225,6 +225,37 @@ lcz_uhi_intensity(lcz_map,
                   Turban = "bamberger",
                   Trural = "buch",
                   year = 2020)
+
+```
+
+
+```{r eval=TRUE, fig.height=7, fig.width=11, message=FALSE, warning=FALSE}
+#Calculate the hourly daytime and nighttime of UHI intensity for 6, Feb 2019 in Berlin  
+lcz_uhi_intensity(lcz_map,
+                  data_frame = lcz_data,
+                  var = "airT",
+                  station_id = "station",
+                  time.freq  = "hour",
+                  method = "LCZ",
+                  group = TRUE,
+                  year = 2019, month= 2, day = 6,
+                  by = "daylight")
+
+```
+
+
+
+```{r eval=TRUE, fig.height=7, fig.width=11, message=FALSE, warning=FALSE}
+#Calculate the hourly daytime and nighttime of UHI intensity by months of 2019 in Berlin  
+lcz_uhi_intensity(lcz_map,
+                  data_frame = lcz_data,
+                  var = "airT",
+                  station_id = "station",
+                  time.freq  = "hour",
+                  method = "LCZ",
+                  group = TRUE,
+                  year = 2019,
+                  by = c("daylight", "month"))
 
 ```
 
