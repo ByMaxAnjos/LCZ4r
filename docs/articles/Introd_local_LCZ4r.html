@@ -73,7 +73,7 @@
       <img src="" class="logo" alt=""><h1>LCZ4r Local Functions</h1>
                         <h4 data-toc-skip class="author">Max Anjos</h4>
             
-            <h4 data-toc-skip class="date">July 10, 2024</h4>
+            <h4 data-toc-skip class="date">July 12, 2024</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ByMaxAnjos/LCZ4r/blob/HEAD/vignettes/Introd_local_LCZ4r.Rmd" class="external-link"><code>vignettes/Introd_local_LCZ4r.Rmd</code></a></small>
       <div class="d-none name"><code>Introd_local_LCZ4r.Rmd</code></div>
@@ -267,15 +267,6 @@ window or site</strong>.</p>
 <span>            time.freq <span class="op">=</span> <span class="st">"hour"</span>, <span class="co">#Let's change the frequency to "day", "month", "year"</span></span>
 <span>            year <span class="op">=</span> <span class="fl">2019</span>, month <span class="op">=</span> <span class="fl">2</span>, day <span class="op">=</span> <span class="fl">6</span>, hour<span class="op">=</span><span class="fl">5</span><span class="op">)</span></span></code></pre></div>
 <p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-6-1.png" width="1056"></p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="co"># If you want the thermal anomalies by months of 2020 on daily basis.</span></span>
-<span><span class="fu"><a href="../reference/lcz_anomaly.html">lcz_anomaly</a></span><span class="op">(</span><span class="va">lcz_map</span>, data_frame <span class="op">=</span> <span class="va">lcz_data</span>, </span>
-<span>            var <span class="op">=</span> <span class="st">"airT"</span>, </span>
-<span>            station_id <span class="op">=</span> <span class="st">"station"</span>, </span>
-<span>            time.freq <span class="op">=</span> <span class="st">"day"</span>, <span class="co">#Let's change the frequency to "day", "month", "year"</span></span>
-<span>            year <span class="op">=</span> <span class="fl">2020</span>, by <span class="op">=</span> <span class="st">"month"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-7-1.png" width="1056"></p>
 </div>
 <div class="section level2">
 <h2 id="visualize-lcz-thermal-anomaly-map">Visualize LCZ Thermal Anomaly map<a class="anchor" aria-label="anchor" href="#visualize-lcz-thermal-anomaly-map"></a>
@@ -293,7 +284,7 @@ are averaged). The <code>lcz_anomaly_map</code> function returns either
 a single raster file or a stack of raster files. Subsequently, you can
 visualize the anomaly map using the <code><a href="../reference/lcz_plot_interp.html">lcz_plot_interp()</a></code>
 function.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co">#Mapping anomalies for 1st Sep 2020 at 09:00h using kriging</span></span>
 <span><span class="va">my_anomaly_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lcz_anomaly_map.html">lcz_anomaly_map</a></span><span class="op">(</span><span class="va">lcz_map</span>,</span>
@@ -309,8 +300,8 @@ function.</p>
 <span>                subtitle <span class="op">=</span> <span class="st">"Berlin - 01.09.2020 at 09:00"</span>,</span>
 <span>                caption <span class="op">=</span> <span class="st">"Source: LCZ4r, 2024."</span>,</span>
 <span>                fill <span class="op">=</span> <span class="st">"[ºC]"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-8-1.png" width="1056"></p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-7-1.png" width="1056"></p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co"># Active the by argument! Mapping daytime and nighttime anomalies for 1st Sep 2020</span></span>
 <span><span class="va">my_anomlay_daylight</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lcz_anomaly_map.html">lcz_anomaly_map</a></span><span class="op">(</span><span class="va">lcz_map</span>,</span>
@@ -342,7 +333,7 @@ function.</p>
 <span>                subtitle <span class="op">=</span> <span class="st">"Berlin - daytime and nighttime (01.09.2020)"</span>,</span>
 <span>                caption <span class="op">=</span> <span class="st">"Source: LCZ4r, 2024."</span>,</span>
 <span>                fill <span class="op">=</span> <span class="st">"AirT [ºC]"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-9-1.png" width="1056"></p>
+<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-8-1.png" width="1056"></p>
 </div>
 <div class="section level2">
 <h2 id="perform-lcz-interpolation">Perform LCZ Interpolation<a class="anchor" aria-label="anchor" href="#perform-lcz-interpolation"></a>
@@ -350,7 +341,7 @@ function.</p>
 <p>Let’s interpolate air temperature using the
 <code><a href="../reference/lcz_interp_map.html">lcz_interp_map()</a></code>, that follows the logic of the
 <code><a href="../reference/lcz_anomaly_map.html">lcz_anomaly_map()</a></code>.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="va">air_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lcz_interp_map.html">lcz_interp_map</a></span><span class="op">(</span><span class="va">lcz_map</span>,</span>
 <span>                          data_frame <span class="op">=</span> <span class="va">lcz_data</span>,</span>
@@ -361,7 +352,7 @@ function.</p>
 <span>                          year <span class="op">=</span> <span class="fl">2019</span>, month <span class="op">=</span> <span class="fl">2</span>, day<span class="op">=</span><span class="fl">6</span>, hour<span class="op">=</span><span class="fl">5</span>,</span>
 <span>                          LCZinterp <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/lcz_plot_interp.html">lcz_plot_interp</a></span><span class="op">(</span><span class="va">air_map</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-10-1.png" width="1056"></p>
+<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-9-1.png" width="1056"></p>
 </div>
 <div class="section level2">
 <h2 id="assess-lcz-for-urban-heat-island-intensity">Assess LCZ for Urban Heat Island Intensity<a class="anchor" aria-label="anchor" href="#assess-lcz-for-urban-heat-island-intensity"></a>
@@ -375,7 +366,7 @@ LCZ 1 and progressing to LCZ 8, to represent the LCZxurban area, whilst
 it starts from LCZ natural (B, C, D) to LCZ 9 to represent the LCZyrural
 area. In the manual method users have the freedom to select stations as
 references for the urban and rural areas.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co">#Calculate the hourly UHI intensity for 2019-2020 in Berlin using the LCZ method </span></span>
 <span><span class="fu"><a href="../reference/lcz_uhi_intensity.html">lcz_uhi_intensity</a></span><span class="op">(</span><span class="va">lcz_map</span>,</span>
@@ -385,11 +376,9 @@ references for the urban and rural areas.</p>
 <span>                  time.freq  <span class="op">=</span> <span class="st">"hour"</span>,</span>
 <span>                  method <span class="op">=</span> <span class="st">"LCZ"</span>,</span>
 <span>                  year <span class="op">=</span> <span class="fl">2019</span><span class="op">:</span><span class="fl">2020</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-11-1.png" width="1056"></p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span></span>
-<span><span class="co">#Calculate the hourly UHI intensity for 2020 in Berlin using the manual method</span></span>
+<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-10-1.png" width="1056"></p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#Calculate the hourly UHI intensity for 2020 in Berlin using the manual method</span></span>
 <span><span class="fu"><a href="../reference/lcz_uhi_intensity.html">lcz_uhi_intensity</a></span><span class="op">(</span><span class="va">lcz_map</span>,</span>
 <span>                  data_frame <span class="op">=</span> <span class="va">lcz_data</span>,</span>
 <span>                  var <span class="op">=</span> <span class="st">"airT"</span>,</span>
@@ -399,10 +388,9 @@ references for the urban and rural areas.</p>
 <span>                  Turban <span class="op">=</span> <span class="st">"bamberger"</span>,</span>
 <span>                  Trural <span class="op">=</span> <span class="st">"buch"</span>,</span>
 <span>                  year <span class="op">=</span> <span class="fl">2020</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-11-2.png" width="1056"></p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="co">#Calculate the hourly UHI intensity by months of 2019 in Berlin using the LCZ method grouping Urban and Rural temperatures </span></span>
+<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-11-1.png" width="1056"></p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#Calculate the hourly daytime and nighttime of UHI intensity for 6, Feb 2019 in Berlin  </span></span>
 <span><span class="fu"><a href="../reference/lcz_uhi_intensity.html">lcz_uhi_intensity</a></span><span class="op">(</span><span class="va">lcz_map</span>,</span>
 <span>                  data_frame <span class="op">=</span> <span class="va">lcz_data</span>,</span>
 <span>                  var <span class="op">=</span> <span class="st">"airT"</span>,</span>
@@ -410,25 +398,11 @@ references for the urban and rural areas.</p>
 <span>                  time.freq  <span class="op">=</span> <span class="st">"hour"</span>,</span>
 <span>                  method <span class="op">=</span> <span class="st">"LCZ"</span>,</span>
 <span>                  group <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                  year <span class="op">=</span> <span class="fl">2019</span>, by <span class="op">=</span> <span class="st">"month"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-11-3.png" width="1056"></p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span></span>
-<span><span class="co">#Calculate the UHI intensity during daytime and nighttime in April 2019 in Berlin</span></span>
-<span><span class="fu"><a href="../reference/lcz_uhi_intensity.html">lcz_uhi_intensity</a></span><span class="op">(</span><span class="va">lcz_map</span>,</span>
-<span>                  data_frame <span class="op">=</span> <span class="va">lcz_data</span>,</span>
-<span>                  var <span class="op">=</span> <span class="st">"airT"</span>,</span>
-<span>                  station_id <span class="op">=</span> <span class="st">"station"</span>,</span>
-<span>                  time.freq  <span class="op">=</span> <span class="st">"hour"</span>,</span>
-<span>                  method <span class="op">=</span> <span class="st">"LCZ"</span>,</span>
-<span>                  year <span class="op">=</span> <span class="fl">2019</span>, month <span class="op">=</span> <span class="fl">4</span>, day <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>                  year <span class="op">=</span> <span class="fl">2019</span>, month<span class="op">=</span> <span class="fl">2</span>, day <span class="op">=</span> <span class="fl">6</span>,</span>
 <span>                  by <span class="op">=</span> <span class="st">"daylight"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-11-4.png" width="1056"></p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span></span>
-<span><span class="co">#Calculate the UHI intensity during daytime and nighttime by months of 2019</span></span>
+<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-12-1.png" width="1056"></p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#Calculate the hourly daytime and nighttime of UHI intensity by months of 2019 in Berlin  </span></span>
 <span><span class="fu"><a href="../reference/lcz_uhi_intensity.html">lcz_uhi_intensity</a></span><span class="op">(</span><span class="va">lcz_map</span>,</span>
 <span>                  data_frame <span class="op">=</span> <span class="va">lcz_data</span>,</span>
 <span>                  var <span class="op">=</span> <span class="st">"airT"</span>,</span>
@@ -436,10 +410,9 @@ references for the urban and rural areas.</p>
 <span>                  time.freq  <span class="op">=</span> <span class="st">"hour"</span>,</span>
 <span>                  method <span class="op">=</span> <span class="st">"LCZ"</span>,</span>
 <span>                  group <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>                  year <span class="op">=</span> <span class="fl">2019</span>, </span>
-<span>                  by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"daylight"</span>, <span class="st">"month"</span><span class="op">)</span></span>
-<span>                  <span class="op">)</span></span></code></pre></div>
-<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-11-5.png" width="1056"></p>
+<span>                  year <span class="op">=</span> <span class="fl">2019</span>,</span>
+<span>                  by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"daylight"</span>, <span class="st">"month"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-13-1.png" width="1056"></p>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

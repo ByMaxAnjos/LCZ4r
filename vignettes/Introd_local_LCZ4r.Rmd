@@ -67,7 +67,7 @@ To convert from day-month-year to year-month-day:
 
 To streamline this process, LCZ4r offers a sample data frame, accessible through the following way:
 
-```{r echo=TRUE, fig.height=7, fig.width=11, message=FALSE, warning=FALSE}
+```{r echo=TRUE, message=FALSE, warning=FALSE}
 library(LCZ4r)
 
 #Load data from LCZ4r package
@@ -188,7 +188,7 @@ air_map <- lcz_interp_map(lcz_map,
                           data_frame = lcz_data,
                           var = "airT",
                           station_id = "station",
-                          sp.res = 500,
+                          sp.res = 100,
                           tp.res = "hour",
                           year = 2019, month = 2, day=6, hour=5,
                           LCZinterp = TRUE)
@@ -201,7 +201,7 @@ lcz_plot_interp(air_map)
 
 The `lcz_uhi_intensity()` function is designed to calculate the Urban Heat Island (UHI) intensity based on air temperature measurements and Local Climate Zones (LCZ). It provides two methods to calculate UHI intensity (UHII): LCZ and manual. In the LCZ method, the functions automatically identifies the LCZ build types, starting from LCZ 1 and progressing to LCZ 8, to represent the LCZxurban area, whilst it starts from LCZ natural (B, C, D) to LCZ 9 to represent the LCZyrural area. In the manual method  users have the freedom to select stations as references for the urban and rural areas.
 
-```{r, eval=TRUE, fig.height=7, fig.width=11, message=FALSE, warning=FALSE}
+```{r, eval=TRUE, fig.height=5, fig.width=9, message=FALSE, warning=FALSE}
 
 #Calculate the hourly UHI intensity for 2019-2020 in Berlin using the LCZ method 
 lcz_uhi_intensity(lcz_map,
@@ -214,7 +214,7 @@ lcz_uhi_intensity(lcz_map,
 ```
 
 
-```{r eval=TRUE, fig.height=7, fig.width=11, message=FALSE, warning=FALSE}
+```{r eval=TRUE, fig.height=5, fig.width=9, message=FALSE, warning=FALSE}
 #Calculate the hourly UHI intensity for 2020 in Berlin using the manual method
 lcz_uhi_intensity(lcz_map,
                   data_frame = lcz_data,
@@ -229,7 +229,7 @@ lcz_uhi_intensity(lcz_map,
 ```
 
 
-```{r eval=TRUE, fig.height=7, fig.width=11, message=FALSE, warning=FALSE}
+```{r eval=TRUE, fig.height=5, fig.width=9, message=FALSE, warning=FALSE}
 #Calculate the hourly daytime and nighttime of UHI intensity for 6, Feb 2019 in Berlin  
 lcz_uhi_intensity(lcz_map,
                   data_frame = lcz_data,
@@ -242,7 +242,6 @@ lcz_uhi_intensity(lcz_map,
                   by = "daylight")
 
 ```
-
 
 
 ```{r eval=TRUE, fig.height=7, fig.width=11, message=FALSE, warning=FALSE}
