@@ -6,11 +6,8 @@
   [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
   <!-- badges: end -->
 
-The [LCZ4r package](https://github.com/ByMaxAnjos/LCZ4r) offers a suite of R functions designed to analyze and visualize Local Climate Zones and Urban Heat Islands.
+The [LCZ4r package](https://github.com/ByMaxAnjos/LCZ4r) offers a suite of functions designed to analyze and visualize Local Climate Zones and Urban Heat Islands in R.
 
-## DEMO video
-
-https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/a534cfaa-37d2-4c1d-8cec-e5e2a17e8806
 
 ## Package Overview
 
@@ -43,49 +40,16 @@ We highly recommend that users explore the following tutorials to gain a deeper 
 
 * [Introduction to the General Functions](https://bymaxanjos.github.io/LCZ4r/articles/Introd_general_LCZ4r.html)
 
+### DEMO video
+https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/a534cfaa-37d2-4c1d-8cec-e5e2a17e8806
+
+
 * [Introduction to the Local Functions](https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html) 
-
-
-## Obtain and visualize the LCZ map
-
-![lcz_PlotMap](https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/d1f3e0b8-bd05-464b-b52d-932fa5cf77a2)
-
-## Calculate LCZ areas 
-
-![lczarea_berlin](https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/46b57b89-f05d-4f60-95d4-a93d9f54ad93)
-
-## Retrieve and visualize LCZ parameters
-
-<img width="1439" alt="Screenshot 2023-08-13 at 19 19 06" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/e9006776-a336-4303-bc35-f787090a1caf">
-
-## Time serires of air tempearture from LCZ classes
-
-![lcz_ts](https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/991a6cd9-0b12-45be-9a2e-f1cf85ef61eb)
-
-
-## Calculate thermal anomaly between LCZ
-
-![lcz_anomaly](https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/68e51428-5131-4d94-89cc-e6955f23911d)
-
-
-## Interpolate air temperature with LCZ
-
-Have look at this:
-
-![ber_interp_comp](https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/449c9def-1140-4a27-bdc1-754f314c6bda)
-
-
-## Calculate UHI intensity
-
-![lcz4r_uhi_plot](https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/cb562c64-0804-4cb7-aca4-8bac8fc1b9d0)
-
-![lcz4r_uhi](https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/ed6e5648-adae-4d70-a5df-60438574196a)
 
 
 ### People
 
 The development of the package R **LCZ4r** has been led by [Dr. Max Anjos](https://www.researchgate.net/profile/Max-Anjos/research) and joined by:
-
 
 –> Dayvid Carlos de Medeiros, Center for Climate Crisis Studies, Departament of Geography, Federal University of Rio Grande do Norte, Brazil.
 
