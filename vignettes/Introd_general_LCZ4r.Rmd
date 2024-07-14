@@ -4,13 +4,19 @@ author: "Max Anjos"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output:
     rmarkdown::html_vignette:
-      code_folding: hide
     toc: true
     toc_float: TRUE
     toc_depth: 2
     number_sections: false
     highlight: "textmate"
     css: custom.css
+resource_files:
+  - articles/fig_general_1.png
+  - articles/fig_general_2.png
+  - articles/fig_general_3.png
+  - articles/fig_general_4.png
+  - articles/fig_general_5.png
+  - articles/fig_general_6.png
 vignette: >
   %\VignetteIndexEntry{LCZ4r General Functions}
   %\VignetteEngine{rmarkdown::render}
@@ -26,9 +32,16 @@ knitr::opts_chunk$set(
 
 The **`LCZ4r` general functions** are designed to facilitate the retrieval, analysis, and visualization of Local Climate Zones (LCZ) when LCZ related data is not readily available. They are engineered to get the LZ map, compute LCZ classes, and extract specific parameters of interest, including Sky View Factor (SVF), impervious surface fraction, and roughness element height, among others.
 
-## DEMO video
+## Quickstart DEMO video
 
-https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/a534cfaa-37d2-4c1d-8cec-e5e2a17e8806
+<a href="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/a534cfaa-37d2-4c1d-8cec-e5e2a17e8806" target="_blank">
+<p style='text-align:center;'>
+<img src= "fig_general_video.png"
+alt="Introduction to Modeltime" width="60%"/>
+</p>
+<p style='text-align:center'>(Click to Watch video)</p>
+</a>
+
 
 ## Getting Started
 
@@ -51,8 +64,7 @@ Tips: Utilize the help(lcz\_\*) function to access comprehensive documentation f
 
 The lcz_get_map() function facilitates obtaining the LCZ map for your chosen city or a specific Region of Interest (ROI) by leveraging the global LCZ map developed by Demuzere et al. (2022). In our demonstration, we utilized Rio de Janeiro, Brazil as a reference city.
 
-```{r echo=TRUE, fig.height=7, fig.width=11, message=FALSE, warning=FALSE}
-
+```{r eval=FALSE, message=FALSE, warning=FALSE}
 library(LCZ4r)
 # Get the LCZ map for your city
 lcz_map <- lcz_get_map(city="Rio de Janeiro")
@@ -62,6 +74,10 @@ lcz_plot_map(lcz_map, subtitle = "Rio de Janeiro")
 
 ```
 
+```{r echo=F, out.width = '100%', fig.align='center'}
+knitr::include_graphics("fig_general_1.png")
+```
+
 Here are some tips to enhance your experience:
 
 1.  Fallback Option: In rare instances where the lcz_get_map() function faces inconsistencies (e.g., due to connectivity issues), you can rely on lcz_get_map2() as an alternative solution.
@@ -69,9 +85,13 @@ Here are some tips to enhance your experience:
 
 This `lcz_cal_area()` function calculates the area for each LCZ classes, as follows:
 
-```{r echo=TRUE, fig.height=5, fig.width=9, message=FALSE, warning=FALSE}
+```{r eval=FALSE, message=FALSE, warning=FALSE}
 lcz_cal_area(lcz_map)
 
+```
+
+```{r echo=F, out.width = '100%', fig.align='center'}
+knitr::include_graphics("fig_general_2.png")
 ```
 
 Tips: this function provides a table.csv of the calculated LCZ areas, coding like this: *lcz_cal_area(lcz_map, iplot = FALSE)*
@@ -119,36 +139,48 @@ Here's a glimpse of the available LCZ parameters:
 | AH3  | Anthropogenic Heat Outupt   | Mean Anthropogenic Heat Outupt      | [W m-2]          |
 | z0   | Roughness Lenght            | Roughness Lenght class              | [meters]         |
 
+## Rio de Janeiro LCZ parameters
 
-## Rio de Janeiro LCZ parameters {.tabset}
-
-```{r echo=TRUE, fig.height=7, fig.width=11, message=FALSE, warning=FALSE}
-#| code-fold: false
+```{r eval=FALSE, fig.height=7, fig.width=11, message=FALSE, warning=FALSE}
 # Extract the LCZ parameters for raster stack format
 lcz_map <- lcz_get_map(city="Rio de Janeiro")
 LCZpar <- lcz_get_parameters(lcz_map, istack = TRUE)
 LCZpar
 ```
 
+```{r echo=F, out.width = '100%', fig.align='center'}
+knitr::include_graphics("fig_general_3.png")
+```
+
+
 ### Sky View Factor 
 
-```{r echo=TRUE, fig.height=5, fig.width=9, message=FALSE, warning=FALSE}
+```{r eval=FALSE, message=FALSE, warning=FALSE}
 lcz_plot_parameters(LCZpar, iselect = "SVF3")
+```
+```{r echo=F, out.width = '100%', fig.align='center'}
+knitr::include_graphics("fig_general_4.png")
 ```
 
 ### Building Surface Fraction 
 
-```{r echo=TRUE, fig.height=5, fig.width=9, message=FALSE, warning=FALSE}
+```{r eval=FALSE}
 lcz_plot_parameters(LCZpar, iselect = "BSF2")
+```
+
+```{r echo=F, out.width = '100%', fig.align='center'}
+knitr::include_graphics("fig_general_5.png")
 ```
 
 ### Roughness Lenght
 
-```{r echo=TRUE, fig.height=5, fig.width=9, message=FALSE, warning=FALSE}
+```{r eval=FALSE, fig.height=5, fig.width=9, message=FALSE, warning=FALSE}
 lcz_plot_parameters(LCZpar, iselect = "z0")
 ```
 
-
+```{r echo=F, out.width = '100%', fig.align='center'}
+knitr::include_graphics("fig_general_6.png")
+```
 
 
 

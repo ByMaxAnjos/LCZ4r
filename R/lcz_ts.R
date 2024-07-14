@@ -336,7 +336,7 @@ lcz_ts <- function(x,
       graph <-
         ggplot2::ggplot(mydata,
                         ggplot2::aes(
-                          x = base::as.factor(.data$date),
+                          x = .data$date,
                           y = .data$var_interp,
                           color = .data$station,
                           group = .data$station

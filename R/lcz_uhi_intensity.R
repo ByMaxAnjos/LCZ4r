@@ -463,7 +463,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
         sec <- train_sec(mydata$urban, mydata$uhi)
 
         graph <-
-          ggplot2::ggplot(mydata, ggplot2::aes(x = base::as.factor(.data$date))) +
+          ggplot2::ggplot(mydata, ggplot2::aes(x = .data$date)) +
           ggplot2::scale_x_discrete(expand = c(0,0),
                                     breaks = function(x) x[seq(1, length(x), by = 4*24)],
                                     labels= function(x) base::format(lubridate::as_datetime(x), label_format),
@@ -489,7 +489,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
       } else {
         graph <-
-          ggplot2::ggplot(mydata, ggplot2::aes(x = base::as.factor(.data$date))) +
+          ggplot2::ggplot(mydata, ggplot2::aes(x = .data$date)) +
           ggplot2::scale_x_discrete(expand = c(0,0),
                                     breaks = function(x) x[seq(1, length(x), by = 4*24)],
                                     labels= function(x) base::format(lubridate::as_datetime(x), label_format),
