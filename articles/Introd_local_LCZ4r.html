@@ -60,7 +60,7 @@
       <h1>LCZ4r Local Functions</h1>
                         <h4 data-toc-skip class="author">Max Anjos</h4>
             
-            <h4 data-toc-skip class="date">July 10, 2024</h4>
+            <h4 data-toc-skip class="date">July 14, 2024</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ByMaxAnjos/LCZ4r/blob/main/vignettes/Introd_local_LCZ4r.Rmd" class="external-link"><code>vignettes/Introd_local_LCZ4r.Rmd</code></a></small>
       <div class="d-none name"><code>Introd_local_LCZ4r.Rmd</code></div>
@@ -83,9 +83,9 @@ serving a unique purpose:</p>
 <table class="table">
 <colgroup>
 <col width="21%">
-<col width="36%">
-<col width="21%">
-<col width="21%">
+<col width="40%">
+<col width="13%">
+<col width="24%">
 </colgroup>
 <thead><tr class="header">
 <th>Function</th>
@@ -333,7 +333,7 @@ function.</p>
 <span>                          data_frame <span class="op">=</span> <span class="va">lcz_data</span>,</span>
 <span>                          var <span class="op">=</span> <span class="st">"airT"</span>,</span>
 <span>                          station_id <span class="op">=</span> <span class="st">"station"</span>,</span>
-<span>                          sp.res <span class="op">=</span> <span class="fl">500</span>,</span>
+<span>                          sp.res <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>                          tp.res <span class="op">=</span> <span class="st">"hour"</span>,</span>
 <span>                          year <span class="op">=</span> <span class="fl">2019</span>, month <span class="op">=</span> <span class="fl">2</span>, day<span class="op">=</span><span class="fl">6</span>, hour<span class="op">=</span><span class="fl">5</span>,</span>
 <span>                          LCZinterp <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -348,33 +348,10 @@ calculate the Urban Heat Island (UHI) intensity based on air temperature
 measurements and Local Climate Zones (LCZ). It provides two methods to
 calculate UHI intensity (UHII): LCZ and manual. In the LCZ method, the
 functions automatically identifies the LCZ build types, starting from
-LCZ 1 and progressing to LCZ 8, to represent the LCZxurban area, whilst
-it starts from LCZ natural (B, C, D) to LCZ 9 to represent the LCZyrural
-area. In the manual method users have the freedom to select stations as
-references for the urban and rural areas.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="co">#Calculate the hourly UHI intensity for 2019-2020 in Berlin using the LCZ method </span></span>
-<span><span class="fu"><a href="../reference/lcz_uhi_intensity.html">lcz_uhi_intensity</a></span><span class="op">(</span><span class="va">lcz_map</span>,</span>
-<span>                  data_frame <span class="op">=</span> <span class="va">lcz_data</span>,</span>
-<span>                  var <span class="op">=</span> <span class="st">"airT"</span>,</span>
-<span>                  station_id <span class="op">=</span> <span class="st">"station"</span>,</span>
-<span>                  time.freq  <span class="op">=</span> <span class="st">"hour"</span>,</span>
-<span>                  method <span class="op">=</span> <span class="st">"LCZ"</span>,</span>
-<span>                  year <span class="op">=</span> <span class="fl">2019</span><span class="op">:</span><span class="fl">2020</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-10-1.png" width="1056"></p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#Calculate the hourly UHI intensity for 2020 in Berlin using the manual method</span></span>
-<span><span class="fu"><a href="../reference/lcz_uhi_intensity.html">lcz_uhi_intensity</a></span><span class="op">(</span><span class="va">lcz_map</span>,</span>
-<span>                  data_frame <span class="op">=</span> <span class="va">lcz_data</span>,</span>
-<span>                  var <span class="op">=</span> <span class="st">"airT"</span>,</span>
-<span>                  station_id <span class="op">=</span> <span class="st">"station"</span>,</span>
-<span>                  time.freq  <span class="op">=</span> <span class="st">"hour"</span>,</span>
-<span>                  method <span class="op">=</span> <span class="st">"manual"</span>,</span>
-<span>                  Turban <span class="op">=</span> <span class="st">"bamberger"</span>,</span>
-<span>                  Trural <span class="op">=</span> <span class="st">"buch"</span>,</span>
-<span>                  year <span class="op">=</span> <span class="fl">2020</span><span class="op">)</span></span></code></pre></div>
-<p><img src="Introd_local_LCZ4r_files/figure-html/unnamed-chunk-11-1.png" width="700"></p>
+LCZ 1 and progressing to LCZ 10, to represent the urban temperature,
+whilst it starts from LCZ natural LCZ (11-16) to represent the rural
+temperature. In the manual method, users have the freedom to select
+stations as references for the urban and rural areas.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
