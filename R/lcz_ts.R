@@ -341,12 +341,7 @@ lcz_ts <- function(x,
                           color = .data$station,
                           group = .data$station
                         )) +
-        ggplot2::scale_x_discrete(expand = c(0,0),
-                                  breaks = function(x) x[seq(1, length(x), by = 3*24)],
-                                  labels= function(x) base::format(lubridate::as_datetime(x), label_format),
-                                  guide = ggplot2::guide_axis(check.overlap = TRUE)) +
         ggplot2::geom_line(lwd=1) +
-        ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
         ggplot2::scale_color_manual(
           name = "Station (LCZ)",
           values = mycolors,
@@ -357,6 +352,11 @@ lcz_ts <- function(x,
         ggplot2::theme_bw() + lcz_theme
       final_graph <-
         graph + ggplot2::facet_wrap(~ my_time, scales = "free_x") +
+        ggplot2::scale_x_discrete(expand = c(0,0),
+                                  breaks = function(x) x[seq(1, length(x), by = 4*24)],
+                                  labels= function(x) base::format(lubridate::as_datetime(x), label_format),
+                                  guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90)) +
+        ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
         ggplot2::theme(
           legend.box.spacing = ggplot2::unit(20, "pt"),
           panel.spacing = ggplot2::unit(3, "lines"),
