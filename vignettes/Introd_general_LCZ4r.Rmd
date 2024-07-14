@@ -35,13 +35,13 @@ The **`LCZ4r` general functions** are designed to facilitate the retrieval, anal
 ## Quickstart DEMO video
 
 <a href="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/a534cfaa-37d2-4c1d-8cec-e5e2a17e8806" target="_blank">
-<p style='text-align:center;'>
-<img src= "fig_general_video.png"
-alt="Introduction to Modeltime" width="60%"/>
+<p style="text-align:center;">
+<img src="fig_general_video.png" alt="Introduction to General Functions" width="60%"/>
 </p>
-<p style='text-align:center'>(Click to Watch video)</p>
+<p style="text-align:center">
+(Click to Watch video)
+</p>
 </a>
-
 
 ## Getting Started
 
@@ -103,7 +103,7 @@ This `lcz_get_parameters()`function gives you to retrieve diverse LCZ parameters
 Here's a glimpse of the available LCZ parameters:
 
 | Code | Parameter                   | Description                         | Unit             |
-|--------------|------------------|----------------------------|--------------|
+|-----------------|-----------------|-----------------------|-----------------|
 | SVF1 | Sky View Factor             | Minimum Sky View Factor             | [0-1]            |
 | SVF2 | Sky View Factor             | Maximum Sky View Factor             | [0-1]            |
 | SVF3 | Sky View Factor             | Mean Sky View Factor                | [0-1]            |
@@ -152,17 +152,17 @@ LCZpar
 knitr::include_graphics("fig_general_3.png")
 ```
 
-
-### Sky View Factor 
+### Sky View Factor
 
 ```{r eval=FALSE, message=FALSE, warning=FALSE}
 lcz_plot_parameters(LCZpar, iselect = "SVF3")
 ```
+
 ```{r echo=F, out.width = '100%', fig.align='center'}
 knitr::include_graphics("fig_general_4.png")
 ```
 
-### Building Surface Fraction 
+### Building Surface Fraction
 
 ```{r eval=FALSE}
 lcz_plot_parameters(LCZpar, iselect = "BSF2")
@@ -181,6 +181,3 @@ lcz_plot_parameters(LCZpar, iselect = "z0")
 ```{r echo=F, out.width = '100%', fig.align='center'}
 knitr::include_graphics("fig_general_6.png")
 ```
-
-
-
