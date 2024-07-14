@@ -463,11 +463,11 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
         sec <- train_sec(mydata$urban, mydata$uhi)
 
         graph <-
-          ggplot2::ggplot(mydata, ggplot2::aes(x = .data$date)) +
+          ggplot2::ggplot(mydata, ggplot2::aes(x = base::as.factor(.data$date))) +
           ggplot2::scale_x_discrete(expand = c(0,0),
-                                    breaks = function(x) x[seq(1, length(x), by = 3*24)],
+                                    breaks = function(x) x[seq(1, length(x), by = 4*24)],
                                     labels= function(x) base::format(lubridate::as_datetime(x), label_format),
-                                    guide = ggplot2::guide_axis(check.overlap = TRUE
+                                    guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90
                                     )) +
           ggplot2::geom_line(ggplot2::aes(y = .data$urban, color = "Urban Temperature", group = 1), alpha = 0.8, lwd=1) +
           ggplot2::geom_line(ggplot2::aes(y = .data$rural, color = "Rural Temperature", group = 1), alpha = 0.8, lwd=1) +
@@ -491,9 +491,9 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
         graph <-
           ggplot2::ggplot(mydata, ggplot2::aes(x = .data$date)) +
           ggplot2::scale_x_discrete(expand = c(0,0),
-                                    breaks = function(x) x[seq(1, length(x), by = 3*24)],
+                                    breaks = function(x) x[seq(1, length(x), by = 4*24)],
                                     labels= function(x) base::format(lubridate::as_datetime(x), label_format),
-                                    guide = ggplot2::guide_axis(check.overlap = TRUE
+                                    guide = ggplot2::guide_axis(check.overlap = TRUE, angle=90
                                     )) +
           ggplot2::geom_line(ggplot2::aes(y = .data$uhi, color = "UHI", group= 1), lwd=1) +
           ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
