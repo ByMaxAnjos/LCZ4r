@@ -27,10 +27,6 @@ a:hover {
   filter: brightness(100%);
 }
 
-.element-class {
-  color: var(--off-white);
-}
-
 .navbar-nav .nav-item>.nav-link {
     margin-left: .2em;
     margin-right: .2em;
