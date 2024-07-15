@@ -37,7 +37,6 @@
 #'
 #' }
 #' @importFrom rlang .data
-#'
 #' @seealso
 #' See the documentation for  \code{lcz_get_map()} to obtain an LCZ map.
 #'
@@ -201,22 +200,22 @@ lcz_ts <- function(x,
   mycolors <- MetBrewer::met.brewer(name = palette, nb.cols)
 
   lcz_theme <-
-    ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
-                   plot.subtitle = ggplot2::element_text(color = "black", size = 16, hjust = 0.5),
-                   panel.background = ggplot2::element_rect(color = NA, fill = "white"),
-                   panel.grid.minor = ggplot2::element_line(color = "white"),
-                   panel.grid.major.y = ggplot2::element_line(color = "grey90"),
-                   axis.text.x = ggplot2::element_text(size = ggplot2::rel(1.5)),
-                   axis.title.x = ggplot2::element_text(size = 14, face = "bold"),
-                   axis.text.y = ggplot2::element_text(size = ggplot2::rel(1.5)),
-                   axis.title.y = ggplot2::element_text(size = 14, face = "bold"),
-                   legend.text = ggplot2::element_text(size = 13),
-                   legend.title = ggplot2::element_text(size = 13, face = "bold"),
-                   legend.key = ggplot2::element_blank(),
-                   legend.spacing.y = ggplot2::unit(0.02, "cm"),
-                   plot.margin = ggplot2::margin(25, 25, 10, 25),
-                   plot.caption = ggplot2::element_text(color = "grey40", hjust = 1, size = 10)
-    )
+    ggplot2::theme_bw() +
+      ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
+                     plot.subtitle = ggplot2::element_text(color = "black", size = 16, hjust = 0.5),
+                     panel.background = ggplot2::element_rect(color = NA, fill = "white"),
+                     panel.grid.minor = ggplot2::element_line(color = "white"),
+                     panel.grid.major.y = ggplot2::element_line(color = "grey90"),
+                     axis.text.x = ggplot2::element_text(size = ggplot2::rel(1.5)),
+                     axis.title.x = ggplot2::element_text(size = 14, face = "bold"),
+                     axis.text.y = ggplot2::element_text(size = ggplot2::rel(1.5)),
+                     axis.title.y = ggplot2::element_text(size = 14, face = "bold"),
+                     legend.text = ggplot2::element_text(size = 13),
+                     legend.title = ggplot2::element_text(size = 13, face = "bold"),
+                     legend.key = ggplot2::element_blank(),
+                     legend.spacing.y = ggplot2::unit(0.02, "cm"),
+                     plot.margin = ggplot2::margin(25, 25, 10, 25),
+                     plot.caption = ggplot2::element_text(color = "grey40", hjust = 1, size = 10))
 
   #Define hemisphere
   extract_hemisphere <- function(raster) {
@@ -265,7 +264,7 @@ lcz_ts <- function(x,
         labels = lcz.lables,
         guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")) +
       ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption) +
-      ggplot2::theme_bw() + lcz_theme
+      lcz_theme
 
     if (isave == TRUE){
 
@@ -308,7 +307,7 @@ lcz_ts <- function(x,
       stop("The 'day' does not work with the argument by")
     }
 
-    if (length(by) < 2 && c("month","year", "season", "seasonyear", "yearseason") %in% by) {
+    if (length(by) < 2 && any(c("month", "year", "season", "seasonyear", "yearseason") %in% by)) {
 
       mydata <- openair::cutData(lcz_model, type = by, hemisphere= hemisphere,
                                  latitude = my_latitude, longitude = my_longitude) %>%
@@ -342,8 +341,8 @@ lcz_ts <- function(x,
                           group = .data$station
                         )) +
         ggplot2::scale_x_discrete(expand = c(0,0),
-                                  breaks = function(x) x[seq(1, length(x), by = 4*24)],
-                                  labels= function(x) base::format(lubridate::as_datetime(x), label_format),
+                                  breaks = function(x) x[seq(1, length(x), by = 1*24)],
+                                  labels= function(x) base::format(lubridate::as_datetime(x), paste0(label_format)),
                                   guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90)) +
         ggplot2::geom_line(lwd=1) +
         ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
@@ -353,10 +352,10 @@ lcz_ts <- function(x,
           labels = lcz.lables,
           guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
         ) +
-        ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption) +
-        ggplot2::theme_bw() + lcz_theme
+        ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption)
       final_graph <-
-        graph + ggplot2::facet_wrap(~ my_time, scales = "free_x") +
+        graph + ggplot2::facet_wrap(ggplot2::vars(my_time), scales = "free_x") +
+        lcz_theme +
         ggplot2::theme(
           legend.box.spacing = ggplot2::unit(20, "pt"),
           panel.spacing = ggplot2::unit(3, "lines"),
@@ -403,7 +402,7 @@ lcz_ts <- function(x,
       }
     }
 
-    if (length(by) < 2 && c("daylight") %in% by) {
+    if (length(by) < 2 && "daylight" %in% by) {
 
       mydata <- openair::cutData(lcz_model,
                                  type = by,
@@ -451,7 +450,7 @@ lcz_ts <- function(x,
           labels = lcz.lables,
           guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")) +
         ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption) +
-        ggplot2::theme_bw() + lcz_theme
+        lcz_theme
 
       if (isave == TRUE){
 
@@ -539,10 +538,10 @@ lcz_ts <- function(x,
             values = mycolors,
             labels = lcz.lables,
             guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")) +
-          ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption) +
-          ggplot2::theme_bw() + lcz_theme
+          ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption)
         final_graph <-
           graph + ggplot2::facet_wrap(by_formula, scales = "free_y") +
+          lcz_theme +
           ggplot2::theme(
             legend.box.spacing = ggplot2::unit(20, "pt"),
             panel.spacing = ggplot2::unit(1, "lines"),
@@ -623,11 +622,11 @@ lcz_ts <- function(x,
             labels = lcz.lables,
             guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
           ) +
-          ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ",caption = caption) +
-          ggplot2::theme_bw() + lcz_theme
+          ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ",caption = caption)
 
         final_graph <-
-          graph + ggplot2::facet_wrap(~ my_time, scales = "free_x") +
+          graph + ggplot2::facet_wrap(ggplot2::vars(my_time), scales = "free_x") +
+          lcz_theme +
           ggplot2::theme(
             legend.box.spacing = ggplot2::unit(20, "pt"),
             panel.spacing = ggplot2::unit(3, "lines"),

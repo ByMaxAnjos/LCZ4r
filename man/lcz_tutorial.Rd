@@ -2,19 +2,22 @@
 % Please edit documentation in R/lcz_tutorial.R
 \name{lcz_tutorial}
 \alias{lcz_tutorial}
-\title{LCZ4r tutorials}
+\title{LCZ4r Tutorials}
 \usage{
-lcz_tutorial(article = "general")
+lcz_tutorial(x = "general")
 }
 \arguments{
-\item{article}{String. Default is "general" for general functions. It can be either "local" for local functions}
+\item{x}{Character string. Either "general" for general functions or "local" for local functions. Default is "general".}
 }
 \value{
-Opens LCZ4r tutorial on a web browser
+Opens the LCZ4r tutorial in a web browser.
 }
 \description{
-Opens LCZ4r tutorial on a web browser. This function requires internet connection
+Opens LCZ4r tutorial in a web browser. This function requires an internet connection.
 }
 \examples{
-lcz_tutorial(article="general")
+\dontrun{
+lcz_tutorial("general")
+lcz_tutorial("local")
+}
 }
