@@ -2,25 +2,31 @@ url: https://bymaxanjos.github.io/LCZ4r/
 
 template:
   bootstrap: 5
-  bootswatch: sandstone
+  theme: a11y-light
+  bslib:
+    bg: '#faf9f6'
+    fg: black
+    primary: '#023b2c'
+    light: '#023b2c'
+    success: '#335c67'
+    heading_font:
+      google:
+        family: Montserrat
+    base_font:
+      google:
+        family: Open Sans
 
 navbar:
-  bg: primary
   structure:
-    left:
-    - intro
-    - reference
-    - articles
-    right:
-    - search
-    - github
+    left: [home, tutorials, reference]
+    right: [search, github]
   components:
-    github:
-      icon: fab fa-github fa-lg
-      href: https://github.com/ByMaxAnjos/LCZ4r/
-      aria-label: github
-    articles:
-      text: Articles
+    home:
+      icon: fa-home
+      href: index.html
+      aria-label: Home
+    tutorials:
+      text: Tutorials
       menu:
       - text: LCZ4r General Functions
         href: articles/Introd_general_LCZ4r.html
@@ -28,7 +34,6 @@ navbar:
         href: articles/Introd_local_LCZ4r.html
       - text: Install LCZ4r
         href: articles/instalation_lcz4r.html
-
 reference:
 - title: "General Functions"
   desc: >

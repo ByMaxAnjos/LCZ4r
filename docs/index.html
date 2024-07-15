@@ -12,7 +12,9 @@
 <title>Tools for Local Climate Zones and Urban Heat Island Analysis • LCZ4r</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
+<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/Open_Sans-0.4.9/font.css" rel="stylesheet">
+<link href="deps/Montserrat-0.4.9/font.css" rel="stylesheet">
+<!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Tools for Local Climate Zones and Urban Heat Island Analysis">
 <meta property="og:description" content="LCZ4r is a comprehensive R package designed for analyzing
@@ -28,7 +30,7 @@
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <nav class="navbar fixed-top navbar-dark navbar-expand-lg bg-primary"><div class="container">
+    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
     
     <a class="navbar-brand me-2" href="index.html">LCZ4r</a>
 
@@ -41,16 +43,22 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item">
-  <a class="nav-link" href="reference/index.html">Reference</a>
+<li class="active nav-item">
+  <a class="nav-link" href="index.html" aria-label="Home">
+    <span class="fa fa-home"></span>
+     
+  </a>
 </li>
 <li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-tutorials">Tutorials</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-tutorials">
     <a class="dropdown-item" href="articles/Introd_general_LCZ4r.html">LCZ4r General Functions</a>
     <a class="dropdown-item" href="articles/Introd_local_LCZ4r.html">LCZ4r Local Functions</a>
     <a class="dropdown-item" href="articles/instalation_lcz4r.html">Install LCZ4r</a>
   </div>
+</li>
+<li class="nav-item">
+  <a class="nav-link" href="reference/index.html">Reference</a>
 </li>
       </ul>
 <form class="form-inline my-2 my-lg-0" role="search">
@@ -76,12 +84,7 @@
 </h1></div>
 <p><img align="right" src="https://github.com/ByMaxAnjos/LCZ4r/blob/main/inst/figures/logo.png?raw=true" alt="logo" width="140"></p>
 <p><!-- badges: start --> <a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a> <!-- badges: end --></p>
-<p>The <a href="https://github.com/ByMaxAnjos/LCZ4r" class="external-link">LCZ4r package</a> offers a suite of R functions designed to analyze and visualize Local Climate Zones and Urban Heat Islands.</p>
-<div class="section level2">
-<h2 id="demo-video">DEMO video<a class="anchor" aria-label="anchor" href="#demo-video"></a>
-</h2>
-<p><a href="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/a534cfaa-37d2-4c1d-8cec-e5e2a17e8806" class="external-link uri">https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/a534cfaa-37d2-4c1d-8cec-e5e2a17e8806</a></p>
-</div>
+<p>The <a href="https://github.com/ByMaxAnjos/LCZ4r" class="external-link">LCZ4r package</a> offers a suite of functions designed to analyze and visualize Local Climate Zones and Urban Heat Islands in R.</p>
 <div class="section level2">
 <h2 id="package-overview">Package Overview<a class="anchor" aria-label="anchor" href="#package-overview"></a>
 </h2>
@@ -126,59 +129,15 @@
 <p>These functions are categorized into two main types: general functions and local functions. The general functions are tailored for circumstances where specific LCZ data is not readily available. In contrast, the local functions are designed to operate with more extensive data inputs, such as urban meteorological network readings, including air temperature.</p>
 <p>We highly recommend that users explore the following tutorials to gain a deeper understanding of the capabilities and applications of the LCZ4r package:</p>
 <ul>
-<li><p><a href="https://bymaxanjos.github.io/LCZ4r/articles/Introd_general_LCZ4r.html">Introduction to the General Functions</a></p></li>
-<li><p><a href="https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html">Introduction to the Local Functions</a></p></li>
+<li><a href="https://bymaxanjos.github.io/LCZ4r/articles/Introd_general_LCZ4r.html">Introduction to the General Functions</a></li>
 </ul>
-</div>
-<div class="section level2">
-<h2 id="obtain-and-visualize-the-lcz-map">Obtain and visualize the LCZ map<a class="anchor" aria-label="anchor" href="#obtain-and-visualize-the-lcz-map"></a>
-</h2>
-<div class="float">
-<img src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/d1f3e0b8-bd05-464b-b52d-932fa5cf77a2" alt="lcz_PlotMap"><div class="figcaption">lcz_PlotMap</div>
-</div>
-</div>
-<div class="section level2">
-<h2 id="calculate-lcz-areas">Calculate LCZ areas<a class="anchor" aria-label="anchor" href="#calculate-lcz-areas"></a>
-</h2>
-<div class="float">
-<img src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/46b57b89-f05d-4f60-95d4-a93d9f54ad93" alt="lczarea_berlin"><div class="figcaption">lczarea_berlin</div>
-</div>
-</div>
-<div class="section level2">
-<h2 id="retrieve-and-visualize-lcz-parameters">Retrieve and visualize LCZ parameters<a class="anchor" aria-label="anchor" href="#retrieve-and-visualize-lcz-parameters"></a>
-</h2>
-<p><img width="1439" alt="Screenshot 2023-08-13 at 19 19 06" src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/e9006776-a336-4303-bc35-f787090a1caf"></p>
-</div>
-<div class="section level2">
-<h2 id="time-serires-of-air-tempearture-from-lcz-classes">Time serires of air tempearture from LCZ classes<a class="anchor" aria-label="anchor" href="#time-serires-of-air-tempearture-from-lcz-classes"></a>
-</h2>
-<div class="float">
-<img src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/991a6cd9-0b12-45be-9a2e-f1cf85ef61eb" alt="lcz_ts"><div class="figcaption">lcz_ts</div>
-</div>
-</div>
-<div class="section level2">
-<h2 id="calculate-thermal-anomaly-between-lcz">Calculate thermal anomaly between LCZ<a class="anchor" aria-label="anchor" href="#calculate-thermal-anomaly-between-lcz"></a>
-</h2>
-<div class="float">
-<img src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/68e51428-5131-4d94-89cc-e6955f23911d" alt="lcz_anomaly"><div class="figcaption">lcz_anomaly</div>
-</div>
-</div>
-<div class="section level2">
-<h2 id="interpolate-air-temperature-with-lcz">Interpolate air temperature with LCZ<a class="anchor" aria-label="anchor" href="#interpolate-air-temperature-with-lcz"></a>
-</h2>
-<p>Have look at this:</p>
-<div class="float">
-<img src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/449c9def-1140-4a27-bdc1-754f314c6bda" alt="ber_interp_comp"><div class="figcaption">ber_interp_comp</div>
-</div>
-</div>
-<div class="section level2">
-<h2 id="calculate-uhi-intensity">Calculate UHI intensity<a class="anchor" aria-label="anchor" href="#calculate-uhi-intensity"></a>
-</h2>
-<div class="float">
-<img src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/cb562c64-0804-4cb7-aca4-8bac8fc1b9d0" alt="lcz4r_uhi_plot"><div class="figcaption">lcz4r_uhi_plot</div>
-</div>
-<div class="float">
-<img src="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/ed6e5648-adae-4d70-a5df-60438574196a" alt="lcz4r_uhi"><div class="figcaption">lcz4r_uhi</div>
+<div class="section level3">
+<h3 id="demo-video">DEMO video<a class="anchor" aria-label="anchor" href="#demo-video"></a>
+</h3>
+<p><a href="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/a534cfaa-37d2-4c1d-8cec-e5e2a17e8806" class="external-link uri">https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/a534cfaa-37d2-4c1d-8cec-e5e2a17e8806</a></p>
+<ul>
+<li><a href="https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html">Introduction to the Local Functions</a></li>
+</ul>
 </div>
 <div class="section level3">
 <h3 id="people">People<a class="anchor" aria-label="anchor" href="#people"></a>

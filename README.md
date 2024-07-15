@@ -40,8 +40,7 @@ We highly recommend that users explore the following tutorials to gain a deeper 
 
 * [Introduction to the General Functions](https://bymaxanjos.github.io/LCZ4r/articles/Introd_general_LCZ4r.html)
 
-### DEMO video
-https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/a534cfaa-37d2-4c1d-8cec-e5e2a17e8806
+[Click to Whatch Demo Video](https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/a534cfaa-37d2-4c1d-8cec-e5e2a17e8806)
 
 
 * [Introduction to the Local Functions](https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html) 
@@ -51,9 +50,9 @@ https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/a534cfaa-37d2-4c1d-8cec-e5e2
 
 The development of the package R **LCZ4r** has been led by [Dr. Max Anjos](https://www.researchgate.net/profile/Max-Anjos/research) and joined by:
 
-–> Dayvid Carlos de Medeiros, Center for Climate Crisis Studies, Departament of Geography, Federal University of Rio Grande do Norte, Brazil.
+–> Dayvid Carlos de Medeiros, Center for Climate Crisis Studies, Department of Geography, Federal University of Rio Grande do Norte, Brazil.
 
-–> Dr. Francisco Castelhano, Center for Climate Crisis Studies, Departament of Geography, Federal University of Rio Grande do Norte, Brazil.
+–> Dr. Francisco Castelhano, Center for Climate Crisis Studies, Department of Geography, Federal University of Rio Grande do Norte, Brazil.
 
 –> Dr.Fred Meier, Chair of Climatology, Institute of Ecology, Technische Universität Berlin.
 

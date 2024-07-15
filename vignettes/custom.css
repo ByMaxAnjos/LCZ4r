@@ -1,213 +1,82 @@
-
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  font-size: 16px;
-  line-height: 1.5;
-  color: #212529;
-  padding-top: 25px;
-  padding-bottom: 25px;
+:root {
+  --green: #023B2C;
+  --blue: #335C67;
+  --gray: #3E3D3D;
+  --red: #A60F2D;
+  --cream: #F2F0E6;
+  --off-white: #FAF9F6;
+  --off-black: #191919;
 }
 
-h1.title {
-  padding-bottom: 10px;
+h2, .h2, h1, .h1 {
+  font-weight: bold;
+  color: var(--green);
 }
 
-h1, h2, h3, h4, h5, h6 {
-  color: #212529;
-  font-weight: 700;
-}
-
-h1, h1.title {
-  font-size: 30px;
-}
-
-h2 {
-  font-size: 24px;
-}
-
-h3 {
-  font-size: 20px;
-}
-
-h4 {
-  font-size: 16px;
-}
-
-h5 {
-  font-size: 16px;
-}
-
-h6 {
-  font-size: 16px;
-}
-
-h4.author {
-  padding-bottom: 10px;
-}
-
-h4.author>em {
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 300;
-}
-
-h4.date {
-  padding-bottom: 10px;
-}
-
-h4.date>em {
-  font-size: 14px;
-  font-style: normal;
-  font-weight: 300;
+h6, .h6, h5, .h5, h4, .h4, h3, .h3 {
+  font-weight: bold;
+  color: var(--blue);
 }
 
 a {
-  color: #4582EC;
+  color: var(--red);
 }
 
-a:hover, a:focus, a:active {
-  color: #1559CF;
+a:hover {
+  color: var(--red);
+  filter: brightness(100%);
 }
 
-a:focus {
-  outline: thin dotted;
+.navbar-nav .nav-item>.nav-link {
+    margin-left: .2em;
+    margin-right: .2em;
 }
 
-a:hover, a:active {
-  outline: 0;
+.navbar-dark .navbar-nav .nav-item>.nav-link:hover, .navbar-light .navbar-nav .nav-item>.nav-link:hover {
+    background: rgb(139 206 188 / 20%);
+    color: var(--off-white);
 }
 
-pre, code {
-  font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  background-color: #f8f9fa;
-  border: 1px solid #ccc;  /* Add a border for better visibility */
+.navbar-dark .navbar-nav .active>.nav-link {
+    background: rgb(139 206 188 / 30%);
+    color: var(--off-white) !important;
 }
 
-/* float toc */
-
-.list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
-  background-color: #4582EC;
-  border-color: #4582EC;
+.navbar-dark input[type="search"] {
+    background-color: var(--off-white);
+    color: var(--off-black);
 }
 
-/* figure */
-
-div.figure {
-  text-align: center;
+.dropdown-menu {
+    --bs-dropdown-divider-bg: var(--gray);
+    background-color: var(--cream);
+    color: var(--off-black);
 }
 
-p.caption {
-  text-align: center;
+.dropdown-item {
+    background-color: var(--cream);
+    color: var(--off-black);
 }
 
-.footnote {
-  position: absolute;
-  bottom: 3em;
-  padding-right: 4em;
-  color: #4287c7;
+.dropdown-item:hover, .dropdown-item:focus {
+    color: var(--off-white);
+    background-color: var(--green);
 }
 
-.remark-code, .remark-inline-code {
-  font-family: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-  background-color: #c8c8c8;
+.iframe {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  height: 100%;
 }
 
-.remark-code-line-highlighted {
-  background-color: #fff;
+.caption {
+  font-style: italic;
 }
 
-.remark-slide .title-slide {
-  padding-left: 340px;
-  padding-top: 110px;
+.text-muted {
+    color: var(--off-white) !important;
 }
 
-.title-slide h1, .title-slide h2, .title-slide h3 {
-  color: #585858;
-}
-
-.title-slide h1, .title-slide h2 {
-  font-weight: 700;
-  margin-top: 20px;
-  margin-bottom: 80px;
-}
-
-.title-slide h3 {
-  font-weight: 300;
-  font-weight: normal;
-  margin: 0;
-}
-
-.dark-green {
-  background-color: #789d57;
-}
-
-.dark-green h2, .dark-green h1 {
-  color: #fff;
-}
-
-.dark-gray {
-  background-color: #585858;
-}
-
-.dark-gray h2, .dark-gray h1 {
-  color: #fff;
-}
-
-/* Two-column layout */
-
-.left-column {
-  color: #777;
-  width: 20%;
-  height: 92%;
-  float: left;
-}
-
-.left-column h2:last-of-type, .left-column h3:last-child {
-  color: #000;
-}
-
-.right-column {
-  width: 75%;
-  float: right;
-  padding-top: 1em;
-}
-
-.pull-left {
-  float: left;
-  width: 47%;
-}
-
-.pull-right {
-  float: right;
-  width: 47%;
-}
-
-.pull-right~* {
-  clear: both;
-}
-
-img, video, iframe {
-  max-width: 100%;
-}
-
-blockquote {
-  border-left: solid 5px lightgray;
-  padding-left: 1em;
-}
-
-table {
-  margin: auto;
-  border-bottom: 1px solid #666;
-}
-
-table thead th {
-  border-bottom: 1px solid #ddd;
-}
-
-th, td {
-  padding: 5px;
-}
-
-thead, tfoot, tr:nth-child(even) {
-  background: #eee
+a.footnote-ref {
+  text-decoration: none;
 }
