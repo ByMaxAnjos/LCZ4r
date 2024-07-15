@@ -412,7 +412,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
       stop("The 'day' does not work with the argument by")
     }
 
-    if (length(by) < 2 && c("month", "year", "season", "seasonyear", "yearseason") %in% by) {
+    if (length(by) < 2 && any(c("month", "year", "season", "seasonyear", "yearseason") %in% by)) {
 
       mydata <- openair::cutData(lcz_model, type = by,
                                  hemisphere= hemisphere,
@@ -547,7 +547,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
     }
 
-    if (length(by) < 2 && c("daylight") %in% by) {
+    if (length(by) < 2 && "daylight" %in% by) {
 
       mydata <- openair::cutData(lcz_model,
                                  type = by,
