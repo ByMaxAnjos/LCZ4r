@@ -8,7 +8,9 @@
 <title>Tools for Local Climate Zones and Urban Heat Island Analysis • LCZ4r</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/Open_Sans-0.4.9/font.css" rel="stylesheet">
+<link href="deps/Montserrat-0.4.9/font.css" rel="stylesheet">
+<link href="deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Tools for Local Climate Zones and Urban Heat Island Analysis">
 <meta name="description" content="LCZ4r is a comprehensive R package designed for analyzing and visualizing Local Climate Zones (LCZ) and Urban Heat Islands (UHI) at various spatial and temporal resolutions. It provides a suite of functions to work with LCZ data, perform urban climate analysis, and generate insights into temperature variations within urban areas.">
@@ -18,7 +20,7 @@
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
 
 
-    <nav class="navbar navbar-expand-lg fixed-top bg-primary" data-bs-theme="dark" aria-label="Site navigation"><div class="container">
+    <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
 
     <a class="navbar-brand me-2" href="index.html">LCZ4r</a>
 
@@ -31,21 +33,22 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
+<li class="active nav-item"><a class="nav-link" href="index.html" aria-label="Home"><span class="fa fa-home"></span></a></li>
 <li class="nav-item dropdown">
-  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-tutorials" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Tutorials</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-tutorials">
 <li><a class="dropdown-item" href="articles/Introd_general_LCZ4r.html">LCZ4r General Functions</a></li>
     <li><a class="dropdown-item" href="articles/Introd_local_LCZ4r.html">LCZ4r Local Functions</a></li>
     <li><a class="dropdown-item" href="articles/instalation_lcz4r.html">Install LCZ4r</a></li>
   </ul>
 </li>
+<li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
 </form></li>
-<li class="nav-item"><a class="external-link nav-link" href="https://github.com/ByMaxAnjos/LCZ4r/" aria-label="github"><span class="fa fab fa-github fa-lg"></span></a></li>
+<li class="nav-item"><a class="external-link nav-link" href="https://github.com/ByMaxAnjos/LCZ4r/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
       </ul>
 </div>
 
@@ -105,20 +108,16 @@
 <ul>
 <li><a href="https://bymaxanjos.github.io/LCZ4r/articles/Introd_general_LCZ4r.html">Introduction to the General Functions</a></li>
 </ul>
-<div class="section level3">
-<h3 id="demo-video">DEMO video<a class="anchor" aria-label="anchor" href="#demo-video"></a>
-</h3>
-<p><a href="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/a534cfaa-37d2-4c1d-8cec-e5e2a17e8806" class="external-link">demo_general_functions.mp4</a></p>
+<p><a href="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/a534cfaa-37d2-4c1d-8cec-e5e2a17e8806" class="external-link">Click to Whatch Demo Video</a></p>
 <ul>
 <li><a href="https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html">Introduction to the Local Functions</a></li>
 </ul>
-</div>
 <div class="section level3">
 <h3 id="people">People<a class="anchor" aria-label="anchor" href="#people"></a>
 </h3>
 <p>The development of the package R <strong>LCZ4r</strong> has been led by <a href="https://www.researchgate.net/profile/Max-Anjos/research" class="external-link">Dr. Max Anjos</a> and joined by:</p>
-<p>–&gt; Dayvid Carlos de Medeiros, Center for Climate Crisis Studies, Departament of Geography, Federal University of Rio Grande do Norte, Brazil.</p>
-<p>–&gt; Dr. Francisco Castelhano, Center for Climate Crisis Studies, Departament of Geography, Federal University of Rio Grande do Norte, Brazil.</p>
+<p>–&gt; Dayvid Carlos de Medeiros, Center for Climate Crisis Studies, Department of Geography, Federal University of Rio Grande do Norte, Brazil.</p>
+<p>–&gt; Dr. Francisco Castelhano, Center for Climate Crisis Studies, Department of Geography, Federal University of Rio Grande do Norte, Brazil.</p>
 <p>–&gt; Dr.Fred Meier, Chair of Climatology, Institute of Ecology, Technische Universität Berlin.</p>
 </div>
 <div class="section level3">
