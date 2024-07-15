@@ -42,7 +42,6 @@ We highly recommend that users explore the following tutorials to gain a deeper 
 
 [Click to Whatch Demo Video](https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/a534cfaa-37d2-4c1d-8cec-e5e2a17e8806)
 
-
 * [Introduction to the Local Functions](https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html) 
 
 
