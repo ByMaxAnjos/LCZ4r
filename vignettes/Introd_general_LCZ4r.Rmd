@@ -3,7 +3,7 @@ title: "LCZ4r General Functions"
 author: "Max Anjos"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output:
-    rmarkdown::html_vignette:
+    rmarkdown::html_document:
     toc: true
     toc_float: TRUE
     toc_depth: 2
@@ -151,6 +151,8 @@ LCZpar
 ```{r echo=F, out.width = '100%', fig.align='center'}
 knitr::include_graphics("fig_general_3.png")
 ```
+
+## Maps {.tabset .tabset-fade .tabset-pills}
 
 ### Sky View Factor
 
