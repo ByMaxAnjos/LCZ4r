@@ -11,7 +11,13 @@ output:
     highlight: "textmate"
     css: custom.css
 resource_files:
-  - articles/fig_general_1.png
+  - articles/fig_general_1_1.png
+  - articles/fig_general_1_2.png
+  - articles/fig_general_1_3.png
+  - articles/fig_general_1_4.png
+  - articles/fig_general_1_5.png
+  - articles/fig_general_1_6.png
+  - articles/fig_general_1_7.png
   - articles/fig_general_2.png
   - articles/fig_general_3.png
   - articles/fig_general_4.png
@@ -60,22 +66,96 @@ The general functions, each serving a unique purpose:
 
 Tips: Utilize the help(lcz\_\*) function to access comprehensive documentation for each LCZ function. For instance, you can explore details about the lcz_get_map function by typing help("lcz_get_map").
 
-## Obtain an visualize the LCZ map
+## Obtain and visualize the LCZ map {.tabset .tabset-fade .tabset-pills}
 
-The lcz_get_map() function facilitates obtaining the LCZ map for your chosen city or a specific Region of Interest (ROI) by leveraging the global LCZ map developed by Demuzere et al. (2022). In our demonstration, we utilized Rio de Janeiro, Brazil as a reference city.
+The lcz_get_map() function facilitates obtaining the LCZ map for your chosen city or a specific Region of Interest (ROI). In our demonstration, we utilized a couple of cities around the world.
+
+### São Paulo
 
 ```{r eval=FALSE, message=FALSE, warning=FALSE}
 library(LCZ4r)
 # Get the LCZ map for your city
-lcz_map <- lcz_get_map(city="Rio de Janeiro")
+lcz_map <- lcz_get_map(city="São Paulo")
 
 # Visualize the obtained LCZ map
-lcz_plot_map(lcz_map, subtitle = "Rio de Janeiro")
+lcz_plot_map(lcz_map)
 
 ```
 
 ```{r echo=F, out.width = '100%', fig.align='center'}
-knitr::include_graphics("fig_general_1.png")
+knitr::include_graphics("fig_general_1_1.png")
+```
+
+### Paris
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+euro_map <- lcz_get_map_euro(city="Paris")
+lcz_plot_map(euro_map)
+
+```
+
+```{r echo=F, out.width = '100%', fig.align='center'}
+knitr::include_graphics("fig_general_1_2.png")
+```
+
+### London
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+euro_map <- lcz_get_map_euro(city="London")
+lcz_plot_map(euro_map)
+
+```
+
+```{r echo=F, out.width = '100%', fig.align='center'}
+knitr::include_graphics("fig_general_1_3.png")
+```
+
+### Sydney
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+lcz_map <- lcz_get_map(city="Sydney")
+lcz_plot_map(lcz_map)
+
+```
+
+```{r echo=F, out.width = '100%', fig.align='center'}
+knitr::include_graphics("fig_general_1_4.png")
+```
+
+### Beijing
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+lcz_map <- lcz_get_map(city="京")
+lcz_plot_map(lcz_map)
+
+```
+
+```{r echo=F, out.width = '100%', fig.align='center'}
+knitr::include_graphics("fig_general_1_5.png")
+```
+
+### New York
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+usa_map <- lcz_get_map_usa(city = "New York")
+lcz_plot_map(usa_map)
+
+```
+
+```{r echo=F, out.width = '100%', fig.align='center'}
+knitr::include_graphics("fig_general_1_6.png")
+```
+
+### Nairobi
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+usa_map <- lcz_get_map_usa(city = "Nairobi")
+lcz_plot_map(usa_map)
+
+```
+
+```{r echo=F, out.width = '100%', fig.align='center'}
+knitr::include_graphics("fig_general_1_7.png")
 ```
 
 Here are some tips to enhance your experience:

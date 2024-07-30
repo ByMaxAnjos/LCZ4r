@@ -111,6 +111,7 @@ lcz_plot_map <- function(x, isave = FALSE, inclusive = FALSE, ...) {
                                guide = ggplot2::guide_legend(reverse = FALSE,
                                                              title.position = "top")) +
     ggplot2::labs(...) +
+    ggplot2::coord_fixed()+
     ggplot2::theme_void() +
     ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
                    plot.subtitle = ggplot2::element_text(color = "black", size = 17, hjust = 0.5),
