@@ -41,12 +41,19 @@ The **`LCZ4r` general functions** are designed to facilitate the retrieval, anal
 ## Quickstart DEMO video
 
 <a href="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/a534cfaa-37d2-4c1d-8cec-e5e2a17e8806" target="_blank">
+
 <p style="text-align:center;">
+
 <img src="fig_general_video.png" alt="Introduction to General Functions" width="60%"/>
+
 </p>
+
 <p style="text-align:center">
+
 (Click to Watch video)
+
 </p>
+
 </a>
 
 ## Getting Started
@@ -149,8 +156,8 @@ knitr::include_graphics("fig_general_1_6.png")
 ### Nairobi
 
 ```{r eval=FALSE, message=FALSE, warning=FALSE}
-usa_map <- lcz_get_map_usa(city = "Nairobi")
-lcz_plot_map(usa_map)
+my_map <- lcz_get_map(city = "Nairobi")
+lcz_plot_map(my_map)
 
 ```
 
@@ -158,14 +165,22 @@ lcz_plot_map(usa_map)
 knitr::include_graphics("fig_general_1_7.png")
 ```
 
+##  {.unnumbered}
+
 Here are some tips to enhance your experience:
 
-1.  Fallback Option: In rare instances where the lcz_get_map() function faces inconsistencies (e.g., due to connectivity issues), you can rely on lcz_get_map2() as an alternative solution.
-2.  Custom ROI: Utilize the lcz_get_map() function along with a shapefile for your ROI by coding lcz_get_map(roi="your_shp"). Refer to the R package [sf](https://r-spatial.github.io/sf/) documentation for guidance on loading the shapefile into R. \## Calculate LCZ areas
+-   1\. As an alternative, users can download their own LCZ map from [WUDAPT](https://www.wudapt.org/) or [LCZ generator application](https://lcz-generator.rub.de/submissions) and integrate them into the LCZ4r system using the lcz_get_map2(LCZmap, city = "your city").
+
+-   2\. Fallback Option: In rare instances where the lcz_get_map() function faces inconsistencies (e.g., due to connectivity issues), you can rely on lcz_get_map2() as an alternative solution.
+
+-   3\. Custom ROI: Utilize the lcz_get_map() function along with a shapefile for your ROI by coding lcz_get_map(roi="your_shp"). Refer to the R package [sf](https://r-spatial.github.io/sf/) documentation for guidance on loading the shapefile into R. \## Calculate LCZ areas
+
+## Calculate LCZ areas
 
 This `lcz_cal_area()` function calculates the area for each LCZ classes, as follows:
 
 ```{r eval=FALSE, message=FALSE, warning=FALSE}
+lcz_map <- lcz_get_map(city="Rio de Janeiro")
 lcz_cal_area(lcz_map)
 
 ```
@@ -183,7 +198,7 @@ This `lcz_get_parameters()`function gives you to retrieve diverse LCZ parameters
 Here's a glimpse of the available LCZ parameters:
 
 | Code | Parameter                   | Description                         | Unit             |
-|-----------------|-----------------|-----------------------|-----------------|
+|-----------------|-----------------|---------------------|-----------------|
 | SVF1 | Sky View Factor             | Minimum Sky View Factor             | [0-1]            |
 | SVF2 | Sky View Factor             | Maximum Sky View Factor             | [0-1]            |
 | SVF3 | Sky View Factor             | Mean Sky View Factor                | [0-1]            |
