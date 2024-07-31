@@ -224,6 +224,7 @@ lcz_plot_parameters <- function(x, iselect = "", all = FALSE, inclusive = FALSE,
         # ggplot2::scale_fill_viridis_c(option = paste0(names_par$color[i]), name=paste0(names_par$unit[i]))+
         MetBrewer::scale_fill_met_c(name = paste0(names_par$color[i])) +
         ggplot2::labs(title = paste0(names_par$name[i]), fill = paste0(names_par$unit[i]), ...) +
+        ggplot2::coord_fixed() +
         ggplot2::theme_void() +
         ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
                        plot.subtitle = ggplot2::element_text(color = "black", size = 18, hjust = 0.5),
@@ -288,6 +289,7 @@ lcz_plot_parameters <- function(x, iselect = "", all = FALSE, inclusive = FALSE,
           #ggplot2::scale_fill_viridis_c(option = paste0(names_par_select$color[i]), name=paste0(names_par_select$unit[i]))+
           MetBrewer::scale_fill_met_c(name = paste0(names_par_select$color[i])) +
           ggplot2::labs(title = paste0(names_par_select$name[i]), fill = paste0(names_par_select$unit[i]), ...) +
+          ggplot2::coord_fixed() +
           ggplot2::theme_void() +
           ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
                          plot.subtitle = ggplot2::element_text(color = "black", size = 18, hjust = 0.5),
@@ -345,6 +347,7 @@ lcz_plot_parameters <- function(x, iselect = "", all = FALSE, inclusive = FALSE,
         #ggplot2::scale_fill_viridis_c(option = paste0(names_par_select$color), name=paste0(names_par_select$unit))+
         MetBrewer::scale_fill_met_c(name = paste0(names_par_select$color)) +
         ggplot2::labs(title = paste0(names_par_select$name), fill =paste0(names_par_select$unit), ...) +
+        ggplot2::coord_fixed() +
         ggplot2::theme_void() +
         ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
                        plot.subtitle = ggplot2::element_text(color = "black", size = 18, hjust = 0.5),
