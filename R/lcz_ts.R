@@ -577,7 +577,7 @@ lcz_ts <- function(x,
 
         if (iplot == FALSE) {
 
-          mydata2$date <- lubridate::as_datetime(mydata2$date)
+          mydata$date <- lubridate::as_datetime(mydata$date)
 
           return(mydata2)
 
