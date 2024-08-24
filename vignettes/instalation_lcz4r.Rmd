@@ -30,11 +30,15 @@ knitr::opts_chunk$set(
 
 To install **R package LCZ4r** LCZ4r use the development version on GitHub with latest features. 
 
-```{r include=TRUE}
-
+```{r eval=FALSE, message=FALSE, warning=FALSE}
 if(!require(remotes)) install.packages("remotes")
 remotes::install_github("ByMaxAnjos/LCZ4r", upgrade = "never")
+```
 
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+#Load functions from LCZ4r package
+library(LCZ4r)
 ```
 
 The upgrade = "never" in the install_github indicates that package dependencies won't be upgraded. If you want, replace "always". In this case, the installing processing may take a few minutes. 
