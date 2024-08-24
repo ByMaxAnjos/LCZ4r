@@ -11,6 +11,8 @@ output:
     number_sections: false
     highlight: "textmate"
     css: custom.css
+resource_files:
+  - articles/logo_qgis.png
 vignette: >
   %\VignetteIndexEntry{Install LCZ4r and input data requirements}
   %\VignetteEngine{rmarkdown::render}
@@ -24,21 +26,31 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Installation 
+## Installation in R
 
 To install **R package LCZ4r** LCZ4r use the development version on GitHub with latest features. 
 
-We recommend selecting option 3, "None," when prompted with the message "Which would you like to update?" during the installation process. To proceed, please enter like this: 
-Enter one or more numbers, or an empty line to skip updates: **3**
-
-
 ```{r include=TRUE}
 
-#if(!require(devtools)) install.packages("devtools")
-#devtools::install_github("ByMaxAnjos/LCZ4r")
-library(LCZ4r)
+if(!require(remotes)) install.packages("remotes")
+remotes::install_github("ByMaxAnjos/LCZ4r", upgrade = "never")
 
 ```
+
+The upgrade = "never" in the install_github indicates that package dependencies won't be upgraded. If you want, replace "always". In this case, the installing processing may take a few minutes. 
+
+
+## Installation in QGIS
+
+It's coming very soon...
+
+```{r echo=F, out.width = '100%', fig.align='center'}
+knitr::include_graphics("logo_qgis.png")
+```
+
+
+
+
 
 
 

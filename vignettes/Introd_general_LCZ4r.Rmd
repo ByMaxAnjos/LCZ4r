@@ -209,8 +209,8 @@ Here's a glimpse of the available LCZ parameters:
 | BSF2 | Building Surface Fraction   | Maximum Building Surface Fraction   | [%]              |
 | BSF3 | Building Surface Fraction   | Mean Building Surface Fraction      | [%]              |
 | ISF1 | Impervious Surface Fraction | Minimum Impervious Surface Fraction | [%]              |
-| ISF2 | Impervious Surface Fraction | Minimum Impervious Surface Fraction | [%]              |
-| ISF3 | Impervious Surface Fraction | Minimum Impervious Surface Fraction | [%]              |
+| ISF2 | Impervious Surface Fraction | Maximum Impervious Surface Fraction | [%]              |
+| ISF3 | Impervious Surface Fraction | Mean Impervious Surface Fraction | [%]              |
 | PSF1 | Vegetation Surface Fraction | Minimum Vegetation Surface Fraction | [%]              |
 | PSF2 | Vegetation Surface Fraction | Maximum Vegetation Surface Fraction | [%]              |
 | PSF3 | Vegetation Surface Fraction | Mean Vegetation Surface Fraction    | [%]              |
