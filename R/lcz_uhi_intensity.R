@@ -53,10 +53,9 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
                               method = "LCZ", Turban = NULL, Trural = NULL, by = NULL, impute = NULL,
                               group = FALSE, iplot = TRUE, isave = FALSE, ylab = "Air temperature [C]",
                               xlab = "Time", ylab2 = "UHI", title = "", caption = "LCZ4r,2024") {
-
   # Check and validate raster inputs -----------------------------------------------
 
-   if (missing(x)) {
+  if (missing(x)) {
     stop("The input must be raster object. Please, use the lcz_get_map* functions")
   }
   if (!inherits(x, "SpatRaster")) {
@@ -66,9 +65,9 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
       stop("Failed to convert input 'x' to SpatRaster. Please provide a valid SpatRaster object.")
     }
   }
-    if (terra::nlyr(x) > 1) {
-      x <- x[[2]]
-    }
+  if (terra::nlyr(x) > 1) {
+    x <- x[[2]]
+  }
 
   if (terra::crs(x, proj = TRUE) != "+proj=longlat +datum=WGS84 +no_defs") {
     warning("The input 'x' is not in WGS84 projection. Reprojecting to WGS84.")
@@ -76,7 +75,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
   }
 
 
-# Check data inputs -------------------------------------------------------
+  # Check data inputs -------------------------------------------------------
   if (!is.data.frame(data_frame)) {
     stop("The 'data_frame' input must be a data frame containing air temperature measurements,station IDs, latitude, and longitude.")
   }
@@ -87,7 +86,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
   if (missing(station_id) || !station_id %in% colnames(data_frame)) {
     stop("The 'station_id' input must be a column name in 'data_frame' representing stations.")
-    }
+  }
 
   if (!("Latitude" %in% tolower(colnames(data_frame)) || "latitude" %in% tolower(colnames(data_frame)))) {
     stop("The 'latitude' input must be a column name in 'data_frame' representing each station's latitude.")
@@ -99,14 +98,16 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
   # Pre-processing time series ----------------------------------------------
 
-  #Rename and define my_id for each lat and long
+  # Rename and define my_id for each lat and long
   df_processed <- data_frame %>%
     dplyr::rename(var_interp = {{ var }}, station = {{ station_id }}) %>%
     janitor::clean_names() %>%
     dplyr::group_by(.data$latitude, .data$longitude) %>%
-    dplyr::mutate(station = base::as.factor(.data$station),
-                    my_id = dplyr::cur_group_id(),
-                  date = lubridate::as_datetime(.data$date)) %>%
+    dplyr::mutate(
+      station = base::as.factor(.data$station),
+      my_id = dplyr::cur_group_id(),
+      date = lubridate::as_datetime(.data$date)
+    ) %>%
     dplyr::select(.data$date, .data$var_interp, .data$station, .data$my_id, .data$longitude, .data$latitude) %>%
     openair::selectByDate(...)
 
@@ -119,10 +120,10 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
       stop("Invalid impute method. Choose from 'mean', 'median', 'knn', or 'bag'.")
     }
     impute_function <- switch(impute,
-                              "mean" = recipes::step_impute_mean,
-                              "median" = recipes::step_impute_median,
-                              "knn" = recipes::step_impute_knn,
-                              "bag" = recipes::step_impute_bag
+      "mean" = recipes::step_impute_mean,
+      "median" = recipes::step_impute_median,
+      "knn" = recipes::step_impute_knn,
+      "bag" = recipes::step_impute_bag
     )
     lcz_recipe <- recipes::recipe(var_interp ~ ., data = df_processed) %>%
       impute_function(.data$var_interp)
@@ -134,28 +135,29 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
   # Geospatial operations ---------------------------------------------------
 
-  #Convert lcz_map to polygon
+  # Convert lcz_map to polygon
   base::names(x) <- "lcz"
   lcz_shp <- terra::as.polygons(x) %>%
     sf::st_as_sf() %>%
     sf::st_transform(crs = "+proj=longlat +datum=WGS84 +no_defs")
 
-  #Get shp LCZ stations from lat and long
+  # Get shp LCZ stations from lat and long
   shp_stations <- df_processed %>%
     dplyr::distinct(.data$latitude, .data$longitude, .keep_all = T) %>%
     stats::na.omit() %>%
     sf::st_as_sf(coords = c("longitude", "latitude"), crs = "+proj=longlat +datum=WGS84 +no_defs")
 
-   #Intersect poi shp stations with lcz shp
+  # Intersect poi shp stations with lcz shp
   lcz_stations <- sf::st_intersection(shp_stations, lcz_shp) %>%
     sf::st_drop_geometry() %>%
     dplyr::select(.data$my_id, .data$station, .data$lcz)
-  #merge data-model with lcz_station to get lcz class
+  # merge data-model with lcz_station to get lcz class
   df_model <-
     dplyr::inner_join(df_processed, lcz_stations, by = c("station", "my_id")) %>%
     dplyr::mutate(
       lcz = base::as.factor(.data$lcz),
-      my_id = base::as.factor(.data$my_id)) %>%
+      my_id = base::as.factor(.data$my_id)
+    ) %>%
     dplyr::ungroup()
 
   my_stations <- df_model %>%
@@ -172,7 +174,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
   }
 
 
-# Select urban and rural stations -----------------------------------------
+  # Select urban and rural stations -----------------------------------------
 
   if (method == "LCZ") {
     select_stations <- function(data) {
@@ -209,7 +211,6 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
   }
 
   if (method == "manual") {
-
     urban_station <- Turban
     rural_station <- Trural
 
@@ -217,10 +218,9 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
       dplyr::filter(.data$station %in% c(urban_station, rural_station)) %>%
       dplyr::mutate(reference = ifelse(.data$station %in% c(urban_station), "urban", "rural"))
 
-    if (is.null(lcz_model) || nrow(lcz_model)==0) {
+    if (is.null(lcz_model) || nrow(lcz_model) == 0) {
       stop("Unable to find suitable urban or rural station. Please, try the LCZ method")
     }
-
   }
 
   # Settings for plots ------------------------------------------------------
@@ -263,15 +263,17 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
     dplyr::select(.data$reference, .data$lcz.col) %>%
     dplyr::distinct(.data$reference, .keep_all = TRUE)
 
-  urban_col <- color_values %>% dplyr::filter(.data$reference == "urban") %>%
+  urban_col <- color_values %>%
+    dplyr::filter(.data$reference == "urban") %>%
     dplyr::pull(.data$lcz.col)
 
-  rural_col <- color_values %>% dplyr::filter(.data$reference == "rural") %>%
+  rural_col <- color_values %>%
+    dplyr::filter(.data$reference == "rural") %>%
     dplyr::pull(.data$lcz.col)
 
   uhi_col <- c(uhi = "black")
 
-  #Define the theme for graphics
+  # Define the theme for graphics
   lcz_theme <- ggplot2::theme(
     legend.position = "top",
     plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
@@ -291,7 +293,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
     plot.caption = ggplot2::element_text(color = "grey40", hjust = 1, size = 10)
   )
 
-  #Define hemisphere
+  # Define hemisphere
   extract_hemisphere <- function(raster) {
     # Get the extent of the raster
     extent <- raster::extent(raster::raster(raster))
@@ -306,7 +308,7 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
   }
 
   # Extract the hemisphere
-  hemisphere <- extract_hemisphere(raster= {{ x }})
+  hemisphere <- extract_hemisphere(raster = {{ x }})
 
   my_latitude <- lcz_model$latitude[1]
   my_longitude <- lcz_model$longitude[1]
@@ -320,7 +322,8 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
       lcz_model,
       pollutant = "var_interp",
       avg.time = time.freq,
-      type = c("reference")) %>%
+      type = c("reference")
+    ) %>%
       dplyr::ungroup() %>%
       stats::na.omit() %>%
       tidyr::pivot_wider(id_cols = .data$date, names_from = .data$reference, values_from = .data$var_interp) %>%
@@ -328,12 +331,11 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
       dplyr::mutate(uhi = base::round(.data$urban - .data$rural, digits = 2))
 
     if (group == TRUE) {
-
       # Make A Y-Axis Transformer ----
       train_sec <- function(primary, secondary, na.rm = TRUE) {
         # Thanks Henry Holm for including the na.rm argument!
         from <- base::range(secondary, na.rm = na.rm)
-        to   <- base::range(primary, na.rm = na.rm)
+        to <- base::range(primary, na.rm = na.rm)
         # Forward transform for the data
         forward <- function(x) {
           scales::rescale(x, from = from, to = to)
@@ -348,29 +350,30 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
       final_graph <-
         ggplot2::ggplot(mydata, ggplot2::aes(x = .data$date)) +
-        ggplot2::geom_line(ggplot2::aes(y = .data$urban, color = "Urban Temperature"), alpha = 0.8, lwd=1) +
-        ggplot2::geom_line(ggplot2::aes(y = .data$rural, color = "Rural Temperature"), alpha = 0.8, lwd=1) +
-        ggplot2::geom_line(ggplot2::aes(y = sec$fwd(.data$uhi), color = "UHI"), lwd=1) +
-        ggplot2::scale_y_continuous(sec.axis = ggplot2::sec_axis(~ sec$rev(.), name = "UHI"),
-                                    guide = ggplot2::guide_axis(check.overlap = TRUE)) +
-        ggplot2::scale_x_datetime(expand = c(0,0)) +
-        ggplot2::scale_color_manual(name = "",values = c("Urban Temperature" = urban_col, "Rural Temperature" = rural_col, "UHI" = "black")
+        ggplot2::geom_line(ggplot2::aes(y = .data$urban, color = "Urban Temperature"), alpha = 0.8, lwd = 1) +
+        ggplot2::geom_line(ggplot2::aes(y = .data$rural, color = "Rural Temperature"), alpha = 0.8, lwd = 1) +
+        ggplot2::geom_line(ggplot2::aes(y = sec$fwd(.data$uhi), color = "UHI"), lwd = 1) +
+        ggplot2::scale_y_continuous(
+          sec.axis = ggplot2::sec_axis(~ sec$rev(.), name = "UHI"),
+          guide = ggplot2::guide_axis(check.overlap = TRUE)
         ) +
+        ggplot2::scale_x_datetime(expand = c(0, 0)) +
+        ggplot2::scale_color_manual(name = "", values = c("Urban Temperature" = urban_col, "Rural Temperature" = rural_col, "UHI" = "black")) +
         ggplot2::labs(title = title, x = xlab, y = ylab, fill = "", caption = caption) +
-        ggplot2::theme_bw() + lcz_theme
-    }
-    else {
+        ggplot2::theme_bw() +
+        lcz_theme
+    } else {
       final_graph <-
         ggplot2::ggplot(mydata, ggplot2::aes(x = .data$date)) +
-        ggplot2::geom_line(ggplot2::aes(y = .data$uhi, color = "UHI"), lwd=1) +
-        ggplot2::scale_x_datetime(expand = c(0,0)) +
+        ggplot2::geom_line(ggplot2::aes(y = .data$uhi, color = "UHI"), lwd = 1) +
+        ggplot2::scale_x_datetime(expand = c(0, 0)) +
         ggplot2::scale_color_manual(name = "", values = c("UHI" = "black")) +
         ggplot2::labs(title = title, x = xlab, y = ylab, fill = "", caption = caption) +
-        ggplot2::theme_bw() + lcz_theme
+        ggplot2::theme_bw() +
+        lcz_theme
     }
 
-    if (isave == TRUE){
-
+    if (isave == TRUE) {
       # Create a folder name using paste0
       folder <- base::paste0("LCZ4r_output/")
 
@@ -380,44 +383,38 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
         base::dir.create(folder)
       }
 
-      file.1 <- base::paste0(getwd(), "/", folder,"lcz4r_uhi_plot.png")
-      ggplot2::ggsave(file.1, final_graph, height = 7, width = 12, units="in", dpi=600)
-      file.2 <- base::paste0(getwd(),"/", folder,"lcz4r_uhi_df.csv")
+      file.1 <- base::paste0(getwd(), "/", folder, "lcz4r_uhi_plot.png")
+      ggplot2::ggsave(file.1, final_graph, height = 7, width = 12, units = "in", dpi = 600)
+      file.2 <- base::paste0(getwd(), "/", folder, "lcz4r_uhi_df.csv")
       utils::write.csv(mydata, file.2)
-      file.3 <- base::paste0(getwd(),"/", folder,"lcz4r_uhi_stations.csv")
+      file.3 <- base::paste0(getwd(), "/", folder, "lcz4r_uhi_stations.csv")
       utils::write.csv(lcz_df, file.3)
       base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
-
     }
 
     if (iplot == FALSE) {
-
       mydata$date <- lubridate::as_datetime(mydata$date)
 
       return(mydata)
-
     } else {
-
       return(final_graph)
-
     }
-
   }
 
   # Define with by  ---------------------------------------------------------
 
   if (!is.null(by)) {
-
-    if ("day" %in% by ) {
+    if ("day" %in% by) {
       stop("The 'day' does not work with the argument by")
     }
 
     if (length(by) < 2 && any(c("month", "year", "season", "seasonyear", "yearseason") %in% by)) {
-
-      mydata <- openair::cutData(lcz_model, type = by,
-                                 hemisphere= hemisphere,
-                                 latitude = my_latitude,
-                                 longitude = my_longitude) %>%
+      mydata <- openair::cutData(lcz_model,
+        type = by,
+        hemisphere = hemisphere,
+        latitude = my_latitude,
+        longitude = my_longitude
+      ) %>%
         stats::na.omit() %>%
         dplyr::rename(my_time = dplyr::last_col())
 
@@ -425,7 +422,8 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
         mydata,
         pollutant = "var_interp",
         avg.time = time.freq,
-        type = c("reference", "my_time")) %>%
+        type = c("reference", "my_time")
+      ) %>%
         dplyr::ungroup() %>%
         stats::na.omit() %>%
         tidyr::pivot_wider(id_cols = c(.data$date, .data$my_time), names_from = .data$reference, values_from = .data$var_interp) %>%
@@ -433,23 +431,21 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
         stats::na.omit() %>%
         dplyr::mutate(date = base::as.factor(date))
 
-      label_format <- switch(
-        by,
+      label_format <- switch(by,
         "season" = "%b %d",
         "seasonyear" = "%b %d",
         "yearseason" = "%b %d",
         "year" = "%b %d",
         "month" = "%d",
-        "%b %d"  # Default case if none of the above match
+        "%b %d" # Default case if none of the above match
       )
 
       if (group == TRUE) {
-
         # Make A Y-Axis Transformer
         train_sec <- function(primary, secondary, na.rm = TRUE) {
           # Thanks Henry Holm for including the na.rm argument!
           from <- base::range(secondary, na.rm = na.rm)
-          to   <- base::range(primary, na.rm = na.rm)
+          to <- base::range(primary, na.rm = na.rm)
           # Forward transform for the data
           forward <- function(x) {
             scales::rescale(x, from = from, to = to)
@@ -464,55 +460,60 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
         graph <-
           ggplot2::ggplot(mydata, ggplot2::aes(x = .data$date)) +
-          ggplot2::scale_x_discrete(expand = c(0,0),
-                                    breaks = function(x) x[seq(1, length(x), by = 4*24)],
-                                    labels= function(x) base::format(lubridate::as_datetime(x), label_format),
-                                    guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90
-                                    )) +
-          ggplot2::geom_line(ggplot2::aes(y = .data$urban, color = "Urban Temperature", group = 1), alpha = 0.8, lwd=1) +
-          ggplot2::geom_line(ggplot2::aes(y = .data$rural, color = "Rural Temperature", group = 1), alpha = 0.8, lwd=1) +
-          ggplot2::geom_line(ggplot2::aes(y = sec$fwd(.data$uhi), color = "UHI", group =1), lwd=1) +
-          ggplot2::scale_y_continuous(sec.axis = ggplot2::sec_axis(~ sec$rev(.), name = ylab2),
-                                      guide = ggplot2::guide_axis(check.overlap = TRUE)) +
-          ggplot2::scale_color_manual(name = "",values = c("Urban Temperature" = urban_col, "Rural Temperature" = rural_col, "UHI" = "black")
+          ggplot2::scale_x_discrete(
+            expand = c(0, 0),
+            breaks = function(x) x[seq(1, length(x), by = 4 * 24)],
+            labels = function(x) base::format(lubridate::as_datetime(x), label_format),
+            guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90)
           ) +
+          ggplot2::geom_line(ggplot2::aes(y = .data$urban, color = "Urban Temperature", group = 1), alpha = 0.8, lwd = 1) +
+          ggplot2::geom_line(ggplot2::aes(y = .data$rural, color = "Rural Temperature", group = 1), alpha = 0.8, lwd = 1) +
+          ggplot2::geom_line(ggplot2::aes(y = sec$fwd(.data$uhi), color = "UHI", group = 1), lwd = 1) +
+          ggplot2::scale_y_continuous(
+            sec.axis = ggplot2::sec_axis(~ sec$rev(.), name = ylab2),
+            guide = ggplot2::guide_axis(check.overlap = TRUE)
+          ) +
+          ggplot2::scale_color_manual(name = "", values = c("Urban Temperature" = urban_col, "Rural Temperature" = rural_col, "UHI" = "black")) +
           ggplot2::labs(title = title, x = xlab, y = ylab, fill = "", caption = caption) +
-          ggplot2::theme_bw()+ lcz_theme
+          ggplot2::theme_bw() +
+          lcz_theme
         final_graph <-
-          graph + ggplot2::facet_wrap(~ my_time, scales = "free_x", shrink = TRUE) +
-          ggplot2::theme(strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
-                         strip.background = ggplot2::element_rect(linetype = "dotted"),
-                         legend.box.spacing = ggplot2::unit(20, "pt"),
-                         panel.spacing = ggplot2::unit(3, "lines"),
-                         axis.ticks.x = ggplot2::element_blank()
+          graph + ggplot2::facet_wrap(~my_time, scales = "free_x", shrink = TRUE) +
+          ggplot2::theme(
+            strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
+            strip.background = ggplot2::element_rect(linetype = "dotted"),
+            legend.box.spacing = ggplot2::unit(20, "pt"),
+            panel.spacing = ggplot2::unit(3, "lines"),
+            axis.ticks.x = ggplot2::element_blank()
           )
-
       } else {
         graph <-
           ggplot2::ggplot(mydata, ggplot2::aes(x = .data$date)) +
-          ggplot2::scale_x_discrete(expand = c(0,0),
-                                    breaks = function(x) x[seq(1, length(x), by = 4*24)],
-                                    labels= function(x) base::format(lubridate::as_datetime(x), label_format),
-                                    guide = ggplot2::guide_axis(check.overlap = TRUE, angle=90
-                                    )) +
-          ggplot2::geom_line(ggplot2::aes(y = .data$uhi, color = "UHI", group= 1), lwd=1) +
+          ggplot2::scale_x_discrete(
+            expand = c(0, 0),
+            breaks = function(x) x[seq(1, length(x), by = 4 * 24)],
+            labels = function(x) base::format(lubridate::as_datetime(x), label_format),
+            guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90)
+          ) +
+          ggplot2::geom_line(ggplot2::aes(y = .data$uhi, color = "UHI", group = 1), lwd = 1) +
           ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
           ggplot2::scale_color_manual(name = "", values = c("UHI" = "black")) +
           ggplot2::labs(title = title, x = xlab, y = ylab, fill = "", caption = caption) +
-          ggplot2::theme_bw()+ lcz_theme
+          ggplot2::theme_bw() +
+          lcz_theme
         final_graph <-
-          graph + ggplot2::facet_wrap(~ my_time, scales = "free_x", shrink = TRUE) +
-          ggplot2::theme(strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
-                         strip.background = ggplot2::element_rect(linetype = "dotted"),
-                         legend.box.spacing = ggplot2::unit(20, "pt"),
-                         panel.spacing = ggplot2::unit(3, "lines"),
-                         axis.ticks.x = ggplot2::element_blank()
+          graph + ggplot2::facet_wrap(~my_time, scales = "free_x", shrink = TRUE) +
+          ggplot2::theme(
+            strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
+            strip.background = ggplot2::element_rect(linetype = "dotted"),
+            legend.box.spacing = ggplot2::unit(20, "pt"),
+            panel.spacing = ggplot2::unit(3, "lines"),
+            axis.ticks.x = ggplot2::element_blank()
           )
       }
 
 
-      if (isave == TRUE){
-
+      if (isave == TRUE) {
         # Create a folder name using paste0
         folder <- base::paste0("LCZ4r_output/")
 
@@ -522,38 +523,31 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
           base::dir.create(folder)
         }
 
-        file.1 <- base::paste0(getwd(), "/", folder,"lcz4r_uhi_plot.png")
-        ggplot2::ggsave(file.1, final_graph, height = 7, width = 12, units="in", dpi=600)
-        file.2 <- base::paste0(getwd(),"/", folder,"lcz4r_uhi_df.csv")
+        file.1 <- base::paste0(getwd(), "/", folder, "lcz4r_uhi_plot.png")
+        ggplot2::ggsave(file.1, final_graph, height = 7, width = 12, units = "in", dpi = 600)
+        file.2 <- base::paste0(getwd(), "/", folder, "lcz4r_uhi_df.csv")
         utils::write.csv(mydata, file.2)
-        file.3 <- base::paste0(getwd(),"/", folder,"lcz4r_uhi_stations.csv")
+        file.3 <- base::paste0(getwd(), "/", folder, "lcz4r_uhi_stations.csv")
         utils::write.csv(lcz_df, file.3)
         base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
-
       }
 
       if (iplot == FALSE) {
-
         mydata$date <- lubridate::as_datetime(mydata$date)
 
         return(mydata)
-
       } else {
-
         return(final_graph)
-
       }
-
-
     }
 
     if (length(by) < 2 && "daylight" %in% by) {
-
       mydata <- openair::cutData(lcz_model,
-                                 type = by,
-                                 hemisphere= hemisphere,
-                                 latitude = my_latitude,
-                                 longitude = my_longitude) %>%
+        type = by,
+        hemisphere = hemisphere,
+        latitude = my_latitude,
+        longitude = my_longitude
+      ) %>%
         stats::na.omit() %>%
         dplyr::rename(my_time = dplyr::last_col())
 
@@ -561,7 +555,8 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
         mydata,
         pollutant = "var_interp",
         avg.time = time.freq,
-        type = c("reference", "my_time")) %>%
+        type = c("reference", "my_time")
+      ) %>%
         dplyr::ungroup() %>%
         stats::na.omit() %>%
         tidyr::pivot_wider(id_cols = c(.data$date, .data$my_time), names_from = .data$reference, values_from = .data$var_interp) %>%
@@ -573,16 +568,16 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
         dplyr::summarize(
           xmin = base::min(.data$date),
           xmax = base::max(.data$date),
-          labs = base::unique(.data$my_time)) %>%
+          labs = base::unique(.data$my_time)
+        ) %>%
         dplyr::ungroup()
 
       if (group == TRUE) {
-
         # Make A Y-Axis Transformer
         train_sec <- function(primary, secondary, na.rm = TRUE) {
           # Thanks Henry Holm for including the na.rm argument!
           from <- base::range(secondary, na.rm = na.rm)
-          to   <- base::range(primary, na.rm = na.rm)
+          to <- base::range(primary, na.rm = na.rm)
           # Forward transform for the data
           forward <- function(x) {
             scales::rescale(x, from = from, to = to)
@@ -598,43 +593,49 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
         final_graph <-
           ggplot2::ggplot(mydata, ggplot2::aes(x = .data$date)) +
           ggplot2::geom_rect(ggplot2::aes(xmin = .data$xmin, xmax = .data$xmax, ymin = -Inf, ymax = Inf, fill = .data$labs),
-                    alpha = 0.3, data = rec_df, inherit.aes = FALSE) +
-          ggplot2::scale_fill_manual(name= "", values = c("lightblue", "grey")) +
-          ggplot2::scale_x_datetime(expand = c(0, 0),
-                                    breaks = scales::date_breaks("3 hour"),
-                                    labels = scales::date_format("%H"),
-                                    guide = ggplot2::guide_axis(check.overlap = TRUE))+
-          ggplot2::geom_line(ggplot2::aes(y = .data$urban, color = "Urban Temperature", group = 1), alpha = 0.8, lwd =1) +
-          ggplot2::geom_line(ggplot2::aes(y = .data$rural, color = "Rural Temperature", group = 1), alpha = 0.8, lwd = 1) +
-          ggplot2::geom_line(ggplot2::aes(y = sec$fwd(.data$uhi), color = "UHI", group =1), lwd=1) +
-          ggplot2::scale_y_continuous(sec.axis = ggplot2::sec_axis(~ sec$rev(.), name = ylab2),
-                                      guide = ggplot2::guide_axis(check.overlap = TRUE)) +
-          ggplot2::scale_color_manual(name = "",values = c("Urban Temperature" = urban_col, "Rural Temperature" = rural_col, "UHI" = "black")
+            alpha = 0.3, data = rec_df, inherit.aes = FALSE
           ) +
+          ggplot2::scale_fill_manual(name = "", values = c("lightblue", "grey")) +
+          ggplot2::scale_x_datetime(
+            expand = c(0, 0),
+            breaks = scales::date_breaks("3 hour"),
+            labels = scales::date_format("%H"),
+            guide = ggplot2::guide_axis(check.overlap = TRUE)
+          ) +
+          ggplot2::geom_line(ggplot2::aes(y = .data$urban, color = "Urban Temperature", group = 1), alpha = 0.8, lwd = 1) +
+          ggplot2::geom_line(ggplot2::aes(y = .data$rural, color = "Rural Temperature", group = 1), alpha = 0.8, lwd = 1) +
+          ggplot2::geom_line(ggplot2::aes(y = sec$fwd(.data$uhi), color = "UHI", group = 1), lwd = 1) +
+          ggplot2::scale_y_continuous(
+            sec.axis = ggplot2::sec_axis(~ sec$rev(.), name = ylab2),
+            guide = ggplot2::guide_axis(check.overlap = TRUE)
+          ) +
+          ggplot2::scale_color_manual(name = "", values = c("Urban Temperature" = urban_col, "Rural Temperature" = rural_col, "UHI" = "black")) +
           ggplot2::labs(title = title, x = xlab, y = ylab, fill = "", caption = caption) +
-
-          ggplot2::theme_bw() + lcz_theme
-
+          ggplot2::theme_bw() +
+          lcz_theme
       } else {
         final_graph <-
           ggplot2::ggplot(mydata, ggplot2::aes(x = .data$date)) +
           ggplot2::geom_rect(ggplot2::aes(xmin = .data$xmin, xmax = .data$xmax, ymin = -Inf, ymax = Inf, fill = .data$labs),
-                             alpha = 0.3, data = rec_df, inherit.aes = FALSE) +
-          ggplot2::scale_x_datetime(expand = c(0, 0),
-                                    breaks = scales::date_breaks("3 hour"),
-                                    labels = scales::date_format("%H"),
-                                    guide = ggplot2::guide_axis(check.overlap = TRUE)) +
-          ggplot2::scale_fill_manual(name= "", values = c("lightblue", "grey")) +
-          ggplot2::geom_line(ggplot2::aes(y = .data$uhi, color = "UHI", group= 1), lwd = 1) +
+            alpha = 0.3, data = rec_df, inherit.aes = FALSE
+          ) +
+          ggplot2::scale_x_datetime(
+            expand = c(0, 0),
+            breaks = scales::date_breaks("3 hour"),
+            labels = scales::date_format("%H"),
+            guide = ggplot2::guide_axis(check.overlap = TRUE)
+          ) +
+          ggplot2::scale_fill_manual(name = "", values = c("lightblue", "grey")) +
+          ggplot2::geom_line(ggplot2::aes(y = .data$uhi, color = "UHI", group = 1), lwd = 1) +
           ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
           ggplot2::scale_color_manual(name = "", values = c("UHI" = "black")) +
           ggplot2::labs(title = title, x = xlab, y = ylab, fill = "", caption = caption) +
-          ggplot2::theme_bw() + lcz_theme
+          ggplot2::theme_bw() +
+          lcz_theme
       }
 
 
-      if (isave == TRUE){
-
+      if (isave == TRUE) {
         # Create a folder name using paste0
         folder <- base::paste0("LCZ4r_output/")
 
@@ -644,44 +645,39 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
           base::dir.create(folder)
         }
 
-        file.1 <- base::paste0(getwd(), "/", folder,"lcz4r_uhi_plot.png")
-        ggplot2::ggsave(file.1, final_graph, height = 7, width = 12, units="in", dpi=600)
-        file.2 <- base::paste0(getwd(),"/", folder,"lcz4r_uhi_df.csv")
+        file.1 <- base::paste0(getwd(), "/", folder, "lcz4r_uhi_plot.png")
+        ggplot2::ggsave(file.1, final_graph, height = 7, width = 12, units = "in", dpi = 600)
+        file.2 <- base::paste0(getwd(), "/", folder, "lcz4r_uhi_df.csv")
         utils::write.csv(mydata, file.2)
-        file.3 <- base::paste0(getwd(),"/", folder,"lcz4r_uhi_stations.csv")
+        file.3 <- base::paste0(getwd(), "/", folder, "lcz4r_uhi_stations.csv")
         utils::write.csv(lcz_df, file.3)
         base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
-
       }
 
       if (iplot == FALSE) {
-
         mydata$date <- lubridate::as_datetime(mydata$date)
 
         return(mydata)
-
       } else {
-
         return(final_graph)
-
       }
-
-
     }
 
     if (length(by) > 1 && "daylight" %in% by) {
-
-      mydata <- openair::cutData(lcz_model, type = by,
-                                 hemisphere= hemisphere,
-                                 latitude = my_latitude,
-                                 longitude = my_longitude) %>%
+      mydata <- openair::cutData(lcz_model,
+        type = by,
+        hemisphere = hemisphere,
+        latitude = my_latitude,
+        longitude = my_longitude
+      ) %>%
         stats::na.omit() %>%
         dplyr::rename(my_time = dplyr::last_col())
       mydata <- openair::timeAverage(
         mydata,
         pollutant = "var_interp",
         avg.time = time.freq,
-        type = c("reference", by)) %>%
+        type = c("reference", by)
+      ) %>%
         dplyr::ungroup() %>%
         stats::na.omit() %>%
         tidyr::pivot_wider(id_cols = c(.data$date, by), names_from = .data$reference, values_from = .data$var_interp) %>%
@@ -693,9 +689,11 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
       mydata2 <- mydata %>%
         dplyr::mutate(hour = lubridate::hour(.data$date)) %>%
         dplyr::group_by(!!!new_var, .data$hour) %>%
-        dplyr::summarize(rural= base::mean(.data$rural),
-                         urban= base::mean(.data$urban),
-                         uhi = base::mean(.data$uhi), .groups = "drop") %>%
+        dplyr::summarize(
+          rural = base::mean(.data$rural),
+          urban = base::mean(.data$urban),
+          uhi = base::mean(.data$uhi), .groups = "drop"
+        ) %>%
         dplyr::ungroup()
 
       rec_df <- mydata %>%
@@ -706,19 +704,20 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
           labs = base::unique(.data$daylight), .groups = "drop"
         ) %>%
         dplyr::ungroup() %>%
-        dplyr::mutate(min_hour = lubridate::hour(.data$xmin),
-               max_hour = lubridate::hour(.data$xmax))
+        dplyr::mutate(
+          min_hour = lubridate::hour(.data$xmin),
+          max_hour = lubridate::hour(.data$xmax)
+        )
 
       # convert the string to a formula
       by_formula <- stats::as.formula(base::paste("~", base::paste(by[2], collapse = " + ")))
 
       if (group == TRUE) {
-
         # Make A Y-Axis Transformer
         train_sec <- function(primary, secondary, na.rm = TRUE) {
           # Thanks Henry Holm for including the na.rm argument!
           from <- base::range(secondary, na.rm = na.rm)
-          to   <- base::range(primary, na.rm = na.rm)
+          to <- base::range(primary, na.rm = na.rm)
           # Forward transform for the data
           forward <- function(x) {
             scales::rescale(x, from = from, to = to)
@@ -734,18 +733,21 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
         graph <-
           ggplot2::ggplot(mydata2, ggplot2::aes(x = .data$hour)) +
           ggplot2::geom_rect(ggplot2::aes(xmin = .data$min_hour, xmax = .data$max_hour, ymin = -Inf, ymax = Inf, fill = .data$labs),
-                             alpha = 0.3, data = rec_df, inherit.aes = FALSE) +
-          ggplot2::scale_fill_manual(name= "", values = c("lightblue", "grey")) +
-          ggplot2::scale_x_continuous(expand = c(0,0), guide = ggplot2::guide_axis(check.overlap = TRUE))+
-          ggplot2::geom_line(ggplot2::aes(y = .data$urban, color = "Urban Temperature", group=1), alpha = 0.8, lwd=1) +
-          ggplot2::geom_line(ggplot2::aes(y = .data$rural, color = "Rural Temperature", group= 1), alpha = 0.8, lwd=1) +
-          ggplot2::geom_line(ggplot2::aes(y = sec$fwd(.data$uhi), color = "UHI", group=1), lwd=1) +
-          ggplot2::scale_y_continuous(sec.axis = ggplot2::sec_axis(~ sec$rev(.), name = ylab2),
-                                      guide = ggplot2::guide_axis(check.overlap = TRUE)) +
-          ggplot2::scale_color_manual(name = "", values = c("Urban Temperature" = urban_col, "Rural Temperature" = rural_col, "UHI" = "black")
+            alpha = 0.3, data = rec_df, inherit.aes = FALSE
           ) +
+          ggplot2::scale_fill_manual(name = "", values = c("lightblue", "grey")) +
+          ggplot2::scale_x_continuous(expand = c(0, 0), guide = ggplot2::guide_axis(check.overlap = TRUE)) +
+          ggplot2::geom_line(ggplot2::aes(y = .data$urban, color = "Urban Temperature", group = 1), alpha = 0.8, lwd = 1) +
+          ggplot2::geom_line(ggplot2::aes(y = .data$rural, color = "Rural Temperature", group = 1), alpha = 0.8, lwd = 1) +
+          ggplot2::geom_line(ggplot2::aes(y = sec$fwd(.data$uhi), color = "UHI", group = 1), lwd = 1) +
+          ggplot2::scale_y_continuous(
+            sec.axis = ggplot2::sec_axis(~ sec$rev(.), name = ylab2),
+            guide = ggplot2::guide_axis(check.overlap = TRUE)
+          ) +
+          ggplot2::scale_color_manual(name = "", values = c("Urban Temperature" = urban_col, "Rural Temperature" = rural_col, "UHI" = "black")) +
           ggplot2::labs(title = title, x = xlab, y = ylab, fill = "", caption = caption) +
-          ggplot2::theme_bw()+ lcz_theme
+          ggplot2::theme_bw() +
+          lcz_theme
 
         final_graph <-
           graph + ggplot2::facet_wrap(by_formula, scales = "free_x") +
@@ -759,19 +761,20 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
             ),
             strip.background = ggplot2::element_rect(linetype = "dotted")
           )
-
       } else {
         graph <-
           ggplot2::ggplot(mydata2, ggplot2::aes(x = .data$hour)) +
           ggplot2::geom_rect(ggplot2::aes(xmin = .data$min_hour, xmax = .data$max_hour, ymin = -Inf, ymax = Inf, fill = .data$labs),
-                             alpha = 0.3, data = rec_df, inherit.aes = FALSE) +
-          ggplot2::scale_fill_manual(name= "", values = c("lightblue", "grey")) +
-          ggplot2::scale_x_continuous(expand = c(0,0), guide = ggplot2::guide_axis(check.overlap = TRUE))+
-          ggplot2::geom_line(ggplot2::aes(y = .data$uhi, color = "UHI", group = 1), lwd=1) +
+            alpha = 0.3, data = rec_df, inherit.aes = FALSE
+          ) +
+          ggplot2::scale_fill_manual(name = "", values = c("lightblue", "grey")) +
+          ggplot2::scale_x_continuous(expand = c(0, 0), guide = ggplot2::guide_axis(check.overlap = TRUE)) +
+          ggplot2::geom_line(ggplot2::aes(y = .data$uhi, color = "UHI", group = 1), lwd = 1) +
           ggplot2::scale_color_manual(name = "", values = c("UHI" = "black")) +
           ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
           ggplot2::labs(title = title, x = xlab, y = ylab, fill = "", caption = caption) +
-          ggplot2::theme_bw() + lcz_theme
+          ggplot2::theme_bw() +
+          lcz_theme
         final_graph <-
           graph + ggplot2::facet_wrap(by_formula, scales = "free_y") +
           ggplot2::theme(
@@ -787,7 +790,6 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
       }
 
       if (isave == TRUE) {
-
         # Create a folder name using paste0
         folder <- base::paste0("LCZ4r_output/")
 
@@ -797,43 +799,37 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
           base::dir.create(folder)
         }
 
-        file.1 <- base::paste0(getwd(), "/", folder,"lcz4r_uhi_plot.png")
-        ggplot2::ggsave(file.1, final_graph, height = 7, width = 12, units="in", dpi=600)
-        file.2 <- base::paste0(getwd(),"/", folder,"lcz4r_uhi_df.csv")
+        file.1 <- base::paste0(getwd(), "/", folder, "lcz4r_uhi_plot.png")
+        ggplot2::ggsave(file.1, final_graph, height = 7, width = 12, units = "in", dpi = 600)
+        file.2 <- base::paste0(getwd(), "/", folder, "lcz4r_uhi_df.csv")
         utils::write.csv(mydata2, file.2)
-        file.3 <- base::paste0(getwd(),"/", folder,"lcz4r_uhi_stations.csv")
+        file.3 <- base::paste0(getwd(), "/", folder, "lcz4r_uhi_stations.csv")
         utils::write.csv(lcz_df, file.3)
         base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
-
       }
 
       if (iplot == FALSE) {
-
         mydata$date <- lubridate::as_datetime(mydata$date)
 
         return(mydata2)
-
       } else {
-
         return(final_graph)
-
       }
-
-    }
-
-    else {
-
-      mydata <- openair::cutData(lcz_model, type = by,
-                                 hemisphere = hemisphere,
-                                 latitude = my_latitude,
-                                 longitude = my_longitude
-      ) %>% stats::na.omit() %>%
+    } else {
+      mydata <- openair::cutData(lcz_model,
+        type = by,
+        hemisphere = hemisphere,
+        latitude = my_latitude,
+        longitude = my_longitude
+      ) %>%
+        stats::na.omit() %>%
         dplyr::rename(my_time = dplyr::last_col())
       mydata <- openair::timeAverage(
         mydata,
         pollutant = "var_interp",
         avg.time = time.freq,
-        type = c("reference", "my_time")) %>%
+        type = c("reference", "my_time")
+      ) %>%
         dplyr::ungroup() %>%
         stats::na.omit() %>%
         tidyr::pivot_wider(id_cols = c(.data$date, .data$my_time), names_from = .data$reference, values_from = .data$var_interp) %>%
@@ -841,12 +837,11 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
         stats::na.omit()
 
       if (group == TRUE) {
-
-       # Dual y-axis
+        # Dual y-axis
         train_sec <- function(primary, secondary, na.rm = TRUE) {
           # Thanks Henry Holm for including the na.rm argument!
           from <- base::range(secondary, na.rm = na.rm)
-          to   <- base::range(primary, na.rm = na.rm)
+          to <- base::range(primary, na.rm = na.rm)
           # Forward transform for the data
           forward <- function(x) {
             scales::rescale(x, from = from, to = to)
@@ -861,42 +856,46 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
         graph <-
           ggplot2::ggplot(mydata, ggplot2::aes(x = .data$date)) +
-          ggplot2::scale_x_datetime(expand = c(0,0), guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90))+
-          ggplot2::geom_line(ggplot2::aes(y = .data$urban, color = "Urban Temperature", group = 1), alpha = 0.8, lwd=1) +
-          ggplot2::geom_line(ggplot2::aes(y = .data$rural, color = "Rural Temperature", group = 1), alpha = 0.8, ldw=1) +
-          ggplot2::geom_line(ggplot2::aes(y = sec$fwd(.data$uhi), color = "UHI", group = 1), lwd=1) +
-          ggplot2::scale_y_continuous(sec.axis = ggplot2::sec_axis(~ sec$rev(.), name = ylab2),
-                                      guide = ggplot2::guide_axis(check.overlap = TRUE)) +
-          ggplot2::scale_color_manual(name = "", values = c("Urban Temperature" = urban_col, "Rural Temperature" = rural_col, "UHI" = "black")
+          ggplot2::scale_x_datetime(expand = c(0, 0), guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90)) +
+          ggplot2::geom_line(ggplot2::aes(y = .data$urban, color = "Urban Temperature", group = 1), alpha = 0.8, lwd = 1) +
+          ggplot2::geom_line(ggplot2::aes(y = .data$rural, color = "Rural Temperature", group = 1), alpha = 0.8, ldw = 1) +
+          ggplot2::geom_line(ggplot2::aes(y = sec$fwd(.data$uhi), color = "UHI", group = 1), lwd = 1) +
+          ggplot2::scale_y_continuous(
+            sec.axis = ggplot2::sec_axis(~ sec$rev(.), name = ylab2),
+            guide = ggplot2::guide_axis(check.overlap = TRUE)
           ) +
-          ggplot2::labs(title = title, x = xlab, y = ylab, fill = "",caption = caption) +
-          ggplot2::theme_bw() + lcz_theme
+          ggplot2::scale_color_manual(name = "", values = c("Urban Temperature" = urban_col, "Rural Temperature" = rural_col, "UHI" = "black")) +
+          ggplot2::labs(title = title, x = xlab, y = ylab, fill = "", caption = caption) +
+          ggplot2::theme_bw() +
+          lcz_theme
 
         final_graph <-
-          graph + ggplot2::facet_wrap(~ my_time, scales = "free_x") +
-          ggplot2::theme(strip.text = ggplot2::element_text(face = "bold",hjust = 0,size = 10),
-                         strip.background = ggplot2::element_rect(linetype = "dotted")
+          graph + ggplot2::facet_wrap(~my_time, scales = "free_x") +
+          ggplot2::theme(
+            strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
+            strip.background = ggplot2::element_rect(linetype = "dotted")
           )
       } else {
         graph <-
           ggplot2::ggplot(mydata, ggplot2::aes(x = .data$date)) +
-          ggplot2::scale_x_datetime(expand = c(0,0), guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90)) +
-          ggplot2::geom_line(ggplot2::aes(y = .data$uhi, color = "UHI", group = 1), lwd=1) +
-          ggplot2::scale_color_manual(name = "", values = c("UHI" = "black"))+
+          ggplot2::scale_x_datetime(expand = c(0, 0), guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90)) +
+          ggplot2::geom_line(ggplot2::aes(y = .data$uhi, color = "UHI", group = 1), lwd = 1) +
+          ggplot2::scale_color_manual(name = "", values = c("UHI" = "black")) +
           ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
-          ggplot2::labs(title = title, x = xlab, y = ylab, fill = "",caption = caption) +
-          ggplot2::theme_bw() + lcz_theme
+          ggplot2::labs(title = title, x = xlab, y = ylab, fill = "", caption = caption) +
+          ggplot2::theme_bw() +
+          lcz_theme
 
         final_graph <-
-          graph + ggplot2::facet_grid(~ my_time, scales = "free_x") +
-          ggplot2::theme(strip.text = ggplot2::element_text(face = "bold",hjust = 0, size = 10),
-                         strip.background = ggplot2::element_rect(linetype = "dotted")
+          graph + ggplot2::facet_grid(~my_time, scales = "free_x") +
+          ggplot2::theme(
+            strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
+            strip.background = ggplot2::element_rect(linetype = "dotted")
           )
       }
 
 
-      if (isave == TRUE){
-
+      if (isave == TRUE) {
         # Create a folder name using paste0
         folder <- base::paste0("LCZ4r_output/")
 
@@ -906,30 +905,22 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
           base::dir.create(folder)
         }
 
-        file.1 <- base::paste0(getwd(), "/", folder,"lcz4r_uhi_plot.png")
-        ggplot2::ggsave(file.1, final_graph, height = 7, width = 10, units="in", dpi=600)
-        file.2 <- base::paste0(getwd(),"/", folder,"lcz4r_uhi_df.csv")
+        file.1 <- base::paste0(getwd(), "/", folder, "lcz4r_uhi_plot.png")
+        ggplot2::ggsave(file.1, final_graph, height = 7, width = 10, units = "in", dpi = 600)
+        file.2 <- base::paste0(getwd(), "/", folder, "lcz4r_uhi_df.csv")
         utils::write.csv(mydata, file.2)
-        file.3 <- base::paste0(getwd(),"/", folder,"lcz4r_uhi_stations.csv")
+        file.3 <- base::paste0(getwd(), "/", folder, "lcz4r_uhi_stations.csv")
         utils::write.csv(lcz_df, file.3)
         base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
-
       }
 
       if (iplot == FALSE) {
-
         mydata$date <- lubridate::as_datetime(mydata$date)
 
         return(mydata)
-
       } else {
-
         return(final_graph)
-
       }
-
     }
-
   }
-
 }

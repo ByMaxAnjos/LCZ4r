@@ -23,8 +23,7 @@
 #' }
 #' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis
 
-lcz_get_map_euro <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_euro=FALSE) {
-
+lcz_get_map_euro <- function(city = NULL, roi = NULL, isave_map = FALSE, isave_euro = FALSE) {
   # Validate inputs
   if (is.null(city) & is.null(roi)) {
     stop("Error: provide either a city name or a roi polygon")
@@ -32,13 +31,13 @@ lcz_get_map_euro <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_eur
 
   if (!is.null(city)) {
     # Get study area polygon from OpenStreetMap data
-    shp_verify <- osmdata::getbb({{city}}, format_out = "sf_polygon", limit = 1)
+    shp_verify <- osmdata::getbb({{ city }}, format_out = "sf_polygon", limit = 1)
 
-    if (is.null(shp_verify)){
-      stop(paste0("No polygonal boundary for",city,".See https://nominatim.openstreetmap.org"))
+    if (is.null(shp_verify)) {
+      stop(paste0("No polygonal boundary for", city, ".See https://nominatim.openstreetmap.org"))
     }
     # Check if polygon was obtained successfully
-    if(!is.null(shp_verify$geometry) & !inherits(shp_verify, "list")) {
+    if (!is.null(shp_verify$geometry) & !inherits(shp_verify, "list")) {
       study_area <- shp_verify$geometry
       study_area <- sf::st_make_valid(study_area) %>%
         sf::st_as_sf() %>%
@@ -47,14 +46,14 @@ lcz_get_map_euro <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_eur
       study_area <- shp_verify$multipolygon
       study_area <- sf::st_make_valid(study_area) %>%
         sf::st_as_sf() %>%
-        sf::st_transform(crs= 3035)
+        sf::st_transform(crs = 3035)
     }
-    options(warn=-1)
+    options(warn = -1)
     # Download the European LCZ map
     lcz_url <- "https://zenodo.org/records/10835692/files/EU_LCZ_map.tiff?download=1"
     lcz_download <- terra::rast(base::paste0("/vsicurl/", lcz_url))
 
-    if(base::is.null(lcz_download)) {
+    if (base::is.null(lcz_download)) {
       stop("This error might be due to server restrictions. In such cases, you may need to download the file manually using this link:
            https://zenodo.org/records/10835692/files/EU_LCZ_map.tiff?download=1.
            Then read it using the terra package, eg., my_map <- rast('path/EU_LCZ_map.tiff'), and use the function lcz_get_map2()")
@@ -62,7 +61,7 @@ lcz_get_map_euro <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_eur
 
     lcz_ras <- terra::crop(lcz_download, terra::ext(study_area))
 
-    if(is.null(lcz_ras)) {
+    if (is.null(lcz_ras)) {
       stop("Large Data: If you are working with very large raster datasets, consider working on a
            subset of the data to reduce the memory and processing requirements.
            You can crop a smaller region first to see if the operation succeeds.")
@@ -71,8 +70,7 @@ lcz_get_map_euro <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_eur
     lcz_ras <- terra::mask(lcz_ras, terra::vect(study_area))
     base::names(lcz_ras) <- "lcz"
 
-    if(isave_map==TRUE){
-
+    if (isave_map == TRUE) {
       # Create a folder name using paste0
       folder <- base::paste0("LCZ4r_output/")
 
@@ -82,13 +80,12 @@ lcz_get_map_euro <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_eur
         base::dir.create(folder)
       }
 
-      file <- base::paste0(getwd(), "/", folder,"lcz_map.tif")
+      file <- base::paste0(getwd(), "/", folder, "lcz_map.tif")
       terra::writeRaster(lcz_ras, file, overwrite = TRUE)
       base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
     }
 
-    if(isave_euro==TRUE){
-
+    if (isave_euro == TRUE) {
       # Create a folder name using paste0
       folder <- base::paste0("LCZ4r_output/")
 
@@ -98,13 +95,12 @@ lcz_get_map_euro <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_eur
         base::dir.create(folder)
       }
 
-      file <- base::paste0(getwd(), "/", folder,"lcz_euro_map.tif")
+      file <- base::paste0(getwd(), "/", folder, "lcz_euro_map.tif")
       terra::writeRaster(lcz_download, file, overwrite = TRUE)
       base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
     }
 
     return(lcz_ras)
-
   } else {
     # Download the European LCZ map
     lcz_url <- "https://zenodo.org/records/10835692/files/EU_LCZ_map.tiff?download=1"
@@ -124,8 +120,7 @@ lcz_get_map_euro <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_eur
       lcz_ras <- terra::mask(lcz_ras, terra::vect(roi_crs))
       base::names(lcz_ras) <- "lcz"
 
-      if (isave_map==TRUE){
-
+      if (isave_map == TRUE) {
         # Create a folder name using paste0
         folder <- base::paste0("LCZ4r_output/")
 
@@ -135,13 +130,12 @@ lcz_get_map_euro <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_eur
           base::dir.create(folder)
         }
 
-        file <- base::paste0(getwd(), "/", folder,"lcz_map.tif")
+        file <- base::paste0(getwd(), "/", folder, "lcz_map.tif")
         terra::writeRaster(lcz_ras, file, overwrite = TRUE)
         base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
       }
 
-      if(isave_euro==TRUE){
-
+      if (isave_euro == TRUE) {
         # Create a folder name using paste0
         folder <- base::paste0("LCZ4r_output/")
 
@@ -151,15 +145,12 @@ lcz_get_map_euro <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_eur
           base::dir.create(folder)
         }
 
-        file <- base::paste0(getwd(), "/", folder,"lcz_euro_map.tif")
+        file <- base::paste0(getwd(), "/", folder, "lcz_euro_map.tif")
         terra::writeRaster(lcz_download, file, overwrite = TRUE)
         base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
       }
 
       return(lcz_ras)
-
     }
-
   }
-
 }

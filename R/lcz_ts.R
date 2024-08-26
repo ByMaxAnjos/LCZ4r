@@ -57,7 +57,6 @@ lcz_ts <- function(x,
                    xlab = "Time",
                    title = "",
                    caption = "LCZ4r") {
-
   # Check and validate raster inputs -----------------------------------------------
 
   if (missing(x)) {
@@ -104,13 +103,15 @@ lcz_ts <- function(x,
 
   # Pre-processing time series ----------------------------------------------
 
-  #Rename and define lcz_id for each lat and long
+  # Rename and define lcz_id for each lat and long
   df_processed <- data_frame %>%
     dplyr::rename(var_interp = {{ var }}, station = {{ station_id }}) %>%
     janitor::clean_names() %>%
     dplyr::group_by(.data$latitude, .data$longitude) %>%
-    dplyr::mutate(lcz_id = dplyr::cur_group_id(),
-                  date = lubridate::as_datetime(.data$date)) %>%
+    dplyr::mutate(
+      lcz_id = dplyr::cur_group_id(),
+      date = lubridate::as_datetime(.data$date)
+    ) %>%
     openair::selectByDate(...)
 
   df_processed$var_interp <- base::as.numeric(df_processed$var_interp)
@@ -122,10 +123,10 @@ lcz_ts <- function(x,
       stop("Invalid impute method. Choose from 'mean', 'median', 'knn', or 'bag'.")
     }
     impute_function <- switch(impute,
-                              "mean" = recipes::step_impute_mean,
-                              "median" = recipes::step_impute_median,
-                              "knn" = recipes::step_impute_knn,
-                              "bag" = recipes::step_impute_bag
+      "mean" = recipes::step_impute_mean,
+      "median" = recipes::step_impute_median,
+      "knn" = recipes::step_impute_knn,
+      "bag" = recipes::step_impute_bag
     )
     lcz_recipe <- recipes::recipe(var_interp ~ ., data = df_processed) %>%
       impute_function(.data$var_interp)
@@ -137,24 +138,24 @@ lcz_ts <- function(x,
 
   # Geospatial operations ---------------------------------------------------
 
-  #Convert lcz_map to polygon
+  # Convert lcz_map to polygon
   base::names(x) <- "lcz"
   lcz_shp <- terra::as.polygons(x) %>%
     sf::st_as_sf() %>%
     sf::st_transform(crs = "+proj=longlat +datum=WGS84 +no_defs")
 
-  #Get shp LCZ stations from lat and long
+  # Get shp LCZ stations from lat and long
   shp_stations <- df_processed %>%
     dplyr::distinct(.data$latitude, .data$longitude, .keep_all = T) %>%
     stats::na.omit() %>%
     sf::st_as_sf(coords = c("longitude", "latitude"), crs = "+proj=longlat +datum=WGS84 +no_defs")
 
-  #Intersect poi shp stations with lcz shp
+  # Intersect poi shp stations with lcz shp
   lcz_stations <- sf::st_intersection(shp_stations, lcz_shp) %>%
     sf::st_drop_geometry() %>%
     dplyr::select(.data$lcz_id, .data$station, .data$lcz)
 
-  #merge data-model with lcz_station to get lcz class
+  # merge data-model with lcz_station to get lcz class
   lcz_model <-
     dplyr::inner_join(df_processed, lcz_stations, by = c("station", "lcz_id")) %>%
     dplyr::mutate(
@@ -166,7 +167,7 @@ lcz_ts <- function(x,
 
   # Settings for plots ------------------------------------------------------
 
-  #Get id stations
+  # Get id stations
   my_stations <- lcz_model %>%
     dplyr::distinct(.data$lcz_id, .data$lcz, .data$station)
 
@@ -192,7 +193,7 @@ lcz_ts <- function(x,
 
   lcz_df <- dplyr::bind_cols(lcz, lcz.name, lcz.col) %>%
     dplyr::mutate(lcz = base::as.factor(.data$lcz)) %>%
-    dplyr::inner_join(my_stations,  by = "lcz")
+    dplyr::inner_join(my_stations, by = "lcz")
 
   # Define LCZ labels
   lcz.lables <- lcz_df$station
@@ -201,23 +202,25 @@ lcz_ts <- function(x,
 
   lcz_theme <-
     ggplot2::theme_bw() +
-      ggplot2::theme(plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
-                     plot.subtitle = ggplot2::element_text(color = "black", size = 16, hjust = 0.5),
-                     panel.background = ggplot2::element_rect(color = NA, fill = "white"),
-                     panel.grid.minor = ggplot2::element_line(color = "white"),
-                     panel.grid.major.y = ggplot2::element_line(color = "grey90"),
-                     axis.text.x = ggplot2::element_text(size = ggplot2::rel(1.5)),
-                     axis.title.x = ggplot2::element_text(size = 14, face = "bold"),
-                     axis.text.y = ggplot2::element_text(size = ggplot2::rel(1.5)),
-                     axis.title.y = ggplot2::element_text(size = 14, face = "bold"),
-                     legend.text = ggplot2::element_text(size = 13),
-                     legend.title = ggplot2::element_text(size = 13, face = "bold"),
-                     legend.key = ggplot2::element_blank(),
-                     legend.spacing.y = ggplot2::unit(0.02, "cm"),
-                     plot.margin = ggplot2::margin(25, 25, 10, 25),
-                     plot.caption = ggplot2::element_text(color = "grey40", hjust = 1, size = 10))
+    ggplot2::theme(
+      plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
+      plot.subtitle = ggplot2::element_text(color = "black", size = 16, hjust = 0.5),
+      panel.background = ggplot2::element_rect(color = NA, fill = "white"),
+      panel.grid.minor = ggplot2::element_line(color = "white"),
+      panel.grid.major.y = ggplot2::element_line(color = "grey90"),
+      axis.text.x = ggplot2::element_text(size = ggplot2::rel(1.5)),
+      axis.title.x = ggplot2::element_text(size = 14, face = "bold"),
+      axis.text.y = ggplot2::element_text(size = ggplot2::rel(1.5)),
+      axis.title.y = ggplot2::element_text(size = 14, face = "bold"),
+      legend.text = ggplot2::element_text(size = 13),
+      legend.title = ggplot2::element_text(size = 13, face = "bold"),
+      legend.key = ggplot2::element_blank(),
+      legend.spacing.y = ggplot2::unit(0.02, "cm"),
+      plot.margin = ggplot2::margin(25, 25, 10, 25),
+      plot.caption = ggplot2::element_text(color = "grey40", hjust = 1, size = 10)
+    )
 
-  #Define hemisphere
+  # Define hemisphere
   extract_hemisphere <- function(raster) {
     # Get the extent of the raster
     extent <- raster::extent(raster::raster(raster))
@@ -232,7 +235,7 @@ lcz_ts <- function(x,
   }
 
   # Extract the hemisphere
-  hemisphere <- extract_hemisphere(raster= {{ x }})
+  hemisphere <- extract_hemisphere(raster = {{ x }})
 
   my_latitude <- lcz_model$latitude[1]
   my_longitude <- lcz_model$longitude[1]
@@ -247,27 +250,28 @@ lcz_ts <- function(x,
       pollutant = "var_interp",
       avg.time = time.freq,
       type = c("station")
-    ) %>% stats::na.omit() %>%
+    ) %>%
+      stats::na.omit() %>%
       dplyr::ungroup()
 
     final_graph <-
       ggplot2::ggplot(mydata, ggplot2::aes(
-                        x = .data$date,
-                        y = .data$var_interp,
-                        color = .data$station
-                      )) +
-      ggplot2::geom_line(lwd=1) +
-      ggplot2::scale_x_datetime(expand = c(0,0)) +
+        x = .data$date,
+        y = .data$var_interp,
+        color = .data$station
+      )) +
+      ggplot2::geom_line(lwd = 1) +
+      ggplot2::scale_x_datetime(expand = c(0, 0)) +
       ggplot2::scale_color_manual(
         name = "Station (LCZ)",
         values = mycolors,
         labels = lcz.lables,
-        guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")) +
+        guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
+      ) +
       ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption) +
       lcz_theme
 
-    if (isave == TRUE){
-
+    if (isave == TRUE) {
       # Create a folder name using paste0
       folder <- base::paste0("LCZ4r_output/")
 
@@ -277,74 +281,72 @@ lcz_ts <- function(x,
         base::dir.create(folder)
       }
 
-      file.1 <- base::paste0(getwd(), "/", folder,"lcz4r_ts_plot.png")
-      ggplot2::ggsave(file.1, final_graph, height = 7, width = 12, units="in", dpi=600)
-      file.2 <- base::paste0(getwd(),"/", folder,"lcz4r_ts_df.csv")
+      file.1 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_plot.png")
+      ggplot2::ggsave(file.1, final_graph, height = 7, width = 12, units = "in", dpi = 600)
+      file.2 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_df.csv")
       utils::write.csv(mydata, file.2)
-      file.3 <- base::paste0(getwd(),"/", folder,"lcz4r_ts_stations.csv")
+      file.3 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_stations.csv")
       utils::write.csv(lcz_df, file.3)
       base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
-
     }
 
     if (iplot == FALSE) {
-
       mydata$date <- lubridate::as_datetime(mydata$date)
 
       return(mydata)
-
     } else {
-
       return(final_graph)
-
     }
-
   }
 
   if (!is.null(by)) {
-
-    if ("day" %in% by ) {
+    if ("day" %in% by) {
       stop("The 'day' does not work with the argument by")
     }
 
     if (length(by) < 2 && any(c("month", "year", "season", "seasonyear", "yearseason") %in% by)) {
-
-      mydata <- openair::cutData(lcz_model, type = by, hemisphere= hemisphere,
-                                 latitude = my_latitude, longitude = my_longitude) %>%
+      mydata <- openair::cutData(lcz_model,
+        type = by, hemisphere = hemisphere,
+        latitude = my_latitude, longitude = my_longitude
+      ) %>%
         stats::na.omit() %>%
         dplyr::rename(my_time = dplyr::last_col())
       mydata <- openair::timeAverage(
         mydata,
         pollutant = "var_interp",
         avg.time = time.freq,
-        type = c("station", "my_time")) %>%
+        type = c("station", "my_time")
+      ) %>%
         stats::na.omit() %>%
         dplyr::ungroup() %>%
         dplyr::mutate(date = base::as.factor(date))
 
-      label_format <- switch(
-        by,
+      label_format <- switch(by,
         "season" = "%b %d",
         "seasonyear" = "%b %d",
         "yearseason" = "%b %d",
         "year" = "%b %d",
         "month" = "%d",
-        "%b %d"  # Default case if none of the above match
+        "%b %d" # Default case if none of the above match
       )
 
       graph <-
-        ggplot2::ggplot(mydata,
-                        ggplot2::aes(
-                          x = .data$date,
-                          y = .data$var_interp,
-                          color = .data$station,
-                          group = .data$station
-                        )) +
-        ggplot2::scale_x_discrete(expand = c(0,0),
-                                  breaks = function(x) x[seq(1, length(x), by = 1*24)],
-                                  labels= function(x) base::format(lubridate::as_datetime(x), paste0(label_format)),
-                                  guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90)) +
-        ggplot2::geom_line(lwd=1) +
+        ggplot2::ggplot(
+          mydata,
+          ggplot2::aes(
+            x = .data$date,
+            y = .data$var_interp,
+            color = .data$station,
+            group = .data$station
+          )
+        ) +
+        ggplot2::scale_x_discrete(
+          expand = c(0, 0),
+          breaks = function(x) x[seq(1, length(x), by = 1 * 24)],
+          labels = function(x) base::format(lubridate::as_datetime(x), paste0(label_format)),
+          guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90)
+        ) +
+        ggplot2::geom_line(lwd = 1) +
         ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
         ggplot2::scale_color_manual(
           name = "Station (LCZ)",
@@ -369,8 +371,7 @@ lcz_ts <- function(x,
         )
 
 
-      if (isave == TRUE){
-
+      if (isave == TRUE) {
         # Create a folder name using paste0
         folder <- base::paste0("LCZ4r_output/")
 
@@ -380,42 +381,39 @@ lcz_ts <- function(x,
           base::dir.create(folder)
         }
 
-        file.1 <- base::paste0(getwd(), "/", folder,"lcz4r_ts_plot.png")
-        ggplot2::ggsave(file.1, final_graph, height = 7, width = 12, units="in", dpi=600)
-        file.2 <- base::paste0(getwd(),"/", folder,"lcz4r_ts_df.csv")
+        file.1 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_plot.png")
+        ggplot2::ggsave(file.1, final_graph, height = 7, width = 12, units = "in", dpi = 600)
+        file.2 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_df.csv")
         utils::write.csv(mydata, file.2)
-        file.3 <- base::paste0(getwd(),"/", folder,"lcz4r_ts_stations.csv")
+        file.3 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_stations.csv")
         utils::write.csv(lcz_df, file.3)
         base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
       }
 
       if (iplot == FALSE) {
-
         mydata$date <- lubridate::as_datetime(mydata$date)
 
         return(mydata)
-
       } else {
-
         return(final_graph)
-
       }
     }
 
     if (length(by) < 2 && "daylight" %in% by) {
-
       mydata <- openair::cutData(lcz_model,
-                                 type = by,
-                                 hemisphere= hemisphere,
-                                 latitude = my_latitude,
-                                 longitude = my_longitude) %>%
+        type = by,
+        hemisphere = hemisphere,
+        latitude = my_latitude,
+        longitude = my_longitude
+      ) %>%
         stats::na.omit() %>%
         dplyr::rename(my_time = dplyr::last_col())
       mydata <- openair::timeAverage(
         mydata,
         pollutant = "var_interp",
         avg.time = time.freq,
-        type = c("station", "my_time")) %>%
+        type = c("station", "my_time")
+      ) %>%
         dplyr::ungroup() %>%
         stats::na.omit()
 
@@ -424,36 +422,42 @@ lcz_ts <- function(x,
         dplyr::summarize(
           xmin = base::min(.data$date),
           xmax = base::max(.data$date),
-          labs = base::unique(.data$my_time)) %>%
+          labs = base::unique(.data$my_time)
+        ) %>%
         dplyr::ungroup()
 
       final_graph <-
-        ggplot2::ggplot(mydata,
-                        ggplot2::aes(
-                          x = .data$date,
-                          y = .data$var_interp,
-                          color = .data$station,
-                          group = .data$station
-                        )) +
+        ggplot2::ggplot(
+          mydata,
+          ggplot2::aes(
+            x = .data$date,
+            y = .data$var_interp,
+            color = .data$station,
+            group = .data$station
+          )
+        ) +
         ggplot2::geom_rect(ggplot2::aes(xmin = .data$xmin, xmax = .data$xmax, ymin = -Inf, ymax = Inf, fill = .data$labs),
-                           alpha = 0.3, data = rec_df, inherit.aes = FALSE) +
-        ggplot2::scale_fill_manual(name= "", values = c("lightblue", "grey")) +
-        ggplot2::scale_x_datetime(expand = c(0, 0),
-                                  breaks = scales::date_breaks("3 hour"),
-                                  labels = scales::date_format("%H"),
-                                  guide = ggplot2::guide_axis(check.overlap = TRUE)) +
-        ggplot2::geom_line(lwd=1) +
+          alpha = 0.3, data = rec_df, inherit.aes = FALSE
+        ) +
+        ggplot2::scale_fill_manual(name = "", values = c("lightblue", "grey")) +
+        ggplot2::scale_x_datetime(
+          expand = c(0, 0),
+          breaks = scales::date_breaks("3 hour"),
+          labels = scales::date_format("%H"),
+          guide = ggplot2::guide_axis(check.overlap = TRUE)
+        ) +
+        ggplot2::geom_line(lwd = 1) +
         ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
         ggplot2::scale_color_manual(
           name = "Station (LCZ)",
           values = mycolors,
           labels = lcz.lables,
-          guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")) +
+          guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
+        ) +
         ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption) +
         lcz_theme
 
-      if (isave == TRUE){
-
+      if (isave == TRUE) {
         # Create a folder name using paste0
         folder <- base::paste0("LCZ4r_output/")
 
@@ -463,42 +467,39 @@ lcz_ts <- function(x,
           base::dir.create(folder)
         }
 
-        file.1 <- base::paste0(getwd(), "/", folder,"lcz4r_ts_plot.png")
-        ggplot2::ggsave(file.1, final_graph, height = 7, width = 12, units="in", dpi=600)
-        file.2 <- base::paste0(getwd(),"/", folder,"lcz4r_ts_df.csv")
+        file.1 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_plot.png")
+        ggplot2::ggsave(file.1, final_graph, height = 7, width = 12, units = "in", dpi = 600)
+        file.2 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_df.csv")
         utils::write.csv(mydata, file.2)
-        file.3 <- base::paste0(getwd(),"/", folder,"lcz4r_ts_stations.csv")
+        file.3 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_stations.csv")
         utils::write.csv(lcz_df, file.3)
         base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
       }
 
       if (iplot == FALSE) {
-
         mydata$date <- lubridate::as_datetime(mydata$date)
 
         return(mydata)
-
       } else {
-
         return(final_graph)
-
       }
     }
 
     if (length(by) > 1 && "daylight" %in% by) {
-
       mydata <- openair::cutData(lcz_model,
-                                 type = by,
-                                 hemisphere= hemisphere,
-                                 latitude = my_latitude,
-                                 longitude = my_longitude) %>%
-          stats::na.omit() %>%
-          dplyr::rename(my_time = dplyr::last_col())
+        type = by,
+        hemisphere = hemisphere,
+        latitude = my_latitude,
+        longitude = my_longitude
+      ) %>%
+        stats::na.omit() %>%
+        dplyr::rename(my_time = dplyr::last_col())
       mydata <- openair::timeAverage(
-          mydata,
-          pollutant = "var_interp",
-          avg.time = time.freq,
-          type = c("station", by)) %>%
+        mydata,
+        pollutant = "var_interp",
+        avg.time = time.freq,
+        type = c("station", by)
+      ) %>%
         dplyr::ungroup() %>%
         stats::na.omit()
 
@@ -507,7 +508,7 @@ lcz_ts <- function(x,
       mydata2 <- mydata %>%
         dplyr::mutate(hour = lubridate::hour(.data$date)) %>%
         dplyr::group_by(.data$station, !!!new_var, .data$hour) %>%
-        dplyr::summarize(var_interp= base::mean(.data$var_interp), .groups = "drop") %>%
+        dplyr::summarize(var_interp = base::mean(.data$var_interp), .groups = "drop") %>%
         dplyr::ungroup()
 
       rec_df <- mydata %>%
@@ -515,166 +516,156 @@ lcz_ts <- function(x,
         dplyr::summarize(
           xmin = base::min(.data$date),
           xmax = base::max(.data$date),
-          labs = base::unique(.data$daylight), .groups = "drop") %>%
+          labs = base::unique(.data$daylight), .groups = "drop"
+        ) %>%
         dplyr::ungroup() %>%
-        dplyr::mutate(min_hour = lubridate::hour(.data$xmin),
-               max_hour = lubridate::hour(.data$xmax))
+        dplyr::mutate(
+          min_hour = lubridate::hour(.data$xmin),
+          max_hour = lubridate::hour(.data$xmax)
+        )
 
       # convert the string to a formula
       by_formula <- stats::as.formula(base::paste("~", base::paste(by[2], collapse = " + ")))
 
       graph <-
-          ggplot2::ggplot(mydata2, ggplot2::aes(x = .data$hour, y = .data$var_interp,
-                            color = .data$station,
-                            group = .data$station)) +
+        ggplot2::ggplot(mydata2, ggplot2::aes(
+          x = .data$hour, y = .data$var_interp,
+          color = .data$station,
+          group = .data$station
+        )) +
         ggplot2::geom_rect(ggplot2::aes(xmin = .data$min_hour, xmax = .data$max_hour, ymin = -Inf, ymax = Inf, fill = .data$labs),
-                           alpha = 0.3, data = rec_df, inherit.aes = FALSE) +
-        ggplot2::scale_fill_manual(name= "", values = c("lightblue", "grey")) +
-        ggplot2::scale_x_continuous(expand = c(0,0), guide = ggplot2::guide_axis(check.overlap = TRUE)) +
-        ggplot2::geom_line(lwd=1) +
-        ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
-          ggplot2::scale_color_manual(
-            name = "Station (LCZ)",
-            values = mycolors,
-            labels = lcz.lables,
-            guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")) +
-          ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption)
-        final_graph <-
-          graph + ggplot2::facet_wrap(by_formula, scales = "free_y") +
-          lcz_theme +
-          ggplot2::theme(
-            legend.box.spacing = ggplot2::unit(20, "pt"),
-            panel.spacing = ggplot2::unit(1, "lines"),
-            axis.ticks.x = ggplot2::element_blank(),
-            strip.text = ggplot2::element_text(
-              face = "bold",
-              hjust = 0,
-              size = 10
-            ),
-            strip.background = ggplot2::element_rect(linetype = "dotted")
-          )
-
-        if (isave == TRUE){
-
-          # Create a folder name using paste0
-          folder <- base::paste0("LCZ4r_output/")
-
-          # Check if the folder exists
-          if (!base::dir.exists(folder)) {
-            # Create the folder if it does not exist
-            base::dir.create(folder)
-          }
-
-          file.1 <- base::paste0(getwd(), "/", folder,"lcz4r_ts_plot.png")
-          ggplot2::ggsave(file.1, final_graph, height = 7, width = 12, units="in", dpi=600)
-          file.2 <- base::paste0(getwd(),"/", folder,"lcz4r_ts_df.csv")
-          utils::write.csv(mydata2, file.2)
-          file.3 <- base::paste0(getwd(),"/", folder,"lcz4r_ts_stations.csv")
-          utils::write.csv(lcz_df, file.3)
-          base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
-
-        }
-
-        if (iplot == FALSE) {
-
-          mydata$date <- lubridate::as_datetime(mydata$date)
-
-          return(mydata2)
-
-        } else {
-
-          return(final_graph)
-
-        }
-
-    }
-
-    else {
-
-      mydata <-
-          openair::cutData(
-            lcz_model,
-            type = by,
-            hemisphere = hemisphere,
-            latitude = my_latitude,
-            longitude = my_longitude) %>%
-        stats::na.omit() %>%
-        dplyr::rename(my_time = dplyr::last_col())
-        mydata <- openair::timeAverage(
-          mydata,
-          pollutant = "var_interp",
-          avg.time = time.freq,
-          type = c("station", "my_time")) %>%
-          dplyr::ungroup() %>%
-          stats::na.omit()
-
-      graph <-
-          ggplot2::ggplot(mydata, ggplot2::aes(
-                            x = .data$date,
-                            y = .data$var_interp,
-                            color = .data$station)) +
-        ggplot2::geom_line(lwd=1) +
-        ggplot2::scale_x_datetime(expand = c(0,0),guide = ggplot2::guide_axis(check.overlap = TRUE)) +
+          alpha = 0.3, data = rec_df, inherit.aes = FALSE
+        ) +
+        ggplot2::scale_fill_manual(name = "", values = c("lightblue", "grey")) +
+        ggplot2::scale_x_continuous(expand = c(0, 0), guide = ggplot2::guide_axis(check.overlap = TRUE)) +
+        ggplot2::geom_line(lwd = 1) +
         ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
         ggplot2::scale_color_manual(
-            name = "Station (LCZ)",
-            values = mycolors,
-            labels = lcz.lables,
-            guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
-          ) +
-          ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ",caption = caption)
+          name = "Station (LCZ)",
+          values = mycolors,
+          labels = lcz.lables,
+          guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
+        ) +
+        ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption)
+      final_graph <-
+        graph + ggplot2::facet_wrap(by_formula, scales = "free_y") +
+        lcz_theme +
+        ggplot2::theme(
+          legend.box.spacing = ggplot2::unit(20, "pt"),
+          panel.spacing = ggplot2::unit(1, "lines"),
+          axis.ticks.x = ggplot2::element_blank(),
+          strip.text = ggplot2::element_text(
+            face = "bold",
+            hjust = 0,
+            size = 10
+          ),
+          strip.background = ggplot2::element_rect(linetype = "dotted")
+        )
 
-        final_graph <-
-          graph + ggplot2::facet_wrap(ggplot2::vars(my_time), scales = "free_x") +
-          lcz_theme +
-          ggplot2::theme(
-            legend.box.spacing = ggplot2::unit(20, "pt"),
-            panel.spacing = ggplot2::unit(3, "lines"),
-            axis.ticks.x = ggplot2::element_blank(),
-            strip.text = ggplot2::element_text(
-              face = "bold",
-              hjust = 0,
-              size = 10
-            ),
-            strip.background = ggplot2::element_rect(linetype = "dotted")
-          )
+      if (isave == TRUE) {
+        # Create a folder name using paste0
+        folder <- base::paste0("LCZ4r_output/")
 
-        if (isave == TRUE){
-
-          # Create a folder name using paste0
-          folder <- base::paste0("LCZ4r_output/")
-
-          # Check if the folder exists
-          if (!base::dir.exists(folder)) {
-            # Create the folder if it does not exist
-            base::dir.create(folder)
-          }
-
-          file.1 <- base::paste0(getwd(), "/", folder,"lcz4r_ts_plot.png")
-          ggplot2::ggsave(file.1, final_graph, height = 7, width = 12, units="in", dpi=600)
-          file.2 <- base::paste0(getwd(),"/", folder,"lcz4r_ts_df.csv")
-          utils::write.csv(mydata, file.2)
-          file.3 <- base::paste0(getwd(),"/", folder,"lcz4r_ts_stations.csv")
-          utils::write.csv(lcz_df, file.3)
-          base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
-
+        # Check if the folder exists
+        if (!base::dir.exists(folder)) {
+          # Create the folder if it does not exist
+          base::dir.create(folder)
         }
 
-        if (iplot == FALSE) {
-
-          mydata$date <- lubridate::as_datetime(mydata$date)
-
-          return(mydata)
-
-        } else {
-
-          return(final_graph)
-
-        }
-
+        file.1 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_plot.png")
+        ggplot2::ggsave(file.1, final_graph, height = 7, width = 12, units = "in", dpi = 600)
+        file.2 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_df.csv")
+        utils::write.csv(mydata2, file.2)
+        file.3 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_stations.csv")
+        utils::write.csv(lcz_df, file.3)
+        base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
       }
 
+      if (iplot == FALSE) {
+        mydata$date <- lubridate::as_datetime(mydata$date)
 
+        return(mydata2)
+      } else {
+        return(final_graph)
+      }
+    } else {
+      mydata <-
+        openair::cutData(
+          lcz_model,
+          type = by,
+          hemisphere = hemisphere,
+          latitude = my_latitude,
+          longitude = my_longitude
+        ) %>%
+        stats::na.omit() %>%
+        dplyr::rename(my_time = dplyr::last_col())
+      mydata <- openair::timeAverage(
+        mydata,
+        pollutant = "var_interp",
+        avg.time = time.freq,
+        type = c("station", "my_time")
+      ) %>%
+        dplyr::ungroup() %>%
+        stats::na.omit()
+
+      graph <-
+        ggplot2::ggplot(mydata, ggplot2::aes(
+          x = .data$date,
+          y = .data$var_interp,
+          color = .data$station
+        )) +
+        ggplot2::geom_line(lwd = 1) +
+        ggplot2::scale_x_datetime(expand = c(0, 0), guide = ggplot2::guide_axis(check.overlap = TRUE)) +
+        ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
+        ggplot2::scale_color_manual(
+          name = "Station (LCZ)",
+          values = mycolors,
+          labels = lcz.lables,
+          guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
+        ) +
+        ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption)
+
+      final_graph <-
+        graph + ggplot2::facet_wrap(ggplot2::vars(my_time), scales = "free_x") +
+        lcz_theme +
+        ggplot2::theme(
+          legend.box.spacing = ggplot2::unit(20, "pt"),
+          panel.spacing = ggplot2::unit(3, "lines"),
+          axis.ticks.x = ggplot2::element_blank(),
+          strip.text = ggplot2::element_text(
+            face = "bold",
+            hjust = 0,
+            size = 10
+          ),
+          strip.background = ggplot2::element_rect(linetype = "dotted")
+        )
+
+      if (isave == TRUE) {
+        # Create a folder name using paste0
+        folder <- base::paste0("LCZ4r_output/")
+
+        # Check if the folder exists
+        if (!base::dir.exists(folder)) {
+          # Create the folder if it does not exist
+          base::dir.create(folder)
+        }
+
+        file.1 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_plot.png")
+        ggplot2::ggsave(file.1, final_graph, height = 7, width = 12, units = "in", dpi = 600)
+        file.2 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_df.csv")
+        utils::write.csv(mydata, file.2)
+        file.3 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_stations.csv")
+        utils::write.csv(lcz_df, file.3)
+        base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
+      }
+
+      if (iplot == FALSE) {
+        mydata$date <- lubridate::as_datetime(mydata$date)
+
+        return(mydata)
+      } else {
+        return(final_graph)
+      }
+    }
   }
-
 }

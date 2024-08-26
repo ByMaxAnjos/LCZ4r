@@ -38,40 +38,39 @@ lcz_plot_interp <- function(x,
                             palette = "muted",
                             direction = 1,
                             ncol = NULL, nrow = NULL,
-                            isave=FALSE, ...) {
-
+                            isave = FALSE, ...) {
   # Validate inputs
   if (is.null(x)) {
     stop("The input must be raster stack object of raster package. Please, use the lcz_anomaly_map() and lcz_interp_map()")
   } else if (!is.null(x) & !inherits(x, "SpatRaster")) {
-    x <- terra::rast({{x}})
+    x <- terra::rast({{ x }})
   }
 
-  if (terra::nlyr({{x}}) > 1) {
+  if (terra::nlyr({{ x }}) > 1) {
     final_graph <- ggplot2::ggplot() +
-      tidyterra::geom_spatraster(data={{x}}) +
-      #MetBrewer::scale_fill_met_c(name = palette, direction=direction)+
-      tidyterra::scale_fill_whitebox_c(palette = palette, direction = direction)+
-      ggplot2::facet_wrap(~lyr, ncol = {{ncol}}, nrow = {{nrow}})+
+      tidyterra::geom_spatraster(data = {{ x }}) +
+      # MetBrewer::scale_fill_met_c(name = palette, direction=direction)+
+      tidyterra::scale_fill_whitebox_c(palette = palette, direction = direction) +
+      ggplot2::facet_wrap(~lyr, ncol = {{ ncol }}, nrow = {{ nrow }}) +
       ggplot2::guides(fill = ggplot2::guide_colorbar(title.position = "top")) +
-      ggplot2::coord_sf(expand = FALSE, clip = "off")+
+      ggplot2::coord_sf(expand = FALSE, clip = "off") +
       ggplot2::labs(...) +
       ggplot2::theme_void() +
-      ggplot2::theme(legend.position = "right",
-                     legend.direction = "vertical",
-                     legend.key.height = ggplot2::unit(40L, "pt"),
-        legend.title = ggplot2::element_text(size=15, hjust = 0.5),
+      ggplot2::theme(
+        legend.position = "right",
+        legend.direction = "vertical",
+        legend.key.height = ggplot2::unit(40L, "pt"),
+        legend.title = ggplot2::element_text(size = 15, hjust = 0.5),
         strip.text = ggplot2::element_text(hjust = 0, size = 14),
-        legend.text = ggplot2::element_text(size=12),
-        #plot.background = ggplot2::element_rect(fill = "grey98", color = NA),
+        legend.text = ggplot2::element_text(size = 12),
+        # plot.background = ggplot2::element_rect(fill = "grey98", color = NA),
         plot.title = ggplot2::element_text(face = "bold", size = 20),
         plot.subtitle = ggplot2::element_text(margin = ggplot2::margin(5, 0, 15, 0), size = 17),
         plot.caption = ggplot2::element_text(color = "grey40", size = 10),
         plot.margin = ggplot2::margin(0, 10, 0, 10)
       )
 
-    if (isave == TRUE){
-
+    if (isave == TRUE) {
       # Create a folder name using paste0
       folder <- base::paste0("LCZ4r_output/")
 
@@ -81,39 +80,36 @@ lcz_plot_interp <- function(x,
         base::dir.create(folder)
       }
 
-      #Save map as figure.png
-      file <- base::paste0(getwd(), "/", folder,"lcz_interp_map.png")
-      ggplot2::ggsave(file, final_graph, height = 8, width = 10, units="in", dpi=600)
+      # Save map as figure.png
+      file <- base::paste0(getwd(), "/", folder, "lcz_interp_map.png")
+      ggplot2::ggsave(file, final_graph, height = 8, width = 10, units = "in", dpi = 600)
       base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
-
     }
 
     return(final_graph)
-
   } else {
-
-    final_graph <-  ggplot2::ggplot() +
-      tidyterra::geom_spatraster(data={{x}}) +
-      #MetBrewer::scale_fill_met_c(name = palette, direction=direction)+
-      tidyterra::scale_fill_whitebox_c(palette = palette, direction = direction)+
+    final_graph <- ggplot2::ggplot() +
+      tidyterra::geom_spatraster(data = {{ x }}) +
+      # MetBrewer::scale_fill_met_c(name = palette, direction=direction)+
+      tidyterra::scale_fill_whitebox_c(palette = palette, direction = direction) +
       ggplot2::guides(fill = ggplot2::guide_colorbar(title.position = "top")) +
-      ggplot2::coord_sf(expand = FALSE, clip = "off")+
+      ggplot2::coord_sf(expand = FALSE, clip = "off") +
       ggplot2::labs(...) +
       ggplot2::theme_void() +
-      ggplot2::theme(legend.position = "right",
-                     legend.direction = "vertical",
-                     legend.key.height = ggplot2::unit(40L, "pt"),
-                     legend.title = ggplot2::element_text(size=15, hjust = 0.5),
-                     strip.text = ggplot2::element_text(hjust = 0, size = 14),
-                     legend.text = ggplot2::element_text(size=12),
-                     #plot.background = ggplot2::element_rect(fill = "grey98", color = NA),
-                     plot.title = ggplot2::element_text(face = "bold", size = 20),
-                     plot.subtitle = ggplot2::element_text(margin = ggplot2::margin(5, 0, 15, 0), size = 17),
-                     plot.caption = ggplot2::element_text(color = "grey30", size = 12),
-                     plot.margin = ggplot2::margin(0, 10, 0, 10)
+      ggplot2::theme(
+        legend.position = "right",
+        legend.direction = "vertical",
+        legend.key.height = ggplot2::unit(40L, "pt"),
+        legend.title = ggplot2::element_text(size = 15, hjust = 0.5),
+        strip.text = ggplot2::element_text(hjust = 0, size = 14),
+        legend.text = ggplot2::element_text(size = 12),
+        # plot.background = ggplot2::element_rect(fill = "grey98", color = NA),
+        plot.title = ggplot2::element_text(face = "bold", size = 20),
+        plot.subtitle = ggplot2::element_text(margin = ggplot2::margin(5, 0, 15, 0), size = 17),
+        plot.caption = ggplot2::element_text(color = "grey30", size = 12),
+        plot.margin = ggplot2::margin(0, 10, 0, 10)
       )
-    if (isave == TRUE){
-
+    if (isave == TRUE) {
       # Create a folder name using paste0
       folder <- base::paste0("LCZ4r_output/")
 
@@ -123,17 +119,14 @@ lcz_plot_interp <- function(x,
         base::dir.create(folder)
       }
 
-      #Save map as figure.png
+      # Save map as figure.png
       file <- base::paste0(getwd(), "/", folder, "lcz_interp_map.png")
-      ggplot2::ggsave(file, final_graph, height = 8, width = 10, units="in", dpi=600)
+      ggplot2::ggsave(file, final_graph, height = 8, width = 10, units = "in", dpi = 600)
       base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
     }
 
     return(final_graph)
   }
-
-
-
 }
 
 

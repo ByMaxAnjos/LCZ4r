@@ -23,8 +23,7 @@
 #' }
 #' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis
 
-lcz_get_map_usa <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_usa=FALSE) {
-
+lcz_get_map_usa <- function(city = NULL, roi = NULL, isave_map = FALSE, isave_usa = FALSE) {
   # Validate inputs
   if (is.null(city) & is.null(roi)) {
     stop("Error: provide either a city name or a roi polygon")
@@ -32,10 +31,10 @@ lcz_get_map_usa <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_usa=
 
   if (!is.null(city)) {
     # Get study area polygon from OpenStreetMap data
-    shp_verify <- osmdata::getbb({{city}}, format_out = "sf_polygon", limit = 1)
+    shp_verify <- osmdata::getbb({{ city }}, format_out = "sf_polygon", limit = 1)
 
-    if(is.null(shp_verify)){
-      stop(paste0("No polygonal boundary for",city,".See https://nominatim.openstreetmap.org"))
+    if (is.null(shp_verify)) {
+      stop(paste0("No polygonal boundary for", city, ".See https://nominatim.openstreetmap.org"))
     }
     # Check if polygon was obtained successfully
     if (!is.null(shp_verify$geometry) & !inherits(shp_verify, "list")) {
@@ -47,9 +46,9 @@ lcz_get_map_usa <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_usa=
       study_area <- shp_verify$multipolygon
       study_area <- sf::st_make_valid(study_area) %>%
         sf::st_as_sf() %>%
-        sf::st_transform(crs=4326)
+        sf::st_transform(crs = 4326)
     }
-    options(warn=-1)
+    options(warn = -1)
     # Download the usapean LCZ map
     lcz_url <- "https://zenodo.org/records/10835692/files/CONUS_LCZ_map_NLCD_v1.0_epsg4326.tif?download=1"
     lcz_download <- terra::rast(base::paste0("/vsicurl/", lcz_url))
@@ -71,8 +70,7 @@ lcz_get_map_usa <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_usa=
     lcz_ras <- terra::mask(lcz_ras, terra::vect(study_area))
     base::names(lcz_ras) <- "lcz"
 
-    if (isave_map==TRUE){
-
+    if (isave_map == TRUE) {
       # Create a folder name using paste0
       folder <- base::paste0("LCZ4r_output/")
 
@@ -82,13 +80,12 @@ lcz_get_map_usa <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_usa=
         base::dir.create(folder)
       }
 
-      file <- base::paste0(getwd(), "/", folder,"lcz_map.tif")
+      file <- base::paste0(getwd(), "/", folder, "lcz_map.tif")
       terra::writeRaster(lcz_ras, file, overwrite = TRUE)
       base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
     }
 
-    if (isave_usa==TRUE){
-
+    if (isave_usa == TRUE) {
       # Create a folder name using paste0
       folder <- base::paste0("LCZ4r_output/")
 
@@ -98,13 +95,12 @@ lcz_get_map_usa <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_usa=
         base::dir.create(folder)
       }
 
-      file <- base::paste0(getwd(), "/", folder,"lcz_usa_map.tif")
+      file <- base::paste0(getwd(), "/", folder, "lcz_usa_map.tif")
       terra::writeRaster(lcz_download, file, overwrite = TRUE)
       base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
     }
 
     return(lcz_ras)
-
   } else {
     # Download the USA LCZ map
     lcz_url <- "https://zenodo.org/records/10835692/files/CONUS_LCZ_map_NLCD_v1.0_epsg4326.tif?download=1"
@@ -125,8 +121,7 @@ lcz_get_map_usa <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_usa=
 
       base::names(lcz_ras) <- "lcz"
 
-      if (isave_map==TRUE){
-
+      if (isave_map == TRUE) {
         # Create a folder name using paste0
         folder <- base::paste0("LCZ4r_output/")
 
@@ -136,13 +131,12 @@ lcz_get_map_usa <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_usa=
           base::dir.create(folder)
         }
 
-        file <- base::paste0(getwd(), "/", folder,"lcz_map.tif")
+        file <- base::paste0(getwd(), "/", folder, "lcz_map.tif")
         terra::writeRaster(lcz_ras, file, overwrite = TRUE)
         base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
       }
 
-      if(isave_usa==TRUE){
-
+      if (isave_usa == TRUE) {
         # Create a folder name using paste0
         folder <- base::paste0("LCZ4r_output/")
 
@@ -152,15 +146,12 @@ lcz_get_map_usa <- function(city=NULL, roi = NULL, isave_map = FALSE, isave_usa=
           base::dir.create(folder)
         }
 
-        file <- base::paste0(getwd(), "/", folder,"lcz_usa_map.tif")
+        file <- base::paste0(getwd(), "/", folder, "lcz_usa_map.tif")
         terra::writeRaster(lcz_download, file, overwrite = TRUE)
         base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
       }
 
       return(lcz_ras)
-
     }
-
   }
-
 }
