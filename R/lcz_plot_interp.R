@@ -8,6 +8,7 @@
 #' @param ncol Number of columns in the plot.
 #' @param nrow Number of rows in the plot.
 #' @param isave Logical, indicating whether to save the plot to your directory. Default is FALSE.
+#' @param save_extension File format for saving the plot. Options: "png", "jpg", "jpeg", "tif", "pdf", "svg" (default is "png").
 #' @param ... Additional arguments to modify axis, legend, and plot labels, including title, subtitle, and caption.
 #'
 #' @return A plot of the LCZ interpolated map in ggplot2 format.
@@ -38,7 +39,9 @@ lcz_plot_interp <- function(x,
                             palette = "muted",
                             direction = 1,
                             ncol = NULL, nrow = NULL,
-                            isave = FALSE, ...) {
+                            isave = FALSE,
+                            save_extension = "png",
+                            ...) {
   # Validate inputs
   if (is.null(x)) {
     stop("The input must be raster stack object of raster package. Please, use the lcz_anomaly_map() and lcz_interp_map()")
@@ -81,7 +84,7 @@ lcz_plot_interp <- function(x,
       }
 
       # Save map as figure.png
-      file <- base::paste0(getwd(), "/", folder, "lcz_interp_map.png")
+      file <- base::paste0(getwd(), "/", folder, "lcz_interp_map.", save_extension)
       ggplot2::ggsave(file, final_graph, height = 9, width = 16, units = "in", dpi = 600)
       base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
     }
@@ -120,7 +123,7 @@ lcz_plot_interp <- function(x,
       }
 
       # Save map as figure.png
-      file <- base::paste0(getwd(), "/", folder, "lcz_interp_map.png")
+      file <- base::paste0(getwd(), "/", folder, "lcz_interp_map.", save_extension)
       ggplot2::ggsave(file, final_graph, height = 9, width = 16, units = "in", dpi = 600)
       base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
     }
