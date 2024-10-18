@@ -45,7 +45,14 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">lcz_plot_map</span><span class="op">(</span><span class="va">x</span>, isave <span class="op">=</span> <span class="cn">FALSE</span>, inclusive <span class="op">=</span> <span class="cn">FALSE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">lcz_plot_map</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  isave <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  show_legend <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  save_extension <span class="op">=</span> <span class="st">"png"</span>,</span>
+<span>  inclusive <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  <span class="va">...</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -58,6 +65,14 @@
 
 <dt id="arg-isave">isave<a class="anchor" aria-label="anchor" href="#arg-isave"></a></dt>
 <dd><p>Logical. Set to TRUE to save the plot in your working directory.</p></dd>
+
+
+<dt id="arg-show-legend">show_legend<a class="anchor" aria-label="anchor" href="#arg-show-legend"></a></dt>
+<dd><p>Logical. If TRUE, displays the legend on the plot. If FALSE, the legend will be hidden. Default is TRUE.</p></dd>
+
+
+<dt id="arg-save-extension">save_extension<a class="anchor" aria-label="anchor" href="#arg-save-extension"></a></dt>
+<dd><p>File format for saving the plot. Options: "png", "jpg", "jpeg", "tif", "pdf", "svg" (default is "png").</p></dd>
 
 
 <dt id="arg-inclusive">inclusive<a class="anchor" aria-label="anchor" href="#arg-inclusive"></a></dt>
@@ -94,7 +109,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
 </div>
 
     </footer></div>
