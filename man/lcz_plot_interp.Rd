@@ -11,6 +11,7 @@ lcz_plot_interp(
   ncol = NULL,
   nrow = NULL,
   isave = FALSE,
+  save_extension = "png",
   ...
 )
 }
@@ -26,6 +27,8 @@ lcz_plot_interp(
 \item{nrow}{Number of rows in the plot.}
 
 \item{isave}{Logical, indicating whether to save the plot to your directory. Default is FALSE.}
+
+\item{save_extension}{File format for saving the plot. Options: "png", "jpg", "jpeg", "tif", "pdf", "svg" (default is "png").}
 
 \item{...}{Additional arguments to modify axis, legend, and plot labels, including title, subtitle, and caption.}
 }

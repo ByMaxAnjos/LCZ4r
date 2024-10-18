@@ -8,7 +8,7 @@ lcz_cal_area(
   x,
   plot_type = "bar",
   iplot = TRUE,
-  isave = TRUE,
+  isave = FALSE,
   save_extension = "png",
   show_legend = TRUE,
   inclusive = FALSE,

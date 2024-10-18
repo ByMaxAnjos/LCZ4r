@@ -198,7 +198,7 @@ lcz_cal_area <- function(x,
       ggplot2::geom_text(position = ggplot2::position_fill(vjust = 0.5), stat = "identity", size = 5, check_overlap = TRUE, color = "white") +
       ggplot2::scale_fill_manual(values = color_values, name = "LCZ class", labels = lcz.lables) +
       ggplot2::guides(fill = ggplot2::guide_legend(override.aes = list(size = 12, linetype = "solid", color = NA))) +
-      ggplot2::coord_radial(theta = "y", expand = FALSE, start = -pi / 1.5, direction = -1) +
+      ggplot2::coord_polar(theta = "y", start = -pi / 1.5, direction = -1) +
       ggplot2::theme_void() +
       ggplot2::labs(...) +
       # Add the labels
@@ -238,7 +238,7 @@ lcz_cal_area <- function(x,
         geom = "text", x = 0.5, y = 1, size = 5, fontface = "bold",
         label = base::paste0("Total:\n", base::sum(lcz_df$area_km2), " km\u00B2")
       ) +
-      ggplot2::coord_radial(theta = "y", expand = FALSE, start = -pi / 1.5, direction = -1) +
+      ggplot2::coord_polar(theta = "y", start = -pi / 1.5, direction = -1) +
       ggplot2::xlim(0.5, 1.5) +
       ggplot2::theme_void() +
       ggplot2::labs(...) +
