@@ -3,30 +3,49 @@
 #' This function calculates the areas of LCZ classes in both percentage and square kilometers.
 #'
 #' @param x A raster SpatRaster layer containing LCZ classes.
+#' @param plot_type Type of plot to generate: "bar", "pie", or "donut". Default is "bar".
 #' @param iplot Logical, indicating whether to create a plot (default is TRUE).
-#' @param isave Save the plot into your directory.
-#' @param inclusive Set to TRUE to a colorblind-friendly palette.
-#' @param ylab y-axis name.
-#' @param xlab x-axis name.
-#' @param ... Additional arguments to modify axis, legend, and plot labels, including title, subtitle and caption.
+#' @param isave Logical, whether to save the plot to your directory (default is FALSE).
+#' @param save_extension File format for saving the plot. Options: "png", "jpg", "jpeg", "tif", "pdf", "svg" (default is "png").
+#' @param show_legend Logical. If TRUE, displays the legend on the plot. If FALSE, the legend will be hidden. Default is TRUE.
+#' @param inclusive Logical. If TRUE, use a colorblind-friendly palette. Default is FALSE.
+#' @param xlab Character, label for the x-axis (default is "LCZ code").
+#' @param ylab Character, label for the y-axis (default is "Area (km2)").
+#' @param ... Additional arguments to modify axis, legend, and plot labels, including title, subtitle, and caption.
 #'
-#' @return A summary table of LCZ class areas if iplot is FALSE, otherwise, a bar plot.
+#' @return A summary table of LCZ class areas if plot = FALSE, otherwise, the specified plot in ggplot format.
 #'
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' #Calculate the LCZ area
-#' my_lcz_area <- lcz_cal_area(my_lcz_map, iplot = TRUE, isave = TRUE)
+#' # Calculate LCZ area and visualize as bar plot
+#' lcz_cal_area(my_lcz_map, plot_type = "bar")
+#'
+#' # Visualize as pie chart
+#' lcz_cal_area(my_lcz_map, plot_type = "pie")
+#'
+#' # Save donut chart plot
+#' lcz_cal_area(my_lcz_map, plot_type = "donut", isave = TRUE)
+#'
+#' # Return a dataframe
+#' lcz_cal_area(my_lcz_map, plot_type = "donut", iplot = FALSE)
 #' }
 #' @importFrom rlang .data
 #'
 #' @seealso
 #' See the documentation for lcz_get_map() to obtain an LCZ map.
 
-lcz_cal_area <- function(x, iplot = TRUE, isave = FALSE, inclusive = FALSE,
+lcz_cal_area <- function(x,
+                         plot_type = "bar",
+                         iplot = TRUE,
+                         isave = TRUE,
+                         save_extension = "png",
+                         show_legend = TRUE,
+                         inclusive = FALSE,
                          xlab = "LCZ code",
-                         ylab = "Area [square kilometer]", ...) {
+                         ylab = "Area [km2]",
+                         ...) {
   # Validate inputs ---------------------------------------------------------
 
   if (!inherits(x, "SpatRaster")) {
@@ -65,7 +84,7 @@ lcz_cal_area <- function(x, iplot = TRUE, isave = FALSE, inclusive = FALSE,
     dplyr::mutate(lcz = base::as.factor(lcz))
 
   summary_resul <- dplyr::inner_join(freq_df, lcz_areas_df, by = "lcz") %>%
-    dplyr::mutate(area_perc = base::round(.data$area_km2 / sum(.data$area_km2) * 100, digits = 2))
+    dplyr::mutate(area_perc = base::round(.data$area_km2 / base::sum(.data$area_km2) * 100, digits = 2))
 
   lcz <- c(base::seq(1, 10, 1), base::seq(11, 17)) %>%
     tibble::as_tibble() %>%
@@ -117,62 +136,181 @@ lcz_cal_area <- function(x, iplot = TRUE, isave = FALSE, inclusive = FALSE,
   # Define LCZ labels
   lcz.lables <- lcz_df$lcz.name
 
-  # Create the ggplot
-  graph <-
-    ggplot2::ggplot(lcz_df, ggplot2::aes(x = factor(lcz), y = .data$area_km2, fill = factor(lcz))) +
-    ggplot2::geom_bar(stat = "identity") +
-    ggplot2::scale_fill_manual(
-      values = color_values, name = "LCZ class",
-      labels = lcz.lables,
-      guide = ggplot2::guide_legend(
-        reverse = FALSE,
-        title.position = "top"
+  if (plot_type == "bar") {
+    # Create the ggplot
+    graph <-
+      ggplot2::ggplot(lcz_df, ggplot2::aes(x = factor(lcz), y = .data$area_km2, fill = factor(lcz))) +
+      ggplot2::geom_bar(stat = "identity") +
+      ggplot2::scale_fill_manual(
+        values = color_values, name = "LCZ class",
+        labels = lcz.lables,
+        guide = ggplot2::guide_legend(
+          reverse = FALSE,
+          title.position = "top"
+        )
+      ) +
+      ggplot2::geom_text(
+        data = lcz_df,
+        label = paste0(round(lcz_df$area_perc, 1), "%"),
+        vjust = -0.2, size = 5, check_overlap = TRUE
+      ) +
+      ggplot2::scale_y_continuous(limits = c(0, base::max(lcz_df$area_km2) + 50)) +
+      ggplot2::labs(...,
+        x = xlab,
+        y = ylab
+      ) +
+      ggplot2::theme_bw() +
+      ggplot2::theme(
+        plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
+        plot.subtitle = ggplot2::element_text(color = "black", size = 17, hjust = 0.5),
+        plot.background = ggplot2::element_rect(fill="transparent", color=NA),
+        legend.background = ggplot2::element_rect(fill="transparent", color=NA),
+        panel.background = ggplot2::element_rect(color = NA, fill = "grey97"),
+        panel.grid.major = ggplot2::element_line(color = "grey90"),
+        panel.grid.minor = ggplot2::element_line(color = "grey90"),
+        panel.grid.major.y = ggplot2::element_line(color = "grey90"),
+        axis.text.x = ggplot2::element_text(size = 16),
+        axis.title.x = ggplot2::element_text(size = 16, face = "bold"),
+        axis.text.y = ggplot2::element_text(size = 16),
+        axis.title.y = ggplot2::element_text(size = 16, face = "bold"),
+        legend.text = ggplot2::element_text(size = 16),
+        legend.title = ggplot2::element_text(size = 17),
+        legend.spacing.y = ggplot2::unit(0.02, "cm"),
+        plot.margin = ggplot2::margin(25, 25, 10, 25),
+        plot.caption = ggplot2::element_text(color = "grey40", size = 10, hjust = 0)
       )
-    ) +
-    ggplot2::geom_text(
-      data = lcz_df,
-      label = paste0(round(lcz_df$area_perc, 1), "%"),
-      vjust = -0.2, size = 5, check_overlap = TRUE
-    ) +
-    ggplot2::scale_y_continuous(limits = c(0, base::max(lcz_df$area_km2) + 50)) +
-    ggplot2::labs(...,
-      x = xlab,
-      y = ylab
-    ) +
-    ggplot2::theme_bw() +
-    ggplot2::theme(
-      plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
-      plot.subtitle = ggplot2::element_text(color = "black", size = 17, hjust = 0.5),
-      panel.background = ggplot2::element_rect(color = NA, fill = "grey97"),
-      panel.grid.major = ggplot2::element_line(color = "grey90"),
-      panel.grid.minor = ggplot2::element_line(color = "grey90"),
-      panel.grid.major.y = ggplot2::element_line(color = "grey90"),
-      axis.text.x = ggplot2::element_text(size = 16),
-      axis.title.x = ggplot2::element_text(size = 16, face = "bold"),
-      axis.text.y = ggplot2::element_text(size = 16),
-      axis.title.y = ggplot2::element_text(size = 16, face = "bold"),
-      legend.text = ggplot2::element_text(size = 16),
-      legend.title = ggplot2::element_text(size = 17),
-      legend.spacing.y = ggplot2::unit(0.02, "cm"),
-      plot.margin = ggplot2::margin(25, 25, 10, 25),
-      plot.caption = ggplot2::element_text(color = "grey40", size = 10, hjust = 0)
+
+
+    if (!show_legend) {
+      graph <- graph + ggplot2::theme(legend.position = "none")
+    }
+  }
+
+  if (plot_type == "pie") {
+    # Compute a good label
+    lcz_df$label <- base::paste0(
+      base::round(lcz_df$area_perc, 1), "\u0025\n"
     )
 
-  if (isave == TRUE) {
-    # Create a folder name using paste0
-    folder <- base::paste0("LCZ4r_output/")
+    graph <-
+      ggplot2::ggplot(lcz_df, ggplot2::aes(x = 1, y = .data$area_perc, fill = lcz, label = .data$label)) +
+      ggplot2::geom_bar(position = "fill", stat = "identity", width = 0.3, key_glyph = ggplot2::draw_key_dotplot, color = NA, lwd = 0.2) +
+      ggplot2::geom_text(position = ggplot2::position_fill(vjust = 0.5), stat = "identity", size = 5, check_overlap = TRUE, color = "white") +
+      ggplot2::scale_fill_manual(values = color_values, name = "LCZ class", labels = lcz.lables) +
+      ggplot2::guides(fill = ggplot2::guide_legend(override.aes = list(size = 12, linetype = "solid", color = NA))) +
+      ggplot2::coord_radial(theta = "y", expand = FALSE, start = -pi / 1.5, direction = -1) +
+      ggplot2::theme_void() +
+      ggplot2::labs(...) +
+      # Add the labels
+      ggplot2::annotate("text",
+        x = 1.2, y = 0.8, size = 5, fontface = "bold", hjust = 0.1,
+        label = base::paste0("Total: ", base::sum(lcz_df$area_km2), " km\u00B2")
+      ) +
+      ggplot2::theme(
+        legend.key.spacing.y = ggplot2::unit(-1.4, "line"),
+        plot.title.position = "plot",
+        plot.title = ggplot2::element_text(size = 22),
+        plot.subtitle = ggplot2::element_text(size = 20),
+        #plot.caption.position = "plot",
+        legend.text = ggplot2::element_text(size = 14),
+        legend.title = ggplot2::element_text(size = 14, hjust = 0.2, vjust = -1, face = "bold"),
+        legend.spacing.y = ggplot2::unit(0.01, "cm"),
+        plot.caption = ggplot2::element_text(color = "grey40", size = 10, hjust = 0)
+      )
 
-    # Check if the folder exists
+    if (!show_legend) {
+      graph <- graph + ggplot2::theme(legend.position = "none")
+    }
+  }
+
+  if (plot_type == "donut") {
+    # Compute a good label
+    lcz_df$label <- base::paste0(
+      base::round(lcz_df$area_perc, 1), "\u0025\n"
+    )
+    graph <-
+      ggplot2::ggplot(lcz_df, ggplot2::aes(x = 1, y = .data$area_perc, fill = lcz, label = .data$label)) +
+      ggplot2::geom_bar(position = "fill", stat = "identity", width = 0.3, key_glyph = ggplot2::draw_key_dotplot, color = "white", lwd = 0.2) +
+      ggplot2::geom_text(position = ggplot2::position_fill(vjust = 0.5), stat = "identity", size = 4, check_overlap = TRUE, color = "white") +
+      ggplot2::scale_fill_manual(values = color_values, name = "LCZ class", labels = lcz.lables) +
+      ggplot2::guides(fill = ggplot2::guide_legend(override.aes = list(size = 12, linetype = "solid", color = NA))) +
+      ggplot2::annotate(
+        geom = "text", x = 0.5, y = 1, size = 5, fontface = "bold",
+        label = base::paste0("Total:\n", base::sum(lcz_df$area_km2), " km\u00B2")
+      ) +
+      ggplot2::coord_radial(theta = "y", expand = FALSE, start = -pi / 1.5, direction = -1) +
+      ggplot2::xlim(0.5, 1.5) +
+      ggplot2::theme_void() +
+      ggplot2::labs(...) +
+      ggplot2::theme(
+        # legend.position = "left",
+        legend.margin = ggplot2::margin(0, -5, 0, 0),
+        legend.key.spacing.y = ggplot2::unit(-1.3, "line"),
+        plot.title.position = "plot",
+        plot.title = ggplot2::element_text(size = 22),
+        plot.subtitle = ggplot2::element_text(size = 20),
+        plot.caption.position = "plot",
+        legend.text = ggplot2::element_text(size = 14),
+        legend.title = ggplot2::element_text(size = 14, hjust = 0.2, vjust = -1, face = "bold"),
+        legend.spacing.y = ggplot2::unit(0.01, "cm"),
+        plot.caption = ggplot2::element_text(color = "grey40", size = 10, hjust = 0)
+      )
+
+    if (!show_legend) {
+      graph <- graph + ggplot2::theme(legend.position = "none")
+    }
+  }
+
+  if (isave == TRUE && plot_type == "bar") {
+    folder <- base::paste0("LCZ4r_output/")
     if (!base::dir.exists(folder)) {
-      # Create the folder if it does not exist
+      base::dir.create(folder)
+    }
+    file.1 <- base::paste0(getwd(), "/", folder, "lcz4r_area_bar.", save_extension)
+    ggplot2::ggsave(file.1, graph,
+      height = 7, width = 12,
+      dpi = 600
+    )
+    file.2 <- base::paste0(getwd(), "/", folder, "lcz4r_area_df.csv")
+    utils::write.csv(lcz_df, file.2)
+    base::message("Looking at your files in the path:", base::paste0(
+      getwd(),
+      "/", folder
+    ))
+  }
+
+  if (isave == TRUE && plot_type == "pie") {
+    folder <- base::paste0("LCZ4r_output/")
+    if (!base::dir.exists(folder)) {
       base::dir.create(folder)
     }
 
-    file.1 <- base::paste0(getwd(), "/", folder, "lcz4r_area_plot.png")
-    ggplot2::ggsave(file.1, graph, height = 7, width = 12, dpi = 600)
+    file.1 <- base::paste0(getwd(), "/", folder, "lcz4r_area_pie.", save_extension)
+    ggplot2::ggsave(file.1, graph, height = 5, width = 7, dpi = 600)
     file.2 <- base::paste0(getwd(), "/", folder, "lcz4r_area_df.csv")
     utils::write.csv(lcz_df, file.2)
-    base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
+    base::message("Looking at your files in the path:", base::paste0(
+      getwd(),
+      "/", folder
+    ))
+  }
+
+  if (isave == TRUE && plot_type == "donut") {
+    folder <- base::paste0("LCZ4r_output/")
+    if (!base::dir.exists(folder)) {
+      base::dir.create(folder)
+    }
+    file.1 <- base::paste0(getwd(), "/", folder, "lcz4r_area_donut.", save_extension)
+    ggplot2::ggsave(file.1, graph, scale = 1.5,
+      height = 6, width = 8,
+      dpi = 600
+    )
+    file.2 <- base::paste0(getwd(), "/", folder, "lcz4r_area_df.csv")
+    utils::write.csv(lcz_df, file.2)
+    base::message("Looking at your files in the path:", base::paste0(
+      getwd(),
+      "/", folder
+    ))
   }
 
   if (iplot == FALSE) {
@@ -181,4 +319,3 @@ lcz_cal_area <- function(x, iplot = TRUE, isave = FALSE, inclusive = FALSE,
     return(graph)
   }
 }
-

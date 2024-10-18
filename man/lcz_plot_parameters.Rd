@@ -10,6 +10,7 @@ lcz_plot_parameters(
   all = FALSE,
   inclusive = FALSE,
   isave = FALSE,
+  save_extension = "png",
   ...
 )
 }
@@ -18,7 +19,7 @@ lcz_plot_parameters(
 
 \item{iselect}{Character vector. Specify one or more parameter names to retrieve specific
 parameters. For example, "SVF2" to get the minimum Sky View Factor,
-or c("z0", "BSF2") to select multiple parameters.}
+or c("z0", "BSF2") to select multiple parameters. See the complete  parameter list here: \url{https://bymaxanjos.github.io/LCZ4r/articles/Introd_general_LCZ4r.html#retrieve-and-visualize-lcz-parameters}.}
 
 \item{all}{Logical, specifying whether to save all selected parameters into LCZ4r_output. Default is FALSE.}
 
@@ -26,7 +27,9 @@ or c("z0", "BSF2") to select multiple parameters.}
 
 \item{isave}{Logical, indicating whether to save the plot to your directory. Default is FALSE.}
 
-\item{...}{An optional modify axis, legend, and plot labels: title, subtitle, and caption.}
+\item{save_extension}{File format for saving the plot. Options: "png", "jpg", "jpeg", "tif", "pdf", "svg" (default is "png").}
+
+\item{...}{An optional modify axis, legend, and plot labels: subtitle, and caption. It does not work with title.}
 }
 \value{
 A plot of the selected LCZ parameters in ggplot2 format

@@ -11,19 +11,24 @@ lcz_ts(
   station_id = "",
   ...,
   time.freq = "hour",
+  plot_type = "basic_line",
+  facet_plot = "LCZ",
   by = NULL,
+  smooth = FALSE,
   impute = NULL,
   iplot = TRUE,
   isave = FALSE,
+  save_extension = "png",
   palette = "VanGogh2",
   ylab = "Air temperature [Degree Celsius]",
   xlab = "Time",
-  title = "",
-  caption = "LCZ4r"
+  title = "LCZ - Timeseries",
+  caption = "LCZ4r, 2024.",
+  legend_name = "Temperature (C)"
 )
 }
 \arguments{
-\item{x}{A \code{SpatRaster} object containing the LCZ map. The LCZ map can be obtained using the \code{lcz_get_map()} function.}
+\item{x}{A \code{SpatRaster} object containing the LCZ map. The LCZ map can be obtained using the \code{lcz_get_map()}, \code{lcz_get_map_euro()}, and \code{lcz_get_map_usa()} functions.}
 
 \item{data_frame}{A data frame containing air temperature measurements and station IDs. The data frame should have a date field in hourly or higher resolution format.}
 
@@ -31,17 +36,26 @@ lcz_ts(
 
 \item{station_id}{The name of the variable in the data frame representing station IDs.}
 
-\item{...}{Additional arguments for the \code{selectBydata} from \code{openair} package. These include:
+\item{...}{Additional arguments for the \code{selectByDate} function from the \code{openair} package. These arguments allow for flexible selection of specific time periods (year, month, day, hour). Examples of how to use these arguments include:
 \itemize{
-\item A start date string in the form "1/2/1999" or in format "YYYY-mm-dd", e.g., "1999-02-01".
-\item A year or years to select, e.g., year = 1998:2004 to select 1998-2004 inclusive, or year = c(1998, 2004) to select 1998 and 2004.
-\item A month or months to select. Can either be numeric, e.g., month = 1:6 to select January to June, or by name, e.g., month = c("January", "December").
+\item \strong{Year(s)}: Numeric value(s) specifying the year(s) to select. For example, \code{year = 1998:2004} selects all years between 1998 and 2004 (inclusive), while \code{year = c(1998, 2004)} selects only the years 1998 and 2004.
+\item \strong{Month(s)}: Numeric or character value(s) specifying the months to select. Numeric examples: \code{month = 1:6} (January to June), or character examples: \code{month = c("January", "December")}.
+\item \strong{Day(s)}: Numeric value(s) specifying the days to select. For instance, \code{day = 1:30} selects days from 1 to 30, or \code{day = 15} selects only the 15th day of the month.
+\item \strong{Hour(s)}: Numeric value(s) specifying the hours to select. For example, \code{hour = 0:23} selects all hours in a day, while \code{hour = 9} selects only the 9th hour.
+\item \strong{Start date}: A string specifying the start date in either start="DD/MM/YYYY" (e.g., "1/2/1999") or "YYYY-mm-dd" format (e.g., "1999-02-01").
+\item \strong{End date}: A string specifying the start date in either end="DD/MM/YYYY" (e.g., "1/2/1999") or "YYYY-mm-dd" format (e.g., "1999-02-01").
 }}
 
 \item{time.freq}{Defines the time period to average to. Default is \dQuote{hour}, but includes \dQuote{day}, \dQuote{week}, \dQuote{month} or \dQuote{year}.}
 
+\item{plot_type}{A character string indicating the type of plot to generate. Options include: \dQuote{basic_line}, \dQuote{facet_line}, \dQuote{heatmap}, \dQuote{warming_stripes}. The default is \dQuote{basic_line}. Note: This argument does not work if the \code{by} argument is active.}
+
+\item{facet_plot}{A character string indicating whether to divide the plot by \dQuote{LCZ} or \dQuote{station}. The default is \dQuote{LCZ}.}
+
 \item{by}{data frame time-serie split: \dQuote{year}, \dQuote{season}, \dQuote{seasonyear},  \dQuote{month}, \dQuote{monthyear}, \dQuote{weekday}, \dQuote{weekend},  \dQuote{site},
 \dQuote{daylight}, \dQuote{dst} (daylight saving time).See argument \emph{type} in openair package: \url{https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option}}
+
+\item{smooth}{Logical. Set to \code{TRUE} to add a smoothed trend line using a generalized additive model (GAM). The default is \code{FALSE}.}
 
 \item{impute}{Method to impute missing values (\dQuote{mean}, \dQuote{median}, \dQuote{knn}, \dQuote{bag}).}
 
@@ -49,21 +63,25 @@ lcz_ts(
 
 \item{isave}{Set to \code{TRUE} to save all results (plot, time-series) into your directory.}
 
-\item{palette}{Default is "VanGogh2". Define your color palette from MetBrewer \url{https://github.com/BlakeRMills/MetBrewer?tab=readme-ov-file#palettes}.}
+\item{save_extension}{A character string indicating the file format for saving the plot. Options include: \dQuote{png}, \dQuote{jpg}, \dQuote{jpeg}, \dQuote{tif}, \dQuote{pdf}, \dQuote{svg}. The default is \dQuote{png}.}
 
-\item{ylab}{y-axis name.}
+\item{palette}{A character string specifying the color palette to use. The default is \dQuote{VanGogh2}. You can choose from palettes available in \code{MetBrewer}: \url{https://github.com/BlakeRMills/MetBrewer?tab=readme-ov-file#palettes}.}
 
-\item{xlab}{y-axis name. Default is \dQuote{Time}}
+\item{ylab}{A character string for the y-axis label. The default is the variable name.}
 
-\item{title}{y-axis name. Default is \dQuote{" "}.}
+\item{xlab}{A character string for the x-axis label. The default is \dQuote{Time}.}
+
+\item{title}{A character string for the plot title. The default is \dQuote{""}.}
 
 \item{caption}{source data. Default can be \dQuote{Source:LCZ4r,2024"}.}
+
+\item{legend_name}{Legend name for heatmap and warming stripes plots. Default is "Temperature (°C)".}
 }
 \value{
-A visual representation of the time series of air temperature of LCZ in \code{ggplot} or data frame .csv format.
+A ggplot object representing the time series of air temperature in different LCZs, or a data frame in CSV format if \code{iplot = FALSE}.
 }
 \description{
-This function generates a graphical representation of time series air temperature data for different Local Climate Zones (LCZs). More details: \url{https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html}
+This function generates a graphical representation of time series air temperature data across different Local Climate Zones (LCZs). It allows for flexible temporal aggregation, faceting, smoothing, and visualization options including heatmaps, facet_plot line plots, and warming stripes. For more details on LCZ analysis, visit \url{https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html}.
 }
 \examples{
 \dontrun{
@@ -74,7 +92,7 @@ my_ts <- lcz_ts(lcz_map, df = lcz_data, var = "airT",
 }
 }
 \seealso{
-See the documentation for  \code{lcz_get_map()} to obtain an LCZ map.
+See the documentation for \code{lcz_get_map()}, \code{lcz_get_map_euro()}, and \code{lcz_get_map_usa()} to obtain an LCZ map.
 }
 \keyword{Climate}
 \keyword{LCZ,}

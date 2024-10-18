@@ -82,7 +82,7 @@ lcz_plot_interp <- function(x,
 
       # Save map as figure.png
       file <- base::paste0(getwd(), "/", folder, "lcz_interp_map.png")
-      ggplot2::ggsave(file, final_graph, height = 8, width = 10, units = "in", dpi = 600)
+      ggplot2::ggsave(file, final_graph, height = 9, width = 16, units = "in", dpi = 600)
       base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
     }
 
@@ -121,7 +121,7 @@ lcz_plot_interp <- function(x,
 
       # Save map as figure.png
       file <- base::paste0(getwd(), "/", folder, "lcz_interp_map.png")
-      ggplot2::ggsave(file, final_graph, height = 8, width = 10, units = "in", dpi = 600)
+      ggplot2::ggsave(file, final_graph, height = 9, width = 16, units = "in", dpi = 600)
       base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
     }
 

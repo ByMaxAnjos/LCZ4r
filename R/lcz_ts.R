@@ -1,31 +1,38 @@
-
 #' Analyze LCZ Time Series
 #'
-#' This function generates a graphical representation of time series air temperature data for different Local Climate Zones (LCZs). More details: \url{https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html}
+#' This function generates a graphical representation of time series air temperature data across different Local Climate Zones (LCZs). It allows for flexible temporal aggregation, faceting, smoothing, and visualization options including heatmaps, facet_plot line plots, and warming stripes. For more details on LCZ analysis, visit \url{https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html}.
 #'
-#' @param x A \code{SpatRaster} object containing the LCZ map. The LCZ map can be obtained using the \code{lcz_get_map()} function.
+#' @param x A \code{SpatRaster} object containing the LCZ map. The LCZ map can be obtained using the \code{lcz_get_map()}, \code{lcz_get_map_euro()}, and \code{lcz_get_map_usa()} functions.
 #' @param data_frame A data frame containing air temperature measurements and station IDs. The data frame should have a date field in hourly or higher resolution format.
 #' @param var The name of the variable in the data frame representing air temperature.
 #' @param station_id The name of the variable in the data frame representing station IDs.
-#' @param ... Additional arguments for the \code{selectBydata} from \code{openair} package. These include:
+#' @param ... Additional arguments for the \code{selectByDate} function from the \code{openair} package. These arguments allow for flexible selection of specific time periods (year, month, day, hour). Examples of how to use these arguments include:
 #' \itemize{
-#'   \item A start date string in the form "1/2/1999" or in format "YYYY-mm-dd", e.g., "1999-02-01".
-#'   \item A year or years to select, e.g., year = 1998:2004 to select 1998-2004 inclusive, or year = c(1998, 2004) to select 1998 and 2004.
-#'   \item A month or months to select. Can either be numeric, e.g., month = 1:6 to select January to June, or by name, e.g., month = c("January", "December").
+#'   \item \strong{Year(s)}: Numeric value(s) specifying the year(s) to select. For example, \code{year = 1998:2004} selects all years between 1998 and 2004 (inclusive), while \code{year = c(1998, 2004)} selects only the years 1998 and 2004.
+#'   \item \strong{Month(s)}: Numeric or character value(s) specifying the months to select. Numeric examples: \code{month = 1:6} (January to June), or character examples: \code{month = c("January", "December")}.
+#'   \item \strong{Day(s)}: Numeric value(s) specifying the days to select. For instance, \code{day = 1:30} selects days from 1 to 30, or \code{day = 15} selects only the 15th day of the month.
+#'   \item \strong{Hour(s)}: Numeric value(s) specifying the hours to select. For example, \code{hour = 0:23} selects all hours in a day, while \code{hour = 9} selects only the 9th hour.
+#'   \item \strong{Start date}: A string specifying the start date in either start="DD/MM/YYYY" (e.g., "1/2/1999") or "YYYY-mm-dd" format (e.g., "1999-02-01").
+#'   \item \strong{End date}: A string specifying the start date in either end="DD/MM/YYYY" (e.g., "1/2/1999") or "YYYY-mm-dd" format (e.g., "1999-02-01").
 #' }
 #' @param time.freq Defines the time period to average to. Default is \dQuote{hour}, but includes \dQuote{day}, \dQuote{week}, \dQuote{month} or \dQuote{year}.
+#' @param plot_type A character string indicating the type of plot to generate. Options include: \dQuote{basic_line}, \dQuote{facet_line}, \dQuote{heatmap}, \dQuote{warming_stripes}. The default is \dQuote{basic_line}. Note: This argument does not work if the \code{by} argument is active.
+#' @param facet_plot A character string indicating whether to divide the plot by \dQuote{LCZ} or \dQuote{station}. The default is \dQuote{LCZ}.
+#' @param smooth Logical. Set to \code{TRUE} to add a smoothed trend line using a generalized additive model (GAM). The default is \code{FALSE}.
 #' @param by  data frame time-serie split: \dQuote{year}, \dQuote{season}, \dQuote{seasonyear},  \dQuote{month}, \dQuote{monthyear}, \dQuote{weekday}, \dQuote{weekend},  \dQuote{site},
 #'            \dQuote{daylight}, \dQuote{dst} (daylight saving time).See argument \emph{type} in openair package: \url{https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option}
 #' @param impute Method to impute missing values (\dQuote{mean}, \dQuote{median}, \dQuote{knn}, \dQuote{bag}).
 #' @param iplot Set to \code{TRUE} to return a plot. If \code{FALSE}, a data frame is returned.
 #' @param isave Set to \code{TRUE} to save all results (plot, time-series) into your directory.
-#' @param palette Default is "VanGogh2". Define your color palette from MetBrewer \url{https://github.com/BlakeRMills/MetBrewer?tab=readme-ov-file#palettes}.
-#' @param ylab y-axis name.
-#' @param xlab y-axis name. Default is \dQuote{Time}
-#' @param title y-axis name. Default is \dQuote{" "}.
+#' @param save_extension A character string indicating the file format for saving the plot. Options include: \dQuote{png}, \dQuote{jpg}, \dQuote{jpeg}, \dQuote{tif}, \dQuote{pdf}, \dQuote{svg}. The default is \dQuote{png}.
+#' @param palette A character string specifying the color palette to use. The default is \dQuote{VanGogh2}. You can choose from palettes available in \code{MetBrewer}: \url{https://github.com/BlakeRMills/MetBrewer?tab=readme-ov-file#palettes}.
+#' @param ylab A character string for the y-axis label. The default is the variable name.
+#' @param xlab A character string for the x-axis label. The default is \dQuote{Time}.
+#' @param title A character string for the plot title. The default is \dQuote{""}.
 #' @param caption source data. Default can be \dQuote{Source:LCZ4r,2024"}.
+#' @param legend_name Legend name for heatmap and warming stripes plots. Default is "Temperature (°C)".
 #'
-#' @return A visual representation of the time series of air temperature of LCZ in \code{ggplot} or data frame .csv format.
+#' @return A ggplot object representing the time series of air temperature in different LCZs, or a data frame in CSV format if \code{iplot = FALSE}.
 #'
 #' @export
 #'
@@ -38,7 +45,7 @@
 #' }
 #' @importFrom rlang .data
 #' @seealso
-#' See the documentation for  \code{lcz_get_map()} to obtain an LCZ map.
+#' See the documentation for \code{lcz_get_map()}, \code{lcz_get_map_euro()}, and \code{lcz_get_map_usa()} to obtain an LCZ map.
 #'
 #' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis
 
@@ -48,15 +55,20 @@ lcz_ts <- function(x,
                    station_id = "",
                    ...,
                    time.freq = "hour",
+                   plot_type = "basic_line",
+                   facet_plot = "LCZ",
                    by = NULL,
+                   smooth = FALSE,
                    impute = NULL,
                    iplot = TRUE,
                    isave = FALSE,
+                   save_extension = "png",
                    palette = "VanGogh2",
                    ylab = "Air temperature [Degree Celsius]",
                    xlab = "Time",
-                   title = "",
-                   caption = "LCZ4r") {
+                   title = "LCZ - Timeseries",
+                   caption = "LCZ4r, 2024.",
+                   legend_name = "Temperature (C)") {
   # Check and validate raster inputs -----------------------------------------------
 
   if (missing(x)) {
@@ -184,16 +196,30 @@ lcz_ts <- function(x,
   )) %>%
     purrr::set_names("lcz.name")
 
-  lcz.col <- tibble::as_tibble(c(
-    "#910613", "#D9081C", "#FF0A22", "#C54F1E", "#FF6628", "#FF985E",
-    "#FDED3F", "#BBBBBB", "#FFCBAB", "#565656", "#006A18", "#00A926",
-    "#628432", "#B5DA7F", "#000000", "#FCF7B1", "#656BFA"
-  )) %>%
-    purrr::set_names("lcz.col")
+  lcz.col <- c(
+   "1"= "#910613",
+   "2"=  "#D9081C",
+   "3"=  "#FF0A22",
+   "4"= "#C54F1E",
+   "5"= "#FF6628",
+   "6"=  "#FF985E",
+   "7"= "#FDED3F",
+   "8"= "#BBBBBB",
+   "9"= "#FFCBAB",
+   "10"= "#565656",
+   "11"= "#006A18",
+   "12"= "#00A926",
+   "13"= "#628432",
+   "14"= "#B5DA7F",
+   "15"= "#000000",
+   "16"= "#FCF7B1",
+   "17"= "#656BFA"
+  )
 
-  lcz_df <- dplyr::bind_cols(lcz, lcz.name, lcz.col) %>%
+  lcz_df <- dplyr::bind_cols(lcz, lcz.name) %>%
     dplyr::mutate(lcz = base::as.factor(.data$lcz)) %>%
     dplyr::inner_join(my_stations, by = "lcz")
+
 
   # Define LCZ labels
   lcz.lables <- lcz_df$station
@@ -205,7 +231,8 @@ lcz_ts <- function(x,
     ggplot2::theme(
       plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
       plot.subtitle = ggplot2::element_text(color = "black", size = 16, hjust = 0.5),
-      panel.background = ggplot2::element_rect(color = NA, fill = "white"),
+      plot.background = ggplot2::element_rect(fill="transparent", color=NA),
+      legend.background = ggplot2::element_rect(fill="transparent", color=NA),
       panel.grid.minor = ggplot2::element_line(color = "white"),
       panel.grid.major.y = ggplot2::element_line(color = "grey90"),
       axis.text.x = ggplot2::element_text(size = ggplot2::rel(1.5)),
@@ -244,32 +271,176 @@ lcz_ts <- function(x,
   lcz_model$longitude <- NULL
 
   # Define time series frequency with argument "by"--------------------------------------------
+
   if (is.null(by)) {
     mydata <- openair::timeAverage(
       lcz_model,
       pollutant = "var_interp",
       avg.time = time.freq,
-      type = c("station")
+      type = c("station", "lcz")
     ) %>%
       stats::na.omit() %>%
       dplyr::ungroup()
 
-    final_graph <-
-      ggplot2::ggplot(mydata, ggplot2::aes(
+    # Argument plot type checks
+    if (!plot_type %in% c("basic_line", "facet_line", "heatmap", "warming_stripes")) {
+      stop("Invalid plot_type. Only 'basic_line', 'facet_line', 'heatmap, 'warming_stripes' are supported.")
+    }
+
+    if (!facet_plot %in% c("LCZ", "station")) {
+      stop("Invalid facet_plot option. Choose 'LCZ' or 'station'.")
+    }
+
+    if(plot_type == "basic_line") {
+      final_graph <-
+        ggplot2::ggplot(mydata, ggplot2::aes(
+          x = .data$date,
+          y = .data$var_interp,
+          color = .data$station
+        )) +
+        ggplot2::geom_line(lwd = 1, alpha =if(smooth==TRUE) 0.3 else 1) +
+        ggplot2::scale_x_datetime(expand = c(0, 0)) +
+        ggplot2::scale_color_manual(
+          name = "Station (LCZ)",
+          values = mycolors,
+          labels = lcz.lables,
+          guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
+        ) +
+        ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption) +
+        lcz_theme
+
+      if(smooth==TRUE) {
+        final_graph <- final_graph +
+          ggplot2::geom_smooth(method = 'gam', formula = y ~ s(x, bs = "cs"), se = FALSE)
+      }
+
+      }
+
+    if(plot_type == "facet_line") {
+
+      final_graph <-
+        ggplot2::ggplot(mydata, ggplot2::aes(
+          x = .data$date,
+          y = .data$var_interp,
+          color = if(facet_plot=="LCZ") .data$station else .data$lcz
+        )) +
+        ggplot2::geom_line(lwd = 1, alpha = if(smooth==TRUE) 0.3 else 1) +
+        ggplot2::scale_x_datetime(expand = c(0, 0)) +
+        ggplot2::scale_color_manual(
+          name = if(facet_plot == "station") "LCZ class" else "Station (LCZ)",
+          values = if(facet_plot == "LCZ") mycolors else lcz.col,
+          labels = lcz.lables,
+          guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
+        ) +
+        ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption) +
+        lcz_theme +
+        ggplot2::theme(
+          legend.box.spacing = ggplot2::unit(20, "pt"),
+          panel.spacing = ggplot2::unit(3, "lines"),
+          axis.ticks.x = ggplot2::element_blank(),
+          strip.text = ggplot2::element_text(
+            face = "bold",
+            hjust = 0.5,
+            size = 13
+          ),
+          strip.background = ggplot2::element_rect(linetype = "dotted")
+        )
+
+      facet_var <- base::ifelse(facet_plot == "LCZ", "lcz", "station")
+
+      # Apply faceting and hide legend if faceting by "station"
+      final_graph <- final_graph +
+        ggplot2::facet_wrap(ggplot2::vars(!!rlang::sym(facet_var)))
+
+      if(smooth==TRUE) {
+        final_graph <- final_graph +
+          ggplot2::geom_smooth(method = 'gam', formula = y ~ s(x, bs = "cs"), se = FALSE)
+      }
+
+    }
+
+    if(plot_type == "heatmap") {
+
+      final_graph <- ggplot2::ggplot(mydata, ggplot2::aes(
         x = .data$date,
-        y = .data$var_interp,
-        color = .data$station
-      )) +
-      ggplot2::geom_line(lwd = 1) +
-      ggplot2::scale_x_datetime(expand = c(0, 0)) +
-      ggplot2::scale_color_manual(
-        name = "Station (LCZ)",
-        values = mycolors,
-        labels = lcz.lables,
-        guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
-      ) +
-      ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption) +
-      lcz_theme
+        y = 1,  # Use station on the y-axis for clarity
+        fill = .data$var_interp)) +
+        ggplot2::geom_tile() +  # Add thin gridlines between tiles
+        ggplot2::scale_x_datetime(expand = c(0, 0)) +
+        ggplot2::scale_y_continuous(expand = c(0, 0)) +
+        MetBrewer::scale_fill_met_c(name = palette, direction = -1) +
+        ggplot2::labs(title = title, x = xlab, y = "", fill = legend_name, caption = caption) +
+        lcz_theme +
+        ggplot2::theme(
+          legend.position = "bottom",  # Position legend at the bottom
+          legend.title = ggplot2::element_text(size = 14, face = "bold"),
+          legend.text = ggplot2::element_text(size = 12),
+          legend.box.spacing = ggplot2::unit(13, "pt"),  # Adjust legend spacing
+          panel.spacing = ggplot2::unit(2, "lines"),  # Adjust spacing between panels
+          axis.ticks.x = ggplot2::element_blank(),
+          axis.ticks.y = ggplot2::element_blank(),
+          axis.text.y = ggplot2::element_blank(),  # Customize y-axis text for stations
+          axis.text.x = ggplot2::element_text(hjust = 0.1),
+          strip.text = ggplot2::element_text(face = "bold", size = 12, hjust = 0.5),  # Centered strip text
+          strip.background = ggplot2::element_rect(fill = "grey90", color = NA, linetype = "solid"),  # Improved facet strip background
+          panel.grid.major = ggplot2::element_blank(),
+          panel.grid.minor = ggplot2::element_blank()
+        )
+
+      facet_var <- base::ifelse(facet_plot == "LCZ", "lcz", "station")
+
+      # Apply faceting and hide legend if faceting by "station"
+      final_graph <- final_graph +
+        ggplot2::facet_wrap(ggplot2::vars(!!rlang::sym(facet_var)))
+
+    }
+
+    if(plot_type == "warming_stripes") {
+
+      final_graph <- ggplot2::ggplot(mydata, ggplot2::aes(
+        x = .data$date,
+        y = 1,  # Use station on the y-axis for clarity
+        fill = .data$var_interp)) +
+        ggplot2::geom_tile() +  # Add thin gridlines between tiles
+        ggplot2::scale_x_datetime(expand = c(0, 0)) +
+        ggplot2::geom_tile()+
+        ggplot2::scale_fill_stepsn(colors = c("#08306B", "white", "#67000D"),
+                                   values =scales::rescale(c(base::min(mydata$var_interp), 0, base::max(mydata$var_interp))),
+                                   guide = ggplot2::guide_colorsteps(  # Corrected the usage of guide_colorsteps
+                                     barwidth = 16,
+                                     barheight = 1,
+                                     title.position = "top",
+                                     title.hjust = 0.5
+                                   )
+                                   ) +
+        ggplot2::coord_cartesian(expand = FALSE)+
+        ggplot2::labs(title = title, x = xlab, y = "", fill = legend_name, caption = caption) +
+        ggplot2::theme_bw() +
+        ggplot2::theme(
+          plot.title = ggplot2::element_text(size = 22, face = "bold", lineheight = 0.8),
+          legend.position = "bottom",  # Position legend at the bottom
+          legend.title = ggplot2::element_text(size = 14, face = "bold"),
+          legend.text = ggplot2::element_text(size = 12),
+          legend.box.spacing = ggplot2::unit(13, "pt"),  # Adjust legend spacing
+          panel.spacing = ggplot2::unit(2, "lines"),  # Adjust spacing between panels
+          axis.ticks.x = ggplot2::element_blank(),
+          axis.ticks.y = ggplot2::element_blank(),
+          axis.text.x = ggplot2::element_text(size = ggplot2::rel(1.5), margin = ggplot2::margin(t=5, b=10, unit = "pt"), hjust=0.1),
+          axis.title.x = ggplot2::element_text(size = 14, face = "bold"),
+          axis.text.y = ggplot2::element_blank(),  # Customize y-axis text for stations
+          strip.text = ggplot2::element_text(face = "bold", size = 12, hjust = 0.5),  # Centered strip text
+          strip.background = ggplot2::element_rect(fill = "grey90", color = NA, linetype = "solid"),  # Improved facet strip background
+          panel.grid.major = ggplot2::element_line(size = 0.1, color = "grey90"),
+          panel.grid.minor = ggplot2::element_blank()
+        )
+
+      facet_var <- base::ifelse(facet_plot == "LCZ", "lcz", "station")
+
+      # Apply faceting and hide legend if faceting by "station"
+      final_graph <- final_graph +
+        ggplot2::facet_wrap(ggplot2::vars(!!rlang::sym(facet_var)))
+
+    }
 
     if (isave == TRUE) {
       # Create a folder name using paste0
@@ -281,14 +452,15 @@ lcz_ts <- function(x,
         base::dir.create(folder)
       }
 
-      file.1 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_plot.png")
-      ggplot2::ggsave(file.1, final_graph, height = 7, width = 12, units = "in", dpi = 600)
+      file.1 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_plot.", save_extension)
+      ggplot2::ggsave(file.1, final_graph, height = 9, width = 16, units = "in", dpi = 600)
       file.2 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_df.csv")
       utils::write.csv(mydata, file.2)
       file.3 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_stations.csv")
       utils::write.csv(lcz_df, file.3)
       base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
-    }
+
+      }
 
     if (iplot == FALSE) {
       mydata$date <- lubridate::as_datetime(mydata$date)
@@ -330,46 +502,144 @@ lcz_ts <- function(x,
         "%b %d" # Default case if none of the above match
       )
 
-      graph <-
-        ggplot2::ggplot(
-          mydata,
-          ggplot2::aes(
-            x = .data$date,
-            y = .data$var_interp,
-            color = .data$station,
-            group = .data$station
-          )
-        ) +
-        ggplot2::scale_x_discrete(
-          expand = c(0, 0),
-          breaks = function(x) x[seq(1, length(x), by = 1 * 24)],
-          labels = function(x) base::format(lubridate::as_datetime(x), paste0(label_format)),
-          guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90)
-        ) +
-        ggplot2::geom_line(lwd = 1) +
-        ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
-        ggplot2::scale_color_manual(
-          name = "Station (LCZ)",
-          values = mycolors,
-          labels = lcz.lables,
-          guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
-        ) +
-        ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption)
-      final_graph <-
-        graph + ggplot2::facet_wrap(ggplot2::vars(my_time), scales = "free_x") +
-        lcz_theme +
-        ggplot2::theme(
-          legend.box.spacing = ggplot2::unit(20, "pt"),
-          panel.spacing = ggplot2::unit(3, "lines"),
-          axis.ticks.x = ggplot2::element_blank(),
-          strip.text = ggplot2::element_text(
-            face = "bold",
-            hjust = 0,
-            size = 10
-          ),
-          strip.background = ggplot2::element_rect(linetype = "dotted")
-        )
+      if (plot_type == "facet_line") {
+        message("The 'facet_line' plot does not work with the active 'by' argument. Switching to 'basic_line' plot.")
+        plot_type <- "basic_line"
+      }
 
+      if(plot_type == "basic_line") {
+
+        final_graph <-
+          ggplot2::ggplot(
+            mydata,
+            ggplot2::aes(
+              x = .data$date,
+              y = .data$var_interp,
+              color = .data$station,
+              group = .data$station
+            )
+          ) +
+          ggplot2::scale_x_discrete(
+            expand = c(0, 0),
+            breaks = function(x) x[seq(1, length(x), by = 1 * 24)],
+            labels = function(x) base::format(lubridate::as_datetime(x), paste0(label_format)),
+            guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90)
+          ) +
+          ggplot2::geom_line(lwd =if(smooth==TRUE) 0.6 else 1, alpha=if(smooth==TRUE) 0.3 else 1) +
+          ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
+          ggplot2::scale_color_manual(
+            name = "Station (LCZ)",
+            values = mycolors,
+            labels = lcz.lables,
+            guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
+          ) +
+          ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption)+
+          ggplot2::facet_wrap(ggplot2::vars(my_time), scales = "free_x") +
+          lcz_theme +
+          ggplot2::theme(
+            legend.box.spacing = ggplot2::unit(20, "pt"),
+            panel.spacing = ggplot2::unit(3, "lines"),
+            axis.ticks.x = ggplot2::element_blank(),
+            strip.text = ggplot2::element_text(
+              face = "bold",
+              hjust = 0,
+              size = 10
+            ),
+            strip.background = ggplot2::element_rect(linetype = "dotted")
+          )
+
+        if(smooth==TRUE) {
+          final_graph <- final_graph +
+            ggplot2::geom_smooth(method = 'gam', formula = y ~ s(x, bs = "cs"), se = FALSE)
+        }
+      }
+
+      if(plot_type == "heatmap") {
+
+        final_graph <-
+          ggplot2::ggplot(
+            mydata,
+            ggplot2::aes(
+              x = .data$date,
+              y = 1,
+              fill = .data$var_interp
+            )
+          ) +
+          ggplot2::scale_x_discrete(
+            expand = c(0, 0),
+            breaks = function(x) x[seq(1, length(x), by = 1 * 24)],
+            labels = function(x) base::format(lubridate::as_datetime(x), paste0(label_format)),
+            guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90)
+          ) +
+          ggplot2::geom_tile() +  # Add thin gridlines between tiles
+          ggplot2::scale_y_continuous(expand = c(0, 0)) +
+          MetBrewer::scale_fill_met_c(name = palette, direction = -1) +
+          ggplot2::labs(title = title, x = xlab, y = "", fill = legend_name, caption = caption) +
+          lcz_theme +
+          ggplot2::facet_wrap(ggplot2::vars(my_time), scales = "free_x") +
+          ggplot2::theme(
+            legend.position = "bottom",
+            legend.box.spacing = ggplot2::unit(20, "pt"),
+            panel.spacing = ggplot2::unit(3, "lines"),
+            axis.ticks.x = ggplot2::element_blank(),
+            axis.ticks.y = ggplot2::element_blank(),
+            axis.text.y = ggplot2::element_blank(),
+            strip.text = ggplot2::element_text(
+              face = "bold",
+              hjust = 0,
+              size = 10
+            ),
+            strip.background = ggplot2::element_rect(linetype = "dotted")
+          )
+
+      }
+
+      if(plot_type == "warming_stripes") {
+
+        final_graph <-
+          ggplot2::ggplot(
+            mydata,
+            ggplot2::aes(
+              x = .data$date,
+              y = 1,
+              fill = .data$var_interp
+            )
+          ) +
+          ggplot2::scale_x_discrete(
+            expand = c(0, 0),
+            breaks = function(x) x[seq(1, length(x), by = 1 * 24)],
+            labels = function(x) base::format(lubridate::as_datetime(x), paste0(label_format)),
+            guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90)
+          ) +
+          ggplot2::geom_tile()+
+          ggplot2::scale_fill_stepsn(colors = c("#08306B", "white", "#67000D"),
+                                     values =scales::rescale(c(base::min(mydata$var_interp), 0, base::max(mydata$var_interp))),
+                                     guide = ggplot2::guide_colorsteps(  # Corrected the usage of guide_colorsteps
+                                       barwidth = 16,
+                                       barheight = 1,
+                                       title.position = "top",
+                                       title.hjust = 0.5
+                                     )
+          ) +
+          ggplot2::coord_cartesian(expand = FALSE)+
+          ggplot2::labs(title = title, x = xlab, y = "", fill = legend_name, caption = caption) +
+          lcz_theme +
+          ggplot2::facet_wrap(ggplot2::vars(my_time), scales = "free_x") +
+          ggplot2::theme(
+            legend.position = "bottom",
+            legend.box.spacing = ggplot2::unit(20, "pt"),
+            panel.spacing = ggplot2::unit(3, "lines"),
+            axis.ticks.x = ggplot2::element_blank(),
+            axis.ticks.y = ggplot2::element_blank(),
+            axis.text.y = ggplot2::element_blank(),
+            strip.text = ggplot2::element_text(
+              face = "bold",
+              hjust = 0,
+              size = 10
+            ),
+            strip.background = ggplot2::element_rect(linetype = "dotted")
+          )
+      }
 
       if (isave == TRUE) {
         # Create a folder name using paste0
@@ -381,8 +651,8 @@ lcz_ts <- function(x,
           base::dir.create(folder)
         }
 
-        file.1 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_plot.png")
-        ggplot2::ggsave(file.1, final_graph, height = 7, width = 12, units = "in", dpi = 600)
+        file.1 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_plot.", save_extension)
+        ggplot2::ggsave(file.1, final_graph, height = 9, width = 16, units = "in", dpi = 600)
         file.2 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_df.csv")
         utils::write.csv(mydata, file.2)
         file.3 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_stations.csv")
@@ -392,7 +662,6 @@ lcz_ts <- function(x,
 
       if (iplot == FALSE) {
         mydata$date <- lubridate::as_datetime(mydata$date)
-
         return(mydata)
       } else {
         return(final_graph)
@@ -426,36 +695,180 @@ lcz_ts <- function(x,
         ) %>%
         dplyr::ungroup()
 
-      final_graph <-
-        ggplot2::ggplot(
-          mydata,
-          ggplot2::aes(
-            x = .data$date,
-            y = .data$var_interp,
-            color = .data$station,
-            group = .data$station
+      if(plot_type=="basic_line"){
+
+        final_graph <-
+          ggplot2::ggplot(
+            mydata,
+            ggplot2::aes(
+              x = .data$date,
+              y = .data$var_interp,
+              color = .data$station,
+              group = .data$station
+            )
+          ) +
+          ggplot2::geom_rect(ggplot2::aes(xmin = .data$xmin, xmax = .data$xmax, ymin = -Inf, ymax = Inf, fill = .data$labs),
+                             alpha = 0.3, data = rec_df, inherit.aes = FALSE
+          ) +
+          ggplot2::scale_fill_manual(name = "", values = c("lightblue", "grey")) +
+          ggplot2::scale_x_datetime(
+            expand = c(0, 0),
+            breaks = scales::date_breaks("3 hour"),
+            labels = scales::date_format("%H"),
+            guide = ggplot2::guide_axis(check.overlap = TRUE)
+          ) +
+          ggplot2::geom_line(lwd = 1) +
+          ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
+          ggplot2::scale_color_manual(
+            name = "Station (LCZ)",
+            values = mycolors,
+            labels = lcz.lables,
+            guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
+          ) +
+          ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption) +
+          lcz_theme
+
+
+      }
+
+      if(plot_type=="facet_line"){
+
+        mydata <- dplyr::mutate(mydata, lcz = gsub(".*\\((\\d+)\\).*", "\\1", .data$station))
+
+        final_graph <-
+          ggplot2::ggplot(
+            mydata,
+            ggplot2::aes(
+              x = .data$date,
+              y = .data$var_interp,
+              color = if(facet_plot=="LCZ") .data$station else .data$lcz,
+              group = if(facet_plot=="LCZ") .data$station else .data$lcz
+            )
+          ) +
+          ggplot2::geom_rect(ggplot2::aes(xmin = .data$xmin, xmax = .data$xmax, ymin = -Inf, ymax = Inf, fill = .data$labs),
+                             alpha = 0.3, data = rec_df, inherit.aes = FALSE
+          ) +
+          ggplot2::scale_fill_manual(name = "", values = c("lightblue", "grey")) +
+          ggplot2::scale_x_datetime(
+            expand = c(0, 0),
+            breaks = scales::date_breaks("3 hour"),
+            labels = scales::date_format("%H"),
+            guide = ggplot2::guide_axis(check.overlap = TRUE)
+          ) +
+          ggplot2::geom_line(lwd = 1) +
+          ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
+          ggplot2::scale_color_manual(
+            name = if(facet_plot == "station") "LCZ class" else "Station (LCZ)",
+            values = if(facet_plot == "LCZ") mycolors else lcz.col,
+            labels = lcz.lables,
+            guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
+          ) +
+          ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption) +
+          lcz_theme +
+          ggplot2::theme(
+            legend.box.spacing = ggplot2::unit(20, "pt"),
+            panel.spacing = ggplot2::unit(3, "lines"),
+            axis.ticks.x = ggplot2::element_blank(),
+            strip.text = ggplot2::element_text(
+              face = "bold",
+              hjust = 0.5,
+              size = 13
+            ),
+            strip.background = ggplot2::element_rect(linetype = "dotted")
           )
-        ) +
-        ggplot2::geom_rect(ggplot2::aes(xmin = .data$xmin, xmax = .data$xmax, ymin = -Inf, ymax = Inf, fill = .data$labs),
-          alpha = 0.3, data = rec_df, inherit.aes = FALSE
-        ) +
-        ggplot2::scale_fill_manual(name = "", values = c("lightblue", "grey")) +
-        ggplot2::scale_x_datetime(
-          expand = c(0, 0),
-          breaks = scales::date_breaks("3 hour"),
-          labels = scales::date_format("%H"),
-          guide = ggplot2::guide_axis(check.overlap = TRUE)
-        ) +
-        ggplot2::geom_line(lwd = 1) +
-        ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
-        ggplot2::scale_color_manual(
-          name = "Station (LCZ)",
-          values = mycolors,
-          labels = lcz.lables,
-          guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
-        ) +
-        ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption) +
-        lcz_theme
+
+        facet_var <- base::ifelse(facet_plot == "LCZ", "lcz", "station")
+
+        # Apply faceting and hide legend if faceting by "station"
+        final_graph <- final_graph +
+          ggplot2::facet_wrap(ggplot2::vars(!!rlang::sym(facet_var)))
+
+
+      }
+
+      if (plot_type == "warming_stripes") {
+        message("The 'warming_stripes' plot does not work with the active by='daylight' argument. Switching to 'heatmap' plot.")
+        plot_type <- "heatmap"
+      }
+
+      if(plot_type=="heatmap"){
+
+        mydata <- dplyr::mutate(mydata, lcz = base::gsub(".*\\((\\d+)\\).*", "\\1", .data$station))
+
+        final_graph <-
+          # Create an elegant heatmap with clear daylight and nighttime transitions
+          ggplot2::ggplot(
+            mydata,
+            ggplot2::aes(
+              x = .data$date,
+              y = if(facet_plot == "LCZ") .data$lcz else .data$station,
+              fill = .data$var_interp
+            )
+          ) +
+          # Heatmap for var_interp over time
+          ggplot2::geom_tile() +
+
+          # X-axis as datetime with proper breaks and labels
+          ggplot2::scale_x_datetime(
+            expand = c(0, 0),
+            breaks = scales::date_breaks("3 hour"),
+            labels = scales::date_format("%H"),
+            guide = ggplot2::guide_axis(check.overlap = TRUE)
+          ) +
+
+          # Y-axis as discrete variable without expansion
+          ggplot2::scale_y_discrete(expand = c(0, 0)) +
+
+          # Fill scale for heatmap using MetBrewer palette
+          MetBrewer::scale_fill_met_c(name = palette, direction = -1) +
+
+          # Add daylight start (solid line) using geom_segment
+          ggplot2::geom_segment(
+            data = rec_df[1,],
+            ggplot2::aes(
+              x = .data$xmin,
+              xend = .data$xmin,  # Vertical line at daylight start
+              y = -Inf,
+              yend = Inf,
+              color = "Daylight start"
+            ),
+            size = 1,
+            inherit.aes = FALSE
+          ) +
+          # Add nighttime start (dashed line) using geom_segment
+          ggplot2::geom_segment(
+            data = rec_df[1,],
+            ggplot2::aes(
+              x = .data$xmax,
+              xend = .data$xmax,  # Vertical line at nighttime start
+              y = -Inf,
+              yend = Inf,
+              color = "Nighttime start"
+            ),
+            size = 1,
+            inherit.aes = FALSE
+          ) +
+          ggplot2::scale_color_manual(name = "", values = c("Daylight start" = "black", "Nighttime start" = "grey40")) +
+           # Add labels and theme elements
+          ggplot2::labs(
+            title = title,
+            x = xlab,
+            y = if(facet_plot == "LCZ") "LCZ class" else "Station (LCZ)",
+            fill = legend_name,
+            caption = caption
+          ) +
+          # Customize the fill color bar guide for heatmap
+          ggplot2::guides(
+            fill = ggplot2::guide_colorbar(
+              title.hjust = 0.5,    # Center the title of the color bar
+              barheight = ggplot2::unit(15, "lines")  # Increase color bar height
+            )
+          ) +
+          # Apply a clean theme
+          lcz_theme
+
+      }
+
 
       if (isave == TRUE) {
         # Create a folder name using paste0
@@ -467,8 +880,8 @@ lcz_ts <- function(x,
           base::dir.create(folder)
         }
 
-        file.1 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_plot.png")
-        ggplot2::ggsave(file.1, final_graph, height = 7, width = 12, units = "in", dpi = 600)
+        file.1 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_plot.", save_extension)
+        ggplot2::ggsave(file.1, final_graph, height = 9, width = 16, units = "in", dpi = 600)
         file.2 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_df.csv")
         utils::write.csv(mydata, file.2)
         file.3 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_stations.csv")
@@ -527,40 +940,142 @@ lcz_ts <- function(x,
       # convert the string to a formula
       by_formula <- stats::as.formula(base::paste("~", base::paste(by[2], collapse = " + ")))
 
-      graph <-
-        ggplot2::ggplot(mydata2, ggplot2::aes(
-          x = .data$hour, y = .data$var_interp,
-          color = .data$station,
-          group = .data$station
-        )) +
-        ggplot2::geom_rect(ggplot2::aes(xmin = .data$min_hour, xmax = .data$max_hour, ymin = -Inf, ymax = Inf, fill = .data$labs),
-          alpha = 0.3, data = rec_df, inherit.aes = FALSE
-        ) +
-        ggplot2::scale_fill_manual(name = "", values = c("lightblue", "grey")) +
-        ggplot2::scale_x_continuous(expand = c(0, 0), guide = ggplot2::guide_axis(check.overlap = TRUE)) +
-        ggplot2::geom_line(lwd = 1) +
-        ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
-        ggplot2::scale_color_manual(
-          name = "Station (LCZ)",
-          values = mycolors,
-          labels = lcz.lables,
-          guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
-        ) +
-        ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption)
-      final_graph <-
-        graph + ggplot2::facet_wrap(by_formula, scales = "free_y") +
-        lcz_theme +
-        ggplot2::theme(
-          legend.box.spacing = ggplot2::unit(20, "pt"),
-          panel.spacing = ggplot2::unit(1, "lines"),
-          axis.ticks.x = ggplot2::element_blank(),
-          strip.text = ggplot2::element_text(
-            face = "bold",
-            hjust = 0,
-            size = 10
-          ),
-          strip.background = ggplot2::element_rect(linetype = "dotted")
-        )
+      if (plot_type == "facet_line") {
+        message("The 'facet_line' plot does not work with the active 'by' argument. Switching to 'basic_line' plot.")
+        plot_type <- "basic_line"
+      }
+
+      if (plot_type == "basic_line") {
+
+        graph <-
+          ggplot2::ggplot(mydata2, ggplot2::aes(
+            x = .data$date,
+            y = .data$var_interp,
+            color = .data$station,
+            group = .data$station
+          )) +
+          ggplot2::geom_rect(ggplot2::aes(xmin = .data$min_hour, xmax = .data$max_hour, ymin = -Inf, ymax = Inf, fill = .data$labs),
+                             alpha = 0.3, data = rec_df, inherit.aes = FALSE
+          ) +
+          ggplot2::scale_fill_manual(name = "", values = c("lightblue", "grey")) +
+          ggplot2::scale_x_continuous(expand = c(0, 0), guide = ggplot2::guide_axis(check.overlap = TRUE)) +
+          ggplot2::geom_line(lwd = 1) +
+          ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
+          ggplot2::scale_color_manual(
+            name = "Station (LCZ)",
+            values = mycolors,
+            labels = lcz.lables,
+            guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
+          ) +
+          ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption)
+        final_graph <-
+          graph + ggplot2::facet_wrap(by_formula, scales = "free_y") +
+          lcz_theme +
+          ggplot2::theme(
+            legend.box.spacing = ggplot2::unit(20, "pt"),
+            panel.spacing = ggplot2::unit(1, "lines"),
+            axis.ticks.x = ggplot2::element_blank(),
+            strip.text = ggplot2::element_text(
+              face = "bold",
+              hjust = 0,
+              size = 10
+            ),
+            strip.background = ggplot2::element_rect(linetype = "dotted")
+          )
+
+      }
+
+
+      if (plot_type == "warming_stripes") {
+        message("The 'warming_stripes' plot does not work with the active by='daylight' argument. Switching to 'heatmap' plot.")
+        plot_type <- "heatmap"
+      }
+
+      if(plot_type=="heatmap"){
+
+        mydata2 <- dplyr::mutate(mydata2, lcz = base::gsub(".*\\((\\d+)\\).*", "\\1", .data$station))
+
+        final_graph <-
+          # Create an elegant heatmap with clear daylight and nighttime transitions
+          ggplot2::ggplot(
+            mydata2,
+            ggplot2::aes(
+              x = .data$hour,
+              y = if(facet_plot == "LCZ") .data$lcz else .data$station,
+              fill = .data$var_interp
+            )
+          ) +
+          # Heatmap for var_interp over time
+          ggplot2::geom_tile() +
+
+          # X-axis as datetime with proper breaks and labels
+          ggplot2::scale_x_continuous(expand = c(0, 0), guide = ggplot2::guide_axis(check.overlap = TRUE)) +
+
+          # Y-axis as discrete variable without expansion
+          ggplot2::scale_y_discrete(expand = c(0, 0), guide = ggplot2::guide_axis(check.overlap = TRUE)) +
+
+          # Fill scale for heatmap using MetBrewer palette
+          MetBrewer::scale_fill_met_c(name = palette, direction = -1) +
+
+          # Add daylight start (solid line) using geom_segment
+          ggplot2::geom_segment(
+            data = rec_df[1,],
+            ggplot2::aes(
+              x = .data$min_hour,
+              xend = .data$min_hour,  # Vertical line at daylight start
+              y = -Inf,
+              yend = Inf,
+              color = "Daylight start"
+            ),
+            size = 1,
+            inherit.aes = FALSE
+          ) +
+          # Add nighttime start (dashed line) using geom_segment
+          ggplot2::geom_segment(
+            data = rec_df[1,],
+            ggplot2::aes(
+              x = .data$max_hour,
+              xend = .data$max_hour,  # Vertical line at nighttime start
+              y = -Inf,
+              yend = Inf,
+              color = "Nighttime start"
+            ),
+            size = 1,
+            inherit.aes = FALSE
+          ) +
+          ggplot2::scale_color_manual(name = "", values = c("Daylight start" = "black", "Nighttime start" = "grey40")) +
+          # Add labels and theme elements
+          ggplot2::labs(
+            title = title,
+            x = xlab,
+            y = if(facet_plot == "LCZ") "LCZ class" else "Station (LCZ)",
+            fill = legend_name,
+            caption = caption
+          ) +
+          # Customize the fill color bar guide for heatmap
+          ggplot2::guides(
+            fill = ggplot2::guide_colorbar(
+              title.hjust = 0.5,    # Center the title of the color bar
+              barheight = ggplot2::unit(15, "lines")  # Increase color bar height
+            )
+          )
+
+        final_graph <-
+          final_graph + ggplot2::facet_wrap(by_formula, scales = "free_y") +
+          lcz_theme +
+          ggplot2::theme(
+            legend.box.spacing = ggplot2::unit(20, "pt"),
+            panel.spacing = ggplot2::unit(1, "lines"),
+            axis.ticks.x = ggplot2::element_blank(),
+            strip.text = ggplot2::element_text(
+              face = "bold",
+              hjust = 0,
+              size = 10
+            ),
+            strip.background = ggplot2::element_rect(linetype = "dotted")
+          )
+
+      }
 
       if (isave == TRUE) {
         # Create a folder name using paste0
@@ -572,8 +1087,8 @@ lcz_ts <- function(x,
           base::dir.create(folder)
         }
 
-        file.1 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_plot.png")
-        ggplot2::ggsave(file.1, final_graph, height = 7, width = 12, units = "in", dpi = 600)
+        file.1 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_plot.", save_extension)
+        ggplot2::ggsave(file.1, final_graph, height = 9, width = 16, units = "in", dpi = 600)
         file.2 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_df.csv")
         utils::write.csv(mydata2, file.2)
         file.3 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_stations.csv")
@@ -650,8 +1165,8 @@ lcz_ts <- function(x,
           base::dir.create(folder)
         }
 
-        file.1 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_plot.png")
-        ggplot2::ggsave(file.1, final_graph, height = 7, width = 12, units = "in", dpi = 600)
+        file.1 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_plot.", save_extension)
+        ggplot2::ggsave(file.1, final_graph, height = 9, width = 16, units = "in", dpi = 600)
         file.2 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_df.csv")
         utils::write.csv(mydata, file.2)
         file.3 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_stations.csv")
@@ -666,6 +1181,6 @@ lcz_ts <- function(x,
       } else {
         return(final_graph)
       }
-    }
+  }
   }
 }

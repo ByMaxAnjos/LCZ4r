@@ -19,6 +19,7 @@ lcz_uhi_intensity(
   group = FALSE,
   iplot = TRUE,
   isave = FALSE,
+  save_extension = "png",
   ylab = "Air temperature [C]",
   xlab = "Time",
   ylab2 = "UHI",
@@ -35,11 +36,14 @@ lcz_uhi_intensity(
 
 \item{station_id}{The name of the variable in the data frame representing station IDs.}
 
-\item{...}{Additional arguments for the \code{selectBydata} from \code{openair} package. These include:
+\item{...}{Additional arguments for the \code{selectByDate} function from the \code{openair} package. These arguments allow for flexible selection of specific time periods (year, month, day, hour). Examples of how to use these arguments include:
 \itemize{
-\item A start date string in the form "1/2/1999" or in format "YYYY-mm-dd", e.g., "1999-02-01".
-\item A year or years to select, e.g., year = 1998:2004 to select 1998-2004 inclusive, or year = c(1998, 2004) to select 1998 and 2004.
-\item A month or months to select. Can either be numeric, e.g., month = 1:6 to select January to June, or by name, e.g., month = c("January", "December").
+\item \strong{Year(s)}: Numeric value(s) specifying the year(s) to select. For example, \code{year = 1998:2004} selects all years between 1998 and 2004 (inclusive), while \code{year = c(1998, 2004)} selects only the years 1998 and 2004.
+\item \strong{Month(s)}: Numeric or character value(s) specifying the months to select. Numeric examples: \code{month = 1:6} (January to June), or character examples: \code{month = c("January", "December")}.
+\item \strong{Day(s)}: Numeric value(s) specifying the days to select. For instance, \code{day = 1:30} selects days from 1 to 30, or \code{day = 15} selects only the 15th day of the month.
+\item \strong{Hour(s)}: Numeric value(s) specifying the hours to select. For example, \code{hour = 0:23} selects all hours in a day, while \code{hour = 9} selects only the 9th hour.
+\item \strong{Start date}: A string specifying the start date in either start="DD/MM/YYYY" (e.g., "1/2/1999") or "YYYY-mm-dd" format (e.g., "1999-02-01").
+\item \strong{End date}: A string specifying the start date in either end="DD/MM/YYYY" (e.g., "1/2/1999") or "YYYY-mm-dd" format (e.g., "1999-02-01").
 }}
 
 \item{time.freq}{The time period to average to. Default is \dQuote{hour}, but can also be \dQuote{day}, \dQuote{week}, \dQuote{month}, or \dQuote{year}.}
@@ -59,6 +63,8 @@ lcz_uhi_intensity(
 \item{iplot}{Set to \code{TRUE} to return a plot. If \code{FALSE}, a data frame is returned.}
 
 \item{isave}{Set to \code{TRUE} to save all results (plot, time-series, station references) into your directory.}
+
+\item{save_extension}{A character string indicating the file format for saving the plot. Options include: \dQuote{png}, \dQuote{jpg}, \dQuote{jpeg}, \dQuote{tif}, \dQuote{pdf}, \dQuote{svg}. The default is \dQuote{png}.}
 
 \item{ylab}{The label for the y-axis.}
 

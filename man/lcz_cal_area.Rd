@@ -6,39 +6,57 @@
 \usage{
 lcz_cal_area(
   x,
+  plot_type = "bar",
   iplot = TRUE,
-  isave = FALSE,
+  isave = TRUE,
+  save_extension = "png",
+  show_legend = TRUE,
   inclusive = FALSE,
   xlab = "LCZ code",
-  ylab = "Area [square kilometer]",
+  ylab = "Area [km2]",
   ...
 )
 }
 \arguments{
 \item{x}{A raster SpatRaster layer containing LCZ classes.}
 
+\item{plot_type}{Type of plot to generate: "bar", "pie", or "donut". Default is "bar".}
+
 \item{iplot}{Logical, indicating whether to create a plot (default is TRUE).}
 
-\item{isave}{Save the plot into your directory.}
+\item{isave}{Logical, whether to save the plot to your directory (default is FALSE).}
 
-\item{inclusive}{Set to TRUE to a colorblind-friendly palette.}
+\item{save_extension}{File format for saving the plot. Options: "png", "jpg", "jpeg", "tif", "pdf", "svg" (default is "png").}
 
-\item{xlab}{x-axis name.}
+\item{show_legend}{Logical. If TRUE, displays the legend on the plot. If FALSE, the legend will be hidden. Default is TRUE.}
 
-\item{ylab}{y-axis name.}
+\item{inclusive}{Logical. If TRUE, use a colorblind-friendly palette. Default is FALSE.}
 
-\item{...}{Additional arguments to modify axis, legend, and plot labels, including title, subtitle and caption.}
+\item{xlab}{Character, label for the x-axis (default is "LCZ code").}
+
+\item{ylab}{Character, label for the y-axis (default is "Area (km2)").}
+
+\item{...}{Additional arguments to modify axis, legend, and plot labels, including title, subtitle, and caption.}
 }
 \value{
-A summary table of LCZ class areas if iplot is FALSE, otherwise, a bar plot.
+A summary table of LCZ class areas if plot = FALSE, otherwise, the specified plot in ggplot format.
 }
 \description{
 This function calculates the areas of LCZ classes in both percentage and square kilometers.
 }
 \examples{
 \dontrun{
-#Calculate the LCZ area
-my_lcz_area <- lcz_cal_area(my_lcz_map, iplot = TRUE, isave = TRUE)
+# Calculate LCZ area and visualize as bar plot
+lcz_cal_area(my_lcz_map, plot_type = "bar")
+
+# Visualize as pie chart
+lcz_cal_area(my_lcz_map, plot_type = "pie")
+
+# Save donut chart plot
+lcz_cal_area(my_lcz_map, plot_type = "donut", isave = TRUE)
+
+# Return a dataframe
+lcz_cal_area(my_lcz_map, plot_type = "donut", iplot = FALSE)
 }
 }
 \seealso{

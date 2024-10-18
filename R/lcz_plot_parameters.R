@@ -6,11 +6,12 @@
 #' @param x The LCZ map in SpatRaster in a stack format.
 #' @param iselect Character vector. Specify one or more parameter names to retrieve specific
 #'                parameters. For example, "SVF2" to get the minimum Sky View Factor,
-#'                or c("z0", "BSF2") to select multiple parameters.
+#'                or c("z0", "BSF2") to select multiple parameters. See the complete  parameter list here: \url{https://bymaxanjos.github.io/LCZ4r/articles/Introd_general_LCZ4r.html#retrieve-and-visualize-lcz-parameters}.
 #' @param isave Logical, indicating whether to save the plot to your directory. Default is FALSE.
+#' @param save_extension File format for saving the plot. Options: "png", "jpg", "jpeg", "tif", "pdf", "svg" (default is "png").
 #' @param inclusive Set to TRUE to a colorblind-friendly palette.
 #' @param all Logical, specifying whether to save all selected parameters into LCZ4r_output. Default is FALSE.
-#' @param ... An optional modify axis, legend, and plot labels: title, subtitle, and caption.
+#' @param ... An optional modify axis, legend, and plot labels: subtitle, and caption. It does not work with title.
 #'
 #' @return A plot of the selected LCZ parameters in ggplot2 format
 #'
@@ -32,7 +33,13 @@
 #' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis
 
 
-lcz_plot_parameters <- function(x, iselect = "", all = FALSE, inclusive = FALSE, isave = FALSE, ...) {
+lcz_plot_parameters <- function(x,
+                                iselect = "",
+                                all = FALSE,
+                                inclusive = FALSE,
+                                isave = FALSE,
+                                save_extension = "png",
+                                ...) {
   # Validate inputs
   if (is.null(x)) {
     stop("The input must be raster stack object of raster package. Please, use the lcz_get_map(x, istack = TRUE, ishp = FALSE")
@@ -515,7 +522,7 @@ lcz_plot_parameters <- function(x, iselect = "", all = FALSE, inclusive = FALSE,
           base::dir.create(folder)
         }
 
-        file <- base::paste0(getwd(), "/", folder, names_par$value[i], ".png")
+        file <- base::paste0(getwd(), "/", folder, names_par$value[i], ".", save_extension)
         ggplot2::ggsave(file, fig_par, height = 7, width = 9, units = "in", dpi = 600)
         base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
       }
@@ -574,7 +581,7 @@ lcz_plot_parameters <- function(x, iselect = "", all = FALSE, inclusive = FALSE,
             base::dir.create(folder)
           }
 
-          file <- base::paste0(getwd(), "/", folder, names_par_select$value[i], ".png")
+          file <- base::paste0(getwd(), "/", folder, names_par_select$value[i], ".", save_extension)
           ggplot2::ggsave(file, fig_par, height = 7, width = 9, units = "in", dpi = 600)
           base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
         }
@@ -628,7 +635,7 @@ lcz_plot_parameters <- function(x, iselect = "", all = FALSE, inclusive = FALSE,
           base::dir.create(folder)
         }
 
-        file <- base::paste0(getwd(), "/", folder, names_par_select$value, ".png")
+        file <- base::paste0(getwd(), "/", folder, names_par_select$value, ".", save_extension)
         ggplot2::ggsave(file, fig_par, height = 7, width = 9, units = "in", dpi = 600)
         base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
       }

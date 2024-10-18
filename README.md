@@ -49,11 +49,16 @@ We highly recommend that users explore the following tutorials to gain a deeper 
 
 The development of the package R **LCZ4r** has been led by [Dr. Max Anjos](https://www.researchgate.net/profile/Max-Anjos/research) and joined by:
 
-–> Dayvid Carlos de Medeiros, Center for Climate Crisis Studies, Department of Geography, Federal University of Rio Grande do Norte, Brazil.
+–> Dr.Fred Meier, Chair of Climatology, Institute of Ecology, Technische Universität Berlin.
 
 –> Dr. Francisco Castelhano, Center for Climate Crisis Studies, Department of Geography, Federal University of Rio Grande do Norte, Brazil.
 
-–> Dr.Fred Meier, Chair of Climatology, Institute of Ecology, Technische Universität Berlin.
+–> Dayvid Carlos de Medeiros, Center for Climate Crisis Studies, Department of Geography, Federal University of Rio Grande do Norte, Brazil.
+
+–> Antônio Campos Neto, Center for Climate Crisis Studies, Department of Geography, Federal University of Rio Grande do Norte, Brazil.
+
+–> Jonatha Lima Moura, Center for Climate Crisis Studies, Department of Geography, Federal University of Rio Grande do Norte, Brazil.
+
 
 ### Funding
 

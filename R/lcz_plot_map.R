@@ -4,6 +4,8 @@
 #'
 #' @param x A SpatRaster object containing the LCZ map to be plotted.
 #' @param isave Logical. Set to TRUE to save the plot in your working directory.
+#' @param save_extension File format for saving the plot. Options: "png", "jpg", "jpeg", "tif", "pdf", "svg" (default is "png").
+#' @param show_legend Logical. If TRUE, displays the legend on the plot. If FALSE, the legend will be hidden. Default is TRUE.
 #' @param inclusive Logical. Set to TRUE to use a colorblind-friendly palette.
 #' @param ... Optional arguments to modify axis labels, legend, plot title, subtitle, and caption.
 #'
@@ -24,7 +26,12 @@
 #' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis
 
 
-lcz_plot_map <- function(x, isave = FALSE, inclusive = FALSE, ...) {
+lcz_plot_map <- function(x,
+                         isave = FALSE,
+                         show_legend = TRUE,
+                         save_extension = "png",
+                         inclusive = FALSE,
+                         ...) {
 
   # Validate inputs
   if (is.null(x)) {
@@ -127,6 +134,10 @@ lcz_plot_map <- function(x, isave = FALSE, inclusive = FALSE, ...) {
                    plot.margin = ggplot2::margin(25, 25, 10, 25)
     )
 
+  if (!show_legend) {
+    my_plot <- my_plot + ggplot2::theme(legend.position = "none")
+  }
+
   if (isave == TRUE){
 
     # Create a folder name using paste0
@@ -138,7 +149,7 @@ lcz_plot_map <- function(x, isave = FALSE, inclusive = FALSE, ...) {
       base::dir.create(folder)
     }
 
-    file <- base::paste0(getwd(), "/", folder,"lcz_plot_map.png")
+    file <- base::paste0(getwd(), "/", folder,"lcz_plot_map.", save_extension)
     ggplot2::ggsave(file, my_plot, height = 7, width = 10, dpi=600)
     base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
 

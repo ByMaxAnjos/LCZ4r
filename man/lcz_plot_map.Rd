@@ -4,12 +4,23 @@
 \alias{lcz_plot_map}
 \title{Visualize the LCZ Map}
 \usage{
-lcz_plot_map(x, isave = FALSE, inclusive = FALSE, ...)
+lcz_plot_map(
+  x,
+  isave = FALSE,
+  show_legend = TRUE,
+  save_extension = "png",
+  inclusive = FALSE,
+  ...
+)
 }
 \arguments{
 \item{x}{A SpatRaster object containing the LCZ map to be plotted.}
 
 \item{isave}{Logical. Set to TRUE to save the plot in your working directory.}
+
+\item{show_legend}{Logical. If TRUE, displays the legend on the plot. If FALSE, the legend will be hidden. Default is TRUE.}
+
+\item{save_extension}{File format for saving the plot. Options: "png", "jpg", "jpeg", "tif", "pdf", "svg" (default is "png").}
 
 \item{inclusive}{Logical. Set to TRUE to use a colorblind-friendly palette.}
 
