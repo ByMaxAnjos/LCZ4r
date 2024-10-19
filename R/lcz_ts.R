@@ -949,7 +949,7 @@ lcz_ts <- function(x,
 
         graph <-
           ggplot2::ggplot(mydata2, ggplot2::aes(
-            x = .data$date,
+            x = .data$hour,
             y = .data$var_interp,
             color = .data$station,
             group = .data$station
