@@ -52,16 +52,19 @@
 <span>  station_id <span class="op">=</span> <span class="st">""</span>,</span>
 <span>  <span class="va">...</span>,</span>
 <span>  time.freq <span class="op">=</span> <span class="st">"hour"</span>,</span>
+<span>  plot_type <span class="op">=</span> <span class="st">"diverging_bar"</span>,</span>
 <span>  by <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  impute <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  iplot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  isave <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  save_extension <span class="op">=</span> <span class="st">"png"</span>,</span>
 <span>  inclusive <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  palette <span class="op">=</span> <span class="st">"OKeeffe1"</span>,</span>
 <span>  ylab <span class="op">=</span> <span class="st">"Air temperature anomaly"</span>,</span>
 <span>  xlab <span class="op">=</span> <span class="st">"Stations"</span>,</span>
 <span>  title <span class="op">=</span> <span class="st">""</span>,</span>
-<span>  caption <span class="op">=</span> <span class="st">""</span></span>
+<span>  caption <span class="op">=</span> <span class="st">""</span>,</span>
+<span>  legend_name <span class="op">=</span> <span class="st">"Anomaly"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -99,6 +102,14 @@
 <dd><p>Defines the time period to average to. Default is “hour”, but includes “day”, “week”, “month” or “year”.</p></dd>
 
 
+<dt id="arg-plot-type">plot_type<a class="anchor" aria-label="anchor" href="#arg-plot-type"></a></dt>
+<dd><p>A character string indicating the type of plot to generate. Options include:</p><ul><li><p><strong>diverging_bar</strong>: A horizontal bar plot that diverges from the center (zero), with positive anomalies extending to the right and negative anomalies to the left. This plot is good for showing the extent and direction of anomalies in a compact format.</p></li>
+<li><p><strong>bar</strong>:  A bar plot showing the magnitude of the anomaly for each station, colored by whether the anomaly is positive or negative. This plot is good for comparing anomalies across stations.</p></li>
+<li><p><strong>dot</strong>: A dot plot that displays both the mean temperature values and the reference values, with lines connecting them. The size or color of the dots can indicate the magnitude of the anomaly. Ideal for showing both absolute temperature values and their anomalies.</p></li>
+<li><p><strong>lollipop</strong>: A lollipop plot where each "stick" represents an anomaly value and the dots at the top represent the size of the anomaly. Useful for clearly showing positive and negative anomalies in a minimalist way.</p></li>
+</ul></dd>
+
+
 <dt id="arg-by">by<a class="anchor" aria-label="anchor" href="#arg-by"></a></dt>
 <dd><p>data frame time-serie split: “year”, “season”, “seasonyear”,  “month”, “monthyear”, “weekday”, “weekend”,  “site”,
 “daylight”, “dst” (daylight saving time).See argument <em>type</em> in openair package: <a href="https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option" class="external-link">https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option</a></p></dd>
@@ -124,6 +135,10 @@
 <dd><p>Set to TRUE to a colorblind-friendly palette.</p></dd>
 
 
+<dt id="arg-palette">palette<a class="anchor" aria-label="anchor" href="#arg-palette"></a></dt>
+<dd><p>A character string specifying the color palette to use. The default is “OKeeffe1”. You can choose from palettes available in <code>MetBrewer</code>: <a href="https://github.com/BlakeRMills/MetBrewer?tab=readme-ov-file#palettes" class="external-link">https://github.com/BlakeRMills/MetBrewer?tab=readme-ov-file#palettes</a>.</p></dd>
+
+
 <dt id="arg-ylab">ylab<a class="anchor" aria-label="anchor" href="#arg-ylab"></a></dt>
 <dd><p>y-axis name.</p></dd>
 
@@ -138,6 +153,10 @@
 
 <dt id="arg-caption">caption<a class="anchor" aria-label="anchor" href="#arg-caption"></a></dt>
 <dd><p>source data. Default can be “Source: LCZ4r, Stewart and Oke, 2012; Demuzere et al.2022."”.</p></dd>
+
+
+<dt id="arg-legend-name">legend_name<a class="anchor" aria-label="anchor" href="#arg-legend-name"></a></dt>
+<dd><p>Legend name for dot plot. Default is "Anomaly".</p></dd>
 
 </dl></div>
     <div class="section level2">
