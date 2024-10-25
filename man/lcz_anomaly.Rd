@@ -11,16 +11,19 @@ lcz_anomaly(
   station_id = "",
   ...,
   time.freq = "hour",
+  plot_type = "diverging_bar",
   by = NULL,
   impute = NULL,
   iplot = TRUE,
   isave = FALSE,
   save_extension = "png",
   inclusive = FALSE,
+  palette = "OKeeffe1",
   ylab = "Air temperature anomaly",
   xlab = "Stations",
   title = "",
-  caption = ""
+  caption = "",
+  legend_name = "Anomaly"
 )
 }
 \arguments{
@@ -44,6 +47,14 @@ lcz_anomaly(
 
 \item{time.freq}{Defines the time period to average to. Default is \dQuote{hour}, but includes \dQuote{day}, \dQuote{week}, \dQuote{month} or \dQuote{year}.}
 
+\item{plot_type}{A character string indicating the type of plot to generate. Options include:
+\itemize{
+\item \strong{diverging_bar}: A horizontal bar plot that diverges from the center (zero), with positive anomalies extending to the right and negative anomalies to the left. This plot is good for showing the extent and direction of anomalies in a compact format.
+\item \strong{bar}:  A bar plot showing the magnitude of the anomaly for each station, colored by whether the anomaly is positive or negative. This plot is good for comparing anomalies across stations.
+\item \strong{dot}: A dot plot that displays both the mean temperature values and the reference values, with lines connecting them. The size or color of the dots can indicate the magnitude of the anomaly. Ideal for showing both absolute temperature values and their anomalies.
+\item \strong{lollipop}: A lollipop plot where each "stick" represents an anomaly value and the dots at the top represent the size of the anomaly. Useful for clearly showing positive and negative anomalies in a minimalist way.
+}}
+
 \item{by}{data frame time-serie split: \dQuote{year}, \dQuote{season}, \dQuote{seasonyear},  \dQuote{month}, \dQuote{monthyear}, \dQuote{weekday}, \dQuote{weekend},  \dQuote{site},
 \dQuote{daylight}, \dQuote{dst} (daylight saving time).See argument \emph{type} in openair package: \url{https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option}}
 
@@ -57,6 +68,8 @@ lcz_anomaly(
 
 \item{inclusive}{Set to TRUE to a colorblind-friendly palette.}
 
+\item{palette}{A character string specifying the color palette to use. The default is \dQuote{OKeeffe1}. You can choose from palettes available in \code{MetBrewer}: \url{https://github.com/BlakeRMills/MetBrewer?tab=readme-ov-file#palettes}.}
+
 \item{ylab}{y-axis name.}
 
 \item{xlab}{y-axis name. Default is \dQuote{Station}}
@@ -64,6 +77,8 @@ lcz_anomaly(
 \item{title}{y-axis name. Default is \dQuote{" "}.}
 
 \item{caption}{source data. Default can be \dQuote{Source: LCZ4r, Stewart and Oke, 2012; Demuzere et al.2022."}.}
+
+\item{legend_name}{Legend name for dot plot. Default is "Anomaly".}
 }
 \value{
 A visual representation of the anomalies of air temperature of LCZ in \code{ggplot} or data frame .csv format.

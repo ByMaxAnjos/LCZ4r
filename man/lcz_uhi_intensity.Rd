@@ -48,7 +48,7 @@ lcz_uhi_intensity(
 
 \item{time.freq}{The time period to average to. Default is \dQuote{hour}, but can also be \dQuote{day}, \dQuote{week}, \dQuote{month}, or \dQuote{year}.}
 
-\item{method}{Method to calculate the UHI intensity. Options include "LCZ" and "manual".}
+\item{method}{Method to calculate the UHI intensity. Options include: LCZ and manual. The LCZ method automatically identifies the LCZ build types, starting from LCZ 1 and progressing to LCZ 10, to represent the urban temperature, then it starts from LCZ natural LCZ (11-16) to represent the rural temperature. The manual method is a character string indicating the stations as references for the urban and rural areas.}
 
 \item{Turban}{Urban station references, if the method "manual" is selected.}
 

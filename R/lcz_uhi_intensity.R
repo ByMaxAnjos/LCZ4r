@@ -15,10 +15,7 @@
 #'   \item \strong{Start date}: A string specifying the start date in either start="DD/MM/YYYY" (e.g., "1/2/1999") or "YYYY-mm-dd" format (e.g., "1999-02-01").
 #'   \item \strong{End date}: A string specifying the start date in either end="DD/MM/YYYY" (e.g., "1/2/1999") or "YYYY-mm-dd" format (e.g., "1999-02-01").
 #' }
-#' @param method Method to calculate the UHI intensity. Options include:
-#' \itemize{
-#'   \item \strong{LCZ}: It automatically identifies the LCZ build types, starting from LCZ 1 and progressing to LCZ 10, to represent the urban temperature, then it starts from LCZ natural LCZ (11-16) to represent the rural temperature.
-#'   \item \strong{manual}: A character string indicating the stations as references for the urban and rural areas.
+#' @param method Method to calculate the UHI intensity. Options include: LCZ and manual. The LCZ method automatically identifies the LCZ build types, starting from LCZ 1 and progressing to LCZ 10, to represent the urban temperature, then it starts from LCZ natural LCZ (11-16) to represent the rural temperature. The manual method is a character string indicating the stations as references for the urban and rural areas.
 #' @param Turban Urban station references, if the method "manual" is selected.
 #' @param Trural Rural station references, if the method "manual" is selected.
 #' @param group If TRUE urban, rural and UHI - related temperatures are grouped in the same plot.

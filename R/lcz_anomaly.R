@@ -297,7 +297,7 @@ lcz_anomaly <- function(x,
     subset_high <- anomaly_cal %>% dplyr::filter(.data$anomaly > 0)
     subset_low <- anomaly_cal %>% dplyr::filter(.data$anomaly < 0)
 
-    if(type_plot == "diverging_bar"){
+    if(plot_type == "diverging_bar"){
 
       final_graph <-
         ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = stats::reorder(.data$station, .data$anomaly), y = .data$anomaly, fill = .data$lcz)) +
@@ -315,7 +315,7 @@ lcz_anomaly <- function(x,
 
     }
 
-    if(type_plot == "bar") {
+    if(plot_type == "bar") {
 
       final_graph <-
         ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = .data$station, y = .data$anomaly, fill = .data$anomaly >0)) +
@@ -328,13 +328,13 @@ lcz_anomaly <- function(x,
         lcz_theme
     }
 
-    if(type_plot == "dot") {
+    if(plot_type == "dot") {
 
       final_graph <-
         ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = .data$station)) +
-        geom_point(ggplot2::aes(y = .data$mean_value, color = .data$anomaly), size = 5) +
-        geom_point(ggplot2::aes(y = .data$reference_value), color = "gray", size = 3) +
-        geom_segment(ggplot2::aes(x = .data$station, xend = .data$station, y = .data$reference_value, yend = .data$mean_value), linetype = "dotted") +
+        ggplot2::geom_point(ggplot2::aes(y = .data$mean_value, color = .data$anomaly), size = 5) +
+        ggplot2::geom_point(ggplot2::aes(y = .data$reference_value), color = "gray", size = 3) +
+        ggplot2::geom_segment(ggplot2::aes(x = .data$station, xend = .data$station, y = .data$reference_value, yend = .data$mean_value), linetype = "dotted") +
         MetBrewer::scale_color_met_c(name = palette, direction = -1) +
         ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90)) +
         ggplot2::labs(title = title, x = xlab, y = ylab, color = legend_name, caption = caption) +
@@ -352,7 +352,7 @@ lcz_anomaly <- function(x,
         lcz_theme
     }
 
-    if(type_plot == "lollipop") {
+    if(plot_type == "lollipop") {
 
       final_graph <-
         ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = .data$station, y = .data$anomaly, color = .data$anomaly >0)) +
@@ -459,7 +459,7 @@ lcz_anomaly <- function(x,
       subset_high <- anomaly_cal %>% dplyr::filter(.data$anomaly > 0)
       subset_low <- anomaly_cal %>% dplyr::filter(.data$anomaly < 0)
 
-      if(type_plot == "diverging_bar"){
+      if(plot_type == "diverging_bar"){
 
         graph <-
           ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = stats::reorder(.data$station, .data$anomaly), y = .data$anomaly, fill = .data$lcz)) +
@@ -491,7 +491,7 @@ lcz_anomaly <- function(x,
 
       }
 
-      if(type_plot == "bar") {
+      if(plot_type == "bar") {
 
        graph <-
           ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = .data$station, y = .data$anomaly, fill = .data$anomaly >0)) +
@@ -512,13 +512,13 @@ lcz_anomaly <- function(x,
          )
       }
 
-      if(type_plot == "dot") {
+      if(plot_type == "dot") {
 
         graph <-
           ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = .data$station)) +
-          geom_point(ggplot2::aes(y = .data$mean_value, color = .data$anomaly), size = 5) +
-          geom_point(ggplot2::aes(y = .data$reference_value), color = "gray", size = 3) +
-          geom_segment(ggplot2::aes(x = .data$station, xend = .data$station, y = .data$reference_value, yend = .data$mean_value), linetype = "dotted") +
+          ggplot2::geom_point(ggplot2::aes(y = .data$mean_value, color = .data$anomaly), size = 5) +
+          ggplot2::geom_point(ggplot2::aes(y = .data$reference_value), color = "gray", size = 3) +
+          ggplot2::geom_segment(ggplot2::aes(x = .data$station, xend = .data$station, y = .data$reference_value, yend = .data$mean_value), linetype = "dotted") +
           MetBrewer::scale_color_met_c(name = palette, direction = -1) +
           ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90)) +
           ggplot2::labs(title = title, x = xlab, y = ylab, color = legend_name, caption = caption) +
@@ -544,7 +544,7 @@ lcz_anomaly <- function(x,
           )
       }
 
-      if(type_plot == "lollipop") {
+      if(plot_type == "lollipop") {
 
         graph <-
           ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = .data$station, y = .data$anomaly, color = .data$anomaly >0)) +
@@ -686,7 +686,7 @@ lcz_anomaly <- function(x,
           panel.spacing = ggplot2::unit(3, "lines")
         )
 
-      if(type_plot == "diverging_bar"){
+      if(plot_type == "diverging_bar"){
 
         graph <-
           ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = stats::reorder(.data$station, .data$anomaly), y = .data$anomaly, fill = .data$lcz)) +
@@ -719,7 +719,7 @@ lcz_anomaly <- function(x,
 
       }
 
-      if(type_plot == "bar") {
+      if(plot_type == "bar") {
 
         graph <-
           ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = .data$station, y = .data$anomaly, fill = .data$anomaly >0)) +
@@ -740,13 +740,13 @@ lcz_anomaly <- function(x,
           )
       }
 
-      if(type_plot == "dot") {
+      if(plot_type == "dot") {
 
         graph <-
           ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = .data$station)) +
-          geom_point(ggplot2::aes(y = .data$mean_value, color = .data$anomaly), size = 5) +
-          geom_point(ggplot2::aes(y = .data$reference_value), color = "gray", size = 3) +
-          geom_segment(ggplot2::aes(x = .data$station, xend = .data$station, y = .data$reference_value, yend = .data$mean_value), linetype = "dotted") +
+          ggplot2::geom_point(ggplot2::aes(y = .data$mean_value, color = .data$anomaly), size = 5) +
+          ggplot2::geom_point(ggplot2::aes(y = .data$reference_value), color = "gray", size = 3) +
+          ggplot2::geom_segment(ggplot2::aes(x = .data$station, xend = .data$station, y = .data$reference_value, yend = .data$mean_value), linetype = "dotted") +
           MetBrewer::scale_color_met_c(name = palette, direction = -1) +
           ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90)) +
           ggplot2::labs(title = title, x = xlab, y = ylab, color = legend_name, caption = caption) +
@@ -772,7 +772,7 @@ lcz_anomaly <- function(x,
           )
       }
 
-      if(type_plot == "lollipop") {
+      if(plot_type == "lollipop") {
 
         graph <-
           ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = .data$station, y = .data$anomaly, color = .data$anomaly >0)) +
