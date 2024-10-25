@@ -16,17 +16,26 @@
 #'   \item \strong{End date}: A string specifying the start date in either end="DD/MM/YYYY" (e.g., "1/2/1999") or "YYYY-mm-dd" format (e.g., "1999-02-01").
 #' }
 #' @param time.freq Defines the time period to average to. Default is \dQuote{hour}, but includes \dQuote{day}, \dQuote{week}, \dQuote{month} or \dQuote{year}.
+#' @param plot_type A character string indicating the type of plot to generate. Options include:
+#' \itemize{
+#'   \item \strong{diverging_bar}: A horizontal bar plot that diverges from the center (zero), with positive anomalies extending to the right and negative anomalies to the left. This plot is good for showing the extent and direction of anomalies in a compact format.
+#'   \item \strong{bar}:  A bar plot showing the magnitude of the anomaly for each station, colored by whether the anomaly is positive or negative. This plot is good for comparing anomalies across stations.
+#'   \item \strong{dot}: A dot plot that displays both the mean temperature values and the reference values, with lines connecting them. The size or color of the dots can indicate the magnitude of the anomaly. Ideal for showing both absolute temperature values and their anomalies.
+#'   \item \strong{lollipop}: A lollipop plot where each "stick" represents an anomaly value and the dots at the top represent the size of the anomaly. Useful for clearly showing positive and negative anomalies in a minimalist way.
+#' }
 #' @param by  data frame time-serie split: \dQuote{year}, \dQuote{season}, \dQuote{seasonyear},  \dQuote{month}, \dQuote{monthyear}, \dQuote{weekday}, \dQuote{weekend},  \dQuote{site},
 #'            \dQuote{daylight}, \dQuote{dst} (daylight saving time).See argument \emph{type} in openair package: \url{https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option}
 #' @param impute Method to impute missing values (\dQuote{mean}, \dQuote{median}, \dQuote{knn}, \dQuote{bag}).
 #' @param iplot Set to \code{TRUE} to return a plot. If \code{FALSE}, a data frame is returned.
 #' @param isave Set to \code{TRUE} to save all results (plot, time-series) into your directory.
+#' @param palette A character string specifying the color palette to use. The default is \dQuote{OKeeffe1}. You can choose from palettes available in \code{MetBrewer}: \url{https://github.com/BlakeRMills/MetBrewer?tab=readme-ov-file#palettes}.
 #' @param save_extension A character string indicating the file format for saving the plot. Options include: \dQuote{png}, \dQuote{jpg}, \dQuote{jpeg}, \dQuote{tif}, \dQuote{pdf}, \dQuote{svg}. The default is \dQuote{png}.
 #' @param inclusive Set to TRUE to a colorblind-friendly palette.
 #' @param ylab y-axis name.
 #' @param xlab y-axis name. Default is \dQuote{Station}
 #' @param title y-axis name. Default is \dQuote{" "}.
 #' @param caption source data. Default can be \dQuote{Source: LCZ4r, Stewart and Oke, 2012; Demuzere et al.2022."}.
+#' @param legend_name Legend name for dot plot. Default is "Anomaly".
 #'
 #' @return A visual representation of the anomalies of air temperature of LCZ in \code{ggplot} or data frame .csv format.
 #' @export
@@ -51,16 +60,19 @@ lcz_anomaly <- function(x,
                         station_id = "",
                         ...,
                         time.freq = "hour",
+                        plot_type = "diverging_bar",
                         by = NULL,
                         impute = NULL,
                         iplot = TRUE,
                         isave = FALSE,
                         save_extension = "png",
                         inclusive = FALSE,
+                        palette = "OKeeffe1",
                         ylab = "Air temperature anomaly",
                         xlab = "Stations",
                         title = "",
-                        caption = "") {
+                        caption = "",
+                        legend_name = "Anomaly") {
   # Check and validate raster inputs -----------------------------------------------
 
   if (missing(x)) {
@@ -227,6 +239,10 @@ lcz_anomaly <- function(x,
     dplyr::select(.data$lcz, .data$lcz.name) %>%
     dplyr::pull(.data$lcz.name, .data$lcz)
 
+  nb.cols <- base::length(my_stations$station)
+  mycolors <- MetBrewer::met.brewer(name = palette, nb.cols)
+
+
   lcz_theme <-
     ggplot2::theme(
       plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
@@ -281,19 +297,74 @@ lcz_anomaly <- function(x,
     subset_high <- anomaly_cal %>% dplyr::filter(.data$anomaly > 0)
     subset_low <- anomaly_cal %>% dplyr::filter(.data$anomaly < 0)
 
-    final_graph <-
-      ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = .data$station, y = .data$anomaly, fill = .data$lcz)) +
-      ggplot2::geom_bar(stat = "identity", width = .5) +
-      ggplot2::geom_hline(data = anomaly_cal$anomaly, yintercept = 0, linetype = "dashed", color = "black") +
-      ggplot2::geom_text(data = subset_high, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4, check_overlap = TRUE) +
-      ggplot2::geom_text(data = subset_low, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4, check_overlap = TRUE) +
-      ggplot2::scale_fill_manual(values = color_values, name = "LCZ class", labels = lcz.lables) +
-      ggplot2::coord_flip(clip = "off") +
-      ggplot2::scale_y_continuous(limits = c(-0.4 - max(anomaly_cal$anomaly), max(anomaly_cal$anomaly) + 0.4)) +
-      ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
-      ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption) +
-      ggplot2::theme_bw() +
-      lcz_theme
+    if(type_plot == "diverging_bar"){
+
+      final_graph <-
+        ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = stats::reorder(.data$station, .data$anomaly), y = .data$anomaly, fill = .data$lcz)) +
+        ggplot2::geom_bar(stat = "identity", width = .5) +
+        ggplot2::geom_hline(data = anomaly_cal$anomaly, yintercept = 0, linetype = "dashed", color = "black") +
+        ggplot2::geom_text(data = subset_high, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4, check_overlap = TRUE) +
+        ggplot2::geom_text(data = subset_low, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4, check_overlap = TRUE) +
+        ggplot2::scale_fill_manual(values = color_values, name = "LCZ class", labels = lcz.lables) +
+        ggplot2::coord_flip(clip = "off") +
+        ggplot2::scale_y_continuous(limits = c(-0.4 - max(anomaly_cal$anomaly), max(anomaly_cal$anomaly) + 0.4)) +
+        ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
+        ggplot2::labs(title = title, x = xlab, y = ylab, caption = caption) +
+        ggplot2::theme_bw() +
+        lcz_theme
+
+    }
+
+    if(type_plot == "bar") {
+
+      final_graph <-
+        ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = .data$station, y = .data$anomaly, fill = .data$anomaly >0)) +
+        ggplot2::geom_bar(stat = "identity", width = .5) +
+        ggplot2::scale_fill_manual(values = c("#E44D3A", "#4A90E2"), name = "Anomaly", labels = c("Negative", "Positive")) +
+        ggplot2::scale_y_continuous(limits = c(-0.4 - max(anomaly_cal$anomaly), max(anomaly_cal$anomaly) + 0.4)) +
+        ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90)) +
+        ggplot2::labs(title = title, x = xlab, y = ylab, caption = caption) +
+        ggplot2::theme_bw() +
+        lcz_theme
+    }
+
+    if(type_plot == "dot") {
+
+      final_graph <-
+        ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = .data$station)) +
+        geom_point(ggplot2::aes(y = .data$mean_value, color = .data$anomaly), size = 5) +
+        geom_point(ggplot2::aes(y = .data$reference_value), color = "gray", size = 3) +
+        geom_segment(ggplot2::aes(x = .data$station, xend = .data$station, y = .data$reference_value, yend = .data$mean_value), linetype = "dotted") +
+        MetBrewer::scale_color_met_c(name = palette, direction = -1) +
+        ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90)) +
+        ggplot2::labs(title = title, x = xlab, y = ylab, color = legend_name, caption = caption) +
+        ggplot2::guides(
+          color = ggplot2::guide_colorbar(
+            title.position = "top",    # Move legend title to the top
+            title.hjust = 0.5,         # Center align the title
+            #barwidth = ggplot2::unit(10, "lines"),  # Set the width of the color bar
+            barheight = ggplot2::unit(15, "lines"), # Set the height of the color bar
+            ticks = TRUE,              # Show ticks on the color bar
+            ticks.linewidth = 0.8     # Control the tick line width
+          )
+        ) +
+        ggplot2::theme_bw() +
+        lcz_theme
+    }
+
+    if(type_plot == "lollipop") {
+
+      final_graph <-
+        ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = .data$station, y = .data$anomaly, color = .data$anomaly >0)) +
+        ggplot2::geom_segment(ggplot2::aes(x = .data$station, xend = .data$station, y = 0, yend = .data$anomaly), linetype = "solid") +
+        ggplot2::geom_point(ggplot2::aes(size = base::abs(.data$anomaly))) +
+        ggplot2::scale_color_manual(values = c("#E44D3A", "#4A90E2"), labels = c("Negative", "Positive")) +
+        ggplot2::scale_y_continuous(limits = c(-0.4 - max(anomaly_cal$anomaly), max(anomaly_cal$anomaly) + 0.4)) +
+        ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90)) +
+        ggplot2::labs(title = title, x = xlab, y = ylab, color = "Anomaly", size = legend_name,caption = caption) +
+        ggplot2::theme_bw() +
+        lcz_theme
+    }
 
     if (isave == TRUE) {
       # Create a folder name using paste0
@@ -387,33 +458,114 @@ lcz_anomaly <- function(x,
       # Subset the data outside the ggplot call for clarity
       subset_high <- anomaly_cal %>% dplyr::filter(.data$anomaly > 0)
       subset_low <- anomaly_cal %>% dplyr::filter(.data$anomaly < 0)
-      graph <-
-        ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = .data$station, y = .data$anomaly, fill = .data$lcz)) +
-        ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
-        ggplot2::geom_bar(stat = "identity", width = .4) +
-        ggplot2::geom_hline(data = anomaly_cal$anomaly, yintercept = 0, linetype = "dashed", color = "black") +
-        ggplot2::geom_text(data = subset_high, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4, check_overlap = TRUE) +
-        ggplot2::geom_text(data = subset_low, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4, check_overlap = TRUE) +
-        ggplot2::scale_fill_manual(
-          values = color_values, name = "LCZ class", labels = lcz.lables,
-          guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
-        ) +
-        ggplot2::coord_flip(clip = "off") +
-        ggplot2::scale_y_continuous(
-          limits = c(-0.4 - max(anomaly_cal$anomaly), max(anomaly_cal$anomaly) + 0.4),
-          guide = ggplot2::guide_axis(check.overlap = TRUE)
-        ) +
-        ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption) +
-        ggplot2::theme_bw() +
-        lcz_theme
-      final_graph <-
-        graph + ggplot2::facet_wrap(~my_time, scales = "fixed") +
-        ggplot2::theme(
-          strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
-          strip.background = ggplot2::element_rect(linetype = "dotted"),
-          legend.box.spacing = ggplot2::unit(20, "pt"),
-          panel.spacing = ggplot2::unit(3, "lines")
-        )
+
+      if(type_plot == "diverging_bar"){
+
+        graph <-
+          ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = stats::reorder(.data$station, .data$anomaly), y = .data$anomaly, fill = .data$lcz)) +
+          ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
+          ggplot2::geom_bar(stat = "identity", width = .4) +
+          ggplot2::geom_hline(data = anomaly_cal$anomaly, yintercept = 0, linetype = "dashed", color = "black") +
+          ggplot2::geom_text(data = subset_high, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4, check_overlap = TRUE) +
+          ggplot2::geom_text(data = subset_low, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4, check_overlap = TRUE) +
+          ggplot2::scale_fill_manual(
+            values = color_values, name = "LCZ class", labels = lcz.lables,
+            guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
+          ) +
+          ggplot2::coord_flip(clip = "off") +
+          ggplot2::scale_y_continuous(
+            limits = c(-0.4 - max(anomaly_cal$anomaly), max(anomaly_cal$anomaly) + 0.4),
+            guide = ggplot2::guide_axis(check.overlap = TRUE)
+          ) +
+          ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption) +
+          ggplot2::theme_bw() +
+          lcz_theme
+        final_graph <-
+          graph + ggplot2::facet_wrap(~my_time, scales = "fixed") +
+          ggplot2::theme(
+            strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
+            strip.background = ggplot2::element_rect(linetype = "dotted"),
+            legend.box.spacing = ggplot2::unit(20, "pt"),
+            panel.spacing = ggplot2::unit(3, "lines")
+          )
+
+      }
+
+      if(type_plot == "bar") {
+
+       graph <-
+          ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = .data$station, y = .data$anomaly, fill = .data$anomaly >0)) +
+          ggplot2::geom_bar(stat = "identity", width = .5) +
+          ggplot2::scale_fill_manual(values = c("#E44D3A", "#4A90E2"), name = "Anomaly", labels = c("Negative", "Positive")) +
+          ggplot2::scale_y_continuous(limits = c(-0.4 - max(anomaly_cal$anomaly), max(anomaly_cal$anomaly) + 0.4)) +
+          ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90)) +
+          ggplot2::labs(title = title, x = xlab, y = ylab, caption = caption) +
+          ggplot2::theme_bw() +
+          lcz_theme
+       final_graph <-
+         graph + ggplot2::facet_wrap(~my_time, scales = "fixed") +
+         ggplot2::theme(
+           strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
+           strip.background = ggplot2::element_rect(linetype = "dotted"),
+           legend.box.spacing = ggplot2::unit(20, "pt"),
+           panel.spacing = ggplot2::unit(3, "lines")
+         )
+      }
+
+      if(type_plot == "dot") {
+
+        graph <-
+          ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = .data$station)) +
+          geom_point(ggplot2::aes(y = .data$mean_value, color = .data$anomaly), size = 5) +
+          geom_point(ggplot2::aes(y = .data$reference_value), color = "gray", size = 3) +
+          geom_segment(ggplot2::aes(x = .data$station, xend = .data$station, y = .data$reference_value, yend = .data$mean_value), linetype = "dotted") +
+          MetBrewer::scale_color_met_c(name = palette, direction = -1) +
+          ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90)) +
+          ggplot2::labs(title = title, x = xlab, y = ylab, color = legend_name, caption = caption) +
+          ggplot2::guides(
+            color = ggplot2::guide_colorbar(
+              title.position = "top",    # Move legend title to the top
+              title.hjust = 0.5,         # Center align the title
+              #barwidth = ggplot2::unit(10, "lines"),  # Set the width of the color bar
+              barheight = ggplot2::unit(15, "lines"), # Set the height of the color bar
+              ticks = TRUE,              # Show ticks on the color bar
+              ticks.linewidth = 0.8     # Control the tick line width
+            )
+          ) +
+          ggplot2::theme_bw() +
+          lcz_theme
+        final_graph <-
+          graph + ggplot2::facet_wrap(~my_time, scales = "fixed") +
+          ggplot2::theme(
+            strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
+            strip.background = ggplot2::element_rect(linetype = "dotted"),
+            legend.box.spacing = ggplot2::unit(20, "pt"),
+            panel.spacing = ggplot2::unit(3, "lines")
+          )
+      }
+
+      if(type_plot == "lollipop") {
+
+        graph <-
+          ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = .data$station, y = .data$anomaly, color = .data$anomaly >0)) +
+          ggplot2::geom_segment(ggplot2::aes(x = .data$station, xend = .data$station, y = 0, yend = .data$anomaly), linetype = "solid") +
+          ggplot2::geom_point(ggplot2::aes(size = base::abs(.data$anomaly))) +
+          ggplot2::scale_color_manual(values = c("#E44D3A", "#4A90E2"), labels = c("Negative", "Positive")) +
+          ggplot2::scale_y_continuous(limits = c(-0.4 - max(anomaly_cal$anomaly), max(anomaly_cal$anomaly) + 0.4)) +
+          ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90)) +
+          ggplot2::labs(title = title, x = xlab, y = ylab, color = "Anomaly", size = legend_name,caption = caption) +
+          ggplot2::theme_bw() +
+          lcz_theme
+        final_graph <-
+          graph + ggplot2::facet_wrap(~my_time, scales = "fixed") +
+          ggplot2::theme(
+            strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
+            strip.background = ggplot2::element_rect(linetype = "dotted"),
+            legend.box.spacing = ggplot2::unit(20, "pt"),
+            panel.spacing = ggplot2::unit(3, "lines")
+          )
+      }
+
 
       if (isave == TRUE) {
         # Create a folder name using paste0
@@ -442,6 +594,7 @@ lcz_anomaly <- function(x,
     }
 
     if (length(by) > 1 && "daylight" %in% by) {
+
       extract_hemisphere <- function(raster) {
         # Get the extent of the raster
         extent <- raster::extent(raster::raster(raster))
@@ -532,6 +685,115 @@ lcz_anomaly <- function(x,
           legend.box.spacing = ggplot2::unit(20, "pt"),
           panel.spacing = ggplot2::unit(3, "lines")
         )
+
+      if(type_plot == "diverging_bar"){
+
+        graph <-
+          ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = stats::reorder(.data$station, .data$anomaly), y = .data$anomaly, fill = .data$lcz)) +
+          ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
+          ggplot2::geom_bar(stat = "identity", width = .4) +
+          ggplot2::geom_hline(data = anomaly_cal$anomaly, yintercept = 0, linetype = "dashed", color = "black") +
+          ggplot2::geom_text(data = subset_high, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4, check_overlap = TRUE) +
+          ggplot2::geom_text(data = subset_low, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4, check_overlap = TRUE) +
+          ggplot2::scale_fill_manual(
+            values = color_values, name = "LCZ class", labels = lcz.lables,
+            guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
+          ) +
+          ggplot2::coord_flip(clip = "off") +
+          ggplot2::scale_y_continuous(
+            limits = c(-0.4 - max(anomaly_cal$anomaly), max(anomaly_cal$anomaly) + 0.4),
+            guide = ggplot2::guide_axis(check.overlap = TRUE)
+          ) +
+          ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption) +
+          ggplot2::theme_bw() +
+          lcz_theme
+
+        final_graph <-
+          graph + ggplot2::facet_grid(my_time ~ daylight, scales = "fixed") +
+          ggplot2::theme(
+            strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
+            strip.background = ggplot2::element_rect(linetype = "dotted"),
+            legend.box.spacing = ggplot2::unit(20, "pt"),
+            panel.spacing = ggplot2::unit(3, "lines")
+          )
+
+      }
+
+      if(type_plot == "bar") {
+
+        graph <-
+          ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = .data$station, y = .data$anomaly, fill = .data$anomaly >0)) +
+          ggplot2::geom_bar(stat = "identity", width = .5) +
+          ggplot2::scale_fill_manual(values = c("#E44D3A", "#4A90E2"), name = "Anomaly", labels = c("Negative", "Positive")) +
+          ggplot2::scale_y_continuous(limits = c(-0.4 - max(anomaly_cal$anomaly), max(anomaly_cal$anomaly) + 0.4)) +
+          ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90)) +
+          ggplot2::labs(title = title, x = xlab, y = ylab, caption = caption) +
+          ggplot2::theme_bw() +
+          lcz_theme
+        final_graph <-
+          graph + ggplot2::facet_grid(my_time ~ daylight, scales = "fixed") +
+          ggplot2::theme(
+            strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
+            strip.background = ggplot2::element_rect(linetype = "dotted"),
+            legend.box.spacing = ggplot2::unit(20, "pt"),
+            panel.spacing = ggplot2::unit(3, "lines")
+          )
+      }
+
+      if(type_plot == "dot") {
+
+        graph <-
+          ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = .data$station)) +
+          geom_point(ggplot2::aes(y = .data$mean_value, color = .data$anomaly), size = 5) +
+          geom_point(ggplot2::aes(y = .data$reference_value), color = "gray", size = 3) +
+          geom_segment(ggplot2::aes(x = .data$station, xend = .data$station, y = .data$reference_value, yend = .data$mean_value), linetype = "dotted") +
+          MetBrewer::scale_color_met_c(name = palette, direction = -1) +
+          ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90)) +
+          ggplot2::labs(title = title, x = xlab, y = ylab, color = legend_name, caption = caption) +
+          ggplot2::guides(
+            color = ggplot2::guide_colorbar(
+              title.position = "top",    # Move legend title to the top
+              title.hjust = 0.5,         # Center align the title
+              #barwidth = ggplot2::unit(10, "lines"),  # Set the width of the color bar
+              barheight = ggplot2::unit(15, "lines"), # Set the height of the color bar
+              ticks = TRUE,              # Show ticks on the color bar
+              ticks.linewidth = 0.8     # Control the tick line width
+            )
+          ) +
+          ggplot2::theme_bw() +
+          lcz_theme
+        final_graph <-
+          graph + ggplot2::facet_grid(my_time ~ daylight, scales = "free") +
+          ggplot2::theme(
+            strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
+            strip.background = ggplot2::element_rect(linetype = "dotted"),
+            legend.box.spacing = ggplot2::unit(20, "pt"),
+            panel.spacing = ggplot2::unit(3, "lines")
+          )
+      }
+
+      if(type_plot == "lollipop") {
+
+        graph <-
+          ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = .data$station, y = .data$anomaly, color = .data$anomaly >0)) +
+          ggplot2::geom_segment(ggplot2::aes(x = .data$station, xend = .data$station, y = 0, yend = .data$anomaly), linetype = "solid") +
+          ggplot2::geom_point(ggplot2::aes(size = base::abs(.data$anomaly))) +
+          ggplot2::scale_color_manual(values = c("#E44D3A", "#4A90E2"), labels = c("Negative", "Positive")) +
+          ggplot2::scale_y_continuous(limits = c(-0.4 - max(anomaly_cal$anomaly), max(anomaly_cal$anomaly) + 0.4)) +
+          ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90)) +
+          ggplot2::labs(title = title, x = xlab, y = ylab, color = "Anomaly", size = legend_name,caption = caption) +
+          ggplot2::theme_bw() +
+          lcz_theme
+        final_graph <-
+          graph + ggplot2::facet_grid(my_time ~ daylight, scales = "free") +
+          ggplot2::theme(
+            strip.text = ggplot2::element_text(face = "bold", hjust = 0, size = 10),
+            strip.background = ggplot2::element_rect(linetype = "dotted"),
+            legend.box.spacing = ggplot2::unit(20, "pt"),
+            panel.spacing = ggplot2::unit(3, "lines")
+          )
+      }
+
 
       if (isave == TRUE) {
         # Create a folder name using paste0

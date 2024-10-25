@@ -42,7 +42,11 @@
 #' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis
 
 
-lcz_get_parameters <- function(x, iselect = "", istack = TRUE, ishp = FALSE, isave = FALSE) {
+lcz_get_parameters <- function(x,
+                               iselect = "",
+                               istack = TRUE,
+                               ishp = FALSE,
+                               isave = FALSE) {
   # Validate inputs
   if (base::is.null(x)) {
     stop("The input must be SpatRaster object of terra package. Please, use the get_lcz_map()")
@@ -200,7 +204,7 @@ lcz_get_parameters <- function(x, iselect = "", istack = TRUE, ishp = FALSE, isa
       }
 
       file <- base::paste0(getwd(), "/", folder, "lcz_par_stack.tif")
-      raster::writeRaster(ras_stack, file, format = "GTiff", overwrite = TRUE)
+      raster::writeRaster(ras_stack, file, overwrite = TRUE)
       base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
     }
 
@@ -233,7 +237,7 @@ lcz_get_parameters <- function(x, iselect = "", istack = TRUE, ishp = FALSE, isa
         }
 
         file <- base::paste0(getwd(), "/", folder, "lcz_par_stack_select.tif")
-        raster::writeRaster(ras_stack_selec, file, format = "GTiff", overwrite = TRUE)
+        raster::writeRaster(ras_stack_selec, file, overwrite = TRUE)
         base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
       }
 
@@ -258,7 +262,7 @@ lcz_get_parameters <- function(x, iselect = "", istack = TRUE, ishp = FALSE, isa
         }
 
         file <- base::paste0(getwd(), "/", folder, "lcz_par_select.tif")
-        raster::writeRaster(ras_select_raster, file, format = "GTiff", overwrite = TRUE)
+        raster::writeRaster(ras_select_raster, file, overwrite = TRUE)
         base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
       }
 

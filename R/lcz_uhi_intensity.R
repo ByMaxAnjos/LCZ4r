@@ -15,7 +15,10 @@
 #'   \item \strong{Start date}: A string specifying the start date in either start="DD/MM/YYYY" (e.g., "1/2/1999") or "YYYY-mm-dd" format (e.g., "1999-02-01").
 #'   \item \strong{End date}: A string specifying the start date in either end="DD/MM/YYYY" (e.g., "1/2/1999") or "YYYY-mm-dd" format (e.g., "1999-02-01").
 #' }
-#' @param method Method to calculate the UHI intensity. Options include "LCZ" and "manual".
+#' @param method Method to calculate the UHI intensity. Options include:
+#' \itemize{
+#'   \item \strong{LCZ}: It automatically identifies the LCZ build types, starting from LCZ 1 and progressing to LCZ 10, to represent the urban temperature, then it starts from LCZ natural LCZ (11-16) to represent the rural temperature.
+#'   \item \strong{manual}: A character string indicating the stations as references for the urban and rural areas.
 #' @param Turban Urban station references, if the method "manual" is selected.
 #' @param Trural Rural station references, if the method "manual" is selected.
 #' @param group If TRUE urban, rural and UHI - related temperatures are grouped in the same plot.
@@ -53,11 +56,26 @@
 #' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis
 
 
-lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ..., time.freq = "hour",
-                              method = "LCZ", Turban = NULL, Trural = NULL, by = NULL, impute = NULL,
-                              group = FALSE, iplot = TRUE, isave = FALSE, save_extension = "png",
+lcz_uhi_intensity <- function(x,
+                              data_frame = "",
+                              var = "",
+                              station_id = "",
+                              ...,
+                              time.freq = "hour",
+                              method = "LCZ",
+                              Turban = NULL,
+                              Trural = NULL,
+                              by = NULL,
+                              impute = NULL,
+                              group = FALSE,
+                              iplot = TRUE,
+                              isave = FALSE,
+                              save_extension = "png",
                               ylab = "Air temperature [C]",
-                              xlab = "Time", ylab2 = "UHI", title = "", caption = "LCZ4r,2024") {
+                              xlab = "Time",
+                              ylab2 = "UHI",
+                              title = "",
+                              caption = "LCZ4r,2024") {
   # Check and validate raster inputs -----------------------------------------------
 
   if (missing(x)) {
@@ -357,9 +375,9 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
 
       final_graph <-
         ggplot2::ggplot(mydata, ggplot2::aes(x = .data$date)) +
-        ggplot2::geom_line(ggplot2::aes(y = .data$urban, color = "Urban Temperature"), alpha = 0.8, lwd = 1) +
-        ggplot2::geom_line(ggplot2::aes(y = .data$rural, color = "Rural Temperature"), alpha = 0.8, lwd = 1) +
-        ggplot2::geom_line(ggplot2::aes(y = sec$fwd(.data$uhi), color = "UHI"), lwd = 1) +
+        ggplot2::geom_line(ggplot2::aes(y = .data$urban, color = "Urban Temperature"), lwd = 1) +
+        ggplot2::geom_line(ggplot2::aes(y = .data$rural, color = "Rural Temperature"), lwd = 1) +
+        ggplot2::geom_line(ggplot2::aes(y = sec$fwd(.data$uhi), color = "UHI"), alpha = 0.5, lwd = 1) +
         ggplot2::scale_y_continuous(
           sec.axis = ggplot2::sec_axis(~ sec$rev(.), name = "UHI"),
           guide = ggplot2::guide_axis(check.overlap = TRUE)
@@ -473,9 +491,9 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
             labels = function(x) base::format(lubridate::as_datetime(x), label_format),
             guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90)
           ) +
-          ggplot2::geom_line(ggplot2::aes(y = .data$urban, color = "Urban Temperature", group = 1), alpha = 0.8, lwd = 1) +
-          ggplot2::geom_line(ggplot2::aes(y = .data$rural, color = "Rural Temperature", group = 1), alpha = 0.8, lwd = 1) +
-          ggplot2::geom_line(ggplot2::aes(y = sec$fwd(.data$uhi), color = "UHI", group = 1), lwd = 1) +
+          ggplot2::geom_line(ggplot2::aes(y = .data$urban, color = "Urban Temperature", group = 1), lwd = 1) +
+          ggplot2::geom_line(ggplot2::aes(y = .data$rural, color = "Rural Temperature", group = 1),  lwd = 1) +
+          ggplot2::geom_line(ggplot2::aes(y = sec$fwd(.data$uhi), color = "UHI", group = 1), alpha = 0.5, lwd = 1) +
           ggplot2::scale_y_continuous(
             sec.axis = ggplot2::sec_axis(~ sec$rev(.), name = ylab2),
             guide = ggplot2::guide_axis(check.overlap = TRUE)
@@ -609,9 +627,9 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
             labels = scales::date_format("%H"),
             guide = ggplot2::guide_axis(check.overlap = TRUE)
           ) +
-          ggplot2::geom_line(ggplot2::aes(y = .data$urban, color = "Urban Temperature", group = 1), alpha = 0.8, lwd = 1) +
-          ggplot2::geom_line(ggplot2::aes(y = .data$rural, color = "Rural Temperature", group = 1), alpha = 0.8, lwd = 1) +
-          ggplot2::geom_line(ggplot2::aes(y = sec$fwd(.data$uhi), color = "UHI", group = 1), lwd = 1) +
+          ggplot2::geom_line(ggplot2::aes(y = .data$urban, color = "Urban Temperature", group = 1), lwd = 1) +
+          ggplot2::geom_line(ggplot2::aes(y = .data$rural, color = "Rural Temperature", group = 1), lwd = 1) +
+          ggplot2::geom_line(ggplot2::aes(y = sec$fwd(.data$uhi), color = "UHI", group = 1), alpha = 0.5, lwd = 1) +
           ggplot2::scale_y_continuous(
             sec.axis = ggplot2::sec_axis(~ sec$rev(.), name = ylab2),
             guide = ggplot2::guide_axis(check.overlap = TRUE)
@@ -744,9 +762,9 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
           ) +
           ggplot2::scale_fill_manual(name = "", values = c("lightblue", "grey")) +
           ggplot2::scale_x_continuous(expand = c(0, 0), guide = ggplot2::guide_axis(check.overlap = TRUE)) +
-          ggplot2::geom_line(ggplot2::aes(y = .data$urban, color = "Urban Temperature", group = 1), alpha = 0.8, lwd = 1) +
-          ggplot2::geom_line(ggplot2::aes(y = .data$rural, color = "Rural Temperature", group = 1), alpha = 0.8, lwd = 1) +
-          ggplot2::geom_line(ggplot2::aes(y = sec$fwd(.data$uhi), color = "UHI", group = 1), lwd = 1) +
+          ggplot2::geom_line(ggplot2::aes(y = .data$urban, color = "Urban Temperature", group = 1), lwd = 1) +
+          ggplot2::geom_line(ggplot2::aes(y = .data$rural, color = "Rural Temperature", group = 1), lwd = 1) +
+          ggplot2::geom_line(ggplot2::aes(y = sec$fwd(.data$uhi), color = "UHI", group = 1), alpha = 0.5, lwd = 1) +
           ggplot2::scale_y_continuous(
             sec.axis = ggplot2::sec_axis(~ sec$rev(.), name = ylab2),
             guide = ggplot2::guide_axis(check.overlap = TRUE)
@@ -864,9 +882,9 @@ lcz_uhi_intensity <- function(x, data_frame = "", var = "", station_id = "", ...
         graph <-
           ggplot2::ggplot(mydata, ggplot2::aes(x = .data$date)) +
           ggplot2::scale_x_datetime(expand = c(0, 0), guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90)) +
-          ggplot2::geom_line(ggplot2::aes(y = .data$urban, color = "Urban Temperature", group = 1), alpha = 0.8, lwd = 1) +
-          ggplot2::geom_line(ggplot2::aes(y = .data$rural, color = "Rural Temperature", group = 1), alpha = 0.8, ldw = 1) +
-          ggplot2::geom_line(ggplot2::aes(y = sec$fwd(.data$uhi), color = "UHI", group = 1), lwd = 1) +
+          ggplot2::geom_line(ggplot2::aes(y = .data$urban, color = "Urban Temperature", group = 1), lwd = 1) +
+          ggplot2::geom_line(ggplot2::aes(y = .data$rural, color = "Rural Temperature", group = 1), ldw = 1) +
+          ggplot2::geom_line(ggplot2::aes(y = sec$fwd(.data$uhi), color = "UHI", group = 1), alpha = 0.5, lwd = 1) +
           ggplot2::scale_y_continuous(
             sec.axis = ggplot2::sec_axis(~ sec$rev(.), name = ylab2),
             guide = ggplot2::guide_axis(check.overlap = TRUE)

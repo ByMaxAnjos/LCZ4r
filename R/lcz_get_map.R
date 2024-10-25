@@ -113,7 +113,7 @@ lcz_get_map <- function(city = NULL, roi = NULL, isave_map = FALSE, isave_global
     roi_crs <- roi %>%
       sf::st_as_sf() %>%
       sf::st_make_valid() %>%
-      sf::st_transform(crs = "+proj=longlat +datum=WGS84 +no_defs")
+      sf::st_transform(crs = 4326)
 
     lcz_ras <- terra::crop(lcz_download, terra::ext(roi_crs))
 
