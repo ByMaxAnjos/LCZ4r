@@ -4,14 +4,14 @@ pkgdown_sha: ~
 articles:
   instalation_lcz4r_qgis: instalation_lcz4r_qgis.html
   instalation_lcz4r: instalation_lcz4r.html
-  Introd_general_LCZ4r: Introd_general_LCZ4r.html
+  Introd_genera_LCZ4r: Introd_genera_LCZ4r.html
   Introd_local_LCZ4r: Introd_local_LCZ4r.html
   local_func_anomaly: local_func_anomaly.html
   local_func_modeling: local_func_modeling.html
   local_func_time_series: local_func_time_series.html
   local_func_uhi: local_func_uhi.html
   multilingual_lcz4r_qgis: multilingual_lcz4r_qgis.html
-last_built: 2024-10-28T10:05Z
+last_built: 2024-10-28T10:17Z
 urls:
   reference: https://bymaxanjos.github.io/LCZ4r/reference
   article: https://bymaxanjos.github.io/LCZ4r/articles
