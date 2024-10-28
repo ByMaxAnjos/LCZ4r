@@ -21,7 +21,7 @@ template:
 navbar:
   type: dark
   structure:
-    left: [home, tutorials, reference]
+    left: [home, tutorials, QGIS-LCZ4r, reference]
     right: [search, github]
   components:
     home:
@@ -31,16 +31,39 @@ navbar:
     tutorials:
       text: Tutorials
       menu:
-      - text: LCZ4r General Functions
-        href: articles/Introd_general_LCZ4r.html
-      - text: LCZ4r Local Functions
-        href: articles/Introd_local_LCZ4r.html
-      - text: Install LCZ4r
+      - text: Installation
+      - text: Installing LCZ4r in RStudio
         href: articles/instalation_lcz4r.html
+      - text: '---'
+      - text: General Functions Overview
+      - text: Map, Area and Paramerters
+        href: articles/Introd_general_LCZ4r.html
+      - text: '---'
+      - text: Local Functions Overview
+      - text: Introduction to Local Functions
+        href: articles/Introd_local_LCZ4r.html
+      - text: Time Series Analysis
+        href: articles/local_func_time_series.html
+      - text: Thermal Anomalies
+        href: articles/local_func_anomaly.html
+      - text: Temperature Modeling with LCZ
+        href: articles/local_func_modeling.html
+      - text: Urban Heat Island (UHI) Analysis
+        href: articles/local_func_uhi.html
+    QGIS-LCZ4r:
+      text: QGIS-LCZ4r
+      menu:
+      - text: Installation
+      - text: Installing LCZ4r in QGIS
+        href: articles/instalation_lcz4r_qgis.html
+      - text: '---'
+      - text: Multilingual Integration
+        href: articles/multilingual_lcz4r_qgis.html
+
 reference:
 - title: "General Functions"
   desc: >
-    The following functions enable you to extract LCZ map and related parameters:
+    These functions enable you to extract LCZ maps and calculate related parameters for spatial and environmental analysis.
   contents:
   - lcz_get_map
   - lcz_get_map_euro
@@ -53,7 +76,7 @@ reference:
 
 - title: "Local Functions"
   desc: >
-    The following functions enable you to model air temperature and UHI:
+    These functions support air temperature modeling, anomaly detection, and Urban Heat Island (UHI) intensity calculations.
   contents:
   - lcz_ts
   - lcz_anomaly
@@ -62,9 +85,9 @@ reference:
   - lcz_plot_interp
   - lcz_uhi_intensity
 
-- title: "LCZ tutorials"
+- title: "LCZ Tutorials and Data Access"
   desc: >
-    The following functions enable you to acess to tutorials and data:
+    Access detailed tutorials and example data to enhance your understanding and application of the LCZ4r package.
   contents:
   - lcz_tutorial
   - lcz_data

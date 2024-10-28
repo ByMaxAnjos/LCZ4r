@@ -1,0 +1,249 @@
+---
+title: "Time Series Analysis"
+author: "Max Anjos"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+    rmarkdown::html_vignette:
+    toc: true
+    toc_float: TRUE
+    toc_depth: 2
+    number_sections: false
+    highlight: "textmate"
+    css: custom.css
+resource_files:
+  - articles/fig_local_ts_1.png
+  - articles/fig_local_ts_2.png
+  - articles/fig_local_ts_3.png
+  - articles/fig_local_ts_4.png
+  - articles/fig_local_ts_5.png
+  - articles/fig_local_ts_6.png
+  - articles/fig_local_ts_7.png
+  - articles/fig_local_ts_8.png
+  - articles/fig_local_ts_9.png
+vignette: >
+  %\VignetteIndexEntry{Time Series Analysis}
+  %\VignetteEngine{rmarkdown::render}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+##  Getting Started
+
+The `lcz_ts()` function allows you to analyze air temperature data associated with Local Climate Zones (LCZ) over time. In this tutorial, we’ll perform an hourly frequency analysis of air temperature in Berlin for the years 2019-2020 using lcz_data from the LCZ4r package.
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Get the LCZ map for your city
+lcz_map <- lcz_get_map_euro(city="Berlin")
+
+# Load sample data from LCZ4r
+data("lcz_data")
+
+```
+
+## Basic Time Series Analysis
+
+Let’s start with a basic analysis using lcz_ts() to observe hourly temperature fluctuations.
+
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+
+#Let's get monthly LCZ-air temperature time series
+lcz_ts(lcz_map, 
+       data_frame = lcz_data, 
+       var = "airT", 
+       station_id = "station",
+       time.freq = "month",
+       ylab = "Air temperature [ºC]",
+       xlab = "Date",
+       title = "LCZ - Timeseries",
+       caption = "Source: LCZ4r, 2024."
+       ) 
+```
+
+```{r echo=F, out.width = '100%', fig.align='center'}
+knitr::include_graphics("fig_local_ts_1.png")
+```
+
+## Plotting Options with plot_type
+
+The plot_type argument in lcz_ts() offers several visualizations:
+
+* *"basic_line"*: Simple line plot
+* *"faceted_line"*: Line plot with facets by LCZ or station
+* *"heatmap"*: Heatmap to visualize temporal patterns
+* *"warming_stripes"*: Stripes representing temperature variations over time
+Below are examples using each plot type.
+
+### 1. Basic Line Plot
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+
+#Daily air temperature for September of 2019,
+lcz_ts(lcz_map, 
+       data_frame = lcz_data, 
+       var = "airT", 
+       station_id = "station",
+       time.freq = "day",
+       year = 2019, month=9,
+       plot_type = "basic_line") 
+```
+
+```{r echo=F, out.width = '100%', fig.align='center'}
+knitr::include_graphics("fig_local_ts_2.png")
+```
+
+### 2. Faceted Line Plot by Station
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+#Daily air temperature from January and March of 2019 
+lcz_ts(lcz_map, data_frame = lcz_data, var = "airT", 
+       station_id = "station", time.freq = "hour",
+       year = 2019, month=1:3,
+       plot_type = "facet_line", 
+       facet="station"
+       ) 
+```
+
+```{r echo=F, out.width = '100%', fig.align='center'}
+knitr::include_graphics("fig_local_ts_3.png")
+```
+
+### 3. Heatmap of Temperature Over Time
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+#Hourly air temperature on 15th January of 2020
+lcz_ts(lcz_map, data_frame = lcz_data, var = "airT", 
+       station_id = "station", time.freq = "hour",
+       year = 2020, month=1, day=15,
+       plot_type = "heatmap", 
+       facet="LCZ"
+       ) 
+```
+
+```{r echo=F, out.width = '100%', fig.align='center'}
+knitr::include_graphics("fig_local_ts_4.png")
+```
+
+### 4. Warming Stripes
+
+```{r eval=FALSE, fig.height=7, fig.width=11, message=FALSE, warning=FALSE}
+
+#Hourly air temperature for 2020
+lcz_ts(lcz_map, data_frame = lcz_data, var = "airT", 
+       station_id = "station", time.freq = "hour", 
+       year = 2012, month = 1:12,
+       plot_type = "warming_stripes",
+       facet="LCZ"
+       )
+```
+
+```{r echo=F, out.width = '100%', fig.align='center'}
+knitr::include_graphics("fig_local_ts_5.png")
+```
+
+## Splitting Data with the "by" argument
+
+You can split data by temporal or spatial categories such as "year", "month", "season", "weekday",  "weekend",  "yearseason", and more.
+
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+#Daily air temperature by seasons of 2020
+lcz_ts(lcz_map, data_frame = lcz_data, var = "airT", 
+       station_id = "station", time.freq = "day",
+       year = 2020,
+       plot_type = "basic_line", 
+       by="season"
+       ) 
+```
+
+```{r echo=F, out.width = '100%', fig.align='center'}
+knitr::include_graphics("fig_local_ts_6.png")
+```
+
+## Dividing nighttime and daytime with "by" argument
+You can also split data by nighttime and daytime periods with by="daylight". 
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+#Diurnal cycle of air temperature on 15th January of 2020
+lcz_ts(lcz_map, data_frame = lcz_data, var = "airT", 
+       station_id = "station", time.freq = "hour",
+       year = 2020, month=1, day=15
+       plot_type = "heatmap", 
+       by="daylight"
+       ) 
+```
+
+```{r echo=F, out.width = '100%', fig.align='center'}
+knitr::include_graphics("fig_local_ts_7.png")
+```
+
+Combining daylight with months
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+#Diurnal cycle of air temperature on 15th January and July of 2020
+lcz_ts(lcz_map, data_frame = lcz_data, var = "airT", 
+       station_id = "station", time.freq = "hour",
+       year = 2020, month=c(1, 7), day=15
+       plot_type = "basic_line", 
+       by= c("daylight", "monthyear")
+       ) 
+```
+
+```{r echo=F, out.width = '100%', fig.align='center'}
+knitr::include_graphics("fig_local_ts_8.png")
+```
+
+## Smoothing Temperature Trends
+Enable smoothing by setting smooth = TRUE, which adds a generalized additive model (GAM) line to show the temperature trend.
+
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+
+#Tends of daily air temperature for 2019 and 2020 by station
+lcz_ts(lcz_map, data_frame = lcz_data, var = "airT", 
+       station_id = "station", time.freq = "hour",
+       year = 2019:2020,
+       plot_type = "basic_line", 
+       smooth= TRUE
+       ) 
+```
+
+```{r echo=F, out.width = '100%', fig.align='center'}
+knitr::include_graphics("fig_local_ts_9.png")
+```
+
+## Save plots
+To save a plot and dataframe, set isave = TRUE and specify the file type with save_extension (e.g., "png","jpeg", "svg", and "pdf"). A folder LCZ4r_output is created into PC.
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+#Save daylight plot and dataframe into PC
+lcz_ts(lcz_map, data_frame = lcz_data, var = "airT", 
+       station_id = "station", time.freq = "hour",
+       year = 2020, month=1, day=15
+       plot_type = "basic_line", by="daylight", 
+       isave=TRUE
+       ) 
+```
+
+
+## Return a dataframe as result
+
+To save return in R, set iplot = FALSE and create an object.
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+#Return daylight dataframe on 15th January of 2020
+my_output <- lcz_ts(lcz_map, data_frame = lcz_data, var = "airT", 
+       station_id = "station", time.freq = "hour",
+       year = 2020, month=1, day=15
+       plot_type = "basic_line", by="daylight", 
+       iplot=FALSE
+       ) 
+```
+
+

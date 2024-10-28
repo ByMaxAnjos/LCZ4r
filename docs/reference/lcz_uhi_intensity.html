@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">LCZ4r</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,9 +27,27 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-tutorials">Tutorials</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-tutorials">
-    <a class="dropdown-item" href="../articles/Introd_general_LCZ4r.html">LCZ4r General Functions</a>
-    <a class="dropdown-item" href="../articles/Introd_local_LCZ4r.html">LCZ4r Local Functions</a>
-    <a class="dropdown-item" href="../articles/instalation_lcz4r.html">Install LCZ4r</a>
+    <h6 class="dropdown-header" data-toc-skip>Installation</h6>
+    <a class="dropdown-item" href="../articles/instalation_lcz4r.html">Installing LCZ4r in RStudio</a>
+    <div class="dropdown-divider"></div>
+    <h6 class="dropdown-header" data-toc-skip>General Functions Overview</h6>
+    <a class="dropdown-item" href="../articles/Introd_general_LCZ4r.html">Map, Area and Paramerters</a>
+    <div class="dropdown-divider"></div>
+    <h6 class="dropdown-header" data-toc-skip>Local Functions Overview</h6>
+    <a class="dropdown-item" href="../articles/Introd_local_LCZ4r.html">Introduction to Local Functions</a>
+    <a class="dropdown-item" href="../articles/local_func_time_series.html">Time Series Analysis</a>
+    <a class="dropdown-item" href="../articles/local_func_anomaly.html">Thermal Anomalies</a>
+    <a class="dropdown-item" href="../articles/local_func_modeling.html">Temperature Modeling with LCZ</a>
+    <a class="dropdown-item" href="../articles/local_func_uhi.html">Urban Heat Island (UHI) Analysis</a>
+  </div>
+</li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-qgis-lcz-r">QGIS-LCZ4r</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-qgis-lcz-r">
+    <h6 class="dropdown-header" data-toc-skip>Installation</h6>
+    <a class="dropdown-item" href="../articles/instalation_lcz4r_qgis.html">Installing LCZ4r in QGIS</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="../articles/multilingual_lcz4r_qgis.html">Multilingual Integration</a>
   </div>
 </li>
 <li class="active nav-item">
@@ -77,6 +95,7 @@
 <span>  group <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  iplot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  isave <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  save_extension <span class="op">=</span> <span class="st">"png"</span>,</span>
 <span>  ylab <span class="op">=</span> <span class="st">"Air temperature [C]"</span>,</span>
 <span>  xlab <span class="op">=</span> <span class="st">"Time"</span>,</span>
 <span>  ylab2 <span class="op">=</span> <span class="st">"UHI"</span>,</span>
@@ -104,9 +123,12 @@
 
 
 <dt>...</dt>
-<dd><p>Additional arguments for the <code>selectBydata</code> from <code>openair</code> package. These include:</p><ul><li><p>A start date string in the form "1/2/1999" or in format "YYYY-mm-dd", e.g., "1999-02-01".</p></li>
-<li><p>A year or years to select, e.g., year = 1998:2004 to select 1998-2004 inclusive, or year = c(1998, 2004) to select 1998 and 2004.</p></li>
-<li><p>A month or months to select. Can either be numeric, e.g., month = 1:6 to select January to June, or by name, e.g., month = c("January", "December").</p></li>
+<dd><p>Additional arguments for the <code>selectByDate</code> function from the <code>openair</code> package. These arguments allow for flexible selection of specific time periods (year, month, day, hour). Examples of how to use these arguments include:</p><ul><li><p><strong>Year(s)</strong>: Numeric value(s) specifying the year(s) to select. For example, <code>year = 1998:2004</code> selects all years between 1998 and 2004 (inclusive), while <code>year = c(1998, 2004)</code> selects only the years 1998 and 2004.</p></li>
+<li><p><strong>Month(s)</strong>: Numeric or character value(s) specifying the months to select. Numeric examples: <code>month = 1:6</code> (January to June), or character examples: <code>month = c("January", "December")</code>.</p></li>
+<li><p><strong>Day(s)</strong>: Numeric value(s) specifying the days to select. For instance, <code>day = 1:30</code> selects days from 1 to 30, or <code>day = 15</code> selects only the 15th day of the month.</p></li>
+<li><p><strong>Hour(s)</strong>: Numeric value(s) specifying the hours to select. For example, <code>hour = 0:23</code> selects all hours in a day, while <code>hour = 9</code> selects only the 9th hour.</p></li>
+<li><p><strong>Start date</strong>: A string specifying the start date in either start="DD/MM/YYYY" (e.g., "1/2/1999") or "YYYY-mm-dd" format (e.g., "1999-02-01").</p></li>
+<li><p><strong>End date</strong>: A string specifying the start date in either end="DD/MM/YYYY" (e.g., "1/2/1999") or "YYYY-mm-dd" format (e.g., "1999-02-01").</p></li>
 </ul></dd>
 
 
@@ -115,7 +137,7 @@
 
 
 <dt>method</dt>
-<dd><p>Method to calculate the UHI intensity. Options include "LCZ" and "manual".</p></dd>
+<dd><p>Method to calculate the UHI intensity. Options include: LCZ and manual. The LCZ method automatically identifies the LCZ build types, starting from LCZ 1 and progressing to LCZ 10, to represent the urban temperature, then it starts from LCZ natural LCZ (11-16) to represent the rural temperature. The manual method is a character string indicating the stations as references for the urban and rural areas.</p></dd>
 
 
 <dt>Turban</dt>
@@ -144,6 +166,10 @@
 
 <dt>isave</dt>
 <dd><p>Set to <code>TRUE</code> to save all results (plot, time-series, station references) into your directory.</p></dd>
+
+
+<dt>save_extension</dt>
+<dd><p>A character string indicating the file format for saving the plot. Options include: “png”, “jpg”, “jpeg”, “tif”, “pdf”, “svg”. The default is “png”.</p></dd>
 
 
 <dt>ylab</dt>

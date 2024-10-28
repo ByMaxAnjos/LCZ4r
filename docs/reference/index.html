@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">LCZ4r</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,9 +27,27 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-tutorials">Tutorials</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-tutorials">
-    <a class="dropdown-item" href="../articles/Introd_general_LCZ4r.html">LCZ4r General Functions</a>
-    <a class="dropdown-item" href="../articles/Introd_local_LCZ4r.html">LCZ4r Local Functions</a>
-    <a class="dropdown-item" href="../articles/instalation_lcz4r.html">Install LCZ4r</a>
+    <h6 class="dropdown-header" data-toc-skip>Installation</h6>
+    <a class="dropdown-item" href="../articles/instalation_lcz4r.html">Installing LCZ4r in RStudio</a>
+    <div class="dropdown-divider"></div>
+    <h6 class="dropdown-header" data-toc-skip>General Functions Overview</h6>
+    <a class="dropdown-item" href="../articles/Introd_general_LCZ4r.html">Map, Area and Paramerters</a>
+    <div class="dropdown-divider"></div>
+    <h6 class="dropdown-header" data-toc-skip>Local Functions Overview</h6>
+    <a class="dropdown-item" href="../articles/Introd_local_LCZ4r.html">Introduction to Local Functions</a>
+    <a class="dropdown-item" href="../articles/local_func_time_series.html">Time Series Analysis</a>
+    <a class="dropdown-item" href="../articles/local_func_anomaly.html">Thermal Anomalies</a>
+    <a class="dropdown-item" href="../articles/local_func_modeling.html">Temperature Modeling with LCZ</a>
+    <a class="dropdown-item" href="../articles/local_func_uhi.html">Urban Heat Island (UHI) Analysis</a>
+  </div>
+</li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-qgis-lcz-r">QGIS-LCZ4r</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-qgis-lcz-r">
+    <h6 class="dropdown-header" data-toc-skip>Installation</h6>
+    <a class="dropdown-item" href="../articles/instalation_lcz4r_qgis.html">Installing LCZ4r in QGIS</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="../articles/multilingual_lcz4r_qgis.html">Multilingual Integration</a>
   </div>
 </li>
 <li class="active nav-item">
@@ -57,7 +75,7 @@
     <div class="section level2">
       <h2 id="general-functions">General Functions<a class="anchor" aria-label="anchor" href="#general-functions"></a></h2>
       
-      <p class="section-desc"></p><p>The following functions enable you to extract LCZ map and related parameters:</p>
+      <p class="section-desc"></p><p>These functions enable you to extract LCZ maps and calculate related parameters for spatial and environmental analysis.</p>
 
       
     </div><div id="" class="section level2">
@@ -108,7 +126,7 @@
       </dl></div><div class="section level2">
       <h2 id="local-functions">Local Functions<a class="anchor" aria-label="anchor" href="#local-functions"></a></h2>
       
-      <p class="section-desc"></p><p>The following functions enable you to model air temperature and UHI:</p>
+      <p class="section-desc"></p><p>These functions support air temperature modeling, anomaly detection, and Urban Heat Island (UHI) intensity calculations.</p>
 
       
     </div><div id="" class="section level2">
@@ -147,9 +165,9 @@
         </dt>
         <dd>Assess the Urban Heat Island Intensity</dd>
       </dl></div><div class="section level2">
-      <h2 id="lcz-tutorials">LCZ tutorials<a class="anchor" aria-label="anchor" href="#lcz-tutorials"></a></h2>
+      <h2 id="lcz-tutorials-and-data-access">LCZ Tutorials and Data Access<a class="anchor" aria-label="anchor" href="#lcz-tutorials-and-data-access"></a></h2>
       
-      <p class="section-desc"></p><p>The following functions enable you to acess to tutorials and data:</p>
+      <p class="section-desc"></p><p>Access detailed tutorials and example data to enhance your understanding and application of the LCZ4r package.</p>
 
       
     </div><div id="" class="section level2">
@@ -161,7 +179,7 @@
           
           <code><a href="lcz_tutorial.html">lcz_tutorial()</a></code> 
         </dt>
-        <dd>LCZ4r tutorials</dd>
+        <dd>LCZ4r Tutorials</dd>
       </dl><dl><dt>
           
           <code><a href="lcz_data.html">lcz_data</a></code> 

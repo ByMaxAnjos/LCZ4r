@@ -1,0 +1,42 @@
+---
+title: "Multilingual Integration"
+author: "Max Anjos"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+    rmarkdown::html_vignette:
+      code_folding: hide
+    toc: true
+    toc_float: TRUE
+    toc_depth: 2
+    number_sections: false
+    highlight: "textmate"
+    css: custom.css
+resource_files:
+  - articles/logo_qgis.png
+vignette: >
+  %\VignetteIndexEntry{Multilingual Integration}
+  %\VignetteEngine{rmarkdown::render}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Multilingual Integration in QGIS
+
+It's coming up very soon...
+
+```{r echo=F, out.width = '100%', fig.align='center'}
+knitr::include_graphics("logo_qgis.png")
+```
+
+
+
+
+
+
+

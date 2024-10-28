@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">LCZ4r</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.1.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -27,9 +27,27 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-tutorials">Tutorials</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-tutorials">
-    <a class="dropdown-item" href="../articles/Introd_general_LCZ4r.html">LCZ4r General Functions</a>
-    <a class="dropdown-item" href="../articles/Introd_local_LCZ4r.html">LCZ4r Local Functions</a>
-    <a class="dropdown-item" href="../articles/instalation_lcz4r.html">Install LCZ4r</a>
+    <h6 class="dropdown-header" data-toc-skip>Installation</h6>
+    <a class="dropdown-item" href="../articles/instalation_lcz4r.html">Installing LCZ4r in RStudio</a>
+    <div class="dropdown-divider"></div>
+    <h6 class="dropdown-header" data-toc-skip>General Functions Overview</h6>
+    <a class="dropdown-item" href="../articles/Introd_general_LCZ4r.html">Map, Area and Paramerters</a>
+    <div class="dropdown-divider"></div>
+    <h6 class="dropdown-header" data-toc-skip>Local Functions Overview</h6>
+    <a class="dropdown-item" href="../articles/Introd_local_LCZ4r.html">Introduction to Local Functions</a>
+    <a class="dropdown-item" href="../articles/local_func_time_series.html">Time Series Analysis</a>
+    <a class="dropdown-item" href="../articles/local_func_anomaly.html">Thermal Anomalies</a>
+    <a class="dropdown-item" href="../articles/local_func_modeling.html">Temperature Modeling with LCZ</a>
+    <a class="dropdown-item" href="../articles/local_func_uhi.html">Urban Heat Island (UHI) Analysis</a>
+  </div>
+</li>
+<li class="nav-item dropdown">
+  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-qgis-lcz-r">QGIS-LCZ4r</a>
+  <div class="dropdown-menu" aria-labelledby="dropdown-qgis-lcz-r">
+    <h6 class="dropdown-header" data-toc-skip>Installation</h6>
+    <a class="dropdown-item" href="../articles/instalation_lcz4r_qgis.html">Installing LCZ4r in QGIS</a>
+    <div class="dropdown-divider"></div>
+    <a class="dropdown-item" href="../articles/multilingual_lcz4r_qgis.html">Multilingual Integration</a>
   </div>
 </li>
 <li class="active nav-item">
@@ -64,11 +82,14 @@
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">lcz_cal_area</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
+<span>  plot_type <span class="op">=</span> <span class="st">"bar"</span>,</span>
 <span>  iplot <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  isave <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  save_extension <span class="op">=</span> <span class="st">"png"</span>,</span>
+<span>  show_legend <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  inclusive <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  xlab <span class="op">=</span> <span class="st">"LCZ code"</span>,</span>
-<span>  ylab <span class="op">=</span> <span class="st">"Area [square kilometer]"</span>,</span>
+<span>  ylab <span class="op">=</span> <span class="st">"Area [km2]"</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -79,35 +100,47 @@
 <dd><p>A raster SpatRaster layer containing LCZ classes.</p></dd>
 
 
+<dt>plot_type</dt>
+<dd><p>Type of plot to generate: "bar", "pie", or "donut". Default is "bar".</p></dd>
+
+
 <dt>iplot</dt>
 <dd><p>Logical, indicating whether to create a plot (default is TRUE).</p></dd>
 
 
 <dt>isave</dt>
-<dd><p>Save the plot into your directory.</p></dd>
+<dd><p>Logical, whether to save the plot to your directory (default is FALSE).</p></dd>
+
+
+<dt>save_extension</dt>
+<dd><p>File format for saving the plot. Options: "png", "jpg", "jpeg", "tif", "pdf", "svg" (default is "png").</p></dd>
+
+
+<dt>show_legend</dt>
+<dd><p>Logical. If TRUE, displays the legend on the plot. If FALSE, the legend will be hidden. Default is TRUE.</p></dd>
 
 
 <dt>inclusive</dt>
-<dd><p>Set to TRUE to a colorblind-friendly palette.</p></dd>
+<dd><p>Logical. If TRUE, use a colorblind-friendly palette. Default is FALSE.</p></dd>
 
 
 <dt>xlab</dt>
-<dd><p>x-axis name.</p></dd>
+<dd><p>Character, label for the x-axis (default is "LCZ code").</p></dd>
 
 
 <dt>ylab</dt>
-<dd><p>y-axis name.</p></dd>
+<dd><p>Character, label for the y-axis (default is "Area (km2)").</p></dd>
 
 
 <dt>...</dt>
-<dd><p>Additional arguments to modify axis, legend, and plot labels, including title, subtitle and caption.</p></dd>
+<dd><p>Additional arguments to modify axis, legend, and plot labels, including title, subtitle, and caption.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>A summary table of LCZ class areas if iplot is FALSE, otherwise, a bar plot.</p>
+<p>A summary table of LCZ class areas if plot = FALSE, otherwise, the specified plot in ggplot format.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -117,8 +150,17 @@
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span></span></span>
-<span class="r-in"><span><span class="co">#Calculate the LCZ area</span></span></span>
-<span class="r-in"><span><span class="va">my_lcz_area</span> <span class="op">&lt;-</span> <span class="fu">lcz_cal_area</span><span class="op">(</span><span class="va">my_lcz_map</span>, iplot <span class="op">=</span> <span class="cn">TRUE</span>, isave <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Calculate LCZ area and visualize as bar plot</span></span></span>
+<span class="r-in"><span><span class="fu">lcz_cal_area</span><span class="op">(</span><span class="va">my_lcz_map</span>, plot_type <span class="op">=</span> <span class="st">"bar"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Visualize as pie chart</span></span></span>
+<span class="r-in"><span><span class="fu">lcz_cal_area</span><span class="op">(</span><span class="va">my_lcz_map</span>, plot_type <span class="op">=</span> <span class="st">"pie"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Save donut chart plot</span></span></span>
+<span class="r-in"><span><span class="fu">lcz_cal_area</span><span class="op">(</span><span class="va">my_lcz_map</span>, plot_type <span class="op">=</span> <span class="st">"donut"</span>, isave <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># Return a dataframe</span></span></span>
+<span class="r-in"><span><span class="fu">lcz_cal_area</span><span class="op">(</span><span class="va">my_lcz_map</span>, plot_type <span class="op">=</span> <span class="st">"donut"</span>, iplot <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>

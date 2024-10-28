@@ -1,5 +1,5 @@
 ---
-title: "LCZ4r General Functions"
+title: "Map, Area and Paramerters"
 author: "Max Anjos"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output:
@@ -24,7 +24,7 @@ resource_files:
   - articles/fig_general_5.png
   - articles/fig_general_6.png
 vignette: >
-  %\VignetteIndexEntry{LCZ4r General Functions}
+  %\VignetteIndexEntry{Map, Area and Paramerters}
   %\VignetteEngine{rmarkdown::render}
   %\VignetteEncoding{UTF-8}
 ---
