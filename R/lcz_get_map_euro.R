@@ -116,11 +116,12 @@ lcz_get_map_euro <- function(city = NULL, roi = NULL, isave_map = FALSE, isave_e
       stop("Large Data: If you are working with very large raster datasets, consider working on a
            subset of the data to reduce the memory and processing requirements.
            You can crop a smaller region first to see if the operation succeeds.")
+    }
 
-      lcz_ras <- terra::mask(lcz_ras, terra::vect(roi_crs))
-      base::names(lcz_ras) <- "lcz"
+    lcz_ras <- terra::mask(lcz_ras, terra::vect(roi_crs))
+    base::names(lcz_ras) <- "lcz"
 
-      if (isave_map == TRUE) {
+    if (isave_map == TRUE) {
         # Create a folder name using paste0
         folder <- base::paste0("LCZ4r_output/")
 
@@ -135,7 +136,7 @@ lcz_get_map_euro <- function(city = NULL, roi = NULL, isave_map = FALSE, isave_e
         base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
       }
 
-      if (isave_euro == TRUE) {
+    if (isave_euro == TRUE) {
         # Create a folder name using paste0
         folder <- base::paste0("LCZ4r_output/")
 
@@ -150,7 +151,7 @@ lcz_get_map_euro <- function(city = NULL, roi = NULL, isave_map = FALSE, isave_e
         base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
       }
 
-      return(lcz_ras)
-    }
+    return(lcz_ras)
+
   }
 }
