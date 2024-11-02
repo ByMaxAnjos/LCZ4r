@@ -58,7 +58,8 @@ navbar:
         href: articles/instalation_lcz4r_qgis.html
       - text: '---'
       - text: Multilingual Integration
-        href: articles/multilingual_lcz4r_qgis.html
+      - text: English
+        href: articles/english_lcz4r_qgis.html
 
 reference:
 - title: "General Functions"
