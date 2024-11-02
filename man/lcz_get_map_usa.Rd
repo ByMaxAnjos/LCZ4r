@@ -2,7 +2,7 @@
 % Please edit documentation in R/lcz_get_map_usa.R
 \name{lcz_get_map_usa}
 \alias{lcz_get_map_usa}
-\title{Obtain your LCZ map from the Continental United States LCZ map}
+\title{Download your LCZ map from the Continental United States}
 \usage{
 lcz_get_map_usa(city = NULL, roi = NULL, isave_map = FALSE, isave_usa = FALSE)
 }

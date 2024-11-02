@@ -43,7 +43,7 @@ lcz_ts(
 \item \strong{Day(s)}: Numeric value(s) specifying the days to select. For instance, \code{day = 1:30} selects days from 1 to 30, or \code{day = 15} selects only the 15th day of the month.
 \item \strong{Hour(s)}: Numeric value(s) specifying the hours to select. For example, \code{hour = 0:23} selects all hours in a day, while \code{hour = 9} selects only the 9th hour.
 \item \strong{Start date}: A string specifying the start date in either start="DD/MM/YYYY" (e.g., "1/2/1999") or "YYYY-mm-dd" format (e.g., "1999-02-01").
-\item \strong{End date}: A string specifying the start date in either end="DD/MM/YYYY" (e.g., "1/2/1999") or "YYYY-mm-dd" format (e.g., "1999-02-01").
+\item \strong{End date}: A string specifying the end date in either end="DD/MM/YYYY" (e.g., "1/2/1999") or "YYYY-mm-dd" format (e.g., "1999-02-01").
 }}
 
 \item{time.freq}{Defines the time period to average to. Default is \dQuote{hour}, but includes \dQuote{day}, \dQuote{week}, \dQuote{month} or \dQuote{year}.}
@@ -87,7 +87,7 @@ This function generates a graphical representation of time series air temperatur
 \dontrun{
 # Hourly air temperature values in 2019.
 my_ts <- lcz_ts(lcz_map, df = lcz_data, var = "airT",
-                 station_id = "station", year = 2019)
+                 station_id = "station", year = 2020)
 
 }
 }

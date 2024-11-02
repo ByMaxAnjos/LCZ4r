@@ -2,7 +2,7 @@
 % Please edit documentation in R/lcz_get_map_euro.R
 \name{lcz_get_map_euro}
 \alias{lcz_get_map_euro}
-\title{Obtain your LCZ map from the European LCZ map}
+\title{Download LCZ map from the European}
 \usage{
 lcz_get_map_euro(
   city = NULL,
