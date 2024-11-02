@@ -38,15 +38,14 @@ lcz_plot_interp <- function(x,
                             ...) {
   # Validate inputs
   if (is.null(x)) {
-    stop("The input must be raster stack object of raster package. Please, use the lcz_anomaly_map() and lcz_interp_map()")
-  } else if (!is.null(x) & !inherits(x, "SpatRaster")) {
-    x <- terra::rast({{ x }})
+    stop("The input must be a SpatRaster object. Please use lcz_anomaly_map() or lcz_interp_map() to generate the input.")
+  } else if (!inherits(x, "SpatRaster")) {
+    x <- terra::rast(x)
   }
 
   if (terra::nlyr({{ x }}) > 1) {
     final_graph <- ggplot2::ggplot() +
       tidyterra::geom_spatraster(data = {{ x }}) +
-      # MetBrewer::scale_fill_met_c(name = palette, direction=direction)+
       tidyterra::scale_fill_whitebox_c(palette = palette, direction = direction) +
       ggplot2::facet_wrap(~lyr, ncol = {{ ncol }}, nrow = {{ nrow }}) +
       ggplot2::guides(fill = ggplot2::guide_colorbar(title.position = "top")) +
@@ -87,7 +86,6 @@ lcz_plot_interp <- function(x,
   } else {
     final_graph <- ggplot2::ggplot() +
       tidyterra::geom_spatraster(data = {{ x }}) +
-      # MetBrewer::scale_fill_met_c(name = palette, direction=direction)+
       tidyterra::scale_fill_whitebox_c(palette = palette, direction = direction) +
       ggplot2::guides(fill = ggplot2::guide_colorbar(title.position = "top")) +
       ggplot2::coord_sf(expand = FALSE, clip = "off") +
