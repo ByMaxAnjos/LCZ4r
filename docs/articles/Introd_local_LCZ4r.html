@@ -50,7 +50,7 @@
     <a class="dropdown-item" href="../articles/instalation_lcz4r.html">Installing LCZ4r in RStudio</a>
     <div class="dropdown-divider"></div>
     <h6 class="dropdown-header" data-toc-skip>General Functions Overview</h6>
-    <a class="dropdown-item" href="../articles/Introd_general_LCZ4r.html">Map, Area and Paramerters</a>
+    <a class="dropdown-item" href="../articles/Introd_genera_LCZ4r.html">Map, Area and Paramerters</a>
     <div class="dropdown-divider"></div>
     <h6 class="dropdown-header" data-toc-skip>Local Functions Overview</h6>
     <a class="dropdown-item" href="../articles/Introd_local_LCZ4r.html">Introduction to Local Functions</a>
@@ -99,7 +99,7 @@
       <img src="" class="logo" alt=""><h1>Introduction to Local Functions</h1>
                         <h4 data-toc-skip class="author">Max Anjos</h4>
             
-            <h4 data-toc-skip class="date">October 28, 2024</h4>
+            <h4 data-toc-skip class="date">November 02, 2024</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ByMaxAnjos/LCZ4r/blob/HEAD/vignettes/Introd_local_LCZ4r.Rmd" class="external-link"><code>vignettes/Introd_local_LCZ4r.Rmd</code></a></small>
       <div class="d-none name"><code>Introd_local_LCZ4r.Rmd</code></div>
@@ -171,15 +171,21 @@ interpolation, and more. Below is a summary of these functions:</p>
 </tr>
 </tbody>
 </table>
-<p>Tips: 1. Utilize the help(lcz_*) function to access detailed
-documentation for each LCZ4r function. For example, to learn about the
-lcz_ts function, type help(“lcz_ts”) in the console. 2. Each LCZ4r
-function supports imputation for handling missing values within data
-frames. For more information on imputation methods, refer to the
-“impute” argument in the documentation of each function.</p>
 </div>
 <div class="section level2">
-<h2 id="data-input-requirements">Data Input Requirements<a class="anchor" aria-label="anchor" href="#data-input-requirements"></a>
+<h2 id="tips">💡 Tips:<a class="anchor" aria-label="anchor" href="#tips"></a>
+</h2>
+<ol style="list-style-type: decimal">
+<li>Utilize the help(lcz_*) function to access detailed documentation
+for each LCZ4r function. For example, to learn about the lcz_ts
+function, type help(“lcz_ts”) in the console.</li>
+<li>Each LCZ4r function supports imputation for handling missing values
+within data frames. For more information on imputation methods, refer to
+the “impute” argument in the documentation of each function.</li>
+</ol>
+</div>
+<div class="section level2">
+<h2 id="data-input-requirements">Data input requirements<a class="anchor" aria-label="anchor" href="#data-input-requirements"></a>
 </h2>
 <p>To ensure smooth operation of the local functions, input data should
 be structured as a data frame with the following columns:</p>
@@ -213,40 +219,121 @@ can load with the following command:</p>
 <p><img src="fig_local_1.png" width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2">
+<h2 id="import-your-data">Import your data<a class="anchor" aria-label="anchor" href="#import-your-data"></a>
+</h2>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"data.table"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#Load data from your PC</span></span>
+<span><span class="va">my_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="st">"PC/path/file_name.csv"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#Check data structure out</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">my_data</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
 <h2 id="customizing-local-functions-in-lcz4r">Customizing Local Functions in LCZ4r<a class="anchor" aria-label="anchor" href="#customizing-local-functions-in-lcz4r"></a>
 </h2>
 <p>You can further customize the Local Functions to suit specific
 analysis needs:</p>
-<p><strong>1. Flexibility time selection</strong> LCZ4r provides options
-to filter data by specific years, months, and days to narrow down your
-analysis period. For example, you can:</p>
-<ol style="list-style-type: decimal">
-<li><p>Select a range of years (e.g., 1998:2004) or specific years
-(e.g., c(1998, 2004)).</p></li>
-<li><p>Filter by month, either by numeric values (e.g., 1:6 for January
-to June) or by names (e.g., c(“January”, “December”)).</p></li>
-<li><p>Pinpoint a specific date, such as September 1, 2019, by setting
-the <em>year</em>, <em>month</em>, <em>day</em> and <em>hour</em> as
-arguments.</p></li>
-<li><p>Pinpoint a specific period, by setting <em>start</em>=1/9/1986
-and <em>end</em>=1/9/2024, as arguments.</p></li>
-</ol>
+<div class="section level3">
+<h3 id="flexibility-time-selection">
+<strong>1. Flexibility time selection</strong><a class="anchor" aria-label="anchor" href="#flexibility-time-selection"></a>
+</h3>
+<p>The Local Functions have an argument <em>…</em> that provides options
+to filter data by specific years, months, days, and hours to narrow down
+your analysis period. Examples of how to use these arguments
+include:</p>
+<ul>
+<li><p><strong>Year(s)</strong>: Numeric value(s) specifying the year(s)
+to select. For example, year = 1998:2004 selects all years between 1998
+and 2004 (inclusive), while year = c(1998, 2004) selects only the years
+1998 and 2004.</p></li>
+<li><p><strong>Month(s)</strong>: Numeric or character value(s)
+specifying the months to select. Numeric examples: month = 1:6 (January
+to June), or character examples: month = c(“January”,
+“December”).</p></li>
+<li><p><strong>Day(s)</strong>: Numeric value(s) specifying the days to
+select. For instance, day = 1:30 selects days from 1 to 30, or day = 15
+selects only the 15th day of the month.</p></li>
+<li><p><strong>Hour(s)</strong>: Numeric value(s) specifying the hours
+to select. For example, hour = 0:23 selects all hours in a day, while
+hour = 9 selects only the 9th hour.</p></li>
+<li><p><strong>Start date</strong>: A string specifying the start date
+in either start=“DD/MM/YYYY” (e.g., “1/2/1999”) or “YYYY-mm-dd” format
+(e.g., “1999-02-01”).</p></li>
+<li><p><strong>End date</strong>: A string specifying the end date in
+either end=“DD/MM/YYYY” (e.g., “1/2/1999”) or “YYYY-mm-dd” format (e.g.,
+“1999-02-01”).</p></li>
+</ul>
+<p><strong>Examples</strong></p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#Select a range of years (e.g., 1998:2004) or specific years (e.g., c(1998, 2004)).</span></span>
+<span><span class="fu"><a href="../reference/lcz_ts.html">lcz_ts</a></span><span class="op">(</span></span>
+<span>  <span class="va">lcz_map</span>,</span>
+<span>  year<span class="op">=</span><span class="fl">1998</span><span class="op">:</span><span class="fl">2004</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#Filter by month, either by numeric values (e.g., 1:6 for January to June) or by names (e.g., c("January", "December")).</span></span>
+<span><span class="fu">lcz_anomlay</span><span class="op">(</span></span>
+<span>  <span class="va">lcz_map</span>,</span>
+<span>  year<span class="op">=</span><span class="fl">2012</span>, month<span class="op">=</span><span class="fl">9</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Pinpoint a specific date, such as September 1, 2019, by setting the *year*, *month*, *day*, as arguments.</span></span>
+<span><span class="fu"><a href="../reference/lcz_interp_map.html">lcz_interp_map</a></span><span class="op">(</span></span>
+<span>  <span class="va">lcz_map</span>,</span>
+<span>  year<span class="op">=</span><span class="fl">2012</span>, month<span class="op">=</span><span class="fl">9</span>, day<span class="op">=</span><span class="fl">1</span> </span>
+<span><span class="op">)</span></span>
+<span><span class="co"># For a specific hour.</span></span>
+<span><span class="fu">lcz_interp_map_anomaly</span><span class="op">(</span></span>
+<span>  <span class="va">lcz_map</span>,</span>
+<span>  year<span class="op">=</span><span class="fl">2012</span>, month<span class="op">=</span><span class="fl">9</span>, day<span class="op">=</span><span class="fl">1</span>, hour<span class="op">=</span><span class="fl">5</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#Pinpoint a specific period, by setting *start*=1/9/1986 and *end*=1/9/2024, as arguments.</span></span>
+<span><span class="fu"><a href="../reference/lcz_uhi_intensity.html">lcz_uhi_intensity</a></span><span class="op">(</span></span>
+<span>  <span class="va">lcz_map</span>,</span>
+<span>  var <span class="op">=</span> <span class="st">"airT"</span>, </span>
+<span>  station_id <span class="op">=</span> <span class="st">"station"</span>,</span>
+<span>  start<span class="op">=</span><span class="st">"1/9/2019"</span>, end<span class="op">=</span><span class="st">"30/10/2019"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
 <p>For more information, see the <a href="https://bookdown.org/david_carslaw/openair/sections/utilities/utility-functions.html#sec-selectByDate" class="external-link">utility
 functions from the openair package</a>.</p>
 <p><strong>2. Splitting LCZ time series by temporal window or
-site</strong> You can segment the LCZ time series data using the
-<em>by</em> argument, allowing for analysis across different temporal
-windows or sites. Available split options include:</p>
-<ol style="list-style-type: decimal">
-<li><p>Temporal segments: “year”, “season”, “seasonyear”, “month”,
-“monthyear”, “weekday”, “weekend”.</p></li>
-<li><p>Daylight split: “daylight”, which divides data into daytime and
-nighttime periods.</p></li>
-<li><p>You can use also c(“daylight”, “month”), c(“daylight”,
-““season”)</p></li>
-</ol>
+site</strong></p>
+<p>You can segment the LCZ time series data using the <em>by</em>
+argument, allowing for analysis across different temporal windows or
+sites. Available split options include:</p>
+<ul>
+<li><ol style="list-style-type: decimal">
+<li>Temporal segments: “year”, “season”, “seasonyear”, “month”,
+“monthyear”, “weekday”, “weekend”.</li>
+</ol></li>
+<li><ol start="2" style="list-style-type: decimal">
+<li>Daylight split: “daylight”, which divides data into daytime and
+nighttime periods.</li>
+</ol></li>
+<li><ol start="3" style="list-style-type: decimal">
+<li>You can use also c(“daylight”, “month”), c(“daylight”,
+““season”)</li>
+</ol></li>
+</ul>
 <p>For further details, refer to the <a href="https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option" class="external-link">type
 in openair package:</a></p>
+</div>
+</div>
+<div class="section level2">
+<h2 id="have-feedback-or-suggestions">Have feedback or suggestions?<a class="anchor" aria-label="anchor" href="#have-feedback-or-suggestions"></a>
+</h2>
+<p>Do you have an idea for improvement or did you spot a mistake? We’d
+love to hear from you! Click the button below to create a new issue
+(Github) and share your feedback or suggestions directly with us.</p>
+<button type="button" class="btn" style="background-color: #008000; color: white; padding: .25rem .5rem; font-size: .75rem; border: none; border-radius: .25rem;">
+<a href="https://github.com/ByMaxAnjos/LCZ4r/issues/new" style="text-decoration: none; color: white;" class="external-link">
+Open an issue in the Github repository </a>
+</button>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

@@ -43,8 +43,7 @@ Imports:
     automap (>= 1.1.9),
     gstat (>= 2.1.0),
     MetBrewer (>= 0.2.0),
-    lubridate (>= 1.9.2),
-    interp (>= 3.5.0)
+    lubridate (>= 1.9.2)
 Suggests:
     knitr,
     tidyr,

@@ -27,19 +27,10 @@ The **LCZ4r** is a comprehensive toolkit, including the following functions:
 * `lcz_plot_interp()`  Visualize LCZ Interpolation
 * `lcz_uhi_intensity()`  Assess LCZ for Urban Heat Island Intensity
 
-## Have feedback or suggestions?
-Do you have an idea for improvement or did you spot a mistake? We'd love to hear from you! Click the button below to create a new issue (Github) and share your feedback or suggestions directly with us.
-
-<button type="button" class="btn" style="background-color: #007BFF; color: white; padding: .25rem .5rem; font-size: .75rem; border: none; border-radius: .25rem;">
-  <a href='https://github.com/ByMaxAnjos/LCZ4r/issues/new' style="text-decoration: none; color: white;">
-    Open an issue in the Github repository
-  </a>
-</button>
 
 ## 🗃️ Instalation 
 
 To [Install to the LCZ4r](https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r.html) use the development version on GitHub.
-
 
 ## Function types and tutorials 
 
@@ -84,4 +75,13 @@ Please feel free to contact us if you have any questions or suggestions by email
 * Demuzere, M., Bechtel, B., Middel, A., & Mills, G. (2019). Mapping Europe into local climate zones. PLOS ONE, 14(4), e0214474 [DOI](https://doi.org/10.1371/journal.pone.0214474)
 * Demuzere, M., Hankey, S., Mills, G., Zhang, W., Lu, T., & Bechtel, B. (2020). Combining expert and crowd-sourced training data to map urban form and functions for the continental US. Scientific Data, 7(1), 264 [DOI](https://doi.org/10.1038/s41597-020-00605-z)
 * Demuzere, M., Kittner, J., Martilli, A., Mills, G., Moede, C., Stewart, I. D., van Vliet, J., and Bechtel, B. (2022). A global map of Local Climate Zones to support earth system modelling and urban scale environmental science, Earth Syst. Sci. Data 14(8) 3835-3873. [DOI](https://doi.org/10.5194/essd-14-3835-2022)
+
+## Have feedback or suggestions?
+Do you have an idea for improvement or did you spot a mistake? We'd love to hear from you! Click the button below to create a new issue (Github) and share your feedback or suggestions directly with us.
+
+<button type="button" class="btn" style="background-color: #008000; color: white; padding: .25rem .5rem; font-size: .75rem; border: none; border-radius: .25rem;">
+  <a href='https://github.com/ByMaxAnjos/LCZ4r/issues/new' style="text-decoration: none; color: white;">
+    Open an issue in the Github repository
+  </a>
+</button>
 

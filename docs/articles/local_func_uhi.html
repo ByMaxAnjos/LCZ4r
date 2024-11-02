@@ -50,7 +50,7 @@
     <a class="dropdown-item" href="../articles/instalation_lcz4r.html">Installing LCZ4r in RStudio</a>
     <div class="dropdown-divider"></div>
     <h6 class="dropdown-header" data-toc-skip>General Functions Overview</h6>
-    <a class="dropdown-item" href="../articles/Introd_general_LCZ4r.html">Map, Area and Paramerters</a>
+    <a class="dropdown-item" href="../articles/Introd_genera_LCZ4r.html">Map, Area and Paramerters</a>
     <div class="dropdown-divider"></div>
     <h6 class="dropdown-header" data-toc-skip>Local Functions Overview</h6>
     <a class="dropdown-item" href="../articles/Introd_local_LCZ4r.html">Introduction to Local Functions</a>
@@ -99,7 +99,7 @@
       <img src="" class="logo" alt=""><h1>Urban Heat Island (UHI) Analysis</h1>
                         <h4 data-toc-skip class="author">Max Anjos</h4>
             
-            <h4 data-toc-skip class="date">October 28, 2024</h4>
+            <h4 data-toc-skip class="date">November 02, 2024</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ByMaxAnjos/LCZ4r/blob/HEAD/vignettes/local_func_uhi.Rmd" class="external-link"><code>vignettes/local_func_uhi.Rmd</code></a></small>
       <div class="d-none name"><code>local_func_uhi.Rmd</code></div>
@@ -108,39 +108,103 @@
     
     
 <div class="section level2">
-<h2 id="assess-lcz-for-urban-heat-island-intensity">Assess LCZ for Urban Heat Island Intensity<a class="anchor" aria-label="anchor" href="#assess-lcz-for-urban-heat-island-intensity"></a>
+<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
 </h2>
 <p>The <code><a href="../reference/lcz_uhi_intensity.html">lcz_uhi_intensity()</a></code> function is designed to
 calculate the Urban Heat Island (UHI) intensity based on air temperature
-measurements and Local Climate Zones (LCZ). It provides two methods to
-calculate UHI intensity (UHII): LCZ and manual. In the LCZ method, the
-functions automatically identifies the LCZ build types, starting from
-LCZ 1 and progressing to LCZ 10, to represent the urban temperature,
-whilst it starts from LCZ natural LCZ (11-16) to represent the rural
-temperature. In the manual method, users have the freedom to select
-stations as references for the urban and rural areas.</p>
+measurements and Local Climate Zones (LCZ).</p>
+<p>This guide demonstrates how to use the lcz_uhi_intensity() function
+to calculate and analyze UHI intensity using LCZ classes. The function
+supports two calculation methods:</p>
+<ul>
+<li><ol style="list-style-type: decimal">
+<li>
+<strong>LCZ Method</strong>: Automatically identifies the LCZ build
+types, starting from LCZ 1 and progressing to LCZ 10, to represent the
+urban temperature, whilst it starts from LCZ natural LCZ (11-16) to
+represent the rural temperature</li>
+</ol></li>
+<li><ol start="2" style="list-style-type: decimal">
+<li>
+<strong>Manual Method</strong>: Allows users have the freedom to
+select stations as references for the urban and rural areas.</li>
+</ol></li>
+</ul>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Get the LCZ map for your city</span></span>
+<span><span class="va">lcz_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lcz_get_map_euro.html">lcz_get_map_euro</a></span><span class="op">(</span>city<span class="op">=</span><span class="st">"Berlin"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Load sample data from LCZ4r</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"lcz_data"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="uhi-time-series">UHI time series<a class="anchor" aria-label="anchor" href="#uhi-time-series"></a>
+</h2>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
 <span><span class="co">#Calculate hourly UHI intensity by months of 2019</span></span>
 <span><span class="fu"><a href="../reference/lcz_uhi_intensity.html">lcz_uhi_intensity</a></span><span class="op">(</span><span class="va">lcz_map</span>, data_frame <span class="op">=</span> <span class="va">lcz_data</span>, </span>
 <span>       var <span class="op">=</span> <span class="st">"airT"</span>, station_id <span class="op">=</span> <span class="st">"station"</span>,</span>
 <span>       time.freq <span class="op">=</span> <span class="st">"hour"</span>, </span>
-<span>       group <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>       method <span class="op">=</span> <span class="st">"LCZ"</span>,</span>
-<span>       year <span class="op">=</span> <span class="fl">2019</span><span class="op">:</span><span class="fl">2020</span>,</span>
+<span>       year <span class="op">=</span> <span class="fl">2019</span>,</span>
 <span>       by <span class="op">=</span> <span class="st">"month"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="fig_local_8.png" width="100%" style="display: block; margin: auto;"></p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<p><img src="fig_local_uhi_1.png" width="100%" style="display: block; margin: auto;"></p>
+</div>
+<div class="section level2">
+<h2 id="uhi-seasonality">UHI seasonality<a class="anchor" aria-label="anchor" href="#uhi-seasonality"></a>
+</h2>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span></span>
-<span><span class="co">#Calculate hourly UHI intensity by daytime and nighttime</span></span>
+<span><span class="co">#Calculate hourly UHI intensity by season of 2019, including the urban and rural temperatures</span></span>
 <span><span class="fu"><a href="../reference/lcz_uhi_intensity.html">lcz_uhi_intensity</a></span><span class="op">(</span><span class="va">lcz_map</span>, data_frame <span class="op">=</span> <span class="va">lcz_data</span>, </span>
 <span>       var <span class="op">=</span> <span class="st">"airT"</span>, station_id <span class="op">=</span> <span class="st">"station"</span>,</span>
 <span>       time.freq <span class="op">=</span> <span class="st">"hour"</span>, </span>
-<span>       group <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>       method <span class="op">=</span> <span class="st">"LCZ"</span>,</span>
+<span>       year <span class="op">=</span> <span class="fl">2019</span>,</span>
+<span>       by <span class="op">=</span> <span class="st">"season"</span>,</span>
+<span>       group <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p><img src="fig_local_uhi_2.png" width="100%" style="display: block; margin: auto;"></p>
+</div>
+<div class="section level2">
+<h2 id="uhi-daytime-and-nighttime">UHI daytime and nighttime<a class="anchor" aria-label="anchor" href="#uhi-daytime-and-nighttime"></a>
+</h2>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co">#Calculate diurnal cycle of UHI intensity</span></span>
+<span><span class="fu"><a href="../reference/lcz_uhi_intensity.html">lcz_uhi_intensity</a></span><span class="op">(</span><span class="va">lcz_map</span>, data_frame <span class="op">=</span> <span class="va">lcz_data</span>, </span>
+<span>       var <span class="op">=</span> <span class="st">"airT"</span>, station_id <span class="op">=</span> <span class="st">"station"</span>,</span>
+<span>       time.freq <span class="op">=</span> <span class="st">"hour"</span>, </span>
 <span>       method <span class="op">=</span> <span class="st">"LCZ"</span>,</span>
 <span>       year <span class="op">=</span> <span class="fl">2019</span>, month <span class="op">=</span> <span class="fl">2</span>, day <span class="op">=</span> <span class="fl">6</span>,</span>
-<span>       by <span class="op">=</span> <span class="st">"daylight"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="fig_local_9.png" width="100%" style="display: block; margin: auto;"></p>
+<span>       by <span class="op">=</span> <span class="st">"daylight"</span>,</span>
+<span>       group <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p><img src="fig_local_uhi_3.png" width="100%" style="display: block; margin: auto;"></p>
+<p>Using the manual method to calculate the UHI intensity</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="co">#Calculate diurnal cycle of UHI intensity by Feb and Jul of 2019 using the manual method</span></span>
+<span><span class="fu"><a href="../reference/lcz_uhi_intensity.html">lcz_uhi_intensity</a></span><span class="op">(</span><span class="va">lcz_map</span>, data_frame <span class="op">=</span> <span class="va">lcz_data</span>, </span>
+<span>       var <span class="op">=</span> <span class="st">"airT"</span>, station_id <span class="op">=</span> <span class="st">"station"</span>,</span>
+<span>       time.freq <span class="op">=</span> <span class="st">"hour"</span>, </span>
+<span>       year <span class="op">=</span> <span class="fl">2019</span>, month <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">7</span><span class="op">)</span>, day <span class="op">=</span> <span class="fl">6</span>,</span>
+<span>       method <span class="op">=</span> <span class="st">"manual"</span>,</span>
+<span>       Turban <span class="op">=</span> <span class="st">"bamberger"</span>,</span>
+<span>       Trural <span class="op">=</span> <span class="st">"airporttxl"</span>,</span>
+<span>       by <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"daylight"</span>, <span class="st">"month"</span><span class="op">)</span>,</span>
+<span>       group <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p><img src="fig_local_uhi_4.png" width="100%" style="display: block; margin: auto;"></p>
+</div>
+<div class="section level2">
+<h2 id="have-feedback-or-suggestions">Have feedback or suggestions?<a class="anchor" aria-label="anchor" href="#have-feedback-or-suggestions"></a>
+</h2>
+<p>Do you have an idea for improvement or did you spot a mistake? We’d
+love to hear from you! Click the button below to create a new issue
+(Github) and share your feedback or suggestions directly with us.</p>
+<button type="button" class="btn" style="background-color: #008000; color: white; padding: .25rem .5rem; font-size: .75rem; border: none; border-radius: .25rem;">
+<a href="https://github.com/ByMaxAnjos/LCZ4r/issues/new" style="text-decoration: none; color: white;" class="external-link">
+Open an issue in the Github repository </a>
+</button>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>
