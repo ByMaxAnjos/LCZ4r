@@ -14,7 +14,7 @@ The [LCZ4r package](https://github.com/ByMaxAnjos/LCZ4r) offers a suite of funct
 The **LCZ4r** is a comprehensive toolkit, including the following functions: 
 
 * `lcz_get_map()`  Download your LCZ map from global dataset
-* `lcz_get_map_euro()`  Download your LCZ map from European dataset
+* `lcz_get_map_euro()` Download your LCZ map from European dataset
 * `lcz_get_map_usa()`  Download your LCZ map from Continental United States dataset
 * `lcz_plot_map()`  Visualize the LCZ map 
 * `lcz_cal_area()`  Calculate LCZ areas 

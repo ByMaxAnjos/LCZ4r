@@ -40,7 +40,7 @@
 #' \dontrun{
 #' # Hourly air temperature values in 2019.
 #' my_ts <- lcz_ts(lcz_map, df = lcz_data, var = "airT",
-#'                  station_id = "station", year = 2019)
+#'                  station_id = "station", year = 2020)
 #'
 #' }
 #' @importFrom rlang .data

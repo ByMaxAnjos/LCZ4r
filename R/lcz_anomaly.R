@@ -44,7 +44,7 @@
 #' \dontrun{
 #' # Hourly air temperature values in 2019.
 #' my_res <- lcz_anomaly(lcz_map, data_frame = lcz_data, var = "airT",
-#'                        station_id = "station", year = 2019)
+#'                        station_id = "station", year = 2020)
 #' }
 #' @importFrom rlang .data
 #'
