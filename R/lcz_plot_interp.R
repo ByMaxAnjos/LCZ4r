@@ -16,16 +16,10 @@
 #' @export
 #'
 #' @examples
-#'
-#' # Interpol your air temperature
-#' # lcz_plot_interp(my_interp_map, sp.res = 100, tp.res = "hour",
-#' #                 year = 2019, month= 2, day = 6, hour = 5,
-#' #                 caption = "LCZ4r, 2024", fill = "Degree Celsius")
-#'
-#' # Plot multiple interpolated rasters
-#' # lcz_plot_interp(my_interp_map, sp.res = 100, tp.res = "hour",
-#' #                 year = 2019, month= 2, day = 6, by = "daylight",
-#' #                 caption = "LCZ4r, 2024", fill = "Degree Celsius")
+#' \dontrun{
+#'  # Interpol your air temperature
+#'  lcz_plot_interp(my_interp_map)
+#'  }
 #'
 #' @importFrom rlang .data
 #'
