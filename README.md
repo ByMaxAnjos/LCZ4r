@@ -13,9 +13,9 @@ The [LCZ4r package](https://github.com/ByMaxAnjos/LCZ4r) offers a suite of funct
 
 The **LCZ4r** is a comprehensive toolkit, including the following functions: 
 
-* `lcz_get_map()`  Obtain your LCZ map from Global LCZ map
-* `lcz_get_map_euro()`  Obtain your LCZ map from European LCZ map
-* `lcz_get_map_usa()`  Obtain your LCZ map from Continental United States LCZ map
+* `lcz_get_map()`  Download your LCZ map from global dataset
+* `lcz_get_map_euro()`  Download your LCZ map from European dataset
+* `lcz_get_map_usa()`  Download your LCZ map from Continental United States dataset
 * `lcz_plot_map()`  Visualize the LCZ map 
 * `lcz_cal_area()`  Calculate LCZ areas 
 * `lcz_get_parameters()`  Retrieve LCZ parameters
@@ -27,7 +27,16 @@ The **LCZ4r** is a comprehensive toolkit, including the following functions:
 * `lcz_plot_interp()`  Visualize LCZ Interpolation
 * `lcz_uhi_intensity()`  Assess LCZ for Urban Heat Island Intensity
 
-## Instalation 
+## Have feedback or suggestions?
+Do you have an idea for improvement or did you spot a mistake? We'd love to hear from you! Click the button below to create a new issue (Github) and share your feedback or suggestions directly with us.
+
+<button type="button" class="btn" style="background-color: #007BFF; color: white; padding: .25rem .5rem; font-size: .75rem; border: none; border-radius: .25rem;">
+  <a href='https://github.com/ByMaxAnjos/LCZ4r/issues/new' style="text-decoration: none; color: white;">
+    Open an issue in the Github repository
+  </a>
+</button>
+
+## 🗃️ Instalation 
 
 To [Install to the LCZ4r](https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r.html) use the development version on GitHub.
 
@@ -49,15 +58,15 @@ We highly recommend that users explore the following tutorials to gain a deeper 
 
 The development of the package R **LCZ4r** has been led by [Dr. Max Anjos](https://www.researchgate.net/profile/Max-Anjos/research) and joined by:
 
-–> Dr.Fred Meier, Chair of Climatology, Institute of Ecology, Technische Universität Berlin.
+* –> **Dr.Fred Meier**, Chair of Climatology, Institute of Ecology, Technische Universität Berlin.
 
-–> Dr. Francisco Castelhano, Center for Climate Crisis Studies, Department of Geography, Federal University of Rio Grande do Norte, Brazil.
+* –> **Dr. Francisco Castelhano**, Center for Climate Crisis Studies, Department of Geography, Federal University of Rio Grande do Norte, Brazil.
 
-–> Dayvid Carlos de Medeiros, Center for Climate Crisis Studies, Department of Geography, Federal University of Rio Grande do Norte, Brazil.
+* –> **Dayvid Carlos de Medeiros**, Center for Climate Crisis Studies, Department of Geography, Federal University of Rio Grande do Norte, Brazil.
 
-–> Antônio Campos Neto, Center for Climate Crisis Studies, Department of Geography, Federal University of Rio Grande do Norte, Brazil.
+* –> **Antônio Campos Neto**, Center for Climate Crisis Studies, Department of Geography, Federal University of Rio Grande do Norte, Brazil.
 
-–> Jonatha Lima Moura, Center for Climate Crisis Studies, Department of Geography, Federal University of Rio Grande do Norte, Brazil.
+* –> **Jonatha Lima Moura**, Center for Climate Crisis Studies, Department of Geography, Federal University of Rio Grande do Norte, Brazil.
 
 
 ### Funding
@@ -70,9 +79,9 @@ Please feel free to contact us if you have any questions or suggestions by email
 
 ### Inspiration
 
-* Stewart, I., and T. Oke, 2012: Local climate zones for urban temperature studies. Bull. Amer. Meteor. Soc., 93, 1879–1900[DOI](https://doi.org/10.1175/BAMS-D-11-00019.1)
-* Ching, J., Mills, G., Bechtel, B., See, L., Feddema, J., Wang, X., … Theeuwes, N. (2018). WUDAPT: An Urban Weather, Climate, and Environmental Modeling Infrastructure for the Anthropocene. Bulletin of the American Meteorological Society, 99(9), 1907–1924[DOI](https://doi.org/10.1175/BAMS-D-16-0236.1)
-* Demuzere, M., Bechtel, B., Middel, A., & Mills, G. (2019). Mapping Europe into local climate zones. PLOS ONE, 14(4), e0214474[DOI](https://doi.org/10.1371/journal.pone.0214474)
-* Demuzere, M., Hankey, S., Mills, G., Zhang, W., Lu, T., & Bechtel, B. (2020). Combining expert and crowd-sourced training data to map urban form and functions for the continental US. Scientific Data, 7(1), 264[DOI](https://doi.org/10.1038/s41597-020-00605-z)
-* Demuzere, M., Kittner, J., Martilli, A., Mills, G., Moede, C., Stewart, I. D., van Vliet, J., and Bechtel, B. (2022). A global map of Local Climate Zones to support earth system modelling and urban scale environmental science, Earth Syst. Sci. Data 14(8) 3835-3873.[DOI](https://doi.org/10.5194/essd-14-3835-2022)
+* Stewart, I., and T. Oke, 2012: Local climate zones for urban temperature studies. Bull. Amer. Meteor. Soc., 93, 1879–1900 [DOI](https://doi.org/10.1175/BAMS-D-11-00019.1)
+* Ching, J., Mills, G., Bechtel, B., See, L., Feddema, J., Wang, X., … Theeuwes, N. (2018). WUDAPT: An Urban Weather, Climate, and Environmental Modeling Infrastructure for the Anthropocene. Bulletin of the American Meteorological Society, 99(9), 1907–1924 [DOI](https://doi.org/10.1175/BAMS-D-16-0236.1)
+* Demuzere, M., Bechtel, B., Middel, A., & Mills, G. (2019). Mapping Europe into local climate zones. PLOS ONE, 14(4), e0214474 [DOI](https://doi.org/10.1371/journal.pone.0214474)
+* Demuzere, M., Hankey, S., Mills, G., Zhang, W., Lu, T., & Bechtel, B. (2020). Combining expert and crowd-sourced training data to map urban form and functions for the continental US. Scientific Data, 7(1), 264 [DOI](https://doi.org/10.1038/s41597-020-00605-z)
+* Demuzere, M., Kittner, J., Martilli, A., Mills, G., Moede, C., Stewart, I. D., van Vliet, J., and Bechtel, B. (2022). A global map of Local Climate Zones to support earth system modelling and urban scale environmental science, Earth Syst. Sci. Data 14(8) 3835-3873. [DOI](https://doi.org/10.5194/essd-14-3835-2022)
 

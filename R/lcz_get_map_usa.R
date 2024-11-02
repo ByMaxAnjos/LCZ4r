@@ -1,4 +1,4 @@
-#' Obtain your LCZ map from the Continental United States LCZ map
+#' Download your LCZ map from the Continental United States
 #'
 #' This function retrieves the Local Climate Zone (LCZ) CONUS LCZ mapping dataset
 #' created by Demuzere et al. (2020) and available at https://doi.org/10.1038/s41597-020-00605-z.

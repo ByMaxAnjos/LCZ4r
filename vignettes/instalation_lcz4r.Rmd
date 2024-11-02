@@ -1,5 +1,5 @@
 ---
-title: "Install LCZ4r and input data requirements"
+title: "Install LCZ4r in RStudio"
 author: "Max Anjos"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output:
@@ -14,7 +14,7 @@ output:
 resource_files:
   - articles/logo_qgis.png
 vignette: >
-  %\VignetteIndexEntry{Install LCZ4r and input data requirements}
+  %\VignetteIndexEntry{Install LCZ4r in RStudio}
   %\VignetteEngine{rmarkdown::render}
   %\VignetteEncoding{UTF-8}
 ---
@@ -26,7 +26,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-## Installation in R
+## 🗃️ Installation in R
 
 To install **R package LCZ4r** LCZ4r use the development version on GitHub with latest features. 
 

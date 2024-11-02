@@ -1,4 +1,4 @@
-#' Obtain your LCZ map from the European LCZ map
+#' Download LCZ map from the European
 #'
 #' This function retrieves the Local Climate Zone (LCZ) European mapping dataset
 #' created by Demuzere et al. (2019) and available at https://doi.org/10.1371/journal.pone.0214474.
