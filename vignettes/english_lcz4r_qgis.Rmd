@@ -28,7 +28,7 @@ knitr::opts_chunk$set(
 
 ## 🛠 Download LCZ4r-QGIS plugin
 
-Download both the General and Local Functions R scripts for QGIS integration - [Download as zip file](https://github.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/blob/master/scripts/English_LCZ4r.zip)
+Download both the General and Local Functions R scripts for QGIS integration - [Download as zip file](https://github.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/raw/refs/heads/master/scripts/English_LCZ4r.zip)
 
 Level: **Human Translation**
 All functions and their corresponding documentation of the LCZ4r package were translated manually by experts familiar with Climatology, LCZ and GIS.
