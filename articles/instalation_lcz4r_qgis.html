@@ -52,12 +52,12 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-qgis-lcz-r" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">QGIS-LCZ4r</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-qgis-lcz-r">
-<li><h6 class="dropdown-header" data-toc-skip>Installation</h6></li>
+<li><h6 class="dropdown-header" data-toc-skip>Plugin Overview</h6></li>
     <li><a class="dropdown-item" href="../articles/instalation_lcz4r_qgis.html">Installing LCZ4r in QGIS</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Multilingual Integration Overview</h6></li>
     <li><a class="dropdown-item" href="../articles/Introd_QGIS_LCZ4r.html">Introduction to LCZ4r-QGIS plugin</a></li>
-    <li><a class="dropdown-item" href="../articles/english_lcz4r_qgis.html">English Plugin</a></li>
+    <li><hr class="dropdown-divider"></li>
+    <li><h6 class="dropdown-header" data-toc-skip>Multilingual Integration Plugin</h6></li>
+    <li><a class="dropdown-item" href="../articles/english_lcz4r_qgis.html">English - version script</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
@@ -91,11 +91,87 @@
 
     
     
-<div class="section level2">
-<h2 id="installation-in-qgis">Installation in QGIS<a class="anchor" aria-label="anchor" href="#installation-in-qgis"></a>
-</h2>
-<p>It’s coming up very soon…</p>
 <p><img src="logo_qgis.png" width="100%" style="display: block; margin: auto;"></p>
+<div class="section level2">
+<h2 id="prerequisites">📌 Prerequisites<a class="anchor" aria-label="anchor" href="#prerequisites"></a>
+</h2>
+<p>Before proceeding, ensure that you have the following:</p>
+<ul>
+<li>
+<strong>QGIS</strong>: A popular open-source Geographic Information
+System, which can be downloaded <a href="https://qgis.org/" class="external-link">here</a>.</li>
+<li>
+<strong>R</strong>: The R environment for statistical computing,
+which must be installed separately. Follow the instructions below to get
+started.</li>
+</ul>
+</div>
+<div class="section level2">
+<h2 id="step-by-step-installation-guide">🗃 Step-by-Step Installation Guide<a class="anchor" aria-label="anchor" href="#step-by-step-installation-guide"></a>
+</h2>
+<div class="section level3">
+<h3 id="install-the-r">1. Install the R<a class="anchor" aria-label="anchor" href="#install-the-r"></a>
+</h3>
+<p>The <a href="https://www.r-project.org/" class="external-link">R</a> is a free and
+open-source software environment for statistical computing and graphics.
+The R environment is essential for running LCZ4r scripts within QGIS.
+Download and install R from <a href="https://cran.r-project.org/" class="external-link">CRAN</a>, following the instructions
+for your operating system (Windows, macOS, or Linux).</p>
+</div>
+<div class="section level3">
+<h3 id="install-the-processing-r-provider-in-qgis">2. Install the Processing R Provider in QGIS<a class="anchor" aria-label="anchor" href="#install-the-processing-r-provider-in-qgis"></a>
+</h3>
+<p><a href="https://north-road.github.io/qgis-processing-r/" class="external-link">Processing
+R provider</a> plugin allows you to run R scripts directly in QGIS,
+using data from your GIS projects. Follow these steps to install it:</p>
+<ol style="list-style-type: decimal">
+<li>Open <strong>QGIS</strong> and go to <strong>Plugins</strong> &gt;
+<strong>Manage</strong> and Install <strong>Plugins</strong>.</li>
+<li>Search for “Processing R Provider” and click
+<strong>Install</strong>.</li>
+<li>Once installed, ensure the plugin is activated in
+<strong>Plugins</strong> &gt; <strong>Installed</strong>.</li>
+</ol>
+</div>
+<div class="section level3">
+<h3 id="download-the-lcz4r-scripts">3. Download the LCZ4r Scripts<a class="anchor" aria-label="anchor" href="#download-the-lcz4r-scripts"></a>
+</h3>
+<p>To integrate LCZ4r functionality into QGIS, you need to download the
+R scripts for your preferred language:</p>
+<ul>
+<li><p>Visit the <a href="https://bymaxanjos.github.io/LCZ4r/articles/Introd_QGIS_LCZ4r.html#key-features">LCZ4r-QGIS
+Integration Page</a> and download the script package.</p></li>
+<li><p>Unzip the downloaded file and save the scripts in a location you
+can easily access.</p></li>
+</ul>
+<p><strong>Languages available</strong>: LCZ4r supports multiple
+languages. Be sure to download the correct version for your needs.</p>
+</div>
+<div class="section level3">
+<h3 id="configuring-qgis-to-use-lcz4r">4. 🔧 Configuring QGIS to Use LCZ4r<a class="anchor" aria-label="anchor" href="#configuring-qgis-to-use-lcz4r"></a>
+</h3>
+<ol style="list-style-type: decimal">
+<li><p>Open <strong>QGIS</strong> and navigate to
+<strong>Processing</strong> &gt; <strong>Toolbox</strong>.</p></li>
+<li><p>Locate the <strong>R scripts</strong> folder in your
+<strong>Processing</strong> options and add the path where you saved the
+LCZ4r scripts.</p></li>
+<li><p>Test your setup by running a sample LCZ analysis script. If
+everything is configured correctly, you should see the LCZ output in
+your QGIS workspace.</p></li>
+</ol>
+</div>
+</div>
+<div class="section level2">
+<h2 id="have-feedback-or-suggestions">Have feedback or suggestions?<a class="anchor" aria-label="anchor" href="#have-feedback-or-suggestions"></a>
+</h2>
+<p>Do you have an idea for improvement or did you spot a mistake? We’d
+love to hear from you! Click the button below to create a new issue
+(Github) and share your feedback or suggestions directly with us.</p>
+<button type="button" class="btn" style="background-color: #008000; color: white; padding: .25rem .5rem; font-size: .75rem; border: none; border-radius: .25rem;">
+<a href="https://github.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/issues/new" style="text-decoration: none; color: white;" class="external-link">
+Open an issue in the Github repository </a>
+</button>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
