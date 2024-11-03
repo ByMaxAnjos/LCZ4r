@@ -59,8 +59,8 @@ navbar:
       - text: '---'
       - text: Multilingual Integration Overview
       - text: Introduction to LCZ4r-QGIS plugin
-        href: articles/introd_QGIS_LCZ4r.html
-      - text: English
+        href: articles/Introd_QGIS_LCZ4r.html
+      - text: English Plugin
         href: articles/english_lcz4r_qgis.html
 
 reference:
