@@ -7,11 +7,12 @@ articles:
   instalation_lcz4r: instalation_lcz4r.html
   Introd_genera_LCZ4r: Introd_genera_LCZ4r.html
   Introd_local_LCZ4r: Introd_local_LCZ4r.html
+  Introd_QGIS_LCZ4r: Introd_QGIS_LCZ4r.html
   local_func_anomaly: local_func_anomaly.html
   local_func_modeling: local_func_modeling.html
   local_func_time_series: local_func_time_series.html
   local_func_uhi: local_func_uhi.html
-last_built: 2024-11-02T21:19Z
+last_built: 2024-11-03T00:24Z
 urls:
   reference: https://bymaxanjos.github.io/LCZ4r/reference
   article: https://bymaxanjos.github.io/LCZ4r/articles
