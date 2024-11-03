@@ -47,7 +47,9 @@
     <h6 class="dropdown-header" data-toc-skip>Installation</h6>
     <a class="dropdown-item" href="../articles/instalation_lcz4r_qgis.html">Installing LCZ4r in QGIS</a>
     <div class="dropdown-divider"></div>
-    <a class="dropdown-item" href="../articles/multilingual_lcz4r_qgis.html">Multilingual Integration</a>
+    <h6 class="dropdown-header" data-toc-skip>Multilingual Integration Overview</h6>
+    <a class="dropdown-item" href="../articles/introd_QGIS_LCZ4r.html">Introduction to LCZ4r-QGIS plugin</a>
+    <a class="dropdown-item" href="../articles/english_lcz4r_qgis.html">English</a>
   </div>
 </li>
 <li class="active nav-item">
@@ -115,9 +117,12 @@
 
 
 <dt>...</dt>
-<dd><p>Additional arguments for the <code>selectBydata</code> from <code>openair</code> package. These include:</p><ul><li><p>A start date string in the form "1/2/1999" or in format "YYYY-mm-dd", e.g., "1999-02-01".</p></li>
-<li><p>A year or years to select, e.g., year = 1998:2004 to select 1998-2004 inclusive, or year = c(1998, 2004) to select 1998 and 2004.</p></li>
-<li><p>A month or months to select. Can either be numeric, e.g., month = 1:6 to select January to June, or by name, e.g., month = c("January", "December").</p></li>
+<dd><p>Additional arguments for the <code>selectByDate</code> function from the <code>openair</code> package. These arguments allow for flexible selection of specific time periods (year, month, day, hour). Examples of how to use these arguments include:</p><ul><li><p><strong>Year(s)</strong>: Numeric value(s) specifying the year(s) to select. For example, <code>year = 1998:2004</code> selects all years between 1998 and 2004 (inclusive), while <code>year = c(1998, 2004)</code> selects only the years 1998 and 2004.</p></li>
+<li><p><strong>Month(s)</strong>: Numeric or character value(s) specifying the months to select. Numeric examples: <code>month = 1:6</code> (January to June), or character examples: <code>month = c("January", "December")</code>.</p></li>
+<li><p><strong>Day(s)</strong>: Numeric value(s) specifying the days to select. For instance, <code>day = 1:30</code> selects days from 1 to 30, or <code>day = 15</code> selects only the 15th day of the month.</p></li>
+<li><p><strong>Hour(s)</strong>: Numeric value(s) specifying the hours to select. For example, <code>hour = 0:23</code> selects all hours in a day, while <code>hour = 9</code> selects only the 9th hour.</p></li>
+<li><p><strong>Start date</strong>: A string specifying the start date in either start="DD/MM/YYYY" (e.g., "1/2/1999") or "YYYY-mm-dd" format (e.g., "1999-02-01").</p></li>
+<li><p><strong>End date</strong>: A string specifying the end date in either end="DD/MM/YYYY" (e.g., "1/2/1999") or "YYYY-mm-dd" format (e.g., "1999-02-01").</p></li>
 </ul></dd>
 
 

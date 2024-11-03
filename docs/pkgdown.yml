@@ -2,16 +2,17 @@ pandoc: 3.1.1
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
+  Introd_QGIS_LCZ4r: Introd_QGIS_LCZ4r.html
   Introd_genera_LCZ4r: Introd_genera_LCZ4r.html
   Introd_local_LCZ4r: Introd_local_LCZ4r.html
+  english_lcz4r_qgis: english_lcz4r_qgis.html
   instalation_lcz4r: instalation_lcz4r.html
   instalation_lcz4r_qgis: instalation_lcz4r_qgis.html
   local_func_anomaly: local_func_anomaly.html
   local_func_modeling: local_func_modeling.html
   local_func_time_series: local_func_time_series.html
   local_func_uhi: local_func_uhi.html
-  multilingual_lcz4r_qgis: multilingual_lcz4r_qgis.html
-last_built: 2024-11-02T11:11Z
+last_built: 2024-11-03T00:17Z
 urls:
   reference: https://bymaxanjos.github.io/LCZ4r/reference
   article: https://bymaxanjos.github.io/LCZ4r/articles
