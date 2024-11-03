@@ -1,5 +1,5 @@
 ---
-title: "English"
+title: "English Plugin"
 author: "Max Anjos"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output:
@@ -14,7 +14,7 @@ output:
 resource_files:
   - articles/logo_qgis.png
 vignette: >
-  %\VignetteIndexEntry{English}
+  %\VignetteIndexEntry{English Plugin}
   %\VignetteEngine{rmarkdown::render}
   %\VignetteEncoding{UTF-8}
 ---
@@ -26,32 +26,22 @@ knitr::opts_chunk$set(
 )
 ```
 
-## 🛠 Download LCZ4r-QGIS plugin in English
+## 🛠 Download LCZ4r-QGIS plugin
 
 Download both the General and Local Functions R scripts for QGIS integration - [Download as zip file](https://github.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/blob/master/scripts/English_LCZ4r.zip)
 
-Level: **Human translation**
-
+Level: **Human Translation**
 All functions and their corresponding documentation of the LCZ4r package were translated manually by experts familiar with Climatology, LCZ and GIS.
 
 *The **zip file** includes all necessary scripts to integrate LCZ4r into your QGIS environment. For detailed installation instructions, visit our [installation guide.](https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r_qgis.html)*
 
-## 📋 Download LCZ4r-QGIS cheatsheet in English
-
-Click the cheatsheet to enlarge. -- Download as PDF.
-
-*Note: The cheatsheet provides a summary of key features and step-by-step instructions for running LCZ and UHI analyses in QGIS.*
-
-## Contact & Support
-
-If you have any questions or need further assistance, feel free to reach out to us at [maxanjos\@campus.ul.pt](mailto:maxanjos@campus.ul.pt){.email}.
 
 ## Have feedback or suggestions?
 
 Do you have an idea for improvement or did you spot a mistake? We'd love to hear from you! Click the button below to create a new issue (Github) and share your feedback or suggestions directly with us.
 
 <button type="button" class="btn" style="background-color: #008000; color: white; padding: .25rem .5rem; font-size: .75rem; border: none; border-radius: .25rem;">
-
-<a href='https://github.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/issues/new'style="text-decoration: none; color: white;"> Open an issue in the Github repository </a>
-
+  <a href='https://github.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/issues/new'style="text-decoration: none; color: white;">
+    Open an issue in the Github repository
+  </a>
 </button>
