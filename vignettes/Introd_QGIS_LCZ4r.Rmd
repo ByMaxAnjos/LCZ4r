@@ -25,8 +25,9 @@ knitr::opts_chunk$set(
 )
 ```
 
-# LCZ4r and QGIS: Multilingual Integration
-A plugin repository that integrates the [LCZ4r package](https://github.com/ByMaxAnjos/LCZ4r) with QGIS in multiple languages. 
+# A Multilingual Integration
+
+A **LCZ4r-QGIS plugin** repository that integrates the **LCZ4r package** with [QGIS](https://qgis.org/) in multiple languages. It facilitates the integration of the [General Functions](https://bymaxanjos.github.io/LCZ4r/articles/Introd_genera_LCZ4r.html) and [Local Functions](https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html) from LCZ4r package into QGIS, allowing users to analyze Local Climate Zones (LCZ) and urban heat islands directly within the QGIS environment.
 
   <!-- badges: start -->
   [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
@@ -34,17 +35,16 @@ A plugin repository that integrates the [LCZ4r package](https://github.com/ByMax
 
 <img width="1217" alt="logo_qgis" src="https://github.com/user-attachments/assets/68cdca10-c1d5-4755-8d73-351af809552a">
 
-The **LCZ4r-QGIS plugin** facilitates the integration of the [General Functions](https://bymaxanjos.github.io/LCZ4r/articles/Introd_genera_LCZ4r.html) and [Local Functions](https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html) from LCZ4r package into QGIS, allowing users to analyze Local Climate Zones (LCZ) and urban heat islands directly within the QGIS environment.
 
-## 🗃️ Instalation 
+## 🗃️ Install plugin 
 
 For detailed installation instructions, please visit the [LCZ4r installation guide.](https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r_qgis.html)
 
 ## Translation plugin process
-Users can [download the LCZ4r-QGIS plugin in their preferred language](https://bymaxanjos.github.io/LCZ4r/articles/multilingual_lcz4r_qgis.html). The translation processo envolves three levels:
+The translation processo envolves three levels:
 
 ### AI-Only Translation
-All functions and their corresponding documentation of the LCZ4r package were fully translated using AI (ChatGPT v4o), without human review.
+All functions and corresponding documentation of the LCZ4r package were fully translated using AI (ChatGPT v4o), without human review.
 
 <img src="https://github.com/user-attachments/assets/2b2312d0-bb71-4c80-b6db-4048e315fbee" width="400" height="300">
 
@@ -55,7 +55,7 @@ Translations initially performed by AI and then reviewed and refined by  by huma
 
 
 ### Human Translation
-All functions and their corresponding documentation of the LCZ4r package were translated manually by experts familiar with Climatology, LCZ and GIS.
+The functions and documentations of the LCZ4r were translated manually by experts familiar with Climatology, LCZ and GIS.
 
 <img src="https://github.com/user-attachments/assets/b30e9a14-0730-403d-8cd5-19ab70baa3ec" width="400" height="300">
 

@@ -53,14 +53,14 @@ navbar:
     QGIS-LCZ4r:
       text: QGIS-LCZ4r
       menu:
-      - text: Installation
+      - text: Plugin Overview
       - text: Installing LCZ4r in QGIS
         href: articles/instalation_lcz4r_qgis.html
-      - text: '---'
-      - text: Multilingual Integration Overview
       - text: Introduction to LCZ4r-QGIS plugin
         href: articles/Introd_QGIS_LCZ4r.html
-      - text: English Plugin
+      - text: '---'
+      - text: Multilingual Integration Plugin
+      - text: English - version script
         href: articles/english_lcz4r_qgis.html
 
 reference:

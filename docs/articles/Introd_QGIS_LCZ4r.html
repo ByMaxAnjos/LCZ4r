@@ -63,12 +63,12 @@
 <li class="active nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-qgis-lcz-r">QGIS-LCZ4r</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-qgis-lcz-r">
-    <h6 class="dropdown-header" data-toc-skip>Installation</h6>
+    <h6 class="dropdown-header" data-toc-skip>Plugin Overview</h6>
     <a class="dropdown-item" href="../articles/instalation_lcz4r_qgis.html">Installing LCZ4r in QGIS</a>
-    <div class="dropdown-divider"></div>
-    <h6 class="dropdown-header" data-toc-skip>Multilingual Integration Overview</h6>
     <a class="dropdown-item" href="../articles/Introd_QGIS_LCZ4r.html">Introduction to LCZ4r-QGIS plugin</a>
-    <a class="dropdown-item" href="../articles/english_lcz4r_qgis.html">English Plugin</a>
+    <div class="dropdown-divider"></div>
+    <h6 class="dropdown-header" data-toc-skip>Multilingual Integration Plugin</h6>
+    <a class="dropdown-item" href="../articles/english_lcz4r_qgis.html">English - version script</a>
   </div>
 </li>
 <li class="nav-item">
@@ -101,7 +101,7 @@
       <img src="" class="logo" alt=""><h1>Introduction to LCZ4r-QGIS plugin</h1>
                         <h4 data-toc-skip class="author">Max Anjos</h4>
             
-            <h4 data-toc-skip class="date">November 02, 2024</h4>
+            <h4 data-toc-skip class="date">November 03, 2024</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ByMaxAnjos/LCZ4r/blob/HEAD/vignettes/Introd_QGIS_LCZ4r.Rmd" class="external-link"><code>vignettes/Introd_QGIS_LCZ4r.Rmd</code></a></small>
       <div class="d-none name"><code>Introd_QGIS_LCZ4r.Rmd</code></div>
@@ -110,20 +110,19 @@
     
     
 <div class="section level2">
-<h2 id="lcz4r-and-qgis-multilingual-integration">LCZ4r and QGIS: Multilingual Integration<a class="anchor" aria-label="anchor" href="#lcz4r-and-qgis-multilingual-integration"></a>
+<h2 id="a-multilingual-integration">A Multilingual Integration<a class="anchor" aria-label="anchor" href="#a-multilingual-integration"></a>
 </h2>
-<p>A plugin repository that integrates the <a href="https://github.com/ByMaxAnjos/LCZ4r" class="external-link">LCZ4r package</a> with QGIS
-in multiple languages.</p>
-<p><!-- badges: start --> <a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a> <!-- badges: end --></p>
-<p><img width="1217" alt="logo_qgis" src="https://github.com/user-attachments/assets/68cdca10-c1d5-4755-8d73-351af809552a"></p>
-<p>The <strong>LCZ4r-QGIS plugin</strong> facilitates the integration of
-the <a href="https://bymaxanjos.github.io/LCZ4r/articles/Introd_genera_LCZ4r.html">General
+<p>A <strong>LCZ4r-QGIS plugin</strong> repository that integrates the
+<strong>LCZ4r package</strong> with <a href="https://qgis.org/" class="external-link">QGIS</a>
+in multiple languages. It facilitates the integration of the <a href="https://bymaxanjos.github.io/LCZ4r/articles/Introd_genera_LCZ4r.html">General
 Functions</a> and <a href="https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html">Local
 Functions</a> from LCZ4r package into QGIS, allowing users to analyze
 Local Climate Zones (LCZ) and urban heat islands directly within the
 QGIS environment.</p>
+<p><!-- badges: start --> <a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a> <!-- badges: end --></p>
+<p><img width="1217" alt="logo_qgis" src="https://github.com/user-attachments/assets/68cdca10-c1d5-4755-8d73-351af809552a"></p>
 <div class="section level3">
-<h3 id="instalation">🗃️ Instalation<a class="anchor" aria-label="anchor" href="#instalation"></a>
+<h3 id="install-plugin">🗃️ Install plugin<a class="anchor" aria-label="anchor" href="#install-plugin"></a>
 </h3>
 <p>For detailed installation instructions, please visit the <a href="https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r_qgis.html">LCZ4r
 installation guide.</a></p>
@@ -131,15 +130,12 @@ installation guide.</a></p>
 <div class="section level3">
 <h3 id="translation-plugin-process">Translation plugin process<a class="anchor" aria-label="anchor" href="#translation-plugin-process"></a>
 </h3>
-<p>Users can <a href="https://bymaxanjos.github.io/LCZ4r/articles/multilingual_lcz4r_qgis.html">download
-the LCZ4r-QGIS plugin in their preferred language</a>. The translation
-processo envolves three levels:</p>
+<p>The translation processo envolves three levels:</p>
 <div class="section level4">
 <h4 id="ai-only-translation">AI-Only Translation<a class="anchor" aria-label="anchor" href="#ai-only-translation"></a>
 </h4>
-<p>All functions and their corresponding documentation of the LCZ4r
-package were fully translated using AI (ChatGPT v4o), without human
-review.</p>
+<p>All functions and corresponding documentation of the LCZ4r package
+were fully translated using AI (ChatGPT v4o), without human review.</p>
 <p><img src="https://github.com/user-attachments/assets/2b2312d0-bb71-4c80-b6db-4048e315fbee" width="400" height="300"></p>
 </div>
 <div class="section level4">
@@ -152,9 +148,8 @@ by by human experts familiar with Climatology, LCZ and GIS.</p>
 <div class="section level4">
 <h4 id="human-translation">Human Translation<a class="anchor" aria-label="anchor" href="#human-translation"></a>
 </h4>
-<p>All functions and their corresponding documentation of the LCZ4r
-package were translated manually by experts familiar with Climatology,
-LCZ and GIS.</p>
+<p>The functions and documentations of the LCZ4r were translated
+manually by experts familiar with Climatology, LCZ and GIS.</p>
 <p><img src="https://github.com/user-attachments/assets/b30e9a14-0730-403d-8cd5-19ab70baa3ec" width="400" height="300"></p>
 </div>
 </div>
