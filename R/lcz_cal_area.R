@@ -207,7 +207,7 @@ lcz_cal_area <- function(x,
         label = base::paste0("Total: ", base::sum(lcz_df$area_km2), " km\u00B2")
       ) +
       ggplot2::theme(
-        legend.key.spacing.y = ggplot2::unit(-1.4, "line"),
+        #legend.key.spacing.y = ggplot2::unit(-1.4, "line"),
         plot.title.position = "plot",
         plot.title = ggplot2::element_text(size = 22),
         plot.subtitle = ggplot2::element_text(size = 20),
@@ -245,7 +245,7 @@ lcz_cal_area <- function(x,
       ggplot2::theme(
         # legend.position = "left",
         legend.margin = ggplot2::margin(0, -5, 0, 0),
-        legend.key.spacing.y = ggplot2::unit(-1.3, "line"),
+        #legend.key.spacing.y = ggplot2::unit(-1.3, "line"),
         plot.title.position = "plot",
         plot.title = ggplot2::element_text(size = 22),
         plot.subtitle = ggplot2::element_text(size = 20),
