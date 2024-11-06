@@ -1,5 +1,5 @@
 ---
-title: "English - version script"
+title: "English"
 author: "Max Anjos"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output:
@@ -14,7 +14,7 @@ output:
 resource_files:
   - articles/logo_qgis.png
 vignette: >
-  %\VignetteIndexEntry{English - version script}
+  %\VignetteIndexEntry{English}
   %\VignetteEngine{rmarkdown::render}
   %\VignetteEncoding{UTF-8}
 ---
@@ -30,18 +30,18 @@ knitr::opts_chunk$set(
 
 Download both the General and Local Functions R scripts for QGIS integration - [Download as zip file](https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/English_LCZ4r.zip)
 
-Level: **Human Translation**
-All functions and their corresponding documentation of the LCZ4r package were translated manually by experts familiar with Climatology, LCZ and GIS.
-
 *The **zip file** includes all necessary scripts to integrate LCZ4r into your QGIS environment. For detailed installation instructions, visit our [installation guide.](https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r_qgis.html)*
 
 
-## Have feedback or suggestions?
+## 📬 Have feedback or suggestions?
 
-Do you have an idea for improvement or did you spot a mistake? We'd love to hear from you! Click the button below to create a new issue (Github) and share your feedback or suggestions directly with us.
+We welcome your feedback and suggestions! If you have ideas for improvements or spot any issues, please let us know. Click the button below to submit a new issue on our GitHub repository.
 
 <button type="button" class="btn" style="background-color: #008000; color: white; padding: .25rem .5rem; font-size: .75rem; border: none; border-radius: .25rem;">
-  <a href='https://github.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/issues/new'style="text-decoration: none; color: white;">
-    Open an issue in the Github repository
-  </a>
+
+<a href='https://github.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/issues/new'style="text-decoration: none; color: white;"> Open an issue in the Github repository </a>
+
 </button>
+
+🌟 **Enjoy LCZ4r-QGIS plugin!**
+

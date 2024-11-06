@@ -21,7 +21,7 @@ template:
 navbar:
   type: dark
   structure:
-    left: [home, tutorials, QGIS-LCZ4r, reference]
+    left: [home, tutorials, LCZ4r-QGIS, reference]
     right: [search, github]
   components:
     home:
@@ -50,17 +50,17 @@ navbar:
         href: articles/local_func_modeling.html
       - text: Urban Heat Island (UHI) Analysis
         href: articles/local_func_uhi.html
-    QGIS-LCZ4r:
-      text: QGIS-LCZ4r
+    LCZ4r-QGIS:
+      text: LCZ4r-QGIS
       menu:
       - text: Plugin Overview
-      - text: Installing LCZ4r in QGIS
-        href: articles/instalation_lcz4r_qgis.html
       - text: Introduction to LCZ4r-QGIS plugin
         href: articles/Introd_QGIS_LCZ4r.html
+      - text: Installing LCZ4r in QGIS
+        href: articles/instalation_lcz4r_qgis.html
       - text: '---'
-      - text: Multilingual Integration Plugin
-      - text: English - version script
+      - text: Multilingual Plugin (script)
+      - text: English
         href: articles/english_lcz4r_qgis.html
 
 reference:
