@@ -191,31 +191,28 @@ lcz_cal_area <- function(x,
     lcz_df$label <- base::paste0(
       base::round(lcz_df$area_perc, 1), "\u0025\n"
     )
-
     graph <-
-      ggplot2::ggplot(lcz_df, ggplot2::aes(x = 1, y = .data$area_perc, fill = lcz, label = .data$label)) +
-      ggplot2::geom_bar(position = "fill", stat = "identity", width = 0.3, key_glyph = ggplot2::draw_key_dotplot, color = NA, lwd = 0.2) +
-      ggplot2::geom_text(position = ggplot2::position_fill(vjust = 0.5), stat = "identity", size = 5, check_overlap = TRUE, color = "white") +
-      ggplot2::scale_fill_manual(values = color_values, name = "LCZ class", labels = lcz.lables) +
-      ggplot2::guides(fill = ggplot2::guide_legend(override.aes = list(size = 12, linetype = "solid", color = NA))) +
-      ggplot2::coord_polar(theta = "y", start = -pi / 1.5, direction = -1) +
+      ggplot2::ggplot(lcz_df, ggplot2::aes(x = "",
+                                           y = .data$area_perc,
+                                           fill = lcz,
+                                           label = .data$label)) +
+      ggplot2::geom_bar(stat = "identity", width = 1, color = NA, lwd = 0.2) +
+      ggplot2::coord_polar("y") +
+      ggplot2::scale_fill_manual(values = color_values, name = "LCZ class", labels = lcz.lables)+
+      ggplot2::geom_text(ggplot2::aes(label = .data$label),
+                         position = ggplot2::position_stack(vjust = 0.5),
+                         size = 5,check_overlap = TRUE, color = "white") +
       ggplot2::theme_void() +
       ggplot2::labs(...) +
       # Add the labels
-      ggplot2::annotate("text",
-        x = 1.2, y = 0.8, size = 5, fontface = "bold", hjust = 0.1,
-        label = base::paste0("Total: ", base::sum(lcz_df$area_km2), " km\u00B2")
-      ) +
+      ggplot2::annotate("text", x = 1, y = 1.8, label = base::paste0("Total: ", base::sum(lcz_df$area_km2), " km\u00B2"),
+                        color = "black", size = 9, fontface = "bold", vjust = 30) +
       ggplot2::theme(
-        #legend.key.spacing.y = ggplot2::unit(-1.4, "line"),
-        plot.title.position = "plot",
-        plot.title = ggplot2::element_text(size = 22),
-        plot.subtitle = ggplot2::element_text(size = 20),
-        #plot.caption.position = "plot",
+        plot.title =  ggplot2::element_text(hjust = 0.5, size = 16, face = "bold"),
+        plot.subtitle =  ggplot2::element_text(hjust = 0.5, size = 14),
         legend.text = ggplot2::element_text(size = 14),
-        legend.title = ggplot2::element_text(size = 14, hjust = 0.2, vjust = -1, face = "bold"),
-        legend.spacing.y = ggplot2::unit(0.01, "cm"),
-        plot.caption = ggplot2::element_text(color = "grey40", size = 10, hjust = 0)
+        legend.title = ggplot2::element_text(size = 14,face = "bold"),
+        plot.caption = ggplot2::element_text(color = "grey40", size = 10, hjust = 1)
       )
 
     if (!show_legend) {
@@ -229,30 +226,26 @@ lcz_cal_area <- function(x,
       base::round(lcz_df$area_perc, 1), "\u0025\n"
     )
     graph <-
-      ggplot2::ggplot(lcz_df, ggplot2::aes(x = 1, y = .data$area_perc, fill = lcz, label = .data$label)) +
-      ggplot2::geom_bar(position = "fill", stat = "identity", width = 0.3, key_glyph = ggplot2::draw_key_dotplot, color = "white", lwd = 0.2) +
-      ggplot2::geom_text(position = ggplot2::position_fill(vjust = 0.5), stat = "identity", size = 4, check_overlap = TRUE, color = "white") +
-      ggplot2::scale_fill_manual(values = color_values, name = "LCZ class", labels = lcz.lables) +
-      ggplot2::guides(fill = ggplot2::guide_legend(override.aes = list(size = 12, linetype = "solid", color = NA))) +
-      ggplot2::annotate(
-        geom = "text", x = 0.5, y = 1, size = 5, fontface = "bold",
-        label = base::paste0("Total:\n", base::sum(lcz_df$area_km2), " km\u00B2")
-      ) +
-      ggplot2::coord_polar(theta = "y", start = -pi / 1.5, direction = -1) +
-      ggplot2::xlim(0.5, 1.5) +
+      ggplot2::ggplot(lcz_df, ggplot2::aes(x = "",
+                                           y = .data$area_perc,
+                                           fill = lcz,
+                                           label = .data$label)) +
+      ggplot2::geom_bar(stat = "identity", width = 1, color = NA, lwd = 0.2) +
+      ggplot2::coord_polar("y") +
+      ggplot2::scale_fill_manual(values = color_values, name = "LCZ class", labels = lcz.lables)+
+      ggplot2::geom_text(ggplot2::aes(label = .data$label),
+                         position = ggplot2::position_stack(vjust = 0.5),
+                         size = 5, check_overlap = TRUE, color = "white") +
       ggplot2::theme_void() +
       ggplot2::labs(...) +
+      # Add the labels
+      ggplot2::annotate("text", x = -0.5, y = 0, label = base::paste0("Total:\n", base::sum(lcz_df$area_km2), " km\u00B2"),
+                        color = "black", size = 9, fontface = "bold", vjust = 0.5) +
       ggplot2::theme(
-        # legend.position = "left",
-        legend.margin = ggplot2::margin(0, -5, 0, 0),
-        #legend.key.spacing.y = ggplot2::unit(-1.3, "line"),
-        plot.title.position = "plot",
-        plot.title = ggplot2::element_text(size = 22),
-        plot.subtitle = ggplot2::element_text(size = 20),
-        plot.caption.position = "plot",
+        plot.title =  ggplot2::element_text(hjust = 0.5, size = 16, face = "bold"),
+        plot.subtitle =  ggplot2::element_text(hjust = 0.5, size = 14),
         legend.text = ggplot2::element_text(size = 14),
-        legend.title = ggplot2::element_text(size = 14, hjust = 0.2, vjust = -1, face = "bold"),
-        legend.spacing.y = ggplot2::unit(0.01, "cm"),
+        legend.title = ggplot2::element_text(size = 14,face = "bold"),
         plot.caption = ggplot2::element_text(color = "grey40", size = 10, hjust = 0)
       )
 
@@ -286,7 +279,7 @@ lcz_cal_area <- function(x,
     }
 
     file.1 <- base::paste0(getwd(), "/", folder, "lcz4r_area_pie.", save_extension)
-    ggplot2::ggsave(file.1, graph, height = 5, width = 7, dpi = 600)
+    ggplot2::ggsave(file.1, graph, height = 7, width = 9, dpi = 600)
     file.2 <- base::paste0(getwd(), "/", folder, "lcz4r_area_df.csv")
     utils::write.csv(lcz_df, file.2)
     base::message("Looking at your files in the path:", base::paste0(
@@ -302,7 +295,7 @@ lcz_cal_area <- function(x,
     }
     file.1 <- base::paste0(getwd(), "/", folder, "lcz4r_area_donut.", save_extension)
     ggplot2::ggsave(file.1, graph, scale = 1.5,
-      height = 6, width = 8,
+      height = 7, width = 9,
       dpi = 600
     )
     file.2 <- base::paste0(getwd(), "/", folder, "lcz4r_area_df.csv")
