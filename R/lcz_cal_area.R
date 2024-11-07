@@ -206,7 +206,7 @@ lcz_cal_area <- function(x,
       ggplot2::labs(...) +
       # Add the labels
       ggplot2::annotate("text", x = 1, y = 1.8, label = base::paste0("Total: ", base::sum(lcz_df$area_km2), " km\u00B2"),
-                        color = "black", size = 9, fontface = "bold", vjust = 30) +
+                        color = "black", size = 9, fontface = "bold", vjust = 21) +
       ggplot2::theme(
         plot.title =  ggplot2::element_text(hjust = 0.5, size = 16, face = "bold"),
         plot.subtitle =  ggplot2::element_text(hjust = 0.5, size = 14),
