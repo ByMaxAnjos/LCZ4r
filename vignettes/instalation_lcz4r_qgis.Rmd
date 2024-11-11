@@ -74,7 +74,7 @@ If everything is configured correctly, you will see **LCZ4r General Functions** 
 
 ### (Click to Watch video)
 
-https://github.com/user-attachments/assets/3d585551-e758-47c9-8461-a6a22ee3aa55
+https://github.com/LCZ4r/assets/3d585551-e758-47c9-8461-a6a22ee3aa55
 
 ### 4. Run your first LCZ4r Script
 
