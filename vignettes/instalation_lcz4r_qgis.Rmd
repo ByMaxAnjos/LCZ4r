@@ -76,11 +76,21 @@ If everything is configured correctly, you will see **LCZ4r General Functions** 
 
 You can watch a detailed tutorial on installing LCZ4r in QGIS below:
 
-<div class="vembedr">
-  <div>
-    <iframe src="https://www.youtube.com/embed/RalGSgx8v2Q" width="533" height="300" frameborder="0" allowfullscreen="" data-external="1"></iframe>
-  </div>
+<div style="text-align: center;">
+  <!-- Image Thumbnail with Link to Video -->
+  <a href="https://www.youtube.com/watch?v=RalGSgx8v2Q" target="_blank">
+    <img src="https://img.youtube.com/vi/RalGSgx8v2Q/hqdefault.jpg" 
+         alt="LCZ4r Installation Tutorial" 
+         width="560" height="315" style="border: 2px solid #ddd; border-radius: 8px; margin-bottom: 10px;">
+  </a>
 </div>
+
+<!-- Embedded Video -->
+<iframe width="560" height="315" 
+        src="https://www.youtube.com/embed/RalGSgx8v2Q" 
+        title="LCZ4r Installation Tutorial" 
+        frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen></iframe>
 
 ### 4. Run your first LCZ4r Script
 
