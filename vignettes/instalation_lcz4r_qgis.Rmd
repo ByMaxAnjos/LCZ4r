@@ -76,7 +76,8 @@ If everything is configured correctly, you will see **LCZ4r General Functions** 
 
 You can watch a detailed tutorial on installing LCZ4r in QGIS below:
 
-![](https://youtu.be/RalGSgx8v2Q){width="560" height="315"}
+vembedr::embed_url("https://youtu.be/RalGSgx8v2Q")
+
 
 ### 4. Run your first LCZ4r Script
 
