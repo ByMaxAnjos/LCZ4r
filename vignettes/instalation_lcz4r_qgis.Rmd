@@ -72,10 +72,7 @@ To integrate LCZ4r functionality into QGIS, you need to download the R scripts f
 
 If everything is configured correctly, you will see **LCZ4r General Functions** and **LCZ4r Local Functions** in the *Processing Toolbox* \>*R* below Example Scripts.
 
-### (Click to Watch video)
-
 You can watch a detailed tutorial on installing LCZ4r in QGIS below:
-
 <!-- Embedded Video -->
 <iframe width="560" height="315" 
         src="https://www.youtube.com/embed/RalGSgx8v2Q" 

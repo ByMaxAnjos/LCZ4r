@@ -213,7 +213,8 @@ lcz_cal_area <- function(x,
         legend.text = ggplot2::element_text(size = 14),
         legend.title = ggplot2::element_text(size = 14,face = "bold"),
         plot.caption = ggplot2::element_text(color = "grey40", size = 10, hjust = 1)
-      )
+      ) +
+      ggplot2::guides(fill = ggplot2::guide_legend(byrow = TRUE))
 
     if (!show_legend) {
       graph <- graph + ggplot2::theme(legend.position = "none")
@@ -247,7 +248,8 @@ lcz_cal_area <- function(x,
         legend.text = ggplot2::element_text(size = 14),
         legend.title = ggplot2::element_text(size = 14,face = "bold"),
         plot.caption = ggplot2::element_text(color = "grey40", size = 10, hjust = 0)
-      )
+      ) +
+      ggplot2::guides(fill = ggplot2::guide_legend(byrow = TRUE))
 
     if (!show_legend) {
       graph <- graph + ggplot2::theme(legend.position = "none")
