@@ -40,8 +40,18 @@ A **LCZ4r-QGIS plugin** repository that integrates the **LCZ4r package** with [Q
 
 For detailed installation instructions, please visit the [LCZ4r installation guide.](https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r_qgis.html)
 
+## Tutorials
+
+You can watch a detailed tutorial on LCZ4r General functions in QGIS below:
+<!-- Embedded Video -->
+<iframe width="560" height="315" 
+        src="https://www.youtube.com/embed/EL56VI8Ok0Q" 
+        title="LCZ4r-QGIS General Functions Tutorial" 
+        frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen></iframe>
+
 ## Translation plugin process
-The translation processo envolves three levels:
+The translation process evolves three levels:
 
 ### AI-Only Translation
 All functions and corresponding documentation of the LCZ4r package were fully translated using AI (ChatGPT v4o), without human review.
