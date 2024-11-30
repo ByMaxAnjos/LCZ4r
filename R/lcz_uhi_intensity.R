@@ -132,6 +132,8 @@ lcz_uhi_intensity <- function(x,
     openair::selectByDate(...)
 
   df_processed$var_interp <- base::as.numeric(df_processed$var_interp)
+  df_processed$latitude <- base::as.numeric(df_processed$latitude)
+  df_processed$longitude <- base::as.numeric(df_processed$longitude)
 
   # Impute missing values if necessary
   if (!is.null(impute)) {

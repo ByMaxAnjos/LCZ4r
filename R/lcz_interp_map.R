@@ -117,6 +117,8 @@ lcz_interp_map <- function(x,
     ) %>%
     dplyr::ungroup()
 
+  df_variable$latitude <- base::as.numeric(df_variable$latitude)
+  df_variable$longitude <- base::as.numeric(df_variable$longitude)
 
   # Impute missing values if necessary
   if (!is.null(impute)) {
