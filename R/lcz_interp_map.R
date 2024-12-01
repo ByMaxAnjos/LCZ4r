@@ -149,13 +149,21 @@ lcz_interp_map <- function(x,
   df_processed <- dplyr::inner_join(df_period,
     df_variable %>% dplyr::select(-.data$station, -.data$var_interp),
     by = c("date", "my_id")
-  )
+  ) %>%
+    dplyr::ungroup()
 
   # Geospatial operations ---------------------------------------------------
   # Convert lcz_map to polygon
   lcz_shp <- terra::as.polygons(x) %>%
     sf::st_as_sf() %>%
     sf::st_transform(crs = 4326)
+  stations_mod <- df_processed %>%
+    sf::st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
+  stations_lcz <- terra::extract(x, terra::vect(stations_mod), ID=FALSE)
+  df_interp_mod <- base::cbind(stations_mod, stations_lcz) %>%
+    sf::st_as_sf() %>%
+    sf::st_transform(crs = 3857) %>%
+    stats::na.omit()
 
   # Re-project and make a grid to interpolation
   lcz_box <- sf::st_transform(lcz_shp, crs = 3857)
@@ -172,7 +180,7 @@ lcz_interp_map <- function(x,
 
   # Calculate interp temporal resolution  ------------------------------------------------------
   if (is.null(by) & tp.res %in% c("hour", "day")) { # Downscale to hour or day
-    iday <- df_processed %>%
+    iday <- df_interp_mod %>%
       dplyr::group_by(.data$date) %>%
       dplyr::select(.data$date) %>%
       dplyr::ungroup() %>%
@@ -183,7 +191,7 @@ lcz_interp_map <- function(x,
     model_day <- function(iday) {
       myday <- iday[1]
 
-      modelday <- df_processed %>%
+      modelday <- df_interp_mod %>%
         dplyr::mutate(day = lubridate::day(.data$date)) %>%
         dplyr::filter(.data$day == paste0(myday))
 
@@ -206,38 +214,23 @@ lcz_interp_map <- function(x,
           ) %>%
           dplyr::filter(.data$hour == paste0(myhour))
 
-        # merge data-model with lcz_station to get lcz class
-        df_interp_mod <-
-          sf::st_as_sf(data_model,
-            coords = c("longitude", "latitude"), crs = 4326
-          ) %>%
-          sf::st_intersection(lcz_shp) %>%
-          sf::st_transform(crs = 3857)
-
         if (LCZinterp == TRUE) {
           # [using ordinary kriging]
-          krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, df_interp_mod, model = vg.model)
-          krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = df_interp_mod)
-          krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-          krige_map <- krige_map["var1.pred", , ]
-          interp_map <- terra::rast(krige_map)
-          interp_map <- terra::focal(interp_map, w = 7, fun = mean)
-          mydate <- data_model %>% dplyr::pull(.data$date)
-          mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-          ras_name <- base::paste0("krige_", mydate)
-          base::names(interp_map) <- ras_name
+          krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, data_model, model = vg.model)
+          krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = data_model)
         } else {
-          krige_vgm <- automap::autofitVariogram(var_interp ~ 1, df_interp_mod, model = vg.model)
-          krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = df_interp_mod)
-          krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-          krige_map <- krige_map["var1.pred", , ]
-          interp_map <- terra::rast(krige_map)
-          interp_map <- terra::focal(interp_map, w = 7, fun = mean)
-          mydate <- data_model %>% dplyr::pull(.data$date)
-          mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-          ras_name <- base::paste0("krige_", mydate)
-          base::names(interp_map) <- ras_name
+          krige_vgm <- automap::autofitVariogram(var_interp ~ 1, data_model, model = vg.model)
+          krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = data_model)
         }
+
+        krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
+        krige_map <- krige_map["var1.pred", , ]
+        interp_map <- terra::rast(krige_map)
+        interp_map <- terra::focal(interp_map, w = 7, fun = mean)
+        mydate <- data_model %>% dplyr::pull(.data$date)
+        mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
+        ras_name <- base::paste0("krige_", mydate)
+        base::names(interp_map) <- ras_name
 
         return(interp_map)
       }
@@ -272,7 +265,7 @@ lcz_interp_map <- function(x,
 
   if (is.null(by) & tp.res %in% c("week")) { # Downscale to week
 
-    iweek <- df_processed %>%
+    iweek <- df_interp_mod %>%
       dplyr::group_by(.data$date) %>%
       dplyr::select(.data$date) %>%
       dplyr::ungroup() %>%
@@ -283,47 +276,32 @@ lcz_interp_map <- function(x,
     model_week <- function(iweek) {
       my_week <- iweek[1]
 
-      data_model <- df_processed %>%
+      data_model <- df_interp_mod%>%
         dplyr::mutate(
           iweek = lubridate::week(.data$date),
           my_id = base::as.factor(.data$my_id)
         ) %>%
         dplyr::filter(.data$iweek == paste0(my_week))
 
-      # merge data-model with lcz_station to get lcz class
-      df_interp_mod <-
-        sf::st_as_sf(data_model,
-          coords = c("longitude", "latitude"), crs = 4326
-        ) %>%
-        sf::st_intersection(lcz_shp) %>%
-        sf::st_transform(crs = 3857)
-
       if (LCZinterp == TRUE) {
         # [using ordinary kriging]
-        krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, df_interp_mod, model = vg.model)
-        krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = df_interp_mod)
-        krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-        krige_map <- krige_map["var1.pred", , ]
-        interp_map <- terra::rast(krige_map)
-        interp_map <- terra::focal(interp_map, w = 7, fun = mean)
-        mydate <- data_model %>% dplyr::pull(.data$date)
-        mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-        ras_name <- base::paste0("krige_", mydate)
-        base::names(interp_map) <- ras_name
+        krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, data_model, model = vg.model)
+        krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = data_model)
       } else {
-        krige_vgm <- automap::autofitVariogram(var_interp ~ 1, df_interp_mod, model = vg.model)
-        krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = df_interp_mod)
-        krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-        krige_map <- krige_map["var1.pred", , ]
-        interp_map <- terra::rast(krige_map)
-        interp_map <- terra::focal(interp_map, w = 7, fun = mean)
-        mydate <- data_model %>% dplyr::pull(.data$date)
-        mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-        ras_name <- base::paste0("krige_", mydate)
-        base::names(interp_map) <- ras_name
+        krige_vgm <- automap::autofitVariogram(var_interp ~ 1, data_model, model = vg.model)
+        krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = data_model)
       }
+      krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
+      krige_map <- krige_map["var1.pred", , ]
+      interp_map <- terra::rast(krige_map)
+      interp_map <- terra::focal(interp_map, w = 7, fun = mean)
+      mydate <- data_model %>% dplyr::pull(.data$date)
+      mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
+      ras_name <- base::paste0("krige_", mydate)
+      base::names(interp_map) <- ras_name
 
       return(interp_map)
+
     }
 
     mapWeek <- base::apply(iweek, 1, model_week)
@@ -351,7 +329,7 @@ lcz_interp_map <- function(x,
 
   if (is.null(by) & tp.res %in% c("month")) { # Downscale to month
 
-    imonth <- df_processed %>%
+    imonth <- df_interp_mod %>%
       dplyr::group_by(.data$date) %>%
       dplyr::select(.data$date) %>%
       dplyr::ungroup() %>%
@@ -362,45 +340,31 @@ lcz_interp_map <- function(x,
     model_month <- function(imonth) {
       my_month <- imonth[1]
 
-      data_model <- df_processed %>%
+      data_model <- df_interp_mod %>%
         dplyr::mutate(
           imonth = lubridate::month(.data$date),
           my_id = base::as.factor(.data$my_id)
         ) %>%
         dplyr::filter(.data$imonth == paste0(my_month))
 
-      # merge data-model with lcz_station to get lcz class
-      df_interp_mod <-
-        sf::st_as_sf(data_model,
-          coords = c("longitude", "latitude"), crs = 4326
-        ) %>%
-        sf::st_intersection(lcz_shp) %>%
-        sf::st_transform(crs = 3857)
 
       if (LCZinterp == TRUE) {
         # [using ordinary kriging]
-        krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, df_interp_mod, model = vg.model)
-        krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = df_interp_mod)
-        krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-        krige_map <- krige_map["var1.pred", , ]
-        interp_map <- terra::rast(krige_map)
-        interp_map <- terra::focal(interp_map, w = 7, fun = mean)
-        mydate <- data_model %>% dplyr::pull(.data$date)
-        mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-        ras_name <- base::paste0("krige_", mydate)
-        base::names(interp_map) <- ras_name
+        krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, data_model, model = vg.model)
+        krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = data_model)
       } else {
-        krige_vgm <- automap::autofitVariogram(var_interp ~ 1, df_interp_mod, model = vg.model)
-        krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = df_interp_mod)
-        krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-        krige_map <- krige_map["var1.pred", , ]
-        interp_map <- terra::rast(krige_map)
-        interp_map <- terra::focal(interp_map, w = 7, fun = mean)
-        mydate <- data_model %>% dplyr::pull(.data$date)
-        mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-        ras_name <- base::paste0("krige_", mydate)
-        base::names(interp_map) <- ras_name
+        krige_vgm <- automap::autofitVariogram(var_interp ~ 1, data_model, model = vg.model)
+        krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = data_model)
       }
+
+      krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
+      krige_map <- krige_map["var1.pred", , ]
+      interp_map <- terra::rast(krige_map)
+      interp_map <- terra::focal(interp_map, w = 7, fun = mean)
+      mydate <- data_model %>% dplyr::pull(.data$date)
+      mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
+      ras_name <- base::paste0("krige_", mydate)
+      base::names(interp_map) <- ras_name
 
       return(interp_map)
     }
@@ -430,7 +394,7 @@ lcz_interp_map <- function(x,
 
   if (is.null(by) & tp.res %in% c("quarter")) { # Downscale to quarter
 
-    iquarter <- df_processed %>%
+    iquarter <- df_interp_mod %>%
       dplyr::group_by(.data$date) %>%
       dplyr::select(.data$date) %>%
       dplyr::ungroup() %>%
@@ -441,45 +405,30 @@ lcz_interp_map <- function(x,
     model_quarter <- function(iquarter) {
       my_quarter <- iquarter[1]
 
-      data_model <- df_processed %>%
+      data_model <- df_interp_mod %>%
         dplyr::mutate(
           iquarter = lubridate::quarter(.data$date),
           my_id = base::as.factor(.data$my_id)
         ) %>%
         dplyr::filter(.data$iquarter == paste0(my_quarter))
 
-      # merge data-model with lcz_station to get lcz class
-      df_interp_mod <-
-        sf::st_as_sf(data_model,
-          coords = c("longitude", "latitude"), crs = 4326
-        ) %>%
-        sf::st_intersection(lcz_shp) %>%
-        sf::st_transform(crs = 3857)
-
       if (LCZinterp == TRUE) {
         # [using ordinary kriging]
-        krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, df_interp_mod, model = vg.model)
-        krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = df_interp_mod)
-        krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-        krige_map <- krige_map["var1.pred", , ]
-        interp_map <- terra::rast(krige_map)
-        interp_map <- terra::focal(interp_map, w = 7, fun = mean)
-        mydate <- data_model %>% dplyr::pull(.data$date)
-        mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-        ras_name <- base::paste0("krige_", mydate)
-        base::names(interp_map) <- ras_name
+        krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, data_model, model = vg.model)
+        krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = data_model)
       } else {
-        krige_vgm <- automap::autofitVariogram(var_interp ~ 1, df_interp_mod, model = vg.model)
-        krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = df_interp_mod)
-        krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-        krige_map <- krige_map["var1.pred", , ]
-        interp_map <- terra::rast(krige_map)
-        interp_map <- terra::focal(interp_map, w = 7, fun = mean)
-        mydate <- data_model %>% dplyr::pull(.data$date)
-        mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-        ras_name <- base::paste0("krige_", mydate)
-        base::names(interp_map) <- ras_name
+        krige_vgm <- automap::autofitVariogram(var_interp ~ 1, data_model, model = vg.model)
+        krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = data_model)
       }
+
+      krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
+      krige_map <- krige_map["var1.pred", , ]
+      interp_map <- terra::rast(krige_map)
+      interp_map <- terra::focal(interp_map, w = 7, fun = mean)
+      mydate <- data_model %>% dplyr::pull(.data$date)
+      mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
+      ras_name <- base::paste0("krige_", mydate)
+      base::names(interp_map) <- ras_name
 
       return(interp_map)
     }
@@ -509,7 +458,7 @@ lcz_interp_map <- function(x,
 
   if (is.null(by) & tp.res %in% c("year")) { # Downscale to year
 
-    iyear <- df_processed %>%
+    iyear <- df_interp_mod %>%
       dplyr::group_by(.data$date) %>%
       dplyr::select(.data$date) %>%
       dplyr::ungroup() %>%
@@ -520,45 +469,30 @@ lcz_interp_map <- function(x,
     model_year <- function(iyear) {
       my_year <- iyear[1]
 
-      data_model <- df_processed %>%
+      data_model <- df_interp_mod %>%
         dplyr::mutate(
           iyear = lubridate::year(.data$date),
           my_id = base::as.factor(.data$my_id)
         ) %>%
         dplyr::filter(.data$iyear == paste0(my_year))
 
-      # merge data-model with lcz_station to get lcz class
-      df_interp_mod <-
-        sf::st_as_sf(data_model,
-          coords = c("longitude", "latitude"), crs = 4326
-        ) %>%
-        sf::st_intersection(lcz_shp) %>%
-        sf::st_transform(crs = 3857)
-
       if (LCZinterp == TRUE) {
         # [using ordinary kriging]
-        krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, df_interp_mod, model = vg.model)
-        krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = df_interp_mod)
-        krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-        krige_map <- krige_map["var1.pred", , ]
-        interp_map <- terra::rast(krige_map)
-        interp_map <- terra::focal(interp_map, w = 7, fun = mean)
-        mydate <- data_model %>% dplyr::pull(.data$date)
-        mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-        ras_name <- base::paste0("krige_", mydate)
-        base::names(interp_map) <- ras_name
+        krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, data_model, model = vg.model)
+        krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = data_model)
       } else {
-        krige_vgm <- automap::autofitVariogram(var_interp ~ 1, df_interp_mod, model = vg.model)
-        krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = df_interp_mod)
-        krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-        krige_map <- krige_map["var1.pred", , ]
-        interp_map <- terra::rast(krige_map)
-        interp_map <- terra::focal(interp_map, w = 7, fun = mean)
-        mydate <- data_model %>% dplyr::pull(.data$date)
-        mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-        ras_name <- base::paste0("krige_", mydate)
-        base::names(interp_map) <- ras_name
+        krige_vgm <- automap::autofitVariogram(var_interp ~ 1, data_model, model = vg.model)
+        krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = data_model)
       }
+
+      krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
+      krige_map <- krige_map["var1.pred", , ]
+      interp_map <- terra::rast(krige_map)
+      interp_map <- terra::focal(interp_map, w = 7, fun = mean)
+      mydate <- data_model %>% dplyr::pull(.data$date)
+      mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
+      ras_name <- base::paste0("krige_", mydate)
+      base::names(interp_map) <- ras_name
 
       return(interp_map)
     }
@@ -607,10 +541,9 @@ lcz_interp_map <- function(x,
 
       # Extract the hemisphere
       hemisphere <- extract_hemisphere(raster = {{ x }})
-
-
       my_latitude <- df_processed$latitude[1]
       my_longitude <- df_processed$longitude[1]
+
       mydata <- openair::cutData(df_processed,
         type = by, hemisphere = hemisphere,
         latitude = my_latitude, longitude = my_longitude
@@ -647,26 +580,19 @@ lcz_interp_map <- function(x,
           # [using ordinary kriging]
           krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, df_interp_mod, model = vg.model)
           krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = df_interp_mod)
-          krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-          krige_map <- krige_map["var1.pred", , ]
-          interp_map <- terra::rast(krige_map)
-          interp_map <- terra::focal(interp_map, w = 7, fun = mean)
-          mydate <- data_model %>% dplyr::pull(.data$date)
-          mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-          ras_name <- base::paste0("krige_", mydate)
-          base::names(interp_map) <- ras_name
         } else {
           krige_vgm <- automap::autofitVariogram(var_interp ~ 1, df_interp_mod, model = vg.model)
           krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = df_interp_mod)
-          krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-          krige_map <- krige_map["var1.pred", , ]
-          interp_map <- terra::rast(krige_map)
-          interp_map <- terra::focal(interp_map, w = 7, fun = mean)
-          mydate <- data_model %>% dplyr::pull(.data$date)
-          mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-          ras_name <- base::paste0("krige_", mydate)
-          base::names(interp_map) <- ras_name
         }
+
+        krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
+        krige_map <- krige_map["var1.pred", , ]
+        interp_map <- terra::rast(krige_map)
+        interp_map <- terra::focal(interp_map, w = 7, fun = mean)
+        mydate <- data_model %>% dplyr::pull(.data$date)
+        mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
+        ras_name <- base::paste0("krige_", mydate)
+        base::names(interp_map) <- ras_name
 
         return(interp_map)
       }
@@ -748,26 +674,19 @@ lcz_interp_map <- function(x,
           # [using ordinary kriging]
           krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, df_interp_mod, model = vg.model)
           krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = df_interp_mod)
-          krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-          krige_map <- krige_map["var1.pred", , ]
-          interp_map <- terra::rast(krige_map)
-          interp_map <- terra::focal(interp_map, w = 7, fun = mean)
-          mydate <- data_model %>% dplyr::pull(.data$date)
-          mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-          ras_name <- base::paste0("krige_", mydate)
-          base::names(interp_map) <- ras_name
         } else {
           krige_vgm <- automap::autofitVariogram(var_interp ~ 1, df_interp_mod, model = vg.model)
           krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = df_interp_mod)
-          krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-          krige_map <- krige_map["var1.pred", , ]
-          interp_map <- terra::rast(krige_map)
-          interp_map <- terra::focal(interp_map, w = 7, fun = mean)
-          mydate <- data_model %>% dplyr::pull(.data$date)
-          mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-          ras_name <- base::paste0("krige_", mydate)
-          base::names(interp_map) <- ras_name
         }
+
+        krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
+        krige_map <- krige_map["var1.pred", , ]
+        interp_map <- terra::rast(krige_map)
+        interp_map <- terra::focal(interp_map, w = 7, fun = mean)
+        mydate <- data_model %>% dplyr::pull(.data$date)
+        mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
+        ras_name <- base::paste0("krige_", mydate)
+        base::names(interp_map) <- ras_name
 
         return(interp_map)
       }
@@ -827,26 +746,19 @@ lcz_interp_map <- function(x,
           # [using ordinary kriging]
           krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, df_interp_mod, model = vg.model)
           krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = df_interp_mod)
-          krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-          krige_map <- krige_map["var1.pred", , ]
-          interp_map <- terra::rast(krige_map)
-          interp_map <- terra::focal(interp_map, w = 7, fun = mean)
-          mydate <- data_model %>% dplyr::pull(.data$date)
-          mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-          ras_name <- base::paste0("krige_", mydate)
-          base::names(interp_map) <- ras_name
         } else {
           krige_vgm <- automap::autofitVariogram(var_interp ~ 1, df_interp_mod, model = vg.model)
           krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = df_interp_mod)
-          krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-          krige_map <- krige_map["var1.pred", , ]
-          interp_map <- terra::rast(krige_map)
-          interp_map <- terra::focal(interp_map, w = 7, fun = mean)
-          mydate <- data_model %>% dplyr::pull(.data$date)
-          mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-          ras_name <- base::paste0("krige_", mydate)
-          base::names(interp_map) <- ras_name
         }
+
+        krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
+        krige_map <- krige_map["var1.pred", , ]
+        interp_map <- terra::rast(krige_map)
+        interp_map <- terra::focal(interp_map, w = 7, fun = mean)
+        mydate <- data_model %>% dplyr::pull(.data$date)
+        mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
+        ras_name <- base::paste0("krige_", mydate)
+        base::names(interp_map) <- ras_name
 
         return(interp_map)
       }
