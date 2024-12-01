@@ -64,6 +64,9 @@ lcz_plot_parameters(
 }
 \value{
 A plot of the selected LCZ parameters in ggplot2 format
+
+#'@references
+Stewart, I., and T. Oke, 2012: Local climate zones for urban temperature studies. Bull. Amer. Meteor. Soc., 93, 1879–1900. https://doi.org/10.1175/BAMS-D-11-00019.1
 }
 \description{
 This function plots the parameters of an Local Climate Zone map.

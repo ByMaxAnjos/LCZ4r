@@ -80,6 +80,9 @@ specific_param <- lcz_params_list$parameter_name
 selected_params <- lcz_get_parameters(lcz_map, iselect = c("SVFmin"))
 }
 }
+\references{
+Stewart, I., and T. Oke, 2012: Local climate zones for urban temperature studies. Bull. Amer. Meteor. Soc., 93, 1879–1900. https://doi.org/10.1175/BAMS-D-11-00019.1
+}
 \keyword{Climate}
 \keyword{LCZ,}
 \keyword{Local}

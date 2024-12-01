@@ -16,7 +16,7 @@ lcz_get_map_usa(city = NULL, roi = NULL, isave_map = FALSE, isave_usa = FALSE)
 \item{isave_usa}{Logical. Set to TRUE if you wish to save the USA LCZ map as a raster TIFF file on your local machine.}
 }
 \value{
-A Terra raster TIFF file containing LCZ classes for the specified area of interest.
+A Terra raster TIFF file containing LCZ classes (1-17).
 }
 \description{
 This function retrieves the Local Climate Zone (LCZ) CONUS LCZ mapping dataset
@@ -32,6 +32,9 @@ my_lcz_city <- lcz_get_map_usa(city = "New York")
 custom_roi <- sf::st_read("custom_roi.shp")
 roi_lcz <- lcz_get_map_usa(roi = custom_roi)
 }
+}
+\references{
+Demuzere, M., Hankey, S., Mills, G., Zhang, W., Lu, T., & Bechtel, B. (2020). Combining expert and crowd-sourced training data to map urban form and functions for the continental US. Scientific Data, 7(1), 264. DOI:https://doi.org/10.1038/s41597-020-00605-z
 }
 \keyword{Climate}
 \keyword{LCZ,}

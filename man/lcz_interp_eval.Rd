@@ -54,7 +54,7 @@ lcz_interp_eval(
 \item{LCZinterp}{If set to TRUE (default), the LCZ interpolation approach is used. If set to FALSE, conventional interpolation without LCZ is used.}
 }
 \value{
-A map of LCZ-air temperature in \code{terra raster GeoTIF} format
+A summary table in CSV format containing evaluation metrics, including observed values, predicted values, and residuals.
 }
 \description{
 This function evaluate the variability of a spatial and temporal LCZ-Kring related - interpolation. More details: \url{https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html}

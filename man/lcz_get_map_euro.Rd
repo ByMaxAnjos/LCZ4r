@@ -21,7 +21,7 @@ lcz_get_map_euro(
 \item{isave_euro}{Logical. Set to TRUE if you wish to save the European LCZ map as a raster TIFF file on your local machine.}
 }
 \value{
-A Terra raster TIFF file containing LCZ classes for the specified area of interest.
+A Terra raster TIFF file containing LCZ classes (1-17).
 }
 \description{
 This function retrieves the Local Climate Zone (LCZ) European mapping dataset
@@ -37,6 +37,9 @@ my_lcz_city <- lcz_get_map_euro(city = "Berlin")
 custom_roi <- sf::st_read("custom_roi.shp")
 roi_lcz <- lcz_get_map_euro(roi = custom_roi)
 }
+}
+\references{
+Demuzere, M., Bechtel, B., Middel, A., & Mills, G. (2019). Mapping Europe into local climate zones. PLOS ONE, 14(4), e0214474. DOI:https://doi.org/10.1371/journal.pone.0214474
 }
 \keyword{Climate}
 \keyword{LCZ,}
