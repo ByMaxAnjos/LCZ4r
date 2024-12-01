@@ -38,24 +38,6 @@ knitr::opts_chunk$set(
 
 The **`LCZ4r` general functions** are designed to facilitate the retrieval, analysis, and visualization of Local Climate Zones (LCZ) when LCZ related data is not readily available. They are engineered to get the LZ map, compute LCZ classes, and extract specific parameters of interest, including Sky View Factor (SVF), impervious surface fraction, and roughness element height, among others.
 
-## Quickstart DEMO video
-
-<a href="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/a534cfaa-37d2-4c1d-8cec-e5e2a17e8806" target="_blank">
-
-<p style="text-align:center;">
-
-<img src="fig_general_video.png" alt="Introduction to General Functions" width="60%"/>
-
-</p>
-
-<p style="text-align:center">
-
-(Click to Watch video)
-
-</p>
-
-</a>
-
 ## Getting Started
 
 The general functions, each serving a unique purpose:
@@ -65,6 +47,7 @@ The general functions, each serving a unique purpose:
 | `lcz_get_map()`         | Download your LCZ map from Global dataset                    | Not needed    | Yes                      |
 | `lcz_get_map_euro()`    | Download your LCZ map from European dataset                  | Not needed    | Yes                      |
 | `lcz_get_map_usa()`     | Download your LCZ map from Continental United States dataset | Not needed    | Yes                      |
+| `lcz_get_map_generator()`     | Download your LCZ map from LCZ Generator Platform | Not needed    | Yes                      |
 | `lcz_get_map2()`        | Download the LCZ map                                         | Not needed    | Not needed               |
 | `lcz_plot_map()`        | Visualize the LCZ map                                      | Not needed    | Not needed               |
 | `lcz_cal_area()`        | Calculate LCZ areas                                        | Not needed    | Not needed               |
@@ -167,13 +150,30 @@ knitr::include_graphics("fig_general_1_7.png")
 
 ##  {.unnumbered}
 
-Here are some tips to enhance your experience:
+## Download LCZ map from LCZ Generator Platform
 
--   1\. As an alternative, users can download their own LCZ map from [WUDAPT](https://www.wudapt.org/) or [LCZ generator application](https://lcz-generator.rub.de/submissions) and integrate them into the LCZ4r system using the lcz_get_map2(LCZmap, city = "your city").
+To seamlessly integrate LCZ maps into the LCZ4r package, follow these steps to obtain the ID code for your desired city:
 
--   2\. Fallback Option: In rare instances where the lcz_get_map() function faces inconsistencies (e.g., due to connectivity issues), you can rely on lcz_get_map2() as an alternative solution.
+* 1. **Access the LCZ Generator**: Visit the [LCZ Generator page](https://lcz-generator.rub.de/).
+* 2. **Locate your city**: navigate to the [Submissions](https://lcz-generator.rub.de/submissions) section and search for your city using the search bar.
+* 3. **Obtain the ID from Factsheet**: click **Show Factsheet** next to your city's submission and copy the **ID** from *Submission Information* section (e.g., **3110e623fbe4e73b1cde55f0e9832c4f5640ac21**) 
 
--   3\. Custom ROI: Utilize the lcz_get_map() function along with a shapefile for your ROI by coding lcz_get_map(roi="your_shp"). Refer to the R package [sf](https://r-spatial.github.io/sf/) documentation for guidance on loading the shapefile into R. \## Calculate LCZ areas
+* 4. Example for Reference: View this sample [LCZ Factsheet](https://lcz-generator.rub.de/factsheets/3110e623fbe4e73b1cde55f0e9832c4f5640ac21/3110e623fbe4e73b1cde55f0e9832c4f5640ac21_factsheet.html) to understand the format and details.
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+lcz_map <- lcz_get_map_generator(ID="3110e623fbe4e73b1cde55f0e9832c4f5640ac21")
+lcz_plot_map(lcz_map)
+
+```
+
+```{r echo=F, out.width = '100%', fig.align='center'}
+knitr::include_graphics("fig_generator.png")
+```
+
+
+💡**Tips** to enhance your experience:
+
+* Custom Region Of Interest: Utilize the lcz_get_map() function along with a shapefile for your ROI by coding lcz_get_map(roi="your_shp"). Refer to the R package [sf](https://r-spatial.github.io/sf/) documentation for guidance on loading the shapefile into R. \## Calculate LCZ areas
 
 ## Calculate LCZ areas
 
@@ -199,39 +199,39 @@ Here's a glimpse of the available LCZ parameters:
 
 | Code | Parameter                   | Description                         | Unit             |
 |-----------------|-----------------|---------------------|-----------------|
-| SVF1 | Sky View Factor             | Minimum Sky View Factor             | [0-1]            |
-| SVF2 | Sky View Factor             | Maximum Sky View Factor             | [0-1]            |
-| SVF3 | Sky View Factor             | Mean Sky View Factor                | [0-1]            |
-| AR1  | Aspect ratio                | Minimum Aspect Ratio                | [0-3]            |
-| AR2  | Aspect ratio                | Maximum Aspect Ratio                | [0-3]            |
-| AR3  | Aspect ratio                | Mean Aspect Ratio                   | [0-3]            |
-| BSF1 | Building Surface Fraction   | Minimum Building Surface Fraction   | [%]              |
-| BSF2 | Building Surface Fraction   | Maximum Building Surface Fraction   | [%]              |
-| BSF3 | Building Surface Fraction   | Mean Building Surface Fraction      | [%]              |
-| ISF1 | Impervious Surface Fraction | Minimum Impervious Surface Fraction | [%]              |
-| ISF2 | Impervious Surface Fraction | Maximum Impervious Surface Fraction | [%]              |
-| ISF3 | Impervious Surface Fraction | Mean Impervious Surface Fraction | [%]              |
-| PSF1 | Vegetation Surface Fraction | Minimum Vegetation Surface Fraction | [%]              |
-| PSF2 | Vegetation Surface Fraction | Maximum Vegetation Surface Fraction | [%]              |
-| PSF3 | Vegetation Surface Fraction | Mean Vegetation Surface Fraction    | [%]              |
-| TSF1 | Tree Surface Fraction       | Minimum Tree Surface Fraction       | [%]              |
-| TSF2 | Tree Surface Fraction       | Maximum Tree Surface Fraction       | [%]              |
-| TSF3 | Tree Surface Fraction       | Mean Tree Surface Fraction          | [%]              |
-| HRE1 | Height Roughness Elements   | Minimum Height Roughness Elements   | [meters]         |
-| HRE2 | Height Roughness Elements   | Maximum Height Roughness Elements   | [meters]         |
-| HRE3 | Height Roughness Elements   | Mean Height Roughness Elements      | [meters]         |
-| TRC1 | Terrain Roughness class     | Minimum Terrain Roughness class     | [meters]         |
-| TRC2 | Terrain Roughness class     | Maximum Terrain Roughness class     | [meters]         |
-| TRC3 | Terrain Roughness class     | Mean Terrain Roughness class        | [meters]         |
-| SAD1 | Surface Admittance          | Minimum Surface Admittance          | [J m-2 s1/2 K-1] |
-| SAD2 | Surface Admittance          | Maximum Surface Admittance          | [J m-2 s1/2 K-1] |
-| SAD3 | Surface Admittance          | Mean Surface Admittance             | [J m-2 s1/2 K-1] |
-| SAL1 | Surface Albedo              | Minimum Surface Albedo              | [0-0.5]          |
-| SAL2 | Surface Albedo              | Maximum Surface Albedo              | [0-0.5]          |
-| SAL3 | Surface Albedo              | Mean Surface Albedo                 | [0-0.5]          |
-| AH1  | Anthropogenic Heat Outupt   | Minimum Anthropogenic Heat Outupt   | [W m-2]          |
-| AH2  | Anthropogenic Heat Outupt   | Maximum Anthropogenic Heat Outupt   | [W m-2]          |
-| AH3  | Anthropogenic Heat Outupt   | Mean Anthropogenic Heat Outupt      | [W m-2]          |
+| SVFmin | Sky View Factor             | Minimum Sky View Factor             | [0-1]            |
+| SVFmax | Sky View Factor             | Maximum Sky View Factor             | [0-1]            |
+| SVFmean | Sky View Factor             | Mean Sky View Factor                | [0-1]            |
+| ARmin  | Aspect ratio                | Minimum Aspect Ratio                | [0-3]            |
+| ARmax  | Aspect ratio                | Maximum Aspect Ratio                | [0-3]            |
+| ARmean  | Aspect ratio                | Mean Aspect Ratio                   | [0-3]            |
+| BSFmin | Building Surface Fraction   | Minimum Building Surface Fraction   | [%]              |
+| BSFmax | Building Surface Fraction   | Maximum Building Surface Fraction   | [%]              |
+| BSFmean | Building Surface Fraction   | Mean Building Surface Fraction      | [%]              |
+| ISFmin | Impervious Surface Fraction | Minimum Impervious Surface Fraction | [%]              |
+| ISFmax | Impervious Surface Fraction | Maximum Impervious Surface Fraction | [%]              |
+| ISFmean | Impervious Surface Fraction | Mean Impervious Surface Fraction | [%]              |
+| PSFmin | Vegetation Surface Fraction | Minimum Vegetation Surface Fraction | [%]              |
+| PSFmax | Vegetation Surface Fraction | Maximum Vegetation Surface Fraction | [%]              |
+| PSFmean | Vegetation Surface Fraction | Mean Vegetation Surface Fraction    | [%]              |
+| TSFmin | Tree Surface Fraction       | Minimum Tree Surface Fraction       | [%]              |
+| TSFmax | Tree Surface Fraction       | Maximum Tree Surface Fraction       | [%]              |
+| TSFmean | Tree Surface Fraction       | Mean Tree Surface Fraction          | [%]              |
+| HREmin | Height Roughness Elements   | Minimum Height Roughness Elements   | [meters]         |
+| HREmax | Height Roughness Elements   | Maximum Height Roughness Elements   | [meters]         |
+| HREmean | Height Roughness Elements   | Mean Height Roughness Elements      | [meters]         |
+| TRCmin | Terrain Roughness class     | Minimum Terrain Roughness class     | [meters]         |
+| TRCmax | Terrain Roughness class     | Maximum Terrain Roughness class     | [meters]         |
+| TRCmean | Terrain Roughness class     | Mean Terrain Roughness class        | [meters]         |
+| SADmin | Surface Admittance          | Minimum Surface Admittance          | [J m-2 s1/2 K-1] |
+| SADmax | Surface Admittance          | Maximum Surface Admittance          | [J m-2 s1/2 K-1] |
+| SADmean | Surface Admittance          | Mean Surface Admittance             | [J m-2 s1/2 K-1] |
+| SALmin | Surface Albedo              | Minimum Surface Albedo              | [0-0.5]          |
+| SALmax | Surface Albedo              | Maximum Surface Albedo              | [0-0.5]          |
+| SALmean | Surface Albedo              | Mean Surface Albedo                 | [0-0.5]          |
+| AHmin  | Anthropogenic Heat Outupt   | Minimum Anthropogenic Heat Outupt   | [W m-2]          |
+| AHmax  | Anthropogenic Heat Outupt   | Maximum Anthropogenic Heat Outupt   | [W m-2]          |
+| AHmean  | Anthropogenic Heat Outupt   | Mean Anthropogenic Heat Outupt      | [W m-2]          |
 | z0   | Roughness Lenght            | Roughness Lenght class              | [meters]         |
 
 ## Rio de Janeiro LCZ parameters
@@ -252,7 +252,7 @@ knitr::include_graphics("fig_general_3.png")
 ### Sky View Factor
 
 ```{r eval=FALSE, message=FALSE, warning=FALSE}
-lcz_plot_parameters(LCZpar, iselect = "SVF3")
+lcz_plot_parameters(LCZpar, iselect = "SVFmean")
 ```
 
 ```{r echo=F, out.width = '100%', fig.align='center'}
@@ -262,7 +262,7 @@ knitr::include_graphics("fig_general_4.png")
 ### Building Surface Fraction
 
 ```{r eval=FALSE}
-lcz_plot_parameters(LCZpar, iselect = "BSF2")
+lcz_plot_parameters(LCZpar, iselect = "BSFmax")
 ```
 
 ```{r echo=F, out.width = '100%', fig.align='center'}

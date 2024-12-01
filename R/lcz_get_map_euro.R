@@ -8,9 +8,12 @@
 #' @param roi Optionally, you can provide a Region of Interest (ROI) in ESRI shapefile format to clip the LCZ map to a custom area.
 #' @param isave_map Logical. Set to TRUE if you wish to save the resulting clipped map as a raster TIFF file on your local machine.
 #' @param isave_euro Logical. Set to TRUE if you wish to save the European LCZ map as a raster TIFF file on your local machine.
-#' @return A Terra raster TIFF file containing LCZ classes for the specified area of interest.
+#' @return A Terra raster TIFF file containing LCZ classes (1-17).
 #'
 #' @export
+#'
+#' @references
+#' Demuzere, M., Bechtel, B., Middel, A., & Mills, G. (2019). Mapping Europe into local climate zones. PLOS ONE, 14(4), e0214474. DOI:https://doi.org/10.1371/journal.pone.0214474
 #'
 #' @examples
 #' \dontrun{

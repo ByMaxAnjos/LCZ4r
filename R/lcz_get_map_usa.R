@@ -8,9 +8,12 @@
 #' @param roi Optionally, you can provide a Region of Interest (ROI) in ESRI shapefile format to clip the LCZ map to a custom area.
 #' @param isave_map Logical. Set to TRUE if you wish to save the resulting clipped map as a raster TIFF file on your local machine.
 #' @param isave_usa Logical. Set to TRUE if you wish to save the USA LCZ map as a raster TIFF file on your local machine.
-#' @return A Terra raster TIFF file containing LCZ classes for the specified area of interest.
+#' @return A Terra raster TIFF file containing LCZ classes (1-17).
 #'
 #' @export
+#'
+#' @references
+#' Demuzere, M., Hankey, S., Mills, G., Zhang, W., Lu, T., & Bechtel, B. (2020). Combining expert and crowd-sourced training data to map urban form and functions for the continental US. Scientific Data, 7(1), 264. DOI:https://doi.org/10.1038/s41597-020-00605-z
 #'
 #' @examples
 #' \dontrun{

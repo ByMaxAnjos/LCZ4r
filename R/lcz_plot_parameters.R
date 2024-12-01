@@ -1,12 +1,42 @@
-
 #' Visualize LCZ parameters
 #'
 #' This function plots the parameters of an Local Climate Zone map.
 #'
 #' @param x The LCZ map in SpatRaster in a stack format.
-#' @param iselect Character vector. Specify one or more parameter names to retrieve specific
-#'                parameters. For example, "SVF2" to get the minimum Sky View Factor,
-#'                or c("z0", "BSF2") to select multiple parameters. See the complete  parameter list here: \url{https://bymaxanjos.github.io/LCZ4r/articles/Introd_general_LCZ4r.html#retrieve-and-visualize-lcz-parameters}.
+#' @param iselect Code vector. Specify one or more parameter:
+#' \itemize{
+#'   \item \strong{SVFmean}: Mean Sky View Factor
+#'   \item \strong{SVFmax}: Maximum Sky View Factor
+#'   \item \strong{SVFmin}: Minimum Sky View Factor
+#'   \item \strong{ARmean}: Mean Aspect Ratio
+#'   \item \strong{ARmax}: Maximum Aspect Ratio
+#'   \item \strong{ARmin}: Minimum Aspect Ratio
+#'   \item \strong{BSFmean}: Mean Building Surface Fraction
+#'   \item \strong{BSFmax}: Maximum Building Surface Fraction
+#'   \item \strong{BSFmin}: Minimum Building Surface Fraction
+#'   \item \strong{ISFmean}: Mean Impervious Surface Fraction
+#'   \item \strong{ISFmax}: Maximum Impervious Surface Fraction
+#'   \item \strong{ISFmin}: Minimum Impervious Surface Fraction
+#'   \item \strong{PSFmean}: Mean Vegetation Surface Fraction
+#'   \item \strong{PSFmax}: Maximum Vegetation Surface Fraction
+#'   \item \strong{PSFmin}: Minimum Vegetation Surface Fraction
+#'   \item \strong{TSFmean}: Mean Tree Surface Fraction
+#'   \item \strong{TSFmax}: Maximum Tree Surface Fraction
+#'   \item \strong{TSFmin}: Minimum Tree Surface Fraction
+#'   \item \strong{HREmean}: Mean Height Roughness Elements
+#'   \item \strong{HREmax}: Maximum Height Roughness Elements
+#'   \item \strong{HREmin}: Minimum Height Roughness Elements
+#'   \item \strong{TRCmean}: Mean Terrain Roughness class
+#'   \item \strong{TRCmax}: Maximum Terrain Roughness class
+#'   \item \strong{TRCmin}: Minimum Terrain Roughness class
+#'   \item \strong{SADmean}: Mean Surface Admittance
+#'   \item \strong{SADmax}: Maximum Surface Admittance
+#'   \item \strong{SADmin}: Minimum Surface Admittance
+#'   \item \strong{AHmean}: Mean Anthropogenic Heat Outupt
+#'   \item \strong{AHmax}: Maximum Anthropogenic Heat Outupt
+#'   \item \strong{AHmin}: Minimum Anthropogenic Heat Outupt
+#'   \item \strong{z0}: Roughness Lenght class
+#' }
 #' @param isave Logical, indicating whether to save the plot to your directory. Default is FALSE.
 #' @param save_extension File format for saving the plot. Options: "png", "jpg", "jpeg", "tif", "pdf", "svg" (default is "png").
 #' @param inclusive Set to TRUE to a colorblind-friendly palette.
@@ -15,15 +45,18 @@
 #'
 #' @return A plot of the selected LCZ parameters in ggplot2 format
 #'
+#'#'@references
+#' Stewart, I., and T. Oke, 2012: Local climate zones for urban temperature studies. Bull. Amer. Meteor. Soc., 93, 1879–1900. https://doi.org/10.1175/BAMS-D-11-00019.1
+#'
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' # Plot the minimum Sky View Factor (SVF1) for your city
-#' lcz_plot_parameters(lcz_map, iselect = "SVF1")
+#' # Plot the mean Sky View Factor (SVFmean) for your city
+#' lcz_plot_parameters(lcz_map, iselect = "SVFmean")
 #'
 #' # Plot multiple parameters and save them to the LCZ4r_output directory
-#' lcz_plot_parameters(lcz_map, iselect = c("BSF3", "AH3"))
+#' lcz_plot_parameters(lcz_map, iselect = c("BSFmean", "AHmean"))
 #' }
 #' @importFrom rlang .data
 #'
@@ -50,103 +83,103 @@ lcz_plot_parameters <- function(x,
   LCZpar <- {{ x }}[[-1]]
 
   take_names <- function(x) {
-    if (x == "SVF1") {
+    if (x == "SVFmin") {
       return("Minimum Sky View Factor")
     }
-    if (x == "SVF2") {
+    if (x == "SVFmax") {
       return("Maximum Sky View Factor")
     }
-    if (x == "SVF3") {
+    if (x == "SVFmean") {
       return("Mean Sky View Factor")
     }
-    if (x == "AR1") {
+    if (x == "ARmin") {
       return("Minimum Aspect Ratio")
     }
-    if (x == "AR2") {
+    if (x == "ARmax") {
       return("Maximum Aspect Ratio")
     }
-    if (x == "AR3") {
+    if (x == "ARmean") {
       return("Mean Aspect Ratio")
     }
-    if (x == "BSF1") {
+    if (x == "BSFmin") {
       return("Minimum Building Surface Fraction")
     }
-    if (x == "BSF2") {
+    if (x == "BSFmax") {
       return("Maximum Building Surface Fraction")
     }
-    if (x == "BSF3") {
+    if (x == "BSFmean") {
       return("Mean Building Surface Fraction")
     }
-    if (x == "ISF1") {
+    if (x == "ISFmin") {
       return("Minimum Impervious Surface Fraction")
     }
-    if (x == "ISF2") {
+    if (x == "ISFmax") {
       return("Maximum Impervious Surface Fraction")
     }
-    if (x == "ISF3") {
+    if (x == "ISFmean") {
       return("Mean Impervious Surface Fraction")
     }
-    if (x == "PSF1") {
+    if (x == "PSFmin") {
       return("Minimum Pervious Surface Fraction")
     }
-    if (x == "PSF2") {
+    if (x == "PSFmax") {
       return("Maximum Pervious Surface Fraction")
     }
-    if (x == "PSF3") {
+    if (x == "PSFmean") {
       return("Mean Pervious Surface Fraction")
     }
-    if (x == "TSF1") {
+    if (x == "TSFmin") {
       return("Minimum Tree Surface Fraction")
     }
-    if (x == "TSF2") {
+    if (x == "TSFmax") {
       return("Maximum Tree Surface Fraction")
     }
-    if (x == "TSF3") {
+    if (x == "TSFmean") {
       return("Mean Tree Surface Fraction")
     }
-    if (x == "HRE1") {
+    if (x == "HREmin") {
       return("Minimum Height Roughness Elements")
     }
-    if (x == "HRE2") {
+    if (x == "HREmax") {
       return("Maximum Height Roughness Elements")
     }
-    if (x == "HRE3") {
+    if (x == "HREmean") {
       return("Mean Height Roughness Elements")
     }
-    if (x == "TRC1") {
+    if (x == "TRCmin") {
       return("Minimum Terrain Roughness class")
     }
-    if (x == "TRC2") {
+    if (x == "TRCmax") {
       return("Maximum Terrain Roughness Class")
     }
-    if (x == "TRC3") {
+    if (x == "TRCmean") {
       return("Mean Terrain Roughness Class")
     }
-    if (x == "SAD1") {
+    if (x == "SADmin") {
       return("Minimum Surface Admittance")
     }
-    if (x == "SAD2") {
+    if (x == "SADmax") {
       return("Maximum Surface Admittance")
     }
-    if (x == "SAD3") {
+    if (x == "SADmean") {
       return("Mean Surface Admittance")
     }
-    if (x == "SAL1") {
+    if (x == "SALmin") {
       return("Minimum Surface Albedo")
     }
-    if (x == "SAL2") {
+    if (x == "SALmax") {
       return("Maximum Surface Aldedo")
     }
-    if (x == "SAL3") {
+    if (x == "SALmean") {
       return("Mean Surface Albedo")
     }
-    if (x == "AH1") {
+    if (x == "AHmin") {
       return("Minimum Anthropogenic Heat Outupt")
     }
-    if (x == "AH2") {
+    if (x == "AHmax") {
       return("Maximum Anthropogenic Heat Outupt")
     }
-    if (x == "AH3") {
+    if (x == "AHmean") {
       return("Mean Anthropogenic Heat Outupt")
     }
     if (x == "z0") {
@@ -155,103 +188,103 @@ lcz_plot_parameters <- function(x,
   }
 
   take_unit <- function(x) {
-    if (x == "SVF1") {
+    if (x == "SVFmin") {
       return("[0 - 1]")
     }
-    if (x == "SVF2") {
+    if (x == "SVFmax") {
       return("[0 - 1]")
     }
-    if (x == "SVF3") {
+    if (x == "SVFmean") {
       return("[0 - 1]")
     }
-    if (x == "AR1") {
+    if (x == "ARmin") {
       return("[0 - 3]")
     }
-    if (x == "AR2") {
+    if (x == "ARmax") {
       return("[0 - 3]")
     }
-    if (x == "AR3") {
+    if (x == "ARmean") {
       return("[0 - 3]")
     }
-    if (x == "BSF1") {
+    if (x == "BSFmin") {
       return("[%]")
     }
-    if (x == "BSF2") {
+    if (x == "BSFmax") {
       return("[%]")
     }
-    if (x == "BSF3") {
+    if (x == "BSFmean") {
       return("[%]")
     }
-    if (x == "ISF1") {
+    if (x == "ISFmin") {
       return("[%]")
     }
-    if (x == "ISF2") {
+    if (x == "ISFmax") {
       return("[%]")
     }
-    if (x == "ISF3") {
+    if (x == "ISFmean") {
       return("[%]")
     }
-    if (x == "PSF1") {
+    if (x == "PSFmin") {
       return("[%]")
     }
-    if (x == "PSF2") {
+    if (x == "PSFmax") {
       return("[%]")
     }
-    if (x == "PSF3") {
+    if (x == "PSFmean") {
       return("[%]")
     }
-    if (x == "TSF1") {
+    if (x == "TSFmin") {
       return("[%]")
     }
-    if (x == "TSF2") {
+    if (x == "TSFmax") {
       return("[%]")
     }
-    if (x == "TSF3") {
+    if (x == "TSFmean") {
       return("[%]")
     }
-    if (x == "HRE1") {
+    if (x == "HREmin") {
       return("[m]")
     }
-    if (x == "HRE2") {
+    if (x == "HREmax") {
       return("[m]")
     }
-    if (x == "HRE3") {
+    if (x == "HREmean") {
       return("[m]")
     }
-    if (x == "TRC1") {
+    if (x == "TRCmin") {
       return("[m]")
     }
-    if (x == "TRC2") {
+    if (x == "TRCmax") {
       return("[m]")
     }
-    if (x == "TRC3") {
+    if (x == "TRCmean") {
       return("[m]")
     }
-    if (x == "SAD1") {
+    if (x == "SADmin") {
       return("[J m-2 s1/2 K-1]")
     }
-    if (x == "SAD2") {
+    if (x == "SADmax") {
       return("[J m-2 s1/2 K-1]")
     }
-    if (x == "SAD3") {
+    if (x == "SADmean") {
       return("[J m-2 s1/2 K-1]")
     }
-    if (x == "SAL1") {
+    if (x == "SALmin") {
       return("[0 - 0.5]")
     }
-    if (x == "SAL2") {
+    if (x == "SALmax") {
       return("[0 - 0.5]")
     }
-    if (x == "SAL3") {
+    if (x == "SALmean") {
       return("[0 - 0.5]")
     }
-    if (x == "AH1") {
+    if (x == "AHmin") {
       return("[W m-2]")
     }
-    if (x == "AH2") {
+    if (x == "AHmax") {
       return("[W m-2]")
     }
-    if (x == "AH3") {
+    if (x == "AHmean") {
       return("[W m-2]")
     }
     if (x == "z0") {
@@ -261,103 +294,103 @@ lcz_plot_parameters <- function(x,
 
   if (inclusive == TRUE) {
     take_color <- function(x) {
-      if (x == "SVF1") {
+      if (x == "SVFmin") {
         return("Archambault")
       }
-      if (x == "SVF2") {
+      if (x == "SVFmax") {
         return("Archambault")
       }
-      if (x == "SVF3") {
+      if (x == "SVFmean") {
         return("Archambault")
       }
-      if (x == "AR1") {
+      if (x == "ARmin") {
         return("Ingres")
       }
-      if (x == "AR2") {
+      if (x == "ARmax") {
         return("Ingres")
       }
-      if (x == "AR3") {
+      if (x == "ARmean") {
         return("Ingres")
       }
-      if (x == "BSF1") {
+      if (x == "BSFmin") {
         return("Cassatt1")
       }
-      if (x == "BSF2") {
+      if (x == "BSFmax") {
         return("Cassatt1")
       }
-      if (x == "BSF3") {
+      if (x == "BSFmean") {
         return("Cassatt1")
       }
-      if (x == "ISF1") {
+      if (x == "ISFmin") {
         return("Cassatt2")
       }
-      if (x == "ISF2") {
+      if (x == "ISFmax") {
         return("Cassatt2")
       }
-      if (x == "ISF3") {
+      if (x == "ISFmean") {
         return("Cassatt2")
       }
-      if (x == "PSF1") {
+      if (x == "PSFmin") {
         return("VanGogh3")
       }
-      if (x == "PSF2") {
+      if (x == "PSFmax") {
         return("VanGogh3")
       }
-      if (x == "PSF3") {
+      if (x == "PSFmean") {
         return("VanGogh3")
       }
-      if (x == "TSF1") {
+      if (x == "TSFmin") {
         return("Hokusai3")
       }
-      if (x == "TSF2") {
+      if (x == "TSFmax") {
         return("Hokusai3")
       }
-      if (x == "TSF3") {
+      if (x == "TSFmean") {
         return("Hokusai3")
       }
-      if (x == "HRE1") {
+      if (x == "HREmin") {
         return("Hokusai2")
       }
-      if (x == "HRE2") {
+      if (x == "HREmax") {
         return("Hokusai2")
       }
-      if (x == "HRE3") {
+      if (x == "HREmean") {
         return("Hokusai2")
       }
-      if (x == "TRC1") {
+      if (x == "TRCmin") {
         return("Pissaro")
       }
-      if (x == "TRC2") {
+      if (x == "TRCmax") {
         return("Pissaro")
       }
-      if (x == "TRC3") {
+      if (x == "TRCmean") {
         return("Pissaro")
       }
-      if (x == "SAD1") {
+      if (x == "SADmin") {
         return("Tam")
       }
-      if (x == "SAD2") {
+      if (x == "SADmax") {
         return("Tam")
       }
-      if (x == "SAD3") {
+      if (x == "SADmean") {
         return("Tam")
       }
-      if (x == "SAL1") {
+      if (x == "SALmin") {
         return("Renoir")
       }
-      if (x == "SAL2") {
+      if (x == "SALmax") {
         return("Renoir")
       }
-      if (x == "SAL3") {
+      if (x == "SALmean") {
         return("Renoir")
       }
-      if (x == "AH1") {
+      if (x == "AHmin") {
         return("Demuth")
       }
-      if (x == "AH2") {
+      if (x == "AHmax") {
         return("Demuth")
       }
-      if (x == "AH3") {
+      if (x == "AHmean") {
         return("Demuth")
       }
       if (x == "z0") {
@@ -370,103 +403,103 @@ lcz_plot_parameters <- function(x,
     names_par$color <- base::sapply(names_par$value, take_color)
   } else {
     take_color <- function(x) {
-      if (x == "SVF1") {
+      if (x == "SVFmin") {
         return("Archambault")
       }
-      if (x == "SVF2") {
+      if (x == "SVFmax") {
         return("Archambault")
       }
-      if (x == "SVF3") {
+      if (x == "SVFmean") {
         return("Archambault")
       }
-      if (x == "AR1") {
+      if (x == "ARmin") {
         return("Greek")
       }
-      if (x == "AR2") {
+      if (x == "ARmax") {
         return("Greek")
       }
-      if (x == "AR3") {
+      if (x == "ARmean") {
         return("Greek")
       }
-      if (x == "BSF1") {
+      if (x == "BSFmin") {
         return("VanGogh1")
       }
-      if (x == "BSF2") {
+      if (x == "BSFmax") {
         return("VanGogh1")
       }
-      if (x == "BSF3") {
+      if (x == "BSFmean") {
         return("VanGogh1")
       }
-      if (x == "ISF1") {
+      if (x == "ISFmin") {
         return("VanGogh2")
       }
-      if (x == "ISF2") {
+      if (x == "ISFmax") {
         return("VanGogh2")
       }
-      if (x == "ISF3") {
+      if (x == "ISFmean") {
         return("VanGogh2")
       }
-      if (x == "PSF1") {
+      if (x == "PSFmin") {
         return("VanGogh3")
       }
-      if (x == "PSF2") {
+      if (x == "PSFmax") {
         return("VanGogh3")
       }
-      if (x == "PSF3") {
+      if (x == "PSFmean") {
         return("VanGogh3")
       }
-      if (x == "TSF1") {
+      if (x == "TSFmin") {
         return("Hokusai3")
       }
-      if (x == "TSF2") {
+      if (x == "TSFmax") {
         return("Hokusai3")
       }
-      if (x == "TSF3") {
+      if (x == "TSFmean") {
         return("Hokusai3")
       }
-      if (x == "HRE1") {
+      if (x == "HREmin") {
         return("Hokusai2")
       }
-      if (x == "HRE2") {
+      if (x == "HREmax") {
         return("Hokusai2")
       }
-      if (x == "HRE3") {
+      if (x == "HREmean") {
         return("Hokusai2")
       }
-      if (x == "TRC1") {
+      if (x == "TRCmin") {
         return("Pissaro")
       }
-      if (x == "TRC2") {
+      if (x == "TRCmax") {
         return("Pissaro")
       }
-      if (x == "TRC3") {
+      if (x == "TRCmean") {
         return("Pissaro")
       }
-      if (x == "SAD1") {
+      if (x == "SADmin") {
         return("Tam")
       }
-      if (x == "SAD2") {
+      if (x == "SADmax") {
         return("Tam")
       }
-      if (x == "SAD3") {
+      if (x == "SADmean") {
         return("Tam")
       }
-      if (x == "SAL1") {
+      if (x == "SALmin") {
         return("Renoir")
       }
-      if (x == "SAL2") {
+      if (x == "SALmax") {
         return("Renoir")
       }
-      if (x == "SAL3") {
+      if (x == "SALmean") {
         return("Renoir")
       }
-      if (x == "AH1") {
+      if (x == "AHmin") {
         return("Manet")
       }
-      if (x == "AH2") {
+      if (x == "AHmax") {
         return("Manet")
       }
-      if (x == "AH3") {
+      if (x == "AHmean") {
         return("Manet")
       }
       if (x == "z0") {

@@ -71,6 +71,7 @@ reference:
   - lcz_get_map
   - lcz_get_map_euro
   - lcz_get_map_usa
+  - lcz_get_map_generator
   - lcz_get_map2
   - lcz_plot_map
   - lcz_cal_area
@@ -86,6 +87,7 @@ reference:
   - lcz_interp_map
   - lcz_anomaly_map
   - lcz_plot_interp
+  - lcz_interp_eval
   - lcz_uhi_intensity
 
 - title: "LCZ Tutorials and Data Access"

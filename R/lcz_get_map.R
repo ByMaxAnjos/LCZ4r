@@ -2,28 +2,30 @@
 #' Download the LCZ map
 #'
 #' This function retrieves the Local Climate Zone (LCZ) global mapping dataset
-#' created by Demuzere et al. (2022) and available at https://doi.org/10.5194/essd-14-3835-2022.
 #' It allows you to obtain the LCZ map for a specific area of interest, which can be a city, state, region, or custom-defined shape.
 #'
 #' @param city A character string specifying the name of your target area based on the OpenStreetMap project.
 #' @param roi Optionally, you can provide a Region of Interest (ROI) in ESRI shapefile format to clip the LCZ map to a custom area.
 #' @param isave_map Logical. Set to TRUE if you wish to save the resulting clipped map as a raster TIFF file on your local machine.
 #' @param isave_global Logical. Set to TRUE if you wish to save the global LCZ map as a raster TIFF file on your local machine.
-#' @return A Terra raster TIFF file containing LCZ classes for the specified area of interest.
+#' @return A Terra raster TIFF file containing LCZ classes (1-17).
 #'
 #' @export
+#'
+#' @references
+#' Demuzere, M., Kittner, J., Martilli, A., Mills, G., Moede, C., Stewart, I. D., van Vliet, J., and Bechtel, B. (2022). A global map of Local Climate Zones to support earth system modelling and urban scale environmental science, Earth Syst. Sci. Data 14(8) 3835-3873. DOI:https://doi.org/10.5194/essd-14-3835-2022
 #'
 #' @examples
 #' \dontrun{
 #' # Load the LCZ map for a city
-#' my_lcz_city <- lcz_get_map(city = "ExampleCity")
+#' my_lcz_city <- lcz_get_map(city = "your city")
 #'
 #' # Get LCZ map for a custom region of interest
 #' custom_roi <- sf::st_read("custom_roi.shp")
 #' roi_lcz <- lcz_get_map(roi = custom_roi, isave_map = TRUE)
 #'
-#' # Retrieve the LCZ map for a country (no custom ROI specified)
-#' my_lcz_country <- lcz_get_map(city = "Brazil", roi = NULL, isave_map = TRUE)
+#' # Retrieve the LCZ map for a country
+#' my_lcz_country <- lcz_get_map(city = "Brazil")
 #' }
 #'
 #' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis

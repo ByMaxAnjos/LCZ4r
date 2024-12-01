@@ -17,9 +17,40 @@ lcz_plot_parameters(
 \arguments{
 \item{x}{The LCZ map in SpatRaster in a stack format.}
 
-\item{iselect}{Character vector. Specify one or more parameter names to retrieve specific
-parameters. For example, "SVF2" to get the minimum Sky View Factor,
-or c("z0", "BSF2") to select multiple parameters. See the complete  parameter list here: \url{https://bymaxanjos.github.io/LCZ4r/articles/Introd_general_LCZ4r.html#retrieve-and-visualize-lcz-parameters}.}
+\item{iselect}{Code vector. Specify one or more parameter:
+\itemize{
+\item \strong{SVFmean}: Mean Sky View Factor
+\item \strong{SVFmax}: Maximum Sky View Factor
+\item \strong{SVFmin}: Minimum Sky View Factor
+\item \strong{ARmean}: Mean Aspect Ratio
+\item \strong{ARmax}: Maximum Aspect Ratio
+\item \strong{ARmin}: Minimum Aspect Ratio
+\item \strong{BSFmean}: Mean Building Surface Fraction
+\item \strong{BSFmax}: Maximum Building Surface Fraction
+\item \strong{BSFmin}: Minimum Building Surface Fraction
+\item \strong{ISFmean}: Mean Impervious Surface Fraction
+\item \strong{ISFmax}: Maximum Impervious Surface Fraction
+\item \strong{ISFmin}: Minimum Impervious Surface Fraction
+\item \strong{PSFmean}: Mean Vegetation Surface Fraction
+\item \strong{PSFmax}: Maximum Vegetation Surface Fraction
+\item \strong{PSFmin}: Minimum Vegetation Surface Fraction
+\item \strong{TSFmean}: Mean Tree Surface Fraction
+\item \strong{TSFmax}: Maximum Tree Surface Fraction
+\item \strong{TSFmin}: Minimum Tree Surface Fraction
+\item \strong{HREmean}: Mean Height Roughness Elements
+\item \strong{HREmax}: Maximum Height Roughness Elements
+\item \strong{HREmin}: Minimum Height Roughness Elements
+\item \strong{TRCmean}: Mean Terrain Roughness class
+\item \strong{TRCmax}: Maximum Terrain Roughness class
+\item \strong{TRCmin}: Minimum Terrain Roughness class
+\item \strong{SADmean}: Mean Surface Admittance
+\item \strong{SADmax}: Maximum Surface Admittance
+\item \strong{SADmin}: Minimum Surface Admittance
+\item \strong{AHmean}: Mean Anthropogenic Heat Outupt
+\item \strong{AHmax}: Maximum Anthropogenic Heat Outupt
+\item \strong{AHmin}: Minimum Anthropogenic Heat Outupt
+\item \strong{z0}: Roughness Lenght class
+}}
 
 \item{all}{Logical, specifying whether to save all selected parameters into LCZ4r_output. Default is FALSE.}
 
@@ -39,11 +70,11 @@ This function plots the parameters of an Local Climate Zone map.
 }
 \examples{
 \dontrun{
-# Plot the minimum Sky View Factor (SVF1) for your city
-lcz_plot_parameters(lcz_map, iselect = "SVF1")
+# Plot the mean Sky View Factor (SVFmean) for your city
+lcz_plot_parameters(lcz_map, iselect = "SVFmean")
 
 # Plot multiple parameters and save them to the LCZ4r_output directory
-lcz_plot_parameters(lcz_map, iselect = c("BSF3", "AH3"))
+lcz_plot_parameters(lcz_map, iselect = c("BSFmean", "AHmean"))
 }
 }
 \seealso{

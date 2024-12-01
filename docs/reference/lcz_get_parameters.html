@@ -98,9 +98,38 @@ morphology and are useful for urban climate and environmental studies.</p>
 
 
 <dt>iselect</dt>
-<dd><p>Character vector. Specify one or more parameter names to retrieve specific
-parameters. For example, "SVF1" to get the minimum Sky View Factor,
-or c("SVF1", "z0") to select multiple parameters.</p></dd>
+<dd><p>Code vector. Specify one or more parameter:</p><ul><li><p><strong>SVFmean</strong>: Mean Sky View Factor</p></li>
+<li><p><strong>SVFmax</strong>: Maximum Sky View Factor</p></li>
+<li><p><strong>SVFmin</strong>: Minimum Sky View Factor</p></li>
+<li><p><strong>ARmean</strong>: Mean Aspect Ratio</p></li>
+<li><p><strong>ARmax</strong>: Maximum Aspect Ratio</p></li>
+<li><p><strong>ARmin</strong>: Minimum Aspect Ratio</p></li>
+<li><p><strong>BSFmean</strong>: Mean Building Surface Fraction</p></li>
+<li><p><strong>BSFmax</strong>: Maximum Building Surface Fraction</p></li>
+<li><p><strong>BSFmin</strong>: Minimum Building Surface Fraction</p></li>
+<li><p><strong>ISFmean</strong>: Mean Impervious Surface Fraction</p></li>
+<li><p><strong>ISFmax</strong>: Maximum Impervious Surface Fraction</p></li>
+<li><p><strong>ISFmin</strong>: Minimum Impervious Surface Fraction</p></li>
+<li><p><strong>PSFmean</strong>: Mean Vegetation Surface Fraction</p></li>
+<li><p><strong>PSFmax</strong>: Maximum Vegetation Surface Fraction</p></li>
+<li><p><strong>PSFmin</strong>: Minimum Vegetation Surface Fraction</p></li>
+<li><p><strong>TSFmean</strong>: Mean Tree Surface Fraction</p></li>
+<li><p><strong>TSFmax</strong>: Maximum Tree Surface Fraction</p></li>
+<li><p><strong>TSFmin</strong>: Minimum Tree Surface Fraction</p></li>
+<li><p><strong>HREmean</strong>: Mean Height Roughness Elements</p></li>
+<li><p><strong>HREmax</strong>: Maximum Height Roughness Elements</p></li>
+<li><p><strong>HREmin</strong>: Minimum Height Roughness Elements</p></li>
+<li><p><strong>TRCmean</strong>: Mean Terrain Roughness class</p></li>
+<li><p><strong>TRCmax</strong>: Maximum Terrain Roughness class</p></li>
+<li><p><strong>TRCmin</strong>: Minimum Terrain Roughness class</p></li>
+<li><p><strong>SADmean</strong>: Mean Surface Admittance</p></li>
+<li><p><strong>SADmax</strong>: Maximum Surface Admittance</p></li>
+<li><p><strong>SADmin</strong>: Minimum Surface Admittance</p></li>
+<li><p><strong>AHmean</strong>: Mean Anthropogenic Heat Outupt</p></li>
+<li><p><strong>AHmax</strong>: Maximum Anthropogenic Heat Outupt</p></li>
+<li><p><strong>AHmin</strong>: Minimum Anthropogenic Heat Outupt</p></li>
+<li><p><strong>z0</strong>: Roughness Lenght class</p></li>
+</ul></dd>
 
 
 <dt>istack</dt>
@@ -142,7 +171,7 @@ If 'iselect' is specified, it returns the selected parameter(s) as a raster(s).<
 <span class="r-in"><span><span class="va">specific_param</span> <span class="op">&lt;-</span> <span class="va">lcz_params_list</span><span class="op">$</span><span class="va">parameter_name</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Get specific parameters as a raster or shapefile</span></span></span>
-<span class="r-in"><span><span class="va">selected_params</span> <span class="op">&lt;-</span> <span class="fu">lcz_get_parameters</span><span class="op">(</span><span class="va">lcz_map</span>, iselect <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SVF1"</span>, <span class="st">"VEG1"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">selected_params</span> <span class="op">&lt;-</span> <span class="fu">lcz_get_parameters</span><span class="op">(</span><span class="va">lcz_map</span>, iselect <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"SVFmin"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span></span></span>
 </code></pre></div>
     </div>

@@ -76,10 +76,16 @@
     <loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_get_map_euro.html</loc>
   </url>
   <url>
+    <loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_get_map_generator.html</loc>
+  </url>
+  <url>
     <loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_get_map_usa.html</loc>
   </url>
   <url>
     <loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_get_parameters.html</loc>
+  </url>
+  <url>
+    <loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_interp_eval.html</loc>
   </url>
   <url>
     <loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_interp_map.html</loc>

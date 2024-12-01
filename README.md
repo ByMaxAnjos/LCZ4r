@@ -16,6 +16,7 @@ The **LCZ4r** is a comprehensive toolkit, including the following functions:
 * `lcz_get_map()`  Download your LCZ map from global dataset
 * `lcz_get_map_euro()` Download your LCZ map from European dataset
 * `lcz_get_map_usa()`  Download your LCZ map from Continental United States dataset
+* `lcz_get_map_generator()`  Download your LCZ map from LCZ Generator Platform
 * `lcz_plot_map()`  Visualize the LCZ map 
 * `lcz_cal_area()`  Calculate LCZ areas 
 * `lcz_get_parameters()`  Retrieve LCZ parameters
@@ -25,6 +26,7 @@ The **LCZ4r** is a comprehensive toolkit, including the following functions:
 * `lcz_anomaly_map()`  Map LCZ Thermal Anomaly
 * `lcz_interp_map()`  Map LCZ Interpolation
 * `lcz_plot_interp()`  Visualize LCZ Interpolation
+* `lcz_interp_eval()`  Evaluate LCZ Interpolation
 * `lcz_uhi_intensity()`  Assess LCZ for Urban Heat Island Intensity
 
 
@@ -34,16 +36,24 @@ To [Install to the LCZ4r](https://bymaxanjos.github.io/LCZ4r/articles/instalatio
 
 ## Function types and tutorials 
 
-These functions are categorized into two main types: general functions and local functions. The general functions are tailored for circumstances where specific LCZ data is not readily available. In contrast, the local functions are designed to operate with more extensive data inputs, such as urban meteorological network readings, including air temperature.
-
-We highly recommend that users explore the following tutorials to gain a deeper understanding of the capabilities and applications of the LCZ4r package:
+These functions are categorized into two main types: general functions and local functions. We highly recommend that users explore the following tutorials to gain a deeper understanding of the capabilities and applications of the LCZ4r package:
 
 * [Introduction to the General Functions](https://bymaxanjos.github.io/LCZ4r/articles/Introd_general_LCZ4r.html)
 
-[Click to Whatch Demo Video](https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/a534cfaa-37d2-4c1d-8cec-e5e2a17e8806)
-
 * [Introduction to the Local Functions](https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html) 
 
+
+##  LCZ4r-QGIS plugin: A Multilingual Integration
+
+A [LCZ4r-QGIS plugin repository](https://bymaxanjos.github.io/LCZ4r/articles/Introd_QGIS_LCZ4r.html) that integrates the LCZ4r package with QGIS in multiple languages. It facilitates the integration of the General Functions and Local Functions from LCZ4r package into QGIS, allowing users to analyze Local Climate Zones (LCZ) and urban heat islands directly within the QGIS environment.
+
+You can watch a detailed tutorial on installing LCZ4r in QGIS below:
+<!-- Embedded Video -->
+<iframe width="560" height="315" 
+        src="https://www.youtube.com/embed/RalGSgx8v2Q" 
+        title="LCZ4r Installation Tutorial" 
+        frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen></iframe>
 
 ### People
 

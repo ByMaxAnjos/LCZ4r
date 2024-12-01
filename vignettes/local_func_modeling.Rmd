@@ -124,7 +124,7 @@ lcz_plot_interp(my_anomaly_map,
                 title = "LCZ - Temperature Anomalies",
                 subtitle = "Berlin - Daily Anomalies on 06.02.2019",
                 caption = "Source: LCZ4r, 2024",
-                fill = "[ºC Anomaly]",
+                fill = "[Anomaly ºC]",
                 palette = "bl_yl_rd"
                 )
 ```

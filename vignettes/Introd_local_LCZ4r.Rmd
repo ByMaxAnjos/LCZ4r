@@ -33,12 +33,13 @@ The **Local functions in `LCZ4r`**, offer powerful tools to handle and analyze u
 
 | Function              | Description                                | Data Required | Internet Access Required |
 |-----------------|----------------------|-----------------|-----------------|
-| `lcz_ts()`            | Analyze LCZ Time Series                    | Yes           | Optional               |
-| `lcz_anamoly()`       | Calculate LCZ Thermal Anomalies            | Yes           | Optional                 |
-| `lcz_anamoly_map()`   | Map LCZ Thermal Anomalies                  | Yes           | Optional                 |
-| `lcz_interp_map()`    | Perform LCZ Interpolation                  | Yes           | Optional                 |
-| `lcz_plot_interp()`   | Visualize LCZ Interpolation                | Yes           | Optional                 |
-| `lcz_uhi_intensity()` | Assess LCZ for Urban Heat Island Intensity | Yes           | Optional                 |
+| `lcz_ts()`            | Analyze LCZ Time Series                    | Yes           | Not needed               |
+| `lcz_anamoly()`       | Calculate LCZ Thermal Anomalies            | Yes           | Not needed                  |
+| `lcz_anamoly_map()`   | Map LCZ Thermal Anomalies                  | Yes           | Not needed                  |
+| `lcz_interp_map()`    | Perform LCZ Interpolation                  | Yes           | Not needed                  |
+| `lcz_plot_interp()`   | Visualize LCZ Interpolation                | Yes           | Not needed                  |
+| `lcz_interp_eval()`   | Evaluate LCZ Interpolation                | Yes           | Not needed                  |
+| `lcz_uhi_intensity()` | Assess LCZ for Urban Heat Island Intensity | Yes           | Not needed                  |
 
 
 ## 💡 Tips: 

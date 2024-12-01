@@ -101,7 +101,7 @@
       <img src="" class="logo" alt=""><h1>Map, Area and Paramerters</h1>
                         <h4 data-toc-skip class="author">Max Anjos</h4>
             
-            <h4 data-toc-skip class="date">November 06, 2024</h4>
+            <h4 data-toc-skip class="date">December 01, 2024</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ByMaxAnjos/LCZ4r/blob/HEAD/vignettes/Introd_genera_LCZ4r.Rmd" class="external-link"><code>vignettes/Introd_genera_LCZ4r.Rmd</code></a></small>
       <div class="d-none name"><code>Introd_genera_LCZ4r.Rmd</code></div>
@@ -116,20 +116,6 @@ available. They are engineered to get the LZ map, compute LCZ classes,
 and extract specific parameters of interest, including Sky View Factor
 (SVF), impervious surface fraction, and roughness element height, among
 others.</p>
-<div class="section level2">
-<h2 id="quickstart-demo-video">Quickstart DEMO video<a class="anchor" aria-label="anchor" href="#quickstart-demo-video"></a>
-</h2>
-<p><a href="https://github.com/ByMaxAnjos/LCZ4r/assets/94705218/a534cfaa-37d2-4c1d-8cec-e5e2a17e8806" target="_blank" class="external-link"></a></p>
-<p style="text-align:center;">
-</p>
-<p><img src="fig_general_video.png" alt="Introduction to General Functions" width="60%"></p>
-
-<p style="text-align:center">
-</p>
-<p>(Click to Watch video)</p>
-
-<p></p>
-</div>
 <div class="section level2">
 <h2 id="getting-started">Getting Started<a class="anchor" aria-label="anchor" href="#getting-started"></a>
 </h2>
@@ -167,30 +153,36 @@ others.</p>
 <td>Yes</td>
 </tr>
 <tr class="even">
+<td><code><a href="../reference/lcz_get_map_generator.html">lcz_get_map_generator()</a></code></td>
+<td>Download your LCZ map from LCZ Generator Platform</td>
+<td>Not needed</td>
+<td>Yes</td>
+</tr>
+<tr class="odd">
 <td><code><a href="../reference/lcz_get_map2.html">lcz_get_map2()</a></code></td>
 <td>Download the LCZ map</td>
 <td>Not needed</td>
 <td>Not needed</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code><a href="../reference/lcz_plot_map.html">lcz_plot_map()</a></code></td>
 <td>Visualize the LCZ map</td>
 <td>Not needed</td>
 <td>Not needed</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code><a href="../reference/lcz_cal_area.html">lcz_cal_area()</a></code></td>
 <td>Calculate LCZ areas</td>
 <td>Not needed</td>
 <td>Not needed</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td><code><a href="../reference/lcz_get_parameters.html">lcz_get_parameters()</a></code></td>
 <td>Retrieve LCZ parameters</td>
 <td>Not needed</td>
 <td>Not needed</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td><code><a href="../reference/lcz_plot_parameters.html">lcz_plot_parameters()</a></code></td>
 <td>Visualize LCZ parameters map</td>
 <td>Not needed</td>
@@ -284,20 +276,45 @@ demonstration, we utilized a couple of cities around the world.</p>
 </div>
 <div class="section level2 unnumbered">
 <h2 class="unnumbered" id="section"></h2>
-<p>Here are some tips to enhance your experience:</p>
+</div>
+<div class="section level2">
+<h2 id="download-lcz-map-from-lcz-generator-platform">Download LCZ map from LCZ Generator Platform<a class="anchor" aria-label="anchor" href="#download-lcz-map-from-lcz-generator-platform"></a>
+</h2>
+<p>To seamlessly integrate LCZ maps into the LCZ4r package, follow these
+steps to obtain the ID code for your desired city:</p>
 <ul>
-<li><p>1. As an alternative, users can download their own LCZ map from
-<a href="https://www.wudapt.org/" class="external-link">WUDAPT</a> or <a href="https://lcz-generator.rub.de/submissions" class="external-link">LCZ generator
-application</a> and integrate them into the LCZ4r system using the
-lcz_get_map2(LCZmap, city = “your city”).</p></li>
-<li><p>2. Fallback Option: In rare instances where the lcz_get_map()
-function faces inconsistencies (e.g., due to connectivity issues), you
-can rely on lcz_get_map2() as an alternative solution.</p></li>
-<li><p>3. Custom ROI: Utilize the lcz_get_map() function along with a
-shapefile for your ROI by coding lcz_get_map(roi=“your_shp”). Refer to
-the R package <a href="https://r-spatial.github.io/sf/" class="external-link">sf</a>
+<li><ol style="list-style-type: decimal">
+<li>
+<strong>Access the LCZ Generator</strong>: Visit the <a href="https://lcz-generator.rub.de/" class="external-link">LCZ Generator page</a>.</li>
+</ol></li>
+<li><ol start="2" style="list-style-type: decimal">
+<li>
+<strong>Locate your city</strong>: navigate to the <a href="https://lcz-generator.rub.de/submissions" class="external-link">Submissions</a> section
+and search for your city using the search bar.</li>
+</ol></li>
+<li><ol start="3" style="list-style-type: decimal">
+<li>
+<strong>Obtain the ID from Factsheet</strong>: click <strong>Show
+Factsheet</strong> next to your city’s submission and copy the
+<strong>ID</strong> from <em>Submission Information</em> section (e.g.,
+<strong>3110e623fbe4e73b1cde55f0e9832c4f5640ac21</strong>)</li>
+</ol></li>
+<li><ol start="4" style="list-style-type: decimal">
+<li>Example for Reference: View this sample <a href="https://lcz-generator.rub.de/factsheets/3110e623fbe4e73b1cde55f0e9832c4f5640ac21/3110e623fbe4e73b1cde55f0e9832c4f5640ac21_factsheet.html" class="external-link">LCZ
+Factsheet</a> to understand the format and details.</li>
+</ol></li>
+</ul>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">lcz_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lcz_get_map_generator.html">lcz_get_map_generator</a></span><span class="op">(</span>ID<span class="op">=</span><span class="st">"3110e623fbe4e73b1cde55f0e9832c4f5640ac21"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="../reference/lcz_plot_map.html">lcz_plot_map</a></span><span class="op">(</span><span class="va">lcz_map</span><span class="op">)</span></span></code></pre></div>
+<p><img src="fig_generator.png" width="100%" style="display: block; margin: auto;"></p>
+<p>💡<strong>Tips</strong> to enhance your experience:</p>
+<ul>
+<li>Custom Region Of Interest: Utilize the lcz_get_map() function along
+with a shapefile for your ROI by coding lcz_get_map(roi=“your_shp”).
+Refer to the R package <a href="https://r-spatial.github.io/sf/" class="external-link">sf</a>
 documentation for guidance on loading the shapefile into R. ## Calculate
-LCZ areas</p></li>
+LCZ areas</li>
 </ul>
 </div>
 <div class="section level2">
@@ -305,7 +322,7 @@ LCZ areas</p></li>
 </h2>
 <p>This <code><a href="../reference/lcz_cal_area.html">lcz_cal_area()</a></code> function calculates the area for
 each LCZ classes, as follows:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lcz_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lcz_get_map.html">lcz_get_map</a></span><span class="op">(</span>city<span class="op">=</span><span class="st">"Rio de Janeiro"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/lcz_cal_area.html">lcz_cal_area</a></span><span class="op">(</span><span class="va">lcz_map</span><span class="op">)</span></span></code></pre></div>
 <p><img src="fig_general_2.png" width="100%" style="display: block; margin: auto;"></p>
@@ -336,199 +353,199 @@ aggregated into a single file.</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td>SVF1</td>
+<td>SVFmin</td>
 <td>Sky View Factor</td>
 <td>Minimum Sky View Factor</td>
 <td>[0-1]</td>
 </tr>
 <tr class="even">
-<td>SVF2</td>
+<td>SVFmax</td>
 <td>Sky View Factor</td>
 <td>Maximum Sky View Factor</td>
 <td>[0-1]</td>
 </tr>
 <tr class="odd">
-<td>SVF3</td>
+<td>SVFmean</td>
 <td>Sky View Factor</td>
 <td>Mean Sky View Factor</td>
 <td>[0-1]</td>
 </tr>
 <tr class="even">
-<td>AR1</td>
+<td>ARmin</td>
 <td>Aspect ratio</td>
 <td>Minimum Aspect Ratio</td>
 <td>[0-3]</td>
 </tr>
 <tr class="odd">
-<td>AR2</td>
+<td>ARmax</td>
 <td>Aspect ratio</td>
 <td>Maximum Aspect Ratio</td>
 <td>[0-3]</td>
 </tr>
 <tr class="even">
-<td>AR3</td>
+<td>ARmean</td>
 <td>Aspect ratio</td>
 <td>Mean Aspect Ratio</td>
 <td>[0-3]</td>
 </tr>
 <tr class="odd">
-<td>BSF1</td>
+<td>BSFmin</td>
 <td>Building Surface Fraction</td>
 <td>Minimum Building Surface Fraction</td>
 <td>[%]</td>
 </tr>
 <tr class="even">
-<td>BSF2</td>
+<td>BSFmax</td>
 <td>Building Surface Fraction</td>
 <td>Maximum Building Surface Fraction</td>
 <td>[%]</td>
 </tr>
 <tr class="odd">
-<td>BSF3</td>
+<td>BSFmean</td>
 <td>Building Surface Fraction</td>
 <td>Mean Building Surface Fraction</td>
 <td>[%]</td>
 </tr>
 <tr class="even">
-<td>ISF1</td>
+<td>ISFmin</td>
 <td>Impervious Surface Fraction</td>
 <td>Minimum Impervious Surface Fraction</td>
 <td>[%]</td>
 </tr>
 <tr class="odd">
-<td>ISF2</td>
+<td>ISFmax</td>
 <td>Impervious Surface Fraction</td>
 <td>Maximum Impervious Surface Fraction</td>
 <td>[%]</td>
 </tr>
 <tr class="even">
-<td>ISF3</td>
+<td>ISFmean</td>
 <td>Impervious Surface Fraction</td>
 <td>Mean Impervious Surface Fraction</td>
 <td>[%]</td>
 </tr>
 <tr class="odd">
-<td>PSF1</td>
+<td>PSFmin</td>
 <td>Vegetation Surface Fraction</td>
 <td>Minimum Vegetation Surface Fraction</td>
 <td>[%]</td>
 </tr>
 <tr class="even">
-<td>PSF2</td>
+<td>PSFmax</td>
 <td>Vegetation Surface Fraction</td>
 <td>Maximum Vegetation Surface Fraction</td>
 <td>[%]</td>
 </tr>
 <tr class="odd">
-<td>PSF3</td>
+<td>PSFmean</td>
 <td>Vegetation Surface Fraction</td>
 <td>Mean Vegetation Surface Fraction</td>
 <td>[%]</td>
 </tr>
 <tr class="even">
-<td>TSF1</td>
+<td>TSFmin</td>
 <td>Tree Surface Fraction</td>
 <td>Minimum Tree Surface Fraction</td>
 <td>[%]</td>
 </tr>
 <tr class="odd">
-<td>TSF2</td>
+<td>TSFmax</td>
 <td>Tree Surface Fraction</td>
 <td>Maximum Tree Surface Fraction</td>
 <td>[%]</td>
 </tr>
 <tr class="even">
-<td>TSF3</td>
+<td>TSFmean</td>
 <td>Tree Surface Fraction</td>
 <td>Mean Tree Surface Fraction</td>
 <td>[%]</td>
 </tr>
 <tr class="odd">
-<td>HRE1</td>
+<td>HREmin</td>
 <td>Height Roughness Elements</td>
 <td>Minimum Height Roughness Elements</td>
 <td>[meters]</td>
 </tr>
 <tr class="even">
-<td>HRE2</td>
+<td>HREmax</td>
 <td>Height Roughness Elements</td>
 <td>Maximum Height Roughness Elements</td>
 <td>[meters]</td>
 </tr>
 <tr class="odd">
-<td>HRE3</td>
+<td>HREmean</td>
 <td>Height Roughness Elements</td>
 <td>Mean Height Roughness Elements</td>
 <td>[meters]</td>
 </tr>
 <tr class="even">
-<td>TRC1</td>
+<td>TRCmin</td>
 <td>Terrain Roughness class</td>
 <td>Minimum Terrain Roughness class</td>
 <td>[meters]</td>
 </tr>
 <tr class="odd">
-<td>TRC2</td>
+<td>TRCmax</td>
 <td>Terrain Roughness class</td>
 <td>Maximum Terrain Roughness class</td>
 <td>[meters]</td>
 </tr>
 <tr class="even">
-<td>TRC3</td>
+<td>TRCmean</td>
 <td>Terrain Roughness class</td>
 <td>Mean Terrain Roughness class</td>
 <td>[meters]</td>
 </tr>
 <tr class="odd">
-<td>SAD1</td>
+<td>SADmin</td>
 <td>Surface Admittance</td>
 <td>Minimum Surface Admittance</td>
 <td>[J m-2 s1/2 K-1]</td>
 </tr>
 <tr class="even">
-<td>SAD2</td>
+<td>SADmax</td>
 <td>Surface Admittance</td>
 <td>Maximum Surface Admittance</td>
 <td>[J m-2 s1/2 K-1]</td>
 </tr>
 <tr class="odd">
-<td>SAD3</td>
+<td>SADmean</td>
 <td>Surface Admittance</td>
 <td>Mean Surface Admittance</td>
 <td>[J m-2 s1/2 K-1]</td>
 </tr>
 <tr class="even">
-<td>SAL1</td>
+<td>SALmin</td>
 <td>Surface Albedo</td>
 <td>Minimum Surface Albedo</td>
 <td>[0-0.5]</td>
 </tr>
 <tr class="odd">
-<td>SAL2</td>
+<td>SALmax</td>
 <td>Surface Albedo</td>
 <td>Maximum Surface Albedo</td>
 <td>[0-0.5]</td>
 </tr>
 <tr class="even">
-<td>SAL3</td>
+<td>SALmean</td>
 <td>Surface Albedo</td>
 <td>Mean Surface Albedo</td>
 <td>[0-0.5]</td>
 </tr>
 <tr class="odd">
-<td>AH1</td>
+<td>AHmin</td>
 <td>Anthropogenic Heat Outupt</td>
 <td>Minimum Anthropogenic Heat Outupt</td>
 <td>[W m-2]</td>
 </tr>
 <tr class="even">
-<td>AH2</td>
+<td>AHmax</td>
 <td>Anthropogenic Heat Outupt</td>
 <td>Maximum Anthropogenic Heat Outupt</td>
 <td>[W m-2]</td>
 </tr>
 <tr class="odd">
-<td>AH3</td>
+<td>AHmean</td>
 <td>Anthropogenic Heat Outupt</td>
 <td>Mean Anthropogenic Heat Outupt</td>
 <td>[W m-2]</td>
@@ -545,7 +562,7 @@ aggregated into a single file.</p>
 <div class="section level2">
 <h2 id="rio-de-janeiro-lcz-parameters">Rio de Janeiro LCZ parameters<a class="anchor" aria-label="anchor" href="#rio-de-janeiro-lcz-parameters"></a>
 </h2>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Extract the LCZ parameters for raster stack format</span></span>
 <span><span class="va">lcz_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lcz_get_map.html">lcz_get_map</a></span><span class="op">(</span>city<span class="op">=</span><span class="st">"Rio de Janeiro"</span><span class="op">)</span></span>
 <span><span class="va">LCZpar</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lcz_get_parameters.html">lcz_get_parameters</a></span><span class="op">(</span><span class="va">lcz_map</span>, istack <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -566,19 +583,19 @@ aggregated into a single file.</p>
 <div class="tab-content">
 <div class="active show fade tab-pane" id="sky-view-factor" role="tabpanel" aria-labelledby="sky-view-factor-tab">
 
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/lcz_plot_parameters.html">lcz_plot_parameters</a></span><span class="op">(</span><span class="va">LCZpar</span>, iselect <span class="op">=</span> <span class="st">"SVF3"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/lcz_plot_parameters.html">lcz_plot_parameters</a></span><span class="op">(</span><span class="va">LCZpar</span>, iselect <span class="op">=</span> <span class="st">"SVFmean"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="fig_general_4.png" width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div class="fade tab-pane" id="building-surface-fraction" role="tabpanel" aria-labelledby="building-surface-fraction-tab">
 
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/lcz_plot_parameters.html">lcz_plot_parameters</a></span><span class="op">(</span><span class="va">LCZpar</span>, iselect <span class="op">=</span> <span class="st">"BSF2"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/lcz_plot_parameters.html">lcz_plot_parameters</a></span><span class="op">(</span><span class="va">LCZpar</span>, iselect <span class="op">=</span> <span class="st">"BSFmax"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="fig_general_5.png" width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div class="fade tab-pane" id="roughness-lenght" role="tabpanel" aria-labelledby="roughness-lenght-tab">
 
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/lcz_plot_parameters.html">lcz_plot_parameters</a></span><span class="op">(</span><span class="va">LCZpar</span>, iselect <span class="op">=</span> <span class="st">"z0"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="fig_general_6.png" width="100%" style="display: block; margin: auto;"></p>
 </div>
