@@ -83,9 +83,38 @@
 
 
 <dt id="arg-iselect">iselect<a class="anchor" aria-label="anchor" href="#arg-iselect"></a></dt>
-<dd><p>Character vector. Specify one or more parameter names to retrieve specific
-parameters. For example, "SVF2" to get the minimum Sky View Factor,
-or c("z0", "BSF2") to select multiple parameters. See the complete  parameter list here: <a href="https://bymaxanjos.github.io/LCZ4r/articles/Introd_general_LCZ4r.html#retrieve-and-visualize-lcz-parameters">https://bymaxanjos.github.io/LCZ4r/articles/Introd_general_LCZ4r.html#retrieve-and-visualize-lcz-parameters</a>.</p></dd>
+<dd><p>Code vector. Specify one or more parameter:</p><ul><li><p><strong>SVFmean</strong>: Mean Sky View Factor</p></li>
+<li><p><strong>SVFmax</strong>: Maximum Sky View Factor</p></li>
+<li><p><strong>SVFmin</strong>: Minimum Sky View Factor</p></li>
+<li><p><strong>ARmean</strong>: Mean Aspect Ratio</p></li>
+<li><p><strong>ARmax</strong>: Maximum Aspect Ratio</p></li>
+<li><p><strong>ARmin</strong>: Minimum Aspect Ratio</p></li>
+<li><p><strong>BSFmean</strong>: Mean Building Surface Fraction</p></li>
+<li><p><strong>BSFmax</strong>: Maximum Building Surface Fraction</p></li>
+<li><p><strong>BSFmin</strong>: Minimum Building Surface Fraction</p></li>
+<li><p><strong>ISFmean</strong>: Mean Impervious Surface Fraction</p></li>
+<li><p><strong>ISFmax</strong>: Maximum Impervious Surface Fraction</p></li>
+<li><p><strong>ISFmin</strong>: Minimum Impervious Surface Fraction</p></li>
+<li><p><strong>PSFmean</strong>: Mean Vegetation Surface Fraction</p></li>
+<li><p><strong>PSFmax</strong>: Maximum Vegetation Surface Fraction</p></li>
+<li><p><strong>PSFmin</strong>: Minimum Vegetation Surface Fraction</p></li>
+<li><p><strong>TSFmean</strong>: Mean Tree Surface Fraction</p></li>
+<li><p><strong>TSFmax</strong>: Maximum Tree Surface Fraction</p></li>
+<li><p><strong>TSFmin</strong>: Minimum Tree Surface Fraction</p></li>
+<li><p><strong>HREmean</strong>: Mean Height Roughness Elements</p></li>
+<li><p><strong>HREmax</strong>: Maximum Height Roughness Elements</p></li>
+<li><p><strong>HREmin</strong>: Minimum Height Roughness Elements</p></li>
+<li><p><strong>TRCmean</strong>: Mean Terrain Roughness class</p></li>
+<li><p><strong>TRCmax</strong>: Maximum Terrain Roughness class</p></li>
+<li><p><strong>TRCmin</strong>: Minimum Terrain Roughness class</p></li>
+<li><p><strong>SADmean</strong>: Mean Surface Admittance</p></li>
+<li><p><strong>SADmax</strong>: Maximum Surface Admittance</p></li>
+<li><p><strong>SADmin</strong>: Minimum Surface Admittance</p></li>
+<li><p><strong>AHmean</strong>: Mean Anthropogenic Heat Outupt</p></li>
+<li><p><strong>AHmax</strong>: Maximum Anthropogenic Heat Outupt</p></li>
+<li><p><strong>AHmin</strong>: Minimum Anthropogenic Heat Outupt</p></li>
+<li><p><strong>z0</strong>: Roughness Lenght class</p></li>
+</ul></dd>
 
 
 <dt id="arg-all">all<a class="anchor" aria-label="anchor" href="#arg-all"></a></dt>
@@ -120,11 +149,11 @@ or c("z0", "BSF2") to select multiple parameters. See the complete  parameter li
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
-<span class="r-in"><span><span class="co"># Plot the minimum Sky View Factor (SVF1) for your city</span></span></span>
-<span class="r-in"><span><span class="fu">lcz_plot_parameters</span><span class="op">(</span><span class="va">lcz_map</span>, iselect <span class="op">=</span> <span class="st">"SVF1"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="co"># Plot the mean Sky View Factor (SVFmean) for your city</span></span></span>
+<span class="r-in"><span><span class="fu">lcz_plot_parameters</span><span class="op">(</span><span class="va">lcz_map</span>, iselect <span class="op">=</span> <span class="st">"SVFmean"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Plot multiple parameters and save them to the LCZ4r_output directory</span></span></span>
-<span class="r-in"><span><span class="fu">lcz_plot_parameters</span><span class="op">(</span><span class="va">lcz_map</span>, iselect <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"BSF3"</span>, <span class="st">"AH3"</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">lcz_plot_parameters</span><span class="op">(</span><span class="va">lcz_map</span>, iselect <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"BSFmean"</span>, <span class="st">"AHmean"</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 </code></pre></div>
     </div>
