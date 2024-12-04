@@ -171,9 +171,9 @@ knitr::include_graphics("fig_generator.png")
 ```
 
 
-💡**Tips** to enhance your experience:
+##💡**Tips**: LCZ map for Region Of Interest (ROI)
 
-* Custom Region Of Interest: Utilize the lcz_get_map() function along with a shapefile for your ROI by coding lcz_get_map(roi="your_shp"). Refer to the R package [sf](https://r-spatial.github.io/sf/) documentation for guidance on loading the shapefile into R. \## Calculate LCZ areas
+*  Utilize the lcz_get_map* functions along with a shapefile for your ROI by coding lcz_get_map*(roi="your_shp"). Refer to the R package [sf](https://r-spatial.github.io/sf/) documentation for guidance on loading the shapefile into R.
 
 ## Calculate LCZ areas
 

@@ -30,7 +30,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' # Daily air temperature values in September 2019 .
+#' # Evaluate air temperature values
 #'  my_interp <- lcz_interp_eval(lcz_map, data_frame = lcz_data, var = "airT",
 #'                                station_id = "station", tp.res = "day", sp.res= 100,
 #'                                year = 2019, month=9)

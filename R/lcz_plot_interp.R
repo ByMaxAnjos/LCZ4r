@@ -17,7 +17,7 @@
 #'
 #' @examples
 #' \dontrun{
-#'  # Interpol your air temperature
+#'  # Plot the interpolated map
 #'  lcz_plot_interp(my_interp_map)
 #'  }
 #'

@@ -40,7 +40,7 @@ This function plots the interpolated LCZ anomaly, LCZ air temperature, or other 
 }
 \examples{
 \dontrun{
- # Interpol your air temperature
+ # Plot the interpolated map
  lcz_plot_interp(my_interp_map)
  }
 

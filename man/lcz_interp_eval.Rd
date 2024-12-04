@@ -40,7 +40,7 @@ lcz_interp_eval(
 
 \item{sp.res}{Spatial resolution in unit of meters for interpolation. Default is 100.}
 
-\item{tp.res}{Temporal resolution, the time period to average to. Default is \dQuote{hour}, but includes \dQuote{day}, \dQuote{week}, \dQuote{quater}, \dQuote{month} or \dQuote{year}.}
+\item{tp.res}{Temporal resolution, the time period to average to. Default is \dQuote{hour}, but includes \dQuote{day}, \dQuote{week}, \dQuote{quater}, \dQuote{month}, \dQuote{year}, \dQuote{season}, \dQuote{seasonyear},  \dQuote{monthyear}, \dQuote{weekday}, or \dQuote{weekend}. It also include \dQuote{2 day}, \dQuote{2 week}, \dQuote{3 month} and so on.}
 
 \item{vg.model}{If kriging is selected, the list of viogrammodels that will be tested and interpolated with kriging. Default is "Sph". The model are "Sph", "Exp", "Gau", "Ste". They names respective shperical, exponential,gaussian,Matern familiy, Matern, M. Stein's parameterization.}
 
@@ -61,7 +61,7 @@ This function evaluate the variability of a spatial and temporal LCZ-Kring relat
 }
 \examples{
 \dontrun{
-# Daily air temperature values in September 2019 .
+# Evaluate air temperature values
  my_interp <- lcz_interp_eval(lcz_map, data_frame = lcz_data, var = "airT",
                                station_id = "station", tp.res = "day", sp.res= 100,
                                year = 2019, month=9)

@@ -34,8 +34,8 @@ The **Local functions in `LCZ4r`**, offer powerful tools to handle and analyze u
 | Function              | Description                                | Data Required | Internet Access Required |
 |-----------------|----------------------|-----------------|-----------------|
 | `lcz_ts()`            | Analyze LCZ Time Series                    | Yes           | Not needed               |
-| `lcz_anamoly()`       | Calculate LCZ Thermal Anomalies            | Yes           | Not needed                  |
-| `lcz_anamoly_map()`   | Map LCZ Thermal Anomalies                  | Yes           | Not needed                  |
+| `lcz_anomaly()`       | Calculate LCZ Thermal Anomalies            | Yes           | Not needed                  |
+| `lcz_anomaly_map()`   | Map LCZ Thermal Anomalies                  | Yes           | Not needed                  |
 | `lcz_interp_map()`    | Perform LCZ Interpolation                  | Yes           | Not needed                  |
 | `lcz_plot_interp()`   | Visualize LCZ Interpolation                | Yes           | Not needed                  |
 | `lcz_interp_eval()`   | Evaluate LCZ Interpolation                | Yes           | Not needed                  |
