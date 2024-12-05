@@ -69,6 +69,7 @@
 <span>  var <span class="op">=</span> <span class="st">""</span>,</span>
 <span>  station_id <span class="op">=</span> <span class="st">""</span>,</span>
 <span>  <span class="va">...</span>,</span>
+<span>  split.ratio <span class="op">=</span> <span class="fl">0.8</span>,</span>
 <span>  sp.res <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>  tp.res <span class="op">=</span> <span class="st">"hour"</span>,</span>
 <span>  vg.model <span class="op">=</span> <span class="st">"Sph"</span>,</span>
@@ -107,6 +108,10 @@
 <li><p><strong>Start date</strong>: A string specifying the start date in either start="DD/MM/YYYY" (e.g., "1/2/1999") or "YYYY-mm-dd" format (e.g., "1999-02-01").</p></li>
 <li><p><strong>End date</strong>: A string specifying the end date in either end="DD/MM/YYYY" (e.g., "1/2/1999") or "YYYY-mm-dd" format (e.g., "1999-02-01").</p></li>
 </ul></dd>
+
+
+<dt id="arg-split-ratio">split.ratio<a class="anchor" aria-label="anchor" href="#arg-split-ratio"></a></dt>
+<dd><p>A numeric value representing the proportion of meteorological stations to be used for training (interpolation). The remaining stations will be used for testing (evaluation). For example, the default "0.8" indicates that 80% of the stations will be used for traninig and 20% for testing.</p></dd>
 
 
 <dt id="arg-sp-res">sp.res<a class="anchor" aria-label="anchor" href="#arg-sp-res"></a></dt>
