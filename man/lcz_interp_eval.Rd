@@ -10,6 +10,7 @@ lcz_interp_eval(
   var = "",
   station_id = "",
   ...,
+  split.ratio = 0.8,
   sp.res = 100,
   tp.res = "hour",
   vg.model = "Sph",
@@ -37,6 +38,8 @@ lcz_interp_eval(
 \item \strong{Start date}: A string specifying the start date in either start="DD/MM/YYYY" (e.g., "1/2/1999") or "YYYY-mm-dd" format (e.g., "1999-02-01").
 \item \strong{End date}: A string specifying the end date in either end="DD/MM/YYYY" (e.g., "1/2/1999") or "YYYY-mm-dd" format (e.g., "1999-02-01").
 }}
+
+\item{split.ratio}{A numeric value representing the proportion of meteorological stations to be used for training (interpolation). The remaining stations will be used for testing (evaluation). For example, the default "0.8" indicates that 80\% of the stations will be used for traninig and 20\% for testing.}
 
 \item{sp.res}{Spatial resolution in unit of meters for interpolation. Default is 100.}
 

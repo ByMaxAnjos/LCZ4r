@@ -46,6 +46,9 @@ lcz_plot_parameters(
 \item \strong{SADmean}: Mean Surface Admittance
 \item \strong{SADmax}: Maximum Surface Admittance
 \item \strong{SADmin}: Minimum Surface Admittance
+\item \strong{SALmean}: Mean Surface Albedo
+\item \strong{SALmax}: Maximum Surface Albedo
+\item \strong{SALmin}: Minimum Surface Albedo
 \item \strong{AHmean}: Mean Anthropogenic Heat Outupt
 \item \strong{AHmax}: Maximum Anthropogenic Heat Outupt
 \item \strong{AHmin}: Minimum Anthropogenic Heat Outupt
