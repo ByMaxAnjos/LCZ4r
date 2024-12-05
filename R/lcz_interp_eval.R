@@ -15,6 +15,7 @@
 #'   \item \strong{Start date}: A string specifying the start date in either start="DD/MM/YYYY" (e.g., "1/2/1999") or "YYYY-mm-dd" format (e.g., "1999-02-01").
 #'   \item \strong{End date}: A string specifying the end date in either end="DD/MM/YYYY" (e.g., "1/2/1999") or "YYYY-mm-dd" format (e.g., "1999-02-01").
 #' }
+#' @param split.ratio A numeric value representing the proportion of meteorological stations to be used for training (interpolation). The remaining stations will be used for testing (evaluation). For example, the default "0.8" indicates that 80% of the stations will be used for traninig and 20% for testing.
 #' @param vg.model If kriging is selected, the list of viogrammodels that will be tested and interpolated with kriging. Default is "Sph". The model are "Sph", "Exp", "Gau", "Ste". They names respective shperical, exponential,gaussian,Matern familiy, Matern, M. Stein's parameterization.
 #' @param sp.res Spatial resolution in unit of meters for interpolation. Default is 100.
 #' @param tp.res Temporal resolution, the time period to average to. Default is \dQuote{hour}, but includes \dQuote{day}, \dQuote{week}, \dQuote{quater}, \dQuote{month}, \dQuote{year}, \dQuote{season}, \dQuote{seasonyear},  \dQuote{monthyear}, \dQuote{weekday}, or \dQuote{weekend}. It also include \dQuote{2 day}, \dQuote{2 week}, \dQuote{3 month} and so on.
@@ -47,6 +48,7 @@ lcz_interp_eval <- function(x,
                             var = "",
                             station_id = "",
                             ...,
+                            split.ratio = 0.8
                             sp.res = 100,
                             tp.res = "hour",
                             vg.model = "Sph",
@@ -252,7 +254,7 @@ lcz_interp_eval <- function(x,
             base::set.seed(123)
             split_data <- data_model %>%
               #dplyr::group_by(.data$lcz) %>%
-              dplyr::mutate(is_train= dplyr::row_number() <= base::ceiling(0.8 * dplyr::n())) %>%
+              dplyr::mutate(is_train= dplyr::row_number() <= base::ceiling(split.ratio * dplyr::n())) %>%
               dplyr::ungroup()
             training_set <- dplyr::filter(split_data, .data$is_train)
             testing_set <- dplyr::filter(split_data, !.data$is_train)
@@ -375,7 +377,7 @@ lcz_interp_eval <- function(x,
         base::set.seed(123)
         split_data <- data_model %>%
           #dplyr::group_by(.data$lcz) %>%
-          dplyr::mutate(is_train= dplyr::row_number() <= base::ceiling(0.8 * dplyr::n())) %>%
+          dplyr::mutate(is_train= dplyr::row_number() <= base::ceiling(split.ratio * dplyr::n())) %>%
           dplyr::ungroup()
         training_set <- dplyr::filter(split_data, .data$is_train)
         testing_set <- dplyr::filter(split_data, !.data$is_train)
@@ -480,7 +482,7 @@ lcz_interp_eval <- function(x,
         base::set.seed(123)
         split_data <- data_model %>%
           #dplyr::group_by(.data$lcz) %>%
-          dplyr::mutate(is_train= dplyr::row_number() <= base::ceiling(0.8 * dplyr::n())) %>%
+          dplyr::mutate(is_train= dplyr::row_number() <= base::ceiling(split.ratio * dplyr::n())) %>%
           dplyr::ungroup()
         training_set <- dplyr::filter(split_data, .data$is_train)
         testing_set <- dplyr::filter(split_data, !.data$is_train)
@@ -563,7 +565,7 @@ lcz_interp_eval <- function(x,
         base::set.seed(123)
         split_data <- data_model %>%
           #dplyr::group_by(.data$lcz) %>%
-          dplyr::mutate(is_train= dplyr::row_number() <= base::ceiling(0.8 * dplyr::n())) %>%
+          dplyr::mutate(is_train= dplyr::row_number() <= base::ceiling(split.ratio * dplyr::n())) %>%
           dplyr::ungroup()
         training_set <- dplyr::filter(split_data, .data$is_train)
         testing_set <- dplyr::filter(split_data, !.data$is_train)
