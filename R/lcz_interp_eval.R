@@ -48,7 +48,7 @@ lcz_interp_eval <- function(x,
                             var = "",
                             station_id = "",
                             ...,
-                            split.ratio = 0.8
+                            split.ratio = 0.8,
                             sp.res = 100,
                             tp.res = "hour",
                             vg.model = "Sph",
