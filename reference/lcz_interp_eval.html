@@ -69,6 +69,8 @@
 <span>  var <span class="op">=</span> <span class="st">""</span>,</span>
 <span>  station_id <span class="op">=</span> <span class="st">""</span>,</span>
 <span>  <span class="va">...</span>,</span>
+<span>  extract.method <span class="op">=</span> <span class="st">"simple"</span>,</span>
+<span>  LOOCV <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  split.ratio <span class="op">=</span> <span class="fl">0.8</span>,</span>
 <span>  sp.res <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>  tp.res <span class="op">=</span> <span class="st">"hour"</span>,</span>
@@ -108,6 +110,17 @@
 <li><p><strong>Start date</strong>: A string specifying the start date in either start="DD/MM/YYYY" (e.g., "1/2/1999") or "YYYY-mm-dd" format (e.g., "1999-02-01").</p></li>
 <li><p><strong>End date</strong>: A string specifying the end date in either end="DD/MM/YYYY" (e.g., "1/2/1999") or "YYYY-mm-dd" format (e.g., "1999-02-01").</p></li>
 </ul></dd>
+
+
+<dt id="arg-extract-method">extract.method<a class="anchor" aria-label="anchor" href="#arg-extract-method"></a></dt>
+<dd><p>A character string specifying the method used to assign the LCZ class to each station point. The default is "simple". The available methods are:</p><ul><li><p><strong>simple</strong>: Assigns the LCZ class based on the value of the raster cell in which the point falls.</p></li>
+<li><p><strong>bilinear</strong>: Interpolates the LCZ class values from the four nearest raster cells surrounding the point.</p></li>
+<li><p><strong>two.step</strong>: Assigns LCZs to stations while filtering out those located in heterogeneous LCZ areas. This method requires that at least 80% of the pixels within a 5 × 5 kernel match the LCZ of the center pixel (Daniel et al., 2017). Note that this method reduces the number of stations.</p></li>
+</ul></dd>
+
+
+<dt id="arg-loocv">LOOCV<a class="anchor" aria-label="anchor" href="#arg-loocv"></a></dt>
+<dd><p>IF set to TRUE (default), cross validation functions for kriging is used. Leave-one-out cross validation (LOOCV) visits a data point, and predicts the value at that location by leaving out the observed value, and proceeds with the next data point. 5 n-fold cross validation is used (http://www.gstat.org/).  If set FALSE, the split method into training and testing stations is used.</p></dd>
 
 
 <dt id="arg-split-ratio">split.ratio<a class="anchor" aria-label="anchor" href="#arg-split-ratio"></a></dt>
