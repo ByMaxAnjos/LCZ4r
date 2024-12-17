@@ -10,6 +10,8 @@ lcz_interp_eval(
   var = "",
   station_id = "",
   ...,
+  extract.method = "simple",
+  LOOCV = TRUE,
   split.ratio = 0.8,
   sp.res = 100,
   tp.res = "hour",
@@ -38,6 +40,15 @@ lcz_interp_eval(
 \item \strong{Start date}: A string specifying the start date in either start="DD/MM/YYYY" (e.g., "1/2/1999") or "YYYY-mm-dd" format (e.g., "1999-02-01").
 \item \strong{End date}: A string specifying the end date in either end="DD/MM/YYYY" (e.g., "1/2/1999") or "YYYY-mm-dd" format (e.g., "1999-02-01").
 }}
+
+\item{extract.method}{A character string specifying the method used to assign the LCZ class to each station point. The default is "simple". The available methods are:
+\itemize{
+\item \strong{simple}: Assigns the LCZ class based on the value of the raster cell in which the point falls.
+\item \strong{bilinear}: Interpolates the LCZ class values from the four nearest raster cells surrounding the point.
+\item \strong{two.step}: Assigns LCZs to stations while filtering out those located in heterogeneous LCZ areas. This method requires that at least 80\% of the pixels within a 5 × 5 kernel match the LCZ of the center pixel (Daniel et al., 2017). Note that this method reduces the number of stations.
+}}
+
+\item{LOOCV}{IF set to TRUE (default), cross validation functions for kriging is used. Leave-one-out cross validation (LOOCV) visits a data point, and predicts the value at that location by leaving out the observed value, and proceeds with the next data point. 5 n-fold cross validation is used (http://www.gstat.org/).  If set FALSE, the split method into training and testing stations is used.}
 
 \item{split.ratio}{A numeric value representing the proportion of meteorological stations to be used for training (interpolation). The remaining stations will be used for testing (evaluation). For example, the default "0.8" indicates that 80\% of the stations will be used for traninig and 20\% for testing.}
 

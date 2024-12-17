@@ -67,8 +67,6 @@ The development of the package R **LCZ4r** has been led by [Dr. Max Anjos](https
 
 * –> **Antônio Campos Neto**, Center for Climate Crisis Studies, Department of Geography, Federal University of Rio Grande do Norte, Brazil.
 
-* –> **Jonatha Lima Moura**, Center for Climate Crisis Studies, Department of Geography, Federal University of Rio Grande do Norte, Brazil.
-
 
 ### Funding
 

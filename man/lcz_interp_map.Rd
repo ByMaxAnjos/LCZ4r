@@ -10,6 +10,7 @@ lcz_interp_map(
   var = "",
   station_id = "",
   ...,
+  extract.method = "simple",
   sp.res = 100,
   tp.res = "hour",
   vg.model = "Sph",
@@ -36,6 +37,13 @@ lcz_interp_map(
 \item \strong{Hour(s)}: Numeric value(s) specifying the hours to select. For example, \code{hour = 0:23} selects all hours in a day, while \code{hour = 9} selects only the 9th hour.
 \item \strong{Start date}: A string specifying the start date in either start="DD/MM/YYYY" (e.g., "1/2/1999") or "YYYY-mm-dd" format (e.g., "1999-02-01").
 \item \strong{End date}: A string specifying the end date in either end="DD/MM/YYYY" (e.g., "1/2/1999") or "YYYY-mm-dd" format (e.g., "1999-02-01").
+}}
+
+\item{extract.method}{A character string specifying the method used to assign the LCZ class to each station point. The default is "simple". The available methods are:
+\itemize{
+\item \strong{simple}: Assigns the LCZ class based on the value of the raster cell in which the point falls.
+\item \strong{bilinear}: Interpolates the LCZ class values from the four nearest raster cells surrounding the point.
+\item \strong{two.step}: Assigns LCZs to stations while filtering out those located in heterogeneous LCZ areas. This method requires that at least 80\% of the pixels within a 5 × 5 kernel match the LCZ of the center pixel (Daniel et al., 2017). Note that this method reduces the number of stations.
 }}
 
 \item{sp.res}{Spatial resolution in unit of meters for interpolation. Default is 100.}
