@@ -164,9 +164,9 @@ lcz_interp_map <- function(x,
 
   # Geospatial operations ---------------------------------------------------
   # Convert lcz_map to polygon
-  # lcz_shp <- terra::as.polygons(x) %>%
-  #   sf::st_as_sf() %>%
-  #   sf::st_transform(crs = 4326)
+  lcz_shp <- terra::as.polygons(x) %>%
+    sf::st_as_sf() %>%
+    sf::st_transform(crs = 4326)
 
   #Stratified splitting by LCZ)
   stations_mod <- df_processed %>%
@@ -233,11 +233,10 @@ lcz_interp_map <- function(x,
       stats::na.omit()
   }
   # Re-project and make a grid to interpolation
-  # lcz_box <- sf::st_transform(lcz_shp, crs = 3857)
-  ras_resolution <- sf::st_bbox(x) %>%
+  lcz_box <- sf::st_transform(lcz_shp, crs = 3857)
+  ras_resolution <- sf::st_bbox(lcz_box) %>%
     stars::st_as_stars(dx = sp.res)
   ras_resolution <- terra::rast(ras_resolution)
-  ras_resolution <- terra::project(ras_resolution, "EPSG:3857")
 
   ras_project <- terra::project(x, "EPSG:3857")
   ras_resample <- terra::resample(ras_project, ras_resolution, method = "mode")
