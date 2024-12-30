@@ -51,17 +51,8 @@ navbar:
       - text: Urban Heat Island (UHI) Analysis
         href: articles/local_func_uhi.html
     LCZ4r-QGIS:
-      text: LCZ4r-QGIS
-      menu:
-      - text: Plugin Overview
-      - text: Introduction to LCZ4r-QGIS plugin
-        href: articles/Introd_QGIS_LCZ4r.html
-      - text: Installing LCZ4r in QGIS
-        href: articles/instalation_lcz4r_qgis.html
-      - text: '---'
-      - text: Multilingual Plugin (script)
-      - text: English
-        href: articles/english_lcz4r_qgis.html
+      text: LCZ4r-QGIS Plugin
+      href: articles/examples.html
 
 reference:
 - title: "General Functions"

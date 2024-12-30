@@ -60,16 +60,8 @@
     <a class="dropdown-item" href="../articles/local_func_uhi.html">Urban Heat Island (UHI) Analysis</a>
   </div>
 </li>
-<li class="nav-item dropdown">
-  <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-lcz-r-qgis">LCZ4r-QGIS</a>
-  <div class="dropdown-menu" aria-labelledby="dropdown-lcz-r-qgis">
-    <h6 class="dropdown-header" data-toc-skip>Plugin Overview</h6>
-    <a class="dropdown-item" href="../articles/Introd_QGIS_LCZ4r.html">Introduction to LCZ4r-QGIS plugin</a>
-    <a class="dropdown-item" href="../articles/instalation_lcz4r_qgis.html">Installing LCZ4r in QGIS</a>
-    <div class="dropdown-divider"></div>
-    <h6 class="dropdown-header" data-toc-skip>Multilingual Plugin (script)</h6>
-    <a class="dropdown-item" href="../articles/english_lcz4r_qgis.html">English</a>
-  </div>
+<li class="nav-item">
+  <a class="nav-link" href="../articles/examples.html">LCZ4r-QGIS Plugin</a>
 </li>
 <li class="nav-item">
   <a class="nav-link" href="../reference/index.html">Reference</a>
@@ -101,7 +93,7 @@
       <img src="" class="logo" alt=""><h1>Map, Area and Paramerters</h1>
                         <h4 data-toc-skip class="author">Max Anjos</h4>
             
-            <h4 data-toc-skip class="date">December 01, 2024</h4>
+            <h4 data-toc-skip class="date">December 30, 2024</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ByMaxAnjos/LCZ4r/blob/HEAD/vignettes/Introd_genera_LCZ4r.Rmd" class="external-link"><code>vignettes/Introd_genera_LCZ4r.Rmd</code></a></small>
       <div class="d-none name"><code>Introd_genera_LCZ4r.Rmd</code></div>
@@ -308,13 +300,14 @@ Factsheet</a> to understand the format and details.</li>
 <code class="sourceCode R"><span><span class="va">lcz_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lcz_get_map_generator.html">lcz_get_map_generator</a></span><span class="op">(</span>ID<span class="op">=</span><span class="st">"3110e623fbe4e73b1cde55f0e9832c4f5640ac21"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="../reference/lcz_plot_map.html">lcz_plot_map</a></span><span class="op">(</span><span class="va">lcz_map</span><span class="op">)</span></span></code></pre></div>
 <p><img src="fig_generator.png" width="100%" style="display: block; margin: auto;"></p>
-<p>💡<strong>Tips</strong> to enhance your experience:</p>
+</div>
+<div class="section level2">
+<h2 id="tips-lcz-map-for-region-of-interest-roi">💡<strong>Tips</strong>: LCZ map for Region Of Interest (ROI)<a class="anchor" aria-label="anchor" href="#tips-lcz-map-for-region-of-interest-roi"></a>
+</h2>
 <ul>
-<li>Custom Region Of Interest: Utilize the lcz_get_map() function along
-with a shapefile for your ROI by coding lcz_get_map(roi=“your_shp”).
-Refer to the R package <a href="https://r-spatial.github.io/sf/" class="external-link">sf</a>
-documentation for guidance on loading the shapefile into R. ## Calculate
-LCZ areas</li>
+<li>Utilize the lcz_get_map* functions along with a shapefile for your
+ROI by coding lcz_get_map*(roi=“your_shp”). Refer to the R package <a href="https://r-spatial.github.io/sf/" class="external-link">sf</a> documentation for guidance
+on loading the shapefile into R.</li>
 </ul>
 </div>
 <div class="section level2">

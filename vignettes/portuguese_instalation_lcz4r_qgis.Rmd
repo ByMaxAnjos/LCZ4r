@@ -1,0 +1,100 @@
+---
+title: "Instalando o LCZ4r no QGIS"
+autor: "Max Anjos"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+    rmarkdown::html_vignette:
+      code_folding: hide
+    toc: true
+    toc_float: TRUE
+    toc_depth: 2
+    number_sections: false
+    highlight: "textmate"
+    css: custom.css
+resource_files:
+  - articles/logo_qgis.png
+vignette: >
+  %\VignetteIndexEntry{Instalando o LCZ4r no QGIS}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{rmarkdown::render}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r echo=F, out.width = '100%', fig.align='center'}
+knitr::include_graphics("logo_qgis.png")
+```
+
+## 🚀 Primeiros passos: Instalando o LCZ4r no QGIS
+
+Seja bem-vindo ao **guia de instalação do plugin LCZ4r-QGIS!** Este documento irá guiá-lo pelo processo de configuração para habilitar a análise da Zona Climática Local (LCZ) dentro do QGIS. Com o LCZ4r, você pode aprimorar a análise do clima urbano integrando funcionalidades avançadas do R diretamente em seu ambiente SIG.
+
+## 📌  Pré-requisitos
+
+Antes de prosseguir, certifique-se de ter o seguinte:
+
+-   **QGIS**: Baixe e instale o [QGIS](https://qgis.org/), um popular Sistema de Informação Geográfica de código aberto.
+-   **R**: Baixe e instale o [R](https://www.r-project.org/) para computação estatística, essencial para executar scripts LCZ4r dentro do QGIS.
+
+## 🗃  Guia de instalação passo a passo
+
+### 1. Instale o R
+
+O [R](https://www.r-project.org/) é um ambiente de software de código aberto para computação estatística e gráficos, necessário para executar scripts LCZ4r. Siga esses passos:
+
+* Acesse o [CRAN](https://cran.r-project.org/) para baixar e instalar o R, seguindo as instruções para o seu sistema operacional (Windows, macOS ou Linux). 
+* **Dica**: Certifique-se de que o R esteja configurado corretamente no PATH do seu sistema para que o QGIS possa se comunicar com ele.
+
+### 2. Instale o provedor de processamento R no QGIS
+
+O plugin [Processing R provider](https://north-road.github.io/qgis-processing-r/) ppermite executar scripts R diretamente no QGIS. Para instalá-lo:
+
+1.  Abra **QGIS** e depois clique **Plugins** \> **Manage** e instalar **Plugins**.
+2.  Procurar por "Processing R Provider" e clique **Install**.
+3.  Uma vez instalado, certifique-se de que o plugin esteja ativado em **Plugins** \> **Installed**.
+
+### 3. Baixe e instale os scripts LCZ4r
+
+Para integrar a funcionalidade LCZ4r ao QGIS, você precisa baixar os scripts R para o seu idioma preferido:
+
+* 1. Visite a página [Integração QGIS-LCZ4r](https://bymaxanjos.github.io/LCZ4r/index.html).
+* 2. [Baixe](https://bymaxanjos.github.io/LCZ4r/articles/english_lcz4r_qgis.html) os scripts R no seu idioma preferido.
+* 3. Descompacte o arquivo baixado e salve os scripts em um local de fácil acesso.
+* 4. Abra **QGIS** e clique em **Settings** \> **Options...** \> **Processing** \> **Providers** \> **R**.
+* 5. Na **pasta de scripts R**, adicione o caminho onde você salvou os scripts LCZ4r..
+* 6. Desative **Usar biblioteca do usuário em vez de bibliotecas do sistema**.
+* 7.Clique em **OK** para confirmar sua configuração.
+
+Se tudo estiver configurado corretamente, você verá **LCZ4r Funções Gerais** e **LCZ4r Funções Locais** na caixa de ferramentas *Processamento* \>*R* abaixo dos Exemplos de Scripts.
+
+Você pode assistir a um tutorial detalhado sobre a instalação do LCZ4r no QGIS abaixo (em inglês):
+<!-- Embedded Video -->
+<iframe width="560" height="315" 
+        src="https://www.youtube.com/embed/RalGSgx8v2Q" 
+        title="LCZ4r Installation Tutorial" 
+        frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen></iframe>
+
+### 4. Execute seu primeiro Script LCZ4r
+
+Comece executando a função Baixar Mapa LCZ em LCZ4r Funções Gerais. Esta etapa instalará quaisquer pacotes adicionais necessários; pode levar alguns minutos, portanto, seja paciente.
+
+💡 **Primeira execução**: a primeira execução do script pode demorar mais, pois instala todas as dependências.
+
+🌟 *Assim que o processo for concluído, você deverá ver o mapa LCZ de saída. Parabéns! Agora você está pronto para aproveitar as funções do plugin LCZ4r-QGIS.*
+
+## 📬 Tem feedback ou sugestões?
+
+Agradecemos seus comentários e sugestões! Se você tiver ideias para melhorias ou encontrar algum problema, por favor, nos avise. Clique no botão abaixo para enviar um novo problema em nosso repositório GitHub.
+
+<button type="button" class="btn" style="background-color: #008000; color: white; padding: .25rem .5rem; font-size: .75rem; border: none; border-radius: .25rem;">
+
+<a href='https://github.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/issues/new'style="text-decoration: none; color: white;"> Abrir um problema no repositório GitHub </a>
+</button>
+
+

@@ -1,0 +1,181 @@
+- title: "Introduction to LCZ4r-QGIS plugin"
+  image: images/logo_qgis.png
+  link: https://bymaxanjos.github.io/LCZ4r/articles/Introd_QGIS_LCZ4r.html
+  footer: <a href="https://bymaxanjos.github.io/LCZ4r/articles/Introd_QGIS_LCZ4r.html">Source</a>
+  group: showcase
+  text: >
+    A LCZ4r-QGIS plugin repository that integrates the LCZ4r package with QGIS in multiple languages. It facilitates
+    the integration of the General Functions and Local Functions from LCZ4r package into QGIS, allowing users to analyze
+    Local Climate Zones (LCZ) and urban heat islands directly within the QGIS environment.
+
+- title: "Installing LCZ4r in QGIS"
+  image: images/installing.png
+  link: https://www.youtube.com/embed/RalGSgx8v2Q
+  footer: <a href="https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r_qgis.html">Get Help</a>
+  group: showcase
+  text: >
+    You can watch a detailed tutorial on installing LCZ4r in QGIS below:
+    <!-- Embedded Video -->
+    <iframe width="140" height="80"
+        src="https://www.youtube.com/embed/RalGSgx8v2Q"
+        title="LCZ4r Installation Tutorial"
+        frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen></iframe>
+
+
+- title: "English - Download plugin"
+  image: images/english_card.png
+  link: https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/English_LCZ4r.zip
+  footer: <a href="https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r_qgis.html">Get Help</a>
+  group: showcase
+  text: >
+    **Local Climate Zones (LCZ) and Urban Heat Islands Analysis in QGIS!**</p><p>
+    A LCZ4r-QGIS plugin integrates the General Functions and Local Functions from LCZ4r package into QGIS environment.</p><p>
+    **Translation level:** Human </p><p>
+    **Author(s):** Max Anjos </p><p>
+    **Contact:** maxanjos@campus.ul.pt
+
+- title: "Português - Baixar plugin"
+  image: images/logo_qgis.png
+  #image: images/portuguese_card.png
+  link: https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Portuguese_LCZ4r.zip
+  footer: <a href="https://bymaxanjos.github.io/LCZ4r/articles/portuguese_instalation_lcz4r_qgis.html">Obter Ajuda</a>
+  group: demo
+  text: >
+    **Zonas Climáticas Locais (LCZ) e Análise de Ilhas de Calor Urbanas no QGIS!**</p><p>
+    O plugin LCZ4r-QGIS integra as Funções Gerais e as Funções Locais do pacote LCZ4r no ambiente QGIS.</p><p>
+    **Nível de tradução:** Humano </p><p>
+    **Autor(es):** Max Anjos, Antônio Neto, Dayvid Medeiros</p><p>
+    **Contato:** maxanjos@campus.ul.pt, antoniocamposneto9@gmail.com, dayvid.medeiros.123@ufrn.edu.br
+
+- title: "Deutsch - Plugin herunterladen"
+  image: images/logo_qgis.png
+  #image: images/german_card.png
+  link: https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/German_LCZ4r.zip
+  footer: <a href="https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r_qgis.html">Hilfe erhalten</a>
+  group: demo
+  text: >
+    **Lokale Klimazonen (LCZ) und Analyse städtischer Wärmeinseln in QGIS!**</p><p>
+    Das LCZ4r-QGIS-Plugin integriert die allgemeinen Funktionen und lokalen Funktionen des LCZ4r-Pakets in die QGIS-Umgebung.</p><p>
+    **Übersetzungsniveau:** Menschlich/AI(Chatgpt)</p><p>
+    **Autor(en):** XXXX </p><p>
+    **Kontakt:** XXXX
+
+- title: "中文 - 下载插件"
+  image: images/logo_qgis.png
+  #image: images/chinese_card.png
+  link: https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Chinese_LCZ4r.zip
+  footer: <a href="https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r_qgis.html">获取帮助</a>
+  group: demo
+  text: >
+    **地方气候区（LCZ）和城市热岛分析在QGIS中！**</p><p>
+    LCZ4r-QGIS插件将LCZ4r包中的通用功能和地方功能集成到QGIS环境中。</p><p>
+    **翻译级别：** 人工/AI(Chatgpt) </p><p>
+    **作者：** XXX </p><p>
+    **联系方式：** XXX
+
+- title: "Español - Descargar plugin"
+  image: images/logo_qgis.png
+  #image: images/spanish_card.png
+  link: https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Spanish_LCZ4r.zip
+  footer: <a href="https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r_qgis.html">Obtener ayuda</a>
+  group: demo
+  text: >
+    **Zonas Climáticas Locales (LCZ) y Análisis de Islas de Calor Urbanas en QGIS!**</p><p>
+    Un plugin LCZ4r-QGIS integra las Funciones Generales y las Funciones Locales del paquete LCZ4r en el entorno de QGIS.</p><p>
+    **Nivel de traducción:** Humano/AI(Chatgpt) </p><p>
+    **Autor(es):** XXXX </p><p>
+    **Contacto:** XXX
+
+- title: "日本語 - プラグインをダウンロード"
+  image: images/logo_qgis.png
+  #image: images/japanese_card.png
+  link: https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Japanese_LCZ4r.zip
+  footer: <a href="https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r_qgis.html">ヘルプを取得</a>
+  group: demo
+  text: >
+    **地域気候区（LCZ）と都市熱島の分析をQGISで！**</p><p>
+    LCZ4r-QGISプラグインは、LCZ4rパッケージの一般機能とローカル機能をQGIS環境に統合します。</p><p>
+    **翻訳レベル：** 人間 </p><p>
+    **著者：** XXXXX </p><p>
+    **連絡先：** XXXXX
+
+- title: "Français - Télécharger le plugin"
+  image: images/logo_qgis.png
+  #image: images/french_card.png
+  link: https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/French_LCZ4r.zip
+  footer: <a href="https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r_qgis.html">Obtenir de l'aide</a>
+  group: demo
+  text: >
+    **Zones Climatiques Locales (LCZ) et Analyse des Îlots de Chaleur Urbains dans QGIS !**</p><p>
+    Le plugin LCZ4r-QGIS intègre les Fonctions Générales et les Fonctions Locales du paquet LCZ4r dans l'environnement QGIS.</p><p>
+    **Niveau de traduction :** Humain </p><p>
+    **Auteur(s) :** XXXX </p><p>
+    **Contact :** XXXX
+
+- title: "Italiano - Scarica il plugin"
+  image: images/logo_qgis.png
+  #image: images/italian_card.png
+  link: https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Italian_LCZ4r.zip
+  footer: <a href="https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r_qgis.html">Ottieni aiuto</a>
+  group: demo
+  text: >
+    **Zone Climatiche Locali (LCZ) e Analisi delle Isole di Calore Urbane in QGIS!**</p><p>
+    Il plugin LCZ4r-QGIS integra le Funzioni Generali e le Funzioni Locali del pacchetto LCZ4r nell'ambiente QGIS.</p><p>
+    **Livello di traduzione:** Umano </p><p>
+    **Autore(i):** XXXXX </p><p>
+    **Contatto:** XXXXX
+
+- title: "हिंदी - प्लगइन डाउनलोड करें"
+  image: images/logo_qgis.png
+  #image: images/hindi_card.png
+  link: https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Hindi_LCZ4r.zip
+  footer: <a href="https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r_qgis.html">सहायता प्राप्त करें</a>
+  group: demo
+  text: >
+    **स्थानीय जलवायु क्षेत्र (LCZ) और शहरी गर्मी द्वीपों का विश्लेषण QGIS में!**</p><p>
+    LCZ4r-QGIS प्लगइन LCZ4r पैकेज से सामान्य कार्यों और स्थानीय कार्यों को QGIS वातावरण में एकीकृत करता है।</p><p>
+    **अनुवाद स्तर:**  मानव </p><p>
+    **लेखक:** XXXX </p><p>
+    **संपर्क:** XXX>
+
+- title: "العربية - تحميل الإضافة"
+  image: images/logo_qgis.png
+  #image: images/arabic_card.png
+  link: https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Arabic_LCZ4r.zip
+  footer: <a href="https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r_qgis.html">احصل على المساعدة</a>
+  group: demo
+  text: >
+    **المناطق المناخية المحلية (LCZ) وتحليل جزر الحرارة الحضرية في QGIS!**</p><p>
+    يدمج ملحق LCZ4r-QGIS الوظائف العامة والوظائف المحلية من حزمة LCZ4r في بيئة QGIS.</p><p>
+    **مستوى الترجمة:** بشري </p><p>
+    **المؤلفون:** XXXX </p><p>
+    **الاتصال:** XXXXX
+
+- title: "বাংলা - প্লাগইন ডাউনলোড করুন"
+  image: images/logo_qgis.png
+  #image: images/bengali_card.png
+  link: https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Bengali_LCZ4r.zip
+  footer: <a href="https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r_qgis.html">সাহায্য পান</a>
+  group: demo
+  text: >
+    **স্থানীয় জলবায়ু অঞ্চল (LCZ) এবং শহুরে তাপ দ্বীপ বিশ্লেষণ QGIS-এ!**</p><p>
+    LCZ4r-QGIS প্লাগইন LCZ4r প্যাকেজের সাধারণ এবং স্থানীয় কার্যকারিতা QGIS পরিবেশে একত্রিত করে।</p><p>
+    **অনুবাদ স্তর:** মানব </p><p>
+    **লেখক(গণ):** XXXXX </p><p>
+    **যোগাযোগ:** XXXXX
+
+- title: "Русский - Скачать плагин"
+  image: images/logo_qgis.png
+  #image: images/russian_card.png
+  link: https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Russian_LCZ4r.zip
+  footer: <a href="https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r_qgis.html">Получить помощь</a>
+  group: demo
+  text: >
+    **Местные климатические зоны (LCZ) и анализ городских островов тепла в QGIS!**</p><p>
+    Плагин LCZ4r-QGIS интегрирует общие функции и локальные функции из пакета LCZ4r в среду QGIS.</p><p>
+    **Уровень перевода:** Человеческий </p><p>
+    **Автор(ы):** XXXXX </p><p>
+    **Контакт:** XXXXX
+
+

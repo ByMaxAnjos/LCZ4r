@@ -1,0 +1,52 @@
+---
+title: "Multilingual LCZ4r-QGIS Plugin"
+description: >
+  A collection of multiple languages that use the LCZ4r package.
+author: "Max Anjos"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+    rmarkdown::html_vignette:
+      code_folding: hide
+    toc: true
+    toc_float: TRUE
+    toc_depth: 2
+    number_sections: false
+    highlight: "textmate"
+    css: custom.css
+resource_files:
+  - articles/images/logo_qgis.png
+vignette: >
+  %\VignetteIndexEntry{Multilingual LCZ4r-QGIS Plugin}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{rmarkdown::render}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+source("example_cards.R", local = TRUE)
+```
+
+```{css echo=FALSE}
+.row > main { max-width: 100%; }
+```
+
+```{r example-cards-showcase}
+example_cards("examples.yml", "showcase")
+```
+
+## Multilingual Plugins
+
+Please, select your preferential language.
+
+```{r example-cards-demo}
+example_cards("examples.yml", "demo")
+```
+
+
