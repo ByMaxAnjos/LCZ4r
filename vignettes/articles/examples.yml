@@ -14,14 +14,7 @@
   footer: <a href="https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r_qgis.html">Get Help</a>
   group: showcase
   text: >
-    You can watch a detailed tutorial on installing LCZ4r in QGIS below:
-    <!-- Embedded Video -->
-    <iframe width="140" height="80"
-        src="https://www.youtube.com/embed/RalGSgx8v2Q"
-        title="LCZ4r Installation Tutorial"
-        frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen></iframe>
-
+    You can watch a detailed tutorial on installing LCZ4r in QGIS above or link below
 
 - title: "English - Download plugin"
   image: images/english_card.png

@@ -29,6 +29,7 @@ knitr::opts_chunk$set(
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 source("example_cards.R", local = TRUE)
+
 ```
 
 ```{css echo=FALSE}
@@ -49,3 +50,6 @@ example_cards("examples.yml", "demo")
 ```
 
 
+```{js echo=FALSE}
+document.getElementById('main').classList = ''
+```
