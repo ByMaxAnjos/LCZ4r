@@ -87,3 +87,6 @@ reference:
   contents:
   - lcz_tutorial
   - lcz_data
+
+redirects:
+  - ["examples.html", "articles/examples.html"]

@@ -13,8 +13,6 @@ output:
     number_sections: false
     highlight: "textmate"
     css: custom.css
-resource_files:
-  - articles/images/logo_qgis.png
 vignette: >
   %\VignetteIndexEntry{Multilingual LCZ4r-QGIS Plugin}
   %\VignetteEncoding{UTF-8}
@@ -40,6 +38,7 @@ source("example_cards.R", local = TRUE)
 ```{r example-cards-showcase}
 example_cards("examples.yml", "showcase")
 ```
+
 
 ## Multilingual Plugins
 
