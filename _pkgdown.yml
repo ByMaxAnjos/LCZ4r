@@ -87,7 +87,3 @@ reference:
   contents:
   - lcz_tutorial
   - lcz_data
-
-redirects:
-  - ["examples.html", "articles/examples.html"]
-  - ["portuguese_instalation_lcz4r_qgis.html", "articles/portuguese_instalation_lcz4r_qgis.html"]

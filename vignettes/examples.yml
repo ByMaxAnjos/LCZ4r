@@ -32,7 +32,7 @@
   image: images/logo_qgis.png
   #image: images/portuguese_card.png
   link: https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Portuguese_LCZ4r.zip
-  footer: <a href="https://bymaxanjos.github.io/LCZ4r/articles/portuguese_instalation_lcz4r_qgis.html">Obter Ajuda</a>
+  footer: <a href="https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r_qgis.html">Obter Ajuda</a>
   group: demo
   text: >
     **Zonas Climáticas Locais (LCZ) e Análise de Ilhas de Calor Urbanas no QGIS!**</p><p>

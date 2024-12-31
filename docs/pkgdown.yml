@@ -13,8 +13,7 @@ articles:
   local_func_modeling: local_func_modeling.html
   local_func_time_series: local_func_time_series.html
   local_func_uhi: local_func_uhi.html
-  portuguese_instalation_lcz4r_qgis: portuguese_instalation_lcz4r_qgis.html
-last_built: 2024-12-31T13:24Z
+last_built: 2024-12-31T13:56Z
 urls:
   reference: https://bymaxanjos.github.io/LCZ4r/reference
   article: https://bymaxanjos.github.io/LCZ4r/articles
