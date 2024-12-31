@@ -1,5 +1,5 @@
 - title: "Introduction to LCZ4r-QGIS plugin"
-  image: logo_qgis.png
+  image: https://github.com/ByMaxAnjos/LCZ4r/blob/main/docs/articles/logo_qgis.png
   link: https://bymaxanjos.github.io/LCZ4r/articles/Introd_QGIS_LCZ4r.html
   footer: <a href="https://bymaxanjos.github.io/LCZ4r/articles/Introd_QGIS_LCZ4r.html">Source</a>
   group: showcase
@@ -9,7 +9,7 @@
     Local Climate Zones (LCZ) and urban heat islands directly within the QGIS environment.
 
 - title: "Installing LCZ4r in QGIS"
-  image: installing.png
+  image: https://github.com/ByMaxAnjos/LCZ4r/blob/main/docs/articles/installing.png
   link: https://www.youtube.com/embed/RalGSgx8v2Q
   footer: <a href="https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r_qgis.html">Get Help</a>
   group: showcase
@@ -17,7 +17,7 @@
     You can watch a detailed tutorial on installing LCZ4r in QGIS above or link below
 
 - title: "English - Download plugin"
-  image: english_card.png
+  image: https://github.com/ByMaxAnjos/LCZ4r/blob/main/docs/articles/english_card.png
   link: https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/English_LCZ4r.zip
   footer: <a href="https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r_qgis.html">Get Help</a>
   group: showcase
@@ -29,10 +29,10 @@
     **Contact:** maxanjos@campus.ul.pt
 
 - title: "Português - Baixar plugin"
-  image: logo_qgis.png
+  image: https://github.com/ByMaxAnjos/LCZ4r/blob/main/docs/articles/logo_qgis.png
   #image: articles/portuguese_card.png
   link: https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Portuguese_LCZ4r.zip
-  footer: <a href="https://bymaxanjos.github.io/LCZ4r/articles/portuguese_instalation_lcz4r_qgis.html">Obter Ajuda</a>
+  footer: <a href="https://github.com/ByMaxAnjos/LCZ4r/blob/main/docs/articles/portuguese_instalation_lcz4r_qgis.html">Obter Ajuda</a>
   group: demo
   text: >
     **Zonas Climáticas Locais (LCZ) e Análise de Ilhas de Calor Urbanas no QGIS!**</p><p>
@@ -42,7 +42,7 @@
     **Contato:** maxanjos@campus.ul.pt, antoniocamposneto9@gmail.com, dayvid.medeiros.123@ufrn.edu.br
 
 - title: "Deutsch - Plugin herunterladen"
-  image: logo_qgis.png
+  image: https://github.com/ByMaxAnjos/LCZ4r/blob/main/docs/articles/logo_qgis.png
   #image: articles/german_card.png
   link: https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/German_LCZ4r.zip
   footer: <a href="https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r_qgis.html">Hilfe erhalten</a>
@@ -55,7 +55,7 @@
     **Kontakt:** XXXX
 
 - title: "中文 - 下载插件"
-  image: logo_qgis.png
+  image: https://github.com/ByMaxAnjos/LCZ4r/blob/main/docs/articles/logo_qgis.png
   #image: articles/chinese_card.png
   link: https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Chinese_LCZ4r.zip
   footer: <a href="https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r_qgis.html">获取帮助</a>
@@ -68,7 +68,7 @@
     **联系方式：** XXX
 
 - title: "Español - Descargar plugin"
-  image: logo_qgis.png
+  image: https://github.com/ByMaxAnjos/LCZ4r/blob/main/docs/articles/logo_qgis.png
   #image: articles/spanish_card.png
   link: https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Spanish_LCZ4r.zip
   footer: <a href="https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r_qgis.html">Obtener ayuda</a>
@@ -81,7 +81,7 @@
     **Contacto:** XXX
 
 - title: "日本語 - プラグインをダウンロード"
-  image: logo_qgis.png
+  image: https://github.com/ByMaxAnjos/LCZ4r/blob/main/docs/articles/logo_qgis.png
   #image: articles/japanese_card.png
   link: https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Japanese_LCZ4r.zip
   footer: <a href="https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r_qgis.html">ヘルプを取得</a>
@@ -94,7 +94,7 @@
     **連絡先：** XXXXX
 
 - title: "Français - Télécharger le plugin"
-  image: logo_qgis.png
+  image: https://github.com/ByMaxAnjos/LCZ4r/blob/main/docs/articles/logo_qgis.png
   #image: articles/french_card.png
   link: https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/French_LCZ4r.zip
   footer: <a href="https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r_qgis.html">Obtenir de l'aide</a>
@@ -107,7 +107,7 @@
     **Contact :** XXXX
 
 - title: "Italiano - Scarica il plugin"
-  image: logo_qgis.png
+  image: https://github.com/ByMaxAnjos/LCZ4r/blob/main/docs/articles/logo_qgis.png
   #image: articles/italian_card.png
   link: https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Italian_LCZ4r.zip
   footer: <a href="https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r_qgis.html">Ottieni aiuto</a>
@@ -120,7 +120,7 @@
     **Contatto:** XXXXX
 
 - title: "हिंदी - प्लगइन डाउनलोड करें"
-  image: logo_qgis.png
+  image: https://github.com/ByMaxAnjos/LCZ4r/blob/main/docs/articles/logo_qgis.png
   #image: articles/hindi_card.png
   link: https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Hindi_LCZ4r.zip
   footer: <a href="https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r_qgis.html">सहायता प्राप्त करें</a>
@@ -133,7 +133,7 @@
     **संपर्क:** XXX>
 
 - title: "العربية - تحميل الإضافة"
-  image: logo_qgis.png
+  image: https://github.com/ByMaxAnjos/LCZ4r/blob/main/docs/articles/logo_qgis.png
   #image: articles/arabic_card.png
   link: https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Arabic_LCZ4r.zip
   footer: <a href="https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r_qgis.html">احصل على المساعدة</a>
@@ -146,7 +146,7 @@
     **الاتصال:** XXXXX
 
 - title: "বাংলা - প্লাগইন ডাউনলোড করুন"
-  image: logo_qgis.png
+  image: https://github.com/ByMaxAnjos/LCZ4r/blob/main/docs/articles/logo_qgis.png
   #image: articles/bengali_card.png
   link: https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Bengali_LCZ4r.zip
   footer: <a href="https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r_qgis.html">সাহায্য পান</a>
@@ -159,7 +159,7 @@
     **যোগাযোগ:** XXXXX
 
 - title: "Русский - Скачать плагин"
-  image: logo_qgis.png
+  image: https://github.com/ByMaxAnjos/LCZ4r/blob/main/docs/articles/logo_qgis.png
   #image: articles/russian_card.png
   link: https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Russian_LCZ4r.zip
   footer: <a href="https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r_qgis.html">Получить помощь</a>
