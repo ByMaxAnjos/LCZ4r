@@ -28,7 +28,6 @@ knitr::opts_chunk$set(
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
-library(htmltools)
 #source("example_cards.R", local = TRUE)
 
 card <- function(
@@ -85,10 +84,6 @@ example_cards <- function(yml, group = NULL, class_row = "row-cols-1 row-cols-md
   )
 }
 
-```
-
-```{css echo=FALSE}
-.row > main { max-width: 100%; }
 ```
 
 ```{r example-cards-showcase}
