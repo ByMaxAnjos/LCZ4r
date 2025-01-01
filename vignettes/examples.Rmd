@@ -2,8 +2,6 @@
 title: "Multilingual LCZ4r-QGIS Plugin"
 description: >
   A collection of multiple languages that use the LCZ4r package.
-author: "Max Anjos"
-date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output:
     rmarkdown::html_vignette:
       code_folding: hide
@@ -26,68 +24,92 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE)
-#source("example_cards.R", local = TRUE)
+**Local Climate Zones (LCZ) and Urban Heat Islands Analysis in QGIS! A LCZ4r-QGIS plugin repository that integrates the LCZ4r package with QGIS in multiple languages.**
 
-card <- function(
-  ...,
-  class_card = NULL,
-  class_card_body = NULL,
-  class_card_title = NULL,
-  class_card_footer = "text-end"
-) {
-  card_data <- list(...)
-  htmltools::withTags(
-    div(
-      class = "col",
-      div(
-        class = c("card h-100 shadow-sm", class_card),
-        a(
-          href = card_data$link,
-          img(
-            src = card_data$image,
-            class = "card-img-top",
-            alt = paste0("Preview image of ", card_data$title)
-          )
-        ),
-        div(
-          class = c("card-body", class_card_body),
-          h5(class = c("card-title", class_card_title), a(href = card_data$link, card_data$title)),
-          if (!is.null(card_data$text)) div(
-            class = "card-text text-muted fs-6",
-            htmltools::HTML(commonmark::markdown_html(card_data$text))
-          ),
-        ),
-        if (!is.null(card_data$footer)) div(
-          class = c("card-footer", class_card_footer),
-          htmltools::HTML(card_data$footer)
-        )
-      )
-    )
-  )
-}
+```{r, echo=FALSE}
+#Text
+text_introduction <- "LCZ-QGIS plugin integrates the General Functions and Local Functions from LCZ4r package into QGIS, allowing users to analyze LCZs and urban heat islands directly within the QGIS environment."
+text_instalation <- "You can watch a detailed tutorial on installing LCZ4r in QGIS above or link below."
 
-example_cards <- function(yml, group = NULL, class_row = "row-cols-1 row-cols-md-2 row-cols-lg-3") {
-  examples <- if (is.list(yml)) {
-    yml
-  } else {
-    yaml::read_yaml(yml)
-  }
+#Multilingual texts
+text_english <- "A LCZ4r-QGIS plugin integrates the General Functions and Local Functions from LCZ4r package into QGIS environment."
+text_portuguese <- "O plugin LCZ4r-QGIS integra as Funções Gerais e as Funções Locais do pacote LCZ4r no ambiente QGIS."
+text_deutsch <- "Das LCZ4r-QGIS-Plugin integriert die allgemeinen Funktionen und lokalen Funktionen des LCZ4r-Pakets in die QGIS-Umgebung."
 
-  examples <- purrr::keep(examples, function(x) x[["group"]] %in% group)
-  examples <- purrr::transpose(examples)
-
-  htmltools::tags$div(
-    class = paste("row g-4", class_row),
-    purrr::pmap(examples, card)
-  )
-}
 
 ```
 
-```{r example-cards-showcase}
-example_cards("examples.yml", "showcase")
+
+```{r, echo=FALSE}
+# Create the dataframe
+df_translation <- data.frame(
+  title_card = c("Introduction to LCZ4r-QGIS plugin", 
+                "Installing LCZ4r in QGIS", 
+                "English - Download plugin", 
+                "Português - Baixar plugin", 
+                "Deutsch - Plugin herunterladen"
+                ),
+  short_name = c("LCZ4r project", 
+                 "LCZ4r project", 
+                 "Human Translation", 
+                 "Translation-based Generative AI", 
+                 "Translation-based Generative AI"
+                 ),
+  author = c(
+           "Published on 01 Jan 2025", 
+           "Published on 01 Jan 2025", 
+           "Published on 01 Jan 2025 - Max Anjos (maxanjos@campus.ul.pt)", 
+           "Published on 01 Jan 2025 - Max Anjos (maxanjos@campus.ul.pt) • Antônio Campos Neto • Dayvid Madeiros", 
+           "Published on 01 Jan 2025 - Author(s)"
+           ),
+  description = c(
+    text_introduction,
+    text_instalation,
+    text_english,
+    text_portuguese,
+    text_deutsch
+  ),
+  type_translation = c(
+    "LCZ4r Project",
+    "LCZ4r project",
+    "Human translation",
+    "HUman translation",
+    "Translation-based Generative AI; Chatgpt4o"
+  ),
+  image_url = c(
+    "logo_qgis.png",
+    "installing.png",
+    "english_card.png",
+    "logo_qgis.png",
+    "logo_qgis.png"
+  ),
+  gallery_url = c(
+    "https://bymaxanjos.github.io/LCZ4r/articles/Introd_QGIS_LCZ4r.html",
+    "https://www.youtube.com/embed/RalGSgx8v2Q",
+    "https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/English_LCZ4r.zip",
+    "https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Portuguese_LCZ4r.zip",
+    "https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Deutsch_LCZ4r.zip"
+  )
+)
+```
+
+
+```{r, echo=FALSE}
+# Generate cards
+bs4cards::cards(
+    data = df_translation,
+    title = title_card,
+    text = description,
+    link = gallery_url,
+    image = image_url,
+    footer = author,
+    header = short_name,
+    width = "row-cols-2",
+    spacing = 5,
+    border_width = 1,
+    border_radius = 2
+    
+  )
 ```
 
 
@@ -95,11 +117,3 @@ example_cards("examples.yml", "showcase")
 
 Please, select your preferential language.
 
-```{r example-cards-demo}
-example_cards("examples.yml", "demo")
-```
-
-
-```{js echo=FALSE}
-document.getElementById('main').classList = ''
-```
