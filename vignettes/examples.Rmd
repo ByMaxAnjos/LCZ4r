@@ -27,23 +27,84 @@ knitr::opts_chunk$set(
 **Local Climate Zones (LCZ) and Urban Heat Islands Analysis in QGIS! A LCZ4r-QGIS plugin repository that integrates the LCZ4r package with QGIS in multiple languages.**
 
 
-```{r, echo=FALSE}
+```{r, include = FALSE}
 if(!require(remotes)) install.packages("remotes")
 remotes::install_github("djnavarro/bs4cards", upgrade = "never")
 library(bs4cards)
 
 ```
 
+
 ```{r, echo=FALSE}
 #Text
 text_introduction <- "LCZ-QGIS plugin integrates the General Functions and Local Functions from LCZ4r package into QGIS, allowing users to analyze LCZs and urban heat islands directly within the QGIS environment."
 text_instalation <- "You can watch a detailed tutorial on installing LCZ4r in QGIS above or link below."
 
+```
+
+
+```{r, echo=FALSE}
+# Create the dataframe
+df_default <- data.frame(
+  title_card = c("Introduction to LCZ4r-QGIS plugin", 
+                "Installing LCZ4r in QGIS"
+                ),
+  short_name = c("LCZ4r project", 
+                 "LCZ4r project"
+                 ),
+  author = c(
+           "Published on 01 Jan 2025", 
+           "Published on 01 Jan 2025"
+           ),
+  description = c(
+    text_introduction,
+    text_instalation
+  ),
+  type_translation = c(
+    "LCZ4r Project",
+    "LCZ4r project"
+  ),
+  image_url = c(
+    "logo_qgis.png",
+    "installing.png"
+  ),
+  gallery_url = c(
+    "https://bymaxanjos.github.io/LCZ4r/articles/Introd_QGIS_LCZ4r.html",
+    "https://www.youtube.com/embed/RalGSgx8v2Q"
+  )
+)
+```
+
+
+```{r, echo=FALSE}
+# Generate cards
+bs4cards::cards(
+    data = df_default,
+    title = title_card,
+    text = description,
+    link = gallery_url,
+    image = image_url,
+    footer = author,
+    header = short_name,
+    width = "row-cols-2",
+    spacing = 5,
+    border_width = 1,
+    border_radius = 2,
+    border_colour = "#F2F0ED"
+    
+  )
+```
+
+
+## Multilingual Plugins
+
+Please, select your preferred language:
+
+```{r, echo=FALSE}
 #Multilingual texts
 text_english <- "A LCZ4r-QGIS plugin integrates the General Functions and Local Functions from LCZ4r package into QGIS environment."
 text_portuguese <- "O plugin LCZ4r-QGIS integra as Funções Gerais e as Funções Locais do pacote LCZ4r no ambiente QGIS."
 text_deutsch <- "Das LCZ4r-QGIS-Plugin integriert die allgemeinen Funktionen und lokalen Funktionen des LCZ4r-Pakets in die QGIS-Umgebung."
-
 
 ```
 
@@ -51,49 +112,37 @@ text_deutsch <- "Das LCZ4r-QGIS-Plugin integriert die allgemeinen Funktionen und
 ```{r, echo=FALSE}
 # Create the dataframe
 df_translation <- data.frame(
-  title_card = c("Introduction to LCZ4r-QGIS plugin", 
-                "Installing LCZ4r in QGIS", 
+  title_card = c(
                 "English - Download plugin", 
                 "Português - Baixar plugin", 
                 "Deutsch - Plugin herunterladen"
                 ),
-  short_name = c("LCZ4r project", 
-                 "LCZ4r project", 
+  short_name = c(
                  "Human Translation", 
-                 "Translation-based Generative AI", 
+                 "Human Translation", 
                  "Translation-based Generative AI"
                  ),
   author = c(
-           "Published on 01 Jan 2025", 
-           "Published on 01 Jan 2025", 
            "Published on 01 Jan 2025 - Max Anjos (maxanjos@campus.ul.pt)", 
            "Published on 01 Jan 2025 - Max Anjos (maxanjos@campus.ul.pt) • Antônio Campos Neto • Dayvid Madeiros", 
            "Published on 01 Jan 2025 - Author(s)"
            ),
   description = c(
-    text_introduction,
-    text_instalation,
     text_english,
     text_portuguese,
     text_deutsch
   ),
   type_translation = c(
-    "LCZ4r Project",
-    "LCZ4r project",
     "Human translation",
     "HUman translation",
     "Translation-based Generative AI; Chatgpt4o"
   ),
   image_url = c(
-    "logo_qgis.png",
-    "installing.png",
     "english_card.png",
     "logo_qgis.png",
     "logo_qgis.png"
   ),
   gallery_url = c(
-    "https://bymaxanjos.github.io/LCZ4r/articles/Introd_QGIS_LCZ4r.html",
-    "https://www.youtube.com/embed/RalGSgx8v2Q",
     "https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/English_LCZ4r.zip",
     "https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Portuguese_LCZ4r.zip",
     "https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Deutsch_LCZ4r.zip"
@@ -114,14 +163,10 @@ bs4cards::cards(
     header = short_name,
     width = "row-cols-2",
     spacing = 5,
-    border_width = 0,
-    border_radius = 2
+    border_width = 1,
+    border_radius = 2,
+    border_colour = "#F2F0ED"
     
   )
 ```
-
-
-## Multilingual Plugins
-
-Please, select your preferential language.
 
