@@ -26,6 +26,14 @@ knitr::opts_chunk$set(
 
 **Local Climate Zones (LCZ) and Urban Heat Islands Analysis in QGIS! A LCZ4r-QGIS plugin repository that integrates the LCZ4r package with QGIS in multiple languages.**
 
+
+```{r, echo=FALSE}
+if(!require(remotes)) install.packages("remotes")
+remotes::install_github("djnavarro/bs4cards", upgrade = "never")
+library(bs4cards)
+
+```
+
 ```{r, echo=FALSE}
 #Text
 text_introduction <- "LCZ-QGIS plugin integrates the General Functions and Local Functions from LCZ4r package into QGIS, allowing users to analyze LCZs and urban heat islands directly within the QGIS environment."
@@ -106,7 +114,7 @@ bs4cards::cards(
     header = short_name,
     width = "row-cols-2",
     spacing = 5,
-    border_width = 1,
+    border_width = 0,
     border_radius = 2
     
   )
