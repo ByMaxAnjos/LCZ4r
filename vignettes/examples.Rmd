@@ -105,6 +105,7 @@ Please, select your preferred language:
 text_english <- "A LCZ4r-QGIS plugin integrates the General Functions and Local Functions from LCZ4r package into QGIS environment."
 text_portuguese <- "O plugin LCZ4r-QGIS integra as Funções Gerais e as Funções Locais do pacote LCZ4r no ambiente QGIS."
 text_deutsch <- "Das LCZ4r-QGIS-Plugin integriert die allgemeinen Funktionen und lokalen Funktionen des LCZ4r-Pakets in die QGIS-Umgebung."
+text_chinese <- "LCZ4r-QGIS插件将LCZ4r包中的通用功能和地方功能集成到QGIS环境中。"
 
 ```
 
@@ -115,37 +116,44 @@ df_translation <- data.frame(
   title_card = c(
                 "English - Download plugin", 
                 "Português - Baixar plugin", 
-                "Deutsch - Plugin herunterladen"
+                "Deutsch - Plugin herunterladen",
+                "中文 - 下载插件"
                 ),
   short_name = c(
                  "Human Translation", 
                  "Human Translation", 
+                 "Translation-based Generative AI",
                  "Translation-based Generative AI"
                  ),
   author = c(
            "Published on 01 Jan 2025 - Max Anjos (maxanjos@campus.ul.pt)", 
            "Published on 01 Jan 2025 - Max Anjos (maxanjos@campus.ul.pt) • Antônio Campos Neto • Dayvid Madeiros", 
+           "Published on 01 Jan 2025 - Author(s)",
            "Published on 01 Jan 2025 - Author(s)"
            ),
   description = c(
     text_english,
     text_portuguese,
-    text_deutsch
+    text_deutsch,
+    text_chinese
   ),
   type_translation = c(
     "Human translation",
     "HUman translation",
+    "Translation-based Generative AI; Chatgpt4o",
     "Translation-based Generative AI; Chatgpt4o"
   ),
   image_url = c(
     "english_card.png",
+    "logo_qgis.png",
     "logo_qgis.png",
     "logo_qgis.png"
   ),
   gallery_url = c(
     "https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/English_LCZ4r.zip",
     "https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Portuguese_LCZ4r.zip",
-    "https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Deutsch_LCZ4r.zip"
+    "https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Deutsch_LCZ4r.zip",
+    "https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Chinese_LCZ4r.zip"
   )
 )
 ```
