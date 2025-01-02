@@ -32,23 +32,7 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../index.html" aria-label="Home"><span class="fa fa-home"></span></a></li>
-<li class="active nav-item dropdown">
-  <button class="nav-link dropdown-toggle" type="button" id="dropdown-tutorials" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Tutorials</button>
-  <ul class="dropdown-menu" aria-labelledby="dropdown-tutorials">
-<li><h6 class="dropdown-header" data-toc-skip>Installation</h6></li>
-    <li><a class="dropdown-item" href="../articles/instalation_lcz4r.html">Installing LCZ4r in RStudio</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>General Functions Overview</h6></li>
-    <li><a class="dropdown-item" href="../articles/Introd_genera_LCZ4r.html">Map, Area and Paramerters</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><h6 class="dropdown-header" data-toc-skip>Local Functions Overview</h6></li>
-    <li><a class="dropdown-item" href="../articles/Introd_local_LCZ4r.html">Introduction to Local Functions</a></li>
-    <li><a class="dropdown-item" href="../articles/local_func_time_series.html">Time Series Analysis</a></li>
-    <li><a class="dropdown-item" href="../articles/local_func_anomaly.html">Thermal Anomalies</a></li>
-    <li><a class="dropdown-item" href="../articles/local_func_modeling.html">Temperature Modeling with LCZ</a></li>
-    <li><a class="dropdown-item" href="../articles/local_func_uhi.html">Urban Heat Island (UHI) Analysis</a></li>
-  </ul>
-</li>
+<li class="nav-item"><a class="nav-link" href="../articles/tutorials.html">Tutorials</a></li>
 <li class="nav-item"><a class="nav-link" href="../articles/examples.html">LCZ4r-QGIS Plugin</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
       </ul>
@@ -73,7 +57,7 @@
       <h1>Install LCZ4r in RStudio</h1>
                         <h4 data-toc-skip class="author">Max Anjos</h4>
             
-            <h4 data-toc-skip class="date">January 01, 2025</h4>
+            <h4 data-toc-skip class="date">02 Jan, 2025</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ByMaxAnjos/LCZ4r/blob/main/vignettes/instalation_lcz4r.Rmd" class="external-link"><code>vignettes/instalation_lcz4r.Rmd</code></a></small>
       <div class="d-none name"><code>instalation_lcz4r.Rmd</code></div>
@@ -82,28 +66,78 @@
     
     
 <div class="section level2">
+<h2 id="getting-started-with-lcz4r">🚀 Getting Started with LCZ4r<a class="anchor" aria-label="anchor" href="#getting-started-with-lcz4r"></a>
+</h2>
+<p>Welcome to the <strong>LCZ4r package!</strong> This guide will walk
+you through the installation process and help you get started with the
+latest features.</p>
+</div>
+<div class="section level2">
 <h2 id="installation-in-r">🗃️ Installation in R<a class="anchor" aria-label="anchor" href="#installation-in-r"></a>
 </h2>
-<p>To install <strong>R package LCZ4r</strong> LCZ4r use the development
-version on GitHub with latest features.</p>
+<p>To install the <strong>LCZ4r package</strong>, use the development
+version from GitHub. This ensures you have access to the latest features
+and improvements.</p>
+<div class="section level3">
+<h3 id="step-1-install-the-remotes-package">Step 1: Install the remotes Package<a class="anchor" aria-label="anchor" href="#step-1-install-the-remotes-package"></a>
+</h3>
+<p>If you don’t already have the remotes package installed, run the
+following command:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://remotes.r-lib.org" class="external-link">remotes</a></span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"ByMaxAnjos/LCZ4r"</span>, upgrade <span class="op">=</span> <span class="st">"never"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://remotes.r-lib.org" class="external-link">remotes</a></span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="step-2-install-lcz4r-from-github">Step 2: Install LCZ4r from GitHub<a class="anchor" aria-label="anchor" href="#step-2-install-lcz4r-from-github"></a>
+</h3>
+<p>Use the remotes::install_github() function to install the LCZ4r
+package:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#Load functions from LCZ4r package</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bymaxanjos.github.io/LCZ4r/">LCZ4r</a></span><span class="op">)</span></span></code></pre></div>
-<p>The upgrade = “never” in the install_github indicates that package
-dependencies won’t be upgraded. If you want, replace “always”. In this
-case, the installing processing may take a few minutes.</p>
+<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"ByMaxAnjos/LCZ4r"</span>, upgrade <span class="op">=</span> <span class="st">"never"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level3">
+<h3 id="step-3-install-lcz4r-from-github">Step 3: Install LCZ4r from GitHub<a class="anchor" aria-label="anchor" href="#step-3-install-lcz4r-from-github"></a>
+</h3>
+<p>Once installed, load the package to start using its functions:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://bymaxanjos.github.io/LCZ4r/">LCZ4r</a></span><span class="op">)</span></span></code></pre></div>
+</div>
 </div>
 <div class="section level2">
-<h2 id="installation-in-qgis">Installation in QGIS<a class="anchor" aria-label="anchor" href="#installation-in-qgis"></a>
+<h2 id="installation-notes">⏳Installation Notes<a class="anchor" aria-label="anchor" href="#installation-notes"></a>
 </h2>
-<p>It’s coming very soon…</p>
-<p><img src="logo_qgis.png" width="100%" style="display: block; margin: auto;"></p>
+<ul>
+<li>
+<strong>First installation:</strong> The first installation may take
+a while as all dependencies (packages required by LCZ4r) are installed
+on your system.</li>
+<li>
+<strong>Upgrate:</strong> The upgrade = “never” argument ensures
+that package dependencies are not upgraded. If you want to upgrade
+dependencies, replace “never” with “always”. Note that this may extend
+the installation time.</li>
+<li>
+<strong>Regular updates:</strong> We recommend reinstalling the
+package periodically to leverage the latest improvements and bug
+fixes.</li>
+</ul>
 </div>
 <div class="section level2">
-<h2 id="have-feedback-or-suggestions">Have feedback or suggestions?<a class="anchor" aria-label="anchor" href="#have-feedback-or-suggestions"></a>
+<h2 id="tips-for-a-smooth-experience">💡Tips for a Smooth Experience<a class="anchor" aria-label="anchor" href="#tips-for-a-smooth-experience"></a>
+</h2>
+<ul>
+<li>
+<strong>Check Dependencies</strong>: Ensure you have the latest
+version of R and RStudio installed.</li>
+<li>
+<strong>Troubleshooting</strong>: If you encounter any issues during
+installation, check the GitHub Issues page for solutions or to report
+new problems.</li>
+</ul>
+<p>Thank you for using LCZ4r! We hope this package enhances your
+workflow and helps you achieve your goals. Happy coding!🎉</p>
+</div>
+<div class="section level2">
+<h2 id="have-feedback-or-suggestions">📣 Have feedback or suggestions?<a class="anchor" aria-label="anchor" href="#have-feedback-or-suggestions"></a>
 </h2>
 <p>Do you have an idea for improvement or did you spot a mistake? We’d
 love to hear from you! Click the button below to create a new issue
