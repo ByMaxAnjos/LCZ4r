@@ -1,0 +1,249 @@
+---
+title: "Tutorials"
+description: >
+  Training for General and Local Functions from the LCZ4r package.
+output:
+    rmarkdown::html_vignette:
+      code_folding: hide
+    toc: true
+    toc_float: TRUE
+    toc_depth: 2
+    number_sections: false
+    highlight: "textmate"
+    css: custom.css
+vignette: >
+  %\VignetteIndexEntry{Tutorials}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{rmarkdown::render}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+**Mastering General and Local Functions in the LCZ4r Package**
+
+
+```{r, include = FALSE}
+if(!require(remotes)) install.packages("remotes")
+remotes::install_github("djnavarro/bs4cards", upgrade = "never")
+library(bs4cards)
+
+```
+
+## 🗃️ Installation in R
+
+```{r, echo=FALSE}
+#Text
+text_instalation <- "To install R package LCZ4r, use the development version on GitHub with latest features"
+```
+
+
+```{r, echo=FALSE}
+# Create the dataframe
+df_default <- data.frame(
+  title_card = c("Install LCZ4r in RStudio"
+                ),
+  short_name = c("Installation"
+                 ),
+  author = c(
+           "`r format(Sys.Date(), '%d %b, %Y')`"
+           ),
+  description = c(
+    text_instalation
+  ),
+  type_translation = c(
+    "LCZ4r Project"
+  ),
+  image_url = c(
+    "instalation_rstudio.png"
+  ),
+  gallery_url = c(
+    "https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r.html"
+  )
+)
+```
+
+
+```{r, echo=FALSE}
+# Generate cards
+bs4cards::cards(
+    data = df_default,
+    title = title_card,
+    text = description,
+    link = gallery_url,
+    image = image_url,
+    #footer = author,
+    #header = short_name,
+    width = "row-cols-2",
+    spacing = 5,
+    border_width = 1,
+    border_radius = 2,
+    border_colour = "#F2F0ED"
+    
+  )
+```
+
+## 🚀 General Functions
+
+```{r, echo=FALSE}
+#Text
+text_general <- "General Functions facilitate the retrieval, analysis, and visualization of LCZs"
+text_generator <- "The LCZ Generator is a web application for creating Local Climate Zone (LCZ) maps. This guide provides step-by-step instructions to generate an LCZ map for your city using the LCZ4r package."
+```
+
+
+```{r, echo=FALSE}
+# Create the dataframe
+df_default <- data.frame(
+  title_card = c(
+                "Getting started with General Functions",
+                "Download LCZ map from LCZ Generator Platform."
+                ),
+  short_name = c("Tutorial", 
+                 "Tutotial"
+                 ),
+  author = c(
+           "`r format(Sys.Date(), '%d %b, %Y')`", 
+           "`r format(Sys.Date(), '%d %b, %Y')`"
+           ),
+  description = c(
+    text_general,
+    text_generator
+  ),
+  type_translation = c(
+    "General Functions",
+    "General Functions"
+  ),
+  image_url = c(
+    "fig_general_1_1.png",
+    "generator_card.png"
+  ),
+  gallery_url = c(
+    "https://bymaxanjos.github.io/LCZ4r/articles/Introd_genera_LCZ4r.html",
+    "https://bymaxanjos.github.io/LCZ4r/articles/Introd_genera_LCZ4r.html#download-lcz-map-from-lcz-generator-platform"
+  )
+)
+```
+
+
+```{r, echo=FALSE}
+# Generate cards
+bs4cards::cards(
+    data = df_default,
+    title = title_card,
+    text = description,
+    link = gallery_url,
+    image = image_url,
+    #footer = author,
+    header = short_name,
+    width = "row-cols-2",
+    spacing = 5,
+    border_width = 1,
+    border_radius = 2,
+    border_colour = "#F2F0ED"
+    
+  )
+```
+
+## Local Functions
+
+```{r, echo=FALSE}
+#Multilingual texts
+text_local_introduction <- "The Local functions in LCZ4r, offer powerful tools to handle and analyze urban climate data.They enable time-series analysis, mapping of thermal anomalies, spatial interpolation, and more."
+text_ts <- "The lcz_ts() function allows you to analyze air temperature data associated with Local Climate Zones (LCZ) over time."
+text_anomaly <- "The thermal anomaly is a great way to evaluate the intra-urban air temperatures differences."
+text_modelling <- "In this guide, we’ll demonstrate how to use LCZ4r to model temperature data."
+text_uhi <- "This guide demonstrates how to use the lcz_uhi_intensity() function to calculate and analyze UHI intensity using LCZ classes."
+
+```
+
+
+```{r, echo=FALSE}
+# Create the dataframe
+df_translation <- data.frame(
+  title_card = c(
+                "Introduction to Local Functions", 
+                "Time Series Analysis", 
+                "Thermal Anomalies",
+                "Temperature Modeling with LCZ",
+                "Urban Heat Island (UHI) Analysis"
+                ),
+  short_name = c(
+                 "Tutorial", 
+                 "Tutorial", 
+                 "Tutorial",
+                 "Tutorial",
+                 "Tutorial"
+                 ),
+    author = c(
+           "`r format(Sys.Date(), '%d %b, %Y')`", 
+           "`r format(Sys.Date(), '%d %b, %Y')`",
+           "`r format(Sys.Date(), '%d %b, %Y')`", 
+           "`r format(Sys.Date(), '%d %b, %Y')`",
+           "`r format(Sys.Date(), '%d %b, %Y')`"
+           ),
+  description = c(
+    text_local_introduction,
+    text_ts,
+    text_anomaly,
+    text_modelling,
+    text_uhi
+  ),
+  type_translation = c(
+    "Local Functions",
+    "Local Functions",
+    "Local Functions",
+    "Local Functions",
+    "Local Functions"
+  ),
+  image_url = c(
+    "introd_local_card.png",
+    "fig_local_ts_5.png",
+    "fig_local_anomaly_1.png",
+    "fig_local_modeling_1.png",
+    "fig_local_uhi_4.png"
+  ),
+  gallery_url = c(
+    "https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html",
+    "https://bymaxanjos.github.io/LCZ4r/articles/local_func_time_series.html",
+    "https://bymaxanjos.github.io/LCZ4r/articles/local_func_anomaly.html",
+    "https://bymaxanjos.github.io/LCZ4r/articles/local_func_modeling.html",
+    "https://bymaxanjos.github.io/LCZ4r/articles/local_func_uhi.html"
+  )
+)
+```
+
+
+```{r, echo=FALSE}
+# Generate cards
+bs4cards::cards(
+    data = df_translation,
+    title = title_card,
+    text = description,
+    link = gallery_url,
+    image = image_url,
+    footer = author,
+    header = short_name,
+    width = "row-cols-2",
+    spacing = 5,
+    border_width = 1,
+    border_radius = 2,
+    border_colour = "#F2F0ED"
+    
+  )
+```
+
+
+
+## 📬 Have feedback or suggestions?
+
+We welcome your feedback and suggestions! If you have ideas for improvements or spot any issues, please let us know. Click the button below to submit a new issue on our GitHub repository.
+
+<button type="button" class="btn" style="background-color: #008000; color: white; padding: .25rem .5rem; font-size: .75rem; border: none; border-radius: .25rem;">
+
+<a href='https://github.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/issues/new'style="text-decoration: none; color: white;"> Open an issue in the Github repository </a>
+</button>

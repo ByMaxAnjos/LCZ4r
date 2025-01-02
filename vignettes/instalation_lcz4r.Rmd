@@ -1,7 +1,7 @@
 ---
 title: "Install LCZ4r in RStudio"
 author: "Max Anjos"
-date: "`r format(Sys.Date(), '%B %d, %Y')`"
+date: "`r format(Sys.Date(), '%d %b, %Y')`"
 output:
     rmarkdown::html_vignette:
       code_folding: hide
@@ -11,8 +11,6 @@ output:
     number_sections: false
     highlight: "textmate"
     css: custom.css
-resource_files:
-  - articles/logo_qgis.png
 vignette: >
   %\VignetteIndexEntry{Install LCZ4r in RStudio}
   %\VignetteEngine{rmarkdown::render}
@@ -26,34 +24,53 @@ knitr::opts_chunk$set(
 )
 ```
 
+## 🚀 Getting Started with LCZ4r
+
+Welcome to the **LCZ4r package!** This guide will walk you through the installation process and help you get started with the latest features.
+
 ## 🗃️ Installation in R
 
-To install **R package LCZ4r** LCZ4r use the development version on GitHub with latest features. 
+To install the **LCZ4r package**, use the development version from GitHub. This ensures you have access to the latest features and improvements.
+
+### Step 1: Install the remotes Package
+
+If you don’t already have the remotes package installed, run the following command:
 
 ```{r eval=FALSE, message=FALSE, warning=FALSE}
 if(!require(remotes)) install.packages("remotes")
+```
+
+### Step 2: Install LCZ4r from GitHub
+
+Use the remotes::install_github() function to install the LCZ4r package:
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
 remotes::install_github("ByMaxAnjos/LCZ4r", upgrade = "never")
 ```
 
+### Step 3: Install LCZ4r from GitHub
+
+Once installed, load the package to start using its functions:
 
 ```{r eval=FALSE, message=FALSE, warning=FALSE}
-#Load functions from LCZ4r package
 library(LCZ4r)
 ```
 
-The upgrade = "never" in the install_github indicates that package dependencies won't be upgraded. If you want, replace "always". In this case, the installing processing may take a few minutes. 
+## ⏳Installation Notes
+
+* **First installation:** The first installation may take a while as all dependencies (packages required by LCZ4r) are installed on your system.
+* **Upgrate:** The upgrade = "never" argument ensures that package dependencies are not upgraded. If you want to upgrade dependencies, replace "never" with "always". Note that this may extend the installation time.
+* **Regular updates:** We recommend reinstalling the package periodically to leverage the latest improvements and bug fixes.
+
+## 💡Tips for a Smooth Experience
+
+* **Check Dependencies**: Ensure you have the latest version of R and RStudio installed.
+* **Troubleshooting**: If you encounter any issues during installation, check the GitHub Issues page for solutions or to report new problems.
+
+Thank you for using LCZ4r! We hope this package enhances your workflow and helps you achieve your goals. Happy coding!🎉
 
 
-## Installation in QGIS
-
-It's coming very soon...
-
-```{r echo=F, out.width = '100%', fig.align='center'}
-knitr::include_graphics("logo_qgis.png")
-```
-
-
-## Have feedback or suggestions?
+## 📣 Have feedback or suggestions?
 Do you have an idea for improvement or did you spot a mistake? We'd love to hear from you! Click the button below to create a new issue (Github) and share your feedback or suggestions directly with us.
 
 <button type="button" class="btn" style="background-color: #008000; color: white; padding: .25rem .5rem; font-size: .75rem; border: none; border-radius: .25rem;">

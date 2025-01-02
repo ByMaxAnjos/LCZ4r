@@ -30,26 +30,7 @@ navbar:
       aria-label: Home
     tutorials:
       text: Tutorials
-      menu:
-      - text: Installation
-      - text: Installing LCZ4r in RStudio
-        href: articles/instalation_lcz4r.html
-      - text: '---'
-      - text: General Functions Overview
-      - text: Map, Area and Paramerters
-        href: articles/Introd_genera_LCZ4r.html
-      - text: '---'
-      - text: Local Functions Overview
-      - text: Introduction to Local Functions
-        href: articles/Introd_local_LCZ4r.html
-      - text: Time Series Analysis
-        href: articles/local_func_time_series.html
-      - text: Thermal Anomalies
-        href: articles/local_func_anomaly.html
-      - text: Temperature Modeling with LCZ
-        href: articles/local_func_modeling.html
-      - text: Urban Heat Island (UHI) Analysis
-        href: articles/local_func_uhi.html
+      href: articles/tutorials.html
     LCZ4r-QGIS:
       text: LCZ4r-QGIS Plugin
       href: articles/examples.html
