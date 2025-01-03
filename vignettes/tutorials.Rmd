@@ -50,7 +50,7 @@ df_default <- data.frame(
   short_name = c("Installation"
                  ),
   author = c(
-           "`r format(Sys.Date(), '%d %b, %Y')`"
+           "©LCZ4r"
            ),
   description = c(
     text_instalation
@@ -76,14 +76,13 @@ bs4cards::cards(
     text = description,
     link = gallery_url,
     image = image_url,
-    #footer = author,
+    footer = author,
     #header = short_name,
     width = "row-cols-2",
     spacing = 5,
     border_width = 1,
-    border_radius = 2,
+    border_radius = 4,
     border_colour = "#F2F0ED"
-    
   )
 ```
 
@@ -107,8 +106,8 @@ df_default <- data.frame(
                  "Tutotial"
                  ),
   author = c(
-           "`r format(Sys.Date(), '%d %b, %Y')`", 
-           "`r format(Sys.Date(), '%d %b, %Y')`"
+           "©LCZ4r", 
+           "©LCZ4r"
            ),
   description = c(
     text_general,
@@ -138,18 +137,18 @@ bs4cards::cards(
     text = description,
     link = gallery_url,
     image = image_url,
-    #footer = author,
+    footer = author,
     header = short_name,
     width = "row-cols-2",
     spacing = 5,
     border_width = 1,
-    border_radius = 2,
+    border_radius = 4,
     border_colour = "#F2F0ED"
     
   )
 ```
 
-## Local Functions
+## 🚀 Local Functions
 
 ```{r, echo=FALSE}
 #Multilingual texts
@@ -180,11 +179,11 @@ df_translation <- data.frame(
                  "Tutorial"
                  ),
     author = c(
-           "`r format(Sys.Date(), '%d %b, %Y')`", 
-           "`r format(Sys.Date(), '%d %b, %Y')`",
-           "`r format(Sys.Date(), '%d %b, %Y')`", 
-           "`r format(Sys.Date(), '%d %b, %Y')`",
-           "`r format(Sys.Date(), '%d %b, %Y')`"
+           "©LCZ4r", 
+           "©LCZ4r",
+           "©LCZ4r", 
+           "©LCZ4r",
+           "©LCZ4r"
            ),
   description = c(
     text_local_introduction,
@@ -231,7 +230,7 @@ bs4cards::cards(
     width = "row-cols-2",
     spacing = 5,
     border_width = 1,
-    border_radius = 2,
+    border_radius = 4,
     border_colour = "#F2F0ED"
     
   )
