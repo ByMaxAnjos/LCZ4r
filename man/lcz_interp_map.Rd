@@ -2,7 +2,7 @@
 % Please edit documentation in R/lcz_interp_map.R
 \name{lcz_interp_map}
 \alias{lcz_interp_map}
-\title{Visualize the LCZ - interpolated map}
+\title{Interpolate spatial and temporal data using a Local Climate Zones (LCZ)}
 \usage{
 lcz_interp_map(
   x,
@@ -21,68 +21,102 @@ lcz_interp_map(
 )
 }
 \arguments{
-\item{x}{A \code{SpatRaster} object containing the LCZ map. The LCZ map can be obtained using the \code{lcz_get_map()} function.}
+\item{x}{A \code{SpatRaster} object representing the LCZ map, obtained via \code{lcz_get_map()} functions.}
 
-\item{data_frame}{A data frame containing air temperature measurements and station IDs. The data frame should have a date field in hourly or higher resolution format.}
+\item{data_frame}{A data frame containing air temperature measurements with station metadata.
+The data must include a date column in hourly or higher resolution.}
 
-\item{var}{Name of the variable for interpolation, e.g. air temperature, in the dataframe.}
+\item{var}{Character. The variable to interpolate (e.g., \code{"airT"} for air temperature).}
 
-\item{station_id}{Name of the station ID variable in the dataframe.}
+\item{station_id}{Character. The column name in \code{data_frame} identifying weather stations.}
 
-\item{...}{Additional arguments for the \code{selectByDate} function from the \code{openair} package. These arguments allow for flexible selection of specific time periods (year, month, day, hour). Examples of how to use these arguments include:
+\item{...}{Additional arguments passed to \code{selectByDate} from the \code{openair} package
+for flexible time selection. Options include:
 \itemize{
-\item \strong{Year(s)}: Numeric value(s) specifying the year(s) to select. For example, \code{year = 1998:2004} selects all years between 1998 and 2004 (inclusive), while \code{year = c(1998, 2004)} selects only the years 1998 and 2004.
-\item \strong{Month(s)}: Numeric or character value(s) specifying the months to select. Numeric examples: \code{month = 1:6} (January to June), or character examples: \code{month = c("January", "December")}.
-\item \strong{Day(s)}: Numeric value(s) specifying the days to select. For instance, \code{day = 1:30} selects days from 1 to 30, or \code{day = 15} selects only the 15th day of the month.
-\item \strong{Hour(s)}: Numeric value(s) specifying the hours to select. For example, \code{hour = 0:23} selects all hours in a day, while \code{hour = 9} selects only the 9th hour.
-\item \strong{Start date}: A string specifying the start date in either start="DD/MM/YYYY" (e.g., "1/2/1999") or "YYYY-mm-dd" format (e.g., "1999-02-01").
-\item \strong{End date}: A string specifying the end date in either end="DD/MM/YYYY" (e.g., "1/2/1999") or "YYYY-mm-dd" format (e.g., "1999-02-01").
+\item \strong{Year(s):} \code{year = 1998:2004} (selects 1998 to 2004) or \code{year = c(1998, 2004)}.
+\item \strong{Month(s):} \code{month = 1:6} (January to June) or \code{month = c("January", "December")}.
+\item \strong{Day(s):} \code{day = 1:30} (days 1 to 30) or \code{day = 15}.
+\item \strong{Hour(s):} \code{hour = 0:23} (all hours) or \code{hour = 9}.
+\item \strong{Start/End Date:} \code{"YYYY-mm-dd"} format (e.g., \code{"1999-02-01"}).
 }}
 
-\item{extract.method}{A character string specifying the method used to assign the LCZ class to each station point. The default is "simple". The available methods are:
+\item{extract.method}{Character. The method used to assign LCZ classes to stations:
 \itemize{
-\item \strong{simple}: Assigns the LCZ class based on the value of the raster cell in which the point falls.
-\item \strong{bilinear}: Interpolates the LCZ class values from the four nearest raster cells surrounding the point.
-\item \strong{two.step}: Assigns LCZs to stations while filtering out those located in heterogeneous LCZ areas. This method requires that at least 80\% of the pixels within a 5 × 5 kernel match the LCZ of the center pixel (Daniel et al., 2017). Note that this method reduces the number of stations.
+\item \strong{"simple"}: Assigns the LCZ based on the raster cell where the station is located. It often is used in low-density observational network.
+\item \strong{"two.step"}: Filters out stations in heterogeneous LCZ areas (Daniel et al., 2017). It often is used in ultra and high-density observational network, especially in LCZ classes with multiple stations.
+\item \strong{"bilinear"}: Uses bilinear interpolation to assign LCZ values.
 }}
 
-\item{sp.res}{Spatial resolution in unit of meters for interpolation. Default is 100.}
+\item{sp.res}{Numeric. Spatial resolution in meters (default: \code{100}).}
 
-\item{tp.res}{Temporal resolution, the time period to average to. Default is \dQuote{hour}, but includes \dQuote{day}, \dQuote{week}, \dQuote{month} or \dQuote{year}.}
+\item{tp.res}{Character. Temporal resolution for averaging (\code{"hour"}, \code{"day"}, etc.).}
 
-\item{vg.model}{If kriging is selected, the list of viogrammodels that will be tested and interpolated with kriging. Default is "Sph". The model are "Sph", "Exp", "Gau", "Ste". They names respective shperical, exponential,gaussian,Matern familiy, Matern, M. Stein's parameterization.}
+\item{vg.model}{Character. Variogram model for kriging. Default is \code{"Sph"} (spherical).
+Available models:
+\itemize{
+\item \code{"Sph"}: Spherical model.
+\item \code{"Exp"}: Exponential model.
+\item \code{"Gau"}: Gaussian model.
+\item \code{"Ste"}: M. Stein's parameterization.
+}}
 
-\item{by}{data frame time-serie split: \dQuote{year}, \dQuote{season}, \dQuote{seasonyear},  \dQuote{month}, \dQuote{monthyear}, \dQuote{weekday}, \dQuote{weekend},  \dQuote{site},
-\dQuote{daylight}(daytime and nighttime).See argument \emph{type} in openair package:\url{https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option}}
+\item{by}{Character. Specifies how to split the time series. Options include
+\code{"year"}, \code{"month"}, \code{"weekday"}, \code{"weekend"}, etc.}
 
-\item{impute}{Method to impute missing values (\dQuote{mean}, \dQuote{median}, \dQuote{knn}, \dQuote{bag}).}
+\item{impute}{Character. Method to impute missing values (\code{"mean"}, \code{"median"}, \code{"knn"}, \code{"bag"}).}
 
-\item{isave}{Save the plot into your directory.}
+\item{isave}{Logical. If \code{TRUE}, saves the plot to the working directory.}
 
-\item{LCZinterp}{If set to TRUE (default), the LCZ interpolation approach is used. If set to FALSE, conventional interpolation without LCZ is used.}
+\item{LCZinterp}{Logical. If \code{TRUE} (default), applies LCZ-based interpolation.}
 }
 \value{
-A map of LCZ-air temperature in \code{terra raster GeoTIF} format
+A spatially interpolated map in \code{terra raster GeoTIFF} format.
 }
 \description{
-This function generates a spatial interpolation of air temperature (or other variable) using Local Climate Zones (LCZs) and Kriging.  More details: \url{https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html}
+Generates an interpolated spatial map using LCZ as background.
+This function applies geostatistical interpolation techniques (e.g., kriging) to estimate variable values (e.g., air temperature) across the study area,
+integrating LCZ classifications. The function allows for flexible time period selection, like hour, daytime, nighttime and so on.
 }
 \examples{
 \dontrun{
-# Daily air temperature values in September 2019 .
- my_interp <- lcz_interp_map(lcz_map, data_frame = lcz_data, var = "airT",
-                               station_id = "station", tp.res = "day", sp.res= 100,
-                               year = 2019, month=9)
- }
+# Load sample data and LCZ map
+data("lcz_data")
+lcz_map <- lcz_get_map_generator(ID = "8576bde60bfe774e335190f2e8fdd125dd9f4299")
+
+# Plot the LCZ map
+lcz_plot_map(lcz_map)
+
+# Perform interpolation for 2020-01-02 at 04:00h
+my_interp <- lcz_interp_map(
+  lcz_map, data_frame = lcz_data, var = "airT",
+  station_id = "station", year = 2020, month = 1, day = 2, hour = 4,
+  sp.res = 100, tp.res = "hour", vg.model = "Sph",
+  LCZinterp = TRUE
+)
+
+# Perform interpolation for an entire day (returns a raster stack of 24 hours)
+my_interp <- lcz_interp_map(
+  lcz_map, data_frame = lcz_data, var = "airT",
+  station_id = "station", year = 2020, month = 1, day = 2,
+  sp.res = 100, tp.res = "hour", vg.model = "Sph",
+  LCZinterp = TRUE
+)
+}
+
+}
+\references{
+Anjos, M., Targino, A. C., Krecl, P., Oukawa, G. Y. & Braga, R. F. Analysis of the urban heat island under different synoptic patterns using local climate zones. Build. Environ. 185, 107268 (2020).
+Fenner, D., Meier, F., Bechtel, B., Otto, M. & Scherer, D. (2017). Intra and inter ‘local climate zone’ variability of air temperature as observed by crowdsourced citizen weather stations in Berlin, Germany. \emph{Meteorol. Z.}, 26, 525–547.
+\url{http://www.gstat.org/}
 }
 \seealso{
-See the documentation for \code{lcz_get_map()} to obtain an LCZ map.
+See \code{lcz_inter_eval()} for LCZ interpolation evaluation.
+}
+\author{
+Max Anjos (\url{https://github.com/ByMaxAnjos})
 }
 \keyword{Climate}
-\keyword{LCZ,}
 \keyword{Local}
 \keyword{Zone,}
-\keyword{analysis}
-\keyword{climate,}
-\keyword{spatial}
-\keyword{urban}
+\keyword{interpolation,}
+\keyword{kriging.}

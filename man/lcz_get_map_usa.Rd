@@ -35,6 +35,8 @@ roi_lcz <- lcz_get_map_usa(roi = custom_roi)
 }
 \references{
 Demuzere, M., Hankey, S., Mills, G., Zhang, W., Lu, T., & Bechtel, B. (2020). Combining expert and crowd-sourced training data to map urban form and functions for the continental US. Scientific Data, 7(1), 264. DOI:https://doi.org/10.1038/s41597-020-00605-z
+Demuzere, M., Hankey, S., Mills, G., Zhang, W., Lu, T., Bechtel B. (2020): CONUS-wide LCZ map and Training Areas. Figshare. Dataset. https://doi.org/10.6084/m9.figshare.11416950
+Anjos, M. (2024). LCZ4r Package Dataset. Zenodo. \url{https://doi.org/10.5281/zenodo.10835692}
 }
 \keyword{Climate}
 \keyword{LCZ,}

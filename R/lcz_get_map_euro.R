@@ -15,7 +15,7 @@
 #' @references
 #' Demuzere, M., Bechtel, B., Middel, A., & Mills, G. (2019). Mapping Europe into local climate zones. PLOS ONE, 14(4), e0214474. DOI:https://doi.org/10.1371/journal.pone.0214474
 #' Demuzere, M.; Bechtel, B.; Middel, A.; Mills, G. (2019): European LCZ map. Figshare. Dataset. https://doi.org/10.6084/m9.figshare.13322450
-#' Anjos, M. (2024). LCZ4r Package Dataset [Data set]. Zenodo. https://doi.org/10.5281/zenodo.10835692
+#' Anjos, M. (2024). LCZ4r Package Dataset. Zenodo. \url{https://doi.org/10.5281/zenodo.10835692}
 #'
 #' @examples
 #' \dontrun{

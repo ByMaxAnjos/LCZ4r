@@ -16,6 +16,12 @@
 #'   \item \strong{End date}: A string specifying the end date in either end="DD/MM/YYYY" (e.g., "1/2/1999") or "YYYY-mm-dd" format (e.g., "1999-02-01").
 #' }
 #' @param time.freq Defines the time period to average to. Default is \dQuote{hour}, but includes \dQuote{day}, \dQuote{week}, \dQuote{month} or \dQuote{year}.
+#' @param extract.method A character string specifying the method used to assign the LCZ class to each station point. The default is `"simple"`. Available methods are:
+#'   \itemize{
+#'     \item **simple**: Assigns the LCZ class based on the value of the raster cell in which the point falls. It often is used in low-density observational network.
+#'     \item **two.step**: Assigns LCZs to stations while filtering out those located in heterogeneous LCZ areas. This method requires that at least 80% of the pixels within a 5 × 5 kernel match the LCZ of the center pixel (Daniel et al., 2017). Note that this method reduces the number of stations. It often is used in ultra and high-density observational network, especially in LCZ classes with multiple stations.
+#'     \item **bilinear**: Interpolates the LCZ class values from the four nearest raster cells surrounding the point.
+#'   }
 #' @param plot_type A character string indicating the type of plot to generate. Options include:
 #' \itemize{
 #'   \item \strong{diverging_bar}: A horizontal bar plot that diverges from the center (zero), with positive anomalies extending to the right and negative anomalies to the left. This plot is good for showing the extent and direction of anomalies in a compact format.
@@ -38,6 +44,10 @@
 #' @param legend_name Legend name for dot plot. Default is "Anomaly".
 #'
 #' @return A visual representation of the anomalies of air temperature of LCZ in \code{ggplot} or data frame .csv format.
+#'
+#' @author
+#' Max Anjos (\url{https://github.com/ByMaxAnjos})
+#'
 #' @export
 #'
 #' @examples
@@ -60,6 +70,7 @@ lcz_anomaly <- function(x,
                         station_id = "",
                         ...,
                         time.freq = "hour",
+                        extract.method = "simple",
                         plot_type = "diverging_bar",
                         by = NULL,
                         impute = NULL,
@@ -117,6 +128,9 @@ lcz_anomaly <- function(x,
     stop("The 'longitude' input must be a column name in 'data_frame' representing each station's longitude")
   }
 
+  if (!(extract.method %in% c("simple", "bilinear", "two.step"))) {
+    stop("Invalid extract-based pixel model. Choose from 'simple', 'bilinear', or 'two.step'.")
+  }
   # Pre-processing time series ----------------------------------------------
 
   # Rename and define lcz_id for each lat and long
@@ -135,6 +149,12 @@ lcz_anomaly <- function(x,
   df_processed$longitude <- base::as.numeric(df_processed$longitude)
 
   # Impute missing values if necessary
+  missing_values = c("NAN","NaN", "-9999", "-99", "NULL", "",
+                     "NA", "N/A", "na", "missing", ".",
+                     "inf", "-inf", 9999, 999, Inf, -Inf)
+  df_processed <- df_processed %>%
+    dplyr::mutate(var_interp = ifelse(.data$var_interp %in% missing_values, NA, .data$var_interp))
+
   if (!is.null(impute)) {
     impute_methods <- c("mean", "median", "knn", "bag")
     if (!(impute %in% impute_methods)) {
@@ -163,25 +183,82 @@ lcz_anomaly <- function(x,
     sf::st_transform(crs = 4326)
 
   # Get shp LCZ stations from lat and long
-  shp_stations <- df_processed %>%
-    dplyr::distinct(.data$latitude, .data$longitude, .keep_all = T) %>%
+  stations_mod <- df_processed %>%
     stats::na.omit() %>%
     sf::st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
 
-  # Intersect poi shp stations with lcz shp
-  lcz_stations <- sf::st_intersection(shp_stations, lcz_shp) %>%
-    sf::st_drop_geometry() %>%
-    dplyr::select(.data$lcz_id, .data$station, .data$lcz)
+  if (extract.method == "simple") {
+    stations_lcz <- terra::extract(x, terra::vect(stations_mod))
+    stations_lcz$ID <- NULL
+    lcz_model <- base::cbind(stations_mod, stations_lcz) %>%
+      sf::st_drop_geometry() %>%
+      stats::na.omit() %>%
+      dplyr::mutate(
+        lcz = base::as.factor(.data$lcz),
+        lcz_id = base::as.factor(.data$lcz_id),
+        station = base::as.factor(paste0(.data$station, "(", lcz, ")"))
+      )
+  }
 
-  # merge data-model with lcz_station to get lcz class
-  lcz_model <-
-    dplyr::inner_join(df_processed, lcz_stations, by = c("station", "lcz_id")) %>%
-    dplyr::mutate(
-      lcz = base::as.factor(.data$lcz),
-      lcz_id = base::as.factor(.data$lcz_id),
-      station = base::as.factor(paste0(.data$station, "(", lcz, ")"))
-    ) %>%
-    dplyr::ungroup()
+  if (extract.method == "bilinear") {
+    stations_lcz <- terra::extract(x, terra::vect(stations_mod), method= "bilinear")
+    stations_lcz$ID <- NULL
+    stations_lcz$lcz <- as.integer(stations_lcz$lcz)
+    lcz_model <- base::cbind(stations_mod, stations_lcz) %>%
+      sf::st_drop_geometry() %>%
+      stats::na.omit() %>%
+      dplyr::mutate(
+        lcz = base::as.factor(.data$lcz),
+        lcz_id = base::as.factor(.data$lcz_id),
+        station = base::as.factor(paste0(.data$station, "(", lcz, ")"))
+      )
+  }
+
+  if (extract.method == "two.step") {
+    # Step 2: Define a function to filter stations based on LCZ homogeneity
+    filter_homogeneous_lcz <- function(df, raster, kernel_size = 5, threshold = 0.8) {
+      # Convert stations to SpatVector
+      stations_vect <- terra::vect(df)
+
+      # Create a moving kernel to analyze LCZ homogeneity
+      kernel <- matrix(1, nrow = kernel_size, ncol = kernel_size)
+
+      # Extract LCZ values in the kernel around each station
+      lcz_homogeneity <- terra::focal(raster, w = kernel, fun = function(values) {
+        # Compute percentage of pixels matching the center pixel
+        center_pixel <- values[ceiling(length(values) / 2)]
+        if (is.na(center_pixel)) {
+          return(NA)
+        }
+        mean(values == center_pixel, na.rm = TRUE)
+      })
+
+      # Extract homogeneity values at station locations
+      homogeneity_values <- terra::extract(lcz_homogeneity, stations_vect)
+
+      # Add homogeneity values to the station data frame
+      df$homogeneity <- homogeneity_values[, 2]  # Second column contains the homogeneity value
+
+      # Filter stations where homogeneity meets or exceeds the threshold
+      df_filtered <- df %>%
+        dplyr::filter(.data$homogeneity >= threshold)
+
+      return(df_filtered)
+    }
+
+    # Step 3: Apply the function to filter stations
+    df_homogeneous <- filter_homogeneous_lcz(stations_mod, x, kernel_size = 5, threshold = 0.8)
+    stations_lcz <- terra::extract(x, terra::vect(df_homogeneous))
+    stations_lcz$ID <- NULL
+    lcz_model <- base::cbind(df_homogeneous, stations_lcz) %>%
+      sf::st_drop_geometry() %>%
+      stats::na.omit() %>%
+      dplyr::mutate(
+        lcz = base::as.factor(.data$lcz),
+        lcz_id = base::as.factor(.data$lcz_id),
+        station = base::as.factor(paste0(.data$station, "(", lcz, ")"))
+      )
+  }
 
   # Settings for plots ------------------------------------------------------
 

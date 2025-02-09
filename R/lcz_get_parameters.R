@@ -52,6 +52,9 @@
 #'         If 'ishp' is TRUE, it returns an ESRI shapefile containing all parameters.
 #'         If 'iselect' is specified, it returns the selected parameter(s) as a raster(s).
 #'
+#' @author
+#' Max Anjos (https://github.com/ByMaxAnjos)
+#'
 #'@references
 #' Stewart, I., and T. Oke, 2012: Local climate zones for urban temperature studies. Bull. Amer. Meteor. Soc., 93, 1879–1900. https://doi.org/10.1175/BAMS-D-11-00019.1
 #'

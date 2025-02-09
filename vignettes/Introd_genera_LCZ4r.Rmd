@@ -23,6 +23,7 @@ resource_files:
   - articles/fig_general_4.png
   - articles/fig_general_5.png
   - articles/fig_general_6.png
+  - articles/fig_general_7.png
 vignette: >
   %\VignetteIndexEntry{Map, Area and Paramerters}
   %\VignetteEngine{rmarkdown::render}
@@ -36,7 +37,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-The **`LCZ4r` general functions** are designed to facilitate the retrieval, analysis, and visualization of Local Climate Zones (LCZ) when LCZ related data is not readily available. They are engineered to get the LZ map, compute LCZ classes, and extract specific parameters of interest, including Sky View Factor (SVF), impervious surface fraction, and roughness element height, among others.
+The **`LCZ4r` general functions** are designed to facilitate the retrieval, analysis, and visualization of Local Climate Zones (LCZ) when LCZ related data is not readily available. These functions enable users to download LCZ maps, compute LCZ classes, and extract specific parameters of interest, such as Sky View Factor (SVF), impervious surface fraction, and roughness element height.
 
 ## Getting Started
 
@@ -48,7 +49,7 @@ The general functions, each serving a unique purpose:
 | `lcz_get_map_euro()`    | Download your LCZ map from European dataset                  | Not needed    | Yes                      |
 | `lcz_get_map_usa()`     | Download your LCZ map from Continental United States dataset | Not needed    | Yes                      |
 | `lcz_get_map_generator()`     | Download your LCZ map from LCZ Generator Platform | Not needed    | Yes                      |
-| `lcz_get_map2()`        | Download the LCZ map                                         | Not needed    | Not needed               |
+| `lcz_get_map2()`        | Clip the LCZ map for your city or ROI                                        | Both    | Both              |
 | `lcz_plot_map()`        | Visualize the LCZ map                                      | Not needed    | Not needed               |
 | `lcz_cal_area()`        | Calculate LCZ areas                                        | Not needed    | Not needed               |
 | `lcz_get_parameters()`  | Retrieve LCZ parameters                                    | Not needed    | Not needed               |
@@ -170,10 +171,56 @@ lcz_plot_map(lcz_map)
 knitr::include_graphics("fig_generator.png")
 ```
 
+## 💡**Tip 1**: LCZ map for Region Of Interest (ROI)
 
-## 💡**Tips**: LCZ map for Region Of Interest (ROI)
+This example demonstrates how to use the **roi** argument into lcz_get_map* functions to clip the LCZ map for your ROI.You must import shapefile into R.
 
-*  Utilize the lcz_get_map* functions along with a shapefile for your ROI by coding lcz_get_map*(roi="your_shp"). Refer to the R package [sf](https://r-spatial.github.io/sf/) documentation for guidance on loading the shapefile into R.
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+#Load package
+library(sf)
+
+#Import Shapefile int0 R
+my_shp <- sf::st_read("path/shp_name.shp") #You also can use shapefile in .gpkg format
+
+#Get LCZ map for your ROI
+lcz_map <- lcz_get_map(roi = my_shp)
+
+#Visualize LCZ map
+lcz_plot_map(lcz_map)
+
+```
+
+
+## 💡**Tip 2**: Clip LCZ map generator for your city or Region Of Interest (ROI) using lcz_get_map2( )
+
+This example demonstrates how to use the lcz_get_map2() function to clip the LCZ map for your specific city or ROI. For cities, the clipped map is derived from the OpenStreetMap database, while for ROIs, it uses your imported shapefile.
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+
+#Get lcz map generator (e.g., Rio de Janeiro)
+lcz_map_generator <- lcz_get_map_generator(ID="3110e623fbe4e73b1cde55f0e9832c4f5640ac21")
+
+#Clip lcz map generator to your city 
+lcz_map <- lcz_get_map2(lcz_map_generator, city = "Rio de Janeiro")
+
+#Visualize LCZ map
+lcz_plot_map(lcz_map)
+
+#Clip lcz map generator to ROI
+library(sf)
+my_shp <- sf::st_read("path/shp_name.shp") #You also can use shapefile in .gpkg format
+lcz_map <- lcz_get_map2(lcz_map_generator, roi = my_shp)
+
+#Visualize LCZ map
+lcz_plot_map(lcz_map)
+
+```
+
+
+```{r echo=F, out.width = '100%', fig.align='center'}
+knitr::include_graphics("fig_general_7.png")
+```
+
 
 ## Calculate LCZ areas
 

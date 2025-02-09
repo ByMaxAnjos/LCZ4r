@@ -1,44 +1,89 @@
-#' Visualize the interpolated LCZ-Thermal Anomaly map
+#' Interpolate spatial and temporal thermal anomaly using a Local Climate Zones (LCZ).
 #'
-#' This function generates a spatial interpolation of thermal anomaly for different Local Climate Zones (LCZs). More details: \url{https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html}
+#' Generates an interpolated saptiotemporal anomaly map using LCZ as background.
+#' This function applies geostatistical interpolation techniques (e.g., kriging) to estimate anomaly values (e.g., air temperature) across the study area,
+#' integrating LCZ classifications. The function allows for flexible time period selection, like hour, daytime, nighttime and so on.
 #'
-#' @param x A \code{SpatRaster} object containing the LCZ map. The LCZ map can be obtained using the \code{lcz_get_map()} function.
-#' @param data_frame A data frame containing air temperature measurements and station IDs. The data frame should have a date field in hourly or higher resolution format.
-#' @param var Name of the variable for interpolation, e.g. air temperature, in the dataframe.
-#' @param station_id Name of the station ID variable in the dataframe.
-#' @param sp.res Spatial resolution in unit of meters for interpolation. Default is 100.
-#' @param tp.res Temporal resolution, the time period to average to. Default is \dQuote{hour}, but includes \dQuote{day}, \dQuote{week}, \dQuote{month} or \dQuote{year}.
-#' @param vg.model If kriging is selected, the list of viogrammodels that will be tested and interpolated with kriging. Default is "Sph". The model are "Sph", "Exp", "Gau", "Ste". They names respective shperical, exponential, gaussian,Matern familiy, Matern, M. Stein's parameterization.
-#' @param by data frame time-serie split: \dQuote{year}, \dQuote{season}, \dQuote{seasonyear},  \dQuote{month}, \dQuote{monthyear}, \dQuote{weekday}, \dQuote{weekend},  \dQuote{site},
-#'           \dQuote{daylight}(daytime and nighttime).See argument \emph{type} in openair package:  \url{https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option}
-#' @param ... Additional arguments for the \code{selectBydata} from \code{openair} package. These include:
-#' \itemize{
-#'   \item A start date string in the form "1/2/1999" or in format "YYYY-mm-dd", e.g., "1999-02-01".
-#'   \item A year or years to select, e.g., year = 1998:2004 to select 1998-2004 inclusive, or year = c(1998, 2004) to select 1998 and 2004.
-#'   \item A month or months to select. Can either be numeric, e.g., month = 1:6 to select January to June, or by name, e.g., month = c("January", "December").
-#' }
-#' @param impute Method to impute missing values (\dQuote{mean}, \dQuote{median}, \dQuote{knn}, \dQuote{bag}).
-#' @param isave Save the map into your directory.
-#' @param LCZinterp If set to TRUE (default), the LCZ interpolation approach is used. If set to FALSE, conventional interpolation without LCZ is used.
+#' @param x A `SpatRaster` object representing the LCZ map, obtained via `lcz_get_map()` functions.
+#' @param data_frame A data frame containing air temperature measurements with station metadata.
+#' The data must include a date column in hourly or higher resolution.
+#' @param var Character. The variable to interpolate (e.g., `"airT"` for air temperature).
+#' @param station_id Character. The column name in `data_frame` identifying weather stations.
+#' @param ... Additional arguments passed to `selectByDate` from the `openair` package
+#' for flexible time selection. Options include:
+#'   \itemize{
+#'     \item **Year(s):** `year = 1998:2004` (selects 1998 to 2004) or `year = c(1998, 2004)`.
+#'     \item **Month(s):** `month = 1:6` (January to June) or `month = c("January", "December")`.
+#'     \item **Day(s):** `day = 1:30` (days 1 to 30) or `day = 15`.
+#'     \item **Hour(s):** `hour = 0:23` (all hours) or `hour = 9`.
+#'     \item **Start/End Date:** `"YYYY-mm-dd"` format (e.g., `"1999-02-01"`).
+#'   }
+#' @param extract.method Character. The method used to assign LCZ classes to stations:
+#'   \itemize{
+#'     \item **"simple"**: Assigns the LCZ based on the raster cell where the station is located. It often is used in low-density observational network.
+#'     \item **"two.step"**: Filters out stations in heterogeneous LCZ areas (Daniel et al., 2017). It often is used in ultra and high-density observational network, especially in LCZ classes with multiple stations.
+#'     \item **"bilinear"**: Uses bilinear interpolation to assign LCZ values.
+#'   }
+#' @param vg.model Character. Variogram model for kriging. Default is `"Sph"` (spherical).
+#' Available models:
+#'   \itemize{
+#'     \item `"Sph"`: Spherical model.
+#'     \item `"Exp"`: Exponential model.
+#'     \item `"Gau"`: Gaussian model.
+#'     \item `"Ste"`: M. Stein's parameterization.
+#'   }
+#' @param sp.res Numeric. Spatial resolution in meters (default: `100`).
+#' @param tp.res Character. Temporal resolution for averaging (`"hour"`, `"day"`, etc.).
+#' @param by Character. Specifies how to split the time series. Options include
+#' `"year"`, `"month"`, `"weekday"`, `"weekend"`, etc.
+#' @param impute Character. Method to impute missing values (`"mean"`, `"median"`, `"knn"`, `"bag"`).
+#' @param isave Logical. If `TRUE`, saves the plot to the working directory.
+#' @param LCZinterp Logical. If `TRUE` (default), applies LCZ-based interpolation.
 #'
-#' @return A map of LCZ-thermal anomalies in \code{terra raster GeoTIF} format
+#' @return A spatially interpolated map in \code{terra raster GeoTIFF} format.
 #'
 #' @export
 #'
+#' @author
+#' Max Anjos (\url{https://github.com/ByMaxAnjos})
+#'
+#' @references
+#' Anjos, M., Targino, A. C., Krecl, P., Oukawa, G. Y. & Braga, R. F. Analysis of the urban heat island under different synoptic patterns using local climate zones. Build. Environ. 185, 107268 (2020).
+#' Fenner, D., Meier, F., Bechtel, B., Otto, M. & Scherer, D. (2017). Intra and inter ‘local climate zone’ variability of air temperature as observed by crowdsourced citizen weather stations in Berlin, Germany. *Meteorol. Z.*, 26, 525–547.
+#' \url{http://www.gstat.org/}
+#'
 #' @examples
 #' \dontrun{
-#'  #Daily air temperature values in September 2019 .
-#'  my_anomaly <- lcz_anomaly_map(lcz_map, data_frame = lcz_data, var = "airT",
-#'                               station_id = "station", tp.res = "day", sp.res= "100",
-#'                                year = 2019, month=9)
-#'  }
+#' # Load sample data and LCZ map
+#' data("lcz_data")
+#' lcz_map <- lcz_get_map_generator(ID = "8576bde60bfe774e335190f2e8fdd125dd9f4299")
+#'
+#' # Plot the LCZ map
+#' lcz_plot_map(lcz_map)
+#'
+#' # Perform interpolation anomalies for 2020-01-02 at 04:00h
+#' my_interp <- lcz_anomaly_map(
+#'   lcz_map, data_frame = lcz_data, var = "airT",
+#'   station_id = "station", year = 2020, month = 1, day = 2, hour = 4,
+#'   sp.res = 100, tp.res = "hour", vg.model = "Sph",
+#'   LCZinterp = TRUE, isave = TRUE
+#' )
+#'
+#' # Perform interpolation for an entire day (returns a raster stack of 24 hours)
+#' my_interp <- lcz_anomaly_map(
+#'   lcz_map, data_frame = lcz_data, var = "airT",
+#'   station_id = "station", year = 2020, month = 1, day = 2,
+#'   sp.res = 100, tp.res = "hour", vg.model = "Sph",
+#'   LCZinterp = TRUE, isave = TRUE
+#' )
+#' }
 #'
 #' @importFrom rlang .data
 #'
 #' @seealso
-#' See the documentation for \code{lcz_get_map()} to obtain an LCZ map.
+#' See \code{lcz_anomaly()} for LCZ interpolation evaluation.
 #'
-#' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis
+#' @keywords Local Climate Zone, anomaly, interpolation, kriging.
 
 
 lcz_anomaly_map <- function(x,
@@ -49,6 +94,7 @@ lcz_anomaly_map <- function(x,
                             sp.res = 100,
                             tp.res = "hour",
                             vg.model = "Sph",
+                            extract.method = "simple",
                             by = NULL,
                             impute = NULL,
                             isave = FALSE,
@@ -100,6 +146,9 @@ lcz_anomaly_map <- function(x,
     stop("Invalid viogram model. Choose from 'Sph', 'Exp', 'Gau', or 'Ste'.")
   }
 
+  if (!(extract.method %in% c("simple", "bilinear", "two.step"))) {
+    stop("Invalid extract-based pixel model. Choose from 'simple', 'bilinear', or 'two.step'.")
+  }
   # Pre-processing time series ----------------------------------------------
 
   # Rename and define my_id for each lat and long
@@ -118,6 +167,11 @@ lcz_anomaly_map <- function(x,
   df_variable$longitude <- base::as.numeric(df_variable$longitude)
 
   # Impute missing values if necessary
+  missing_values = c("NAN","NaN", "-9999", "-99", "NULL", "",
+                     "NA", "N/A", "na", "missing", ".",
+                     "inf", "-inf", 9999, 999, Inf, -Inf)
+  df_variable <- df_variable %>%
+    dplyr::mutate(var_interp = ifelse(.data$var_interp %in% missing_values, NA, .data$var_interp))
   if (!is.null(impute)) {
     impute_methods <- c("mean", "median", "knn", "bag")
     if (!(impute %in% impute_methods)) {
@@ -158,6 +212,70 @@ lcz_anomaly_map <- function(x,
   my_stations <- df_processed %>%
     dplyr::distinct(.data$station, .keep_all = F)
 
+  stations_mod <- df_processed %>%
+    sf::st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
+
+  if (extract.method == "simple") {
+    stations_lcz <- terra::extract(x, terra::vect(stations_mod))
+    stations_lcz$ID <- NULL
+    df_interp_mod <- base::cbind(stations_mod, stations_lcz) %>%
+      sf::st_as_sf() %>%
+      sf::st_transform(crs = 3857) %>%
+      stats::na.omit()
+  }
+
+  if (extract.method == "bilinear") {
+    stations_lcz <- terra::extract(x, terra::vect(stations_mod), method= "bilinear")
+    stations_lcz$ID <- NULL
+    stations_lcz$lcz <- as.integer(stations_lcz$lcz)
+    df_interp_mod <- base::cbind(stations_mod, stations_lcz) %>%
+      sf::st_as_sf() %>%
+      sf::st_transform(crs = 3857) %>%
+      stats::na.omit()
+  }
+
+  if (extract.method == "two.step") {
+    # Step 2: Define a function to filter stations based on LCZ homogeneity
+    filter_homogeneous_lcz <- function(df, raster, kernel_size = 5, threshold = 0.8) {
+      # Convert stations to SpatVector
+      stations_vect <- terra::vect(df)
+
+      # Create a moving kernel to analyze LCZ homogeneity
+      kernel <- matrix(1, nrow = kernel_size, ncol = kernel_size)
+
+      # Extract LCZ values in the kernel around each station
+      lcz_homogeneity <- terra::focal(raster, w = kernel, fun = function(values) {
+        # Compute percentage of pixels matching the center pixel
+        center_pixel <- values[ceiling(length(values) / 2)]
+        if (is.na(center_pixel)) {
+          return(NA)
+        }
+        mean(values == center_pixel, na.rm = TRUE)
+      })
+
+      # Extract homogeneity values at station locations
+      homogeneity_values <- terra::extract(lcz_homogeneity, stations_vect)
+
+      # Add homogeneity values to the station data frame
+      df$homogeneity <- homogeneity_values[, 2]  # Second column contains the homogeneity value
+
+      # Filter stations where homogeneity meets or exceeds the threshold
+      df_filtered <- df %>%
+        dplyr::filter(.data$homogeneity >= threshold)
+
+      return(df_filtered)
+    }
+
+    # Step 3: Apply the function to filter stations
+    df_homogeneous <- filter_homogeneous_lcz(stations_mod, x, kernel_size = 5, threshold = 0.8)
+    stations_lcz <- terra::extract(x, terra::vect(df_homogeneous))
+    stations_lcz$ID <- NULL
+    df_interp_mod <- base::cbind(df_homogeneous, stations_lcz) %>%
+      sf::st_as_sf() %>%
+      sf::st_transform(crs = 3857) %>%
+      stats::na.omit()
+  }
+
   # Re-project and make a grid to interpolation
   lcz_box <- sf::st_transform(lcz_shp, crs = 3857)
 
@@ -172,449 +290,9 @@ lcz_anomaly_map <- function(x,
 
 
   # Calculate anomaly temporal resolution  ------------------------------------------------------
-  if (is.null(by) & tp.res %in% c("hour", "day")) { # Downscale to hour or day
-    iday <- df_processed %>%
-      dplyr::group_by(.data$date) %>%
-      dplyr::select(.data$date) %>%
-      dplyr::ungroup() %>%
-      dplyr::mutate(iday = lubridate::day(.data$date)) %>%
-      dplyr::distinct(.data$iday, .keep_all = FALSE) %>%
-      base::expand.grid()
+  if (is.null(by)) { # Downscale to hour or day
 
-    model_day <- function(iday) {
-      myday <- iday[1]
-
-      modelday <- df_processed %>%
-        dplyr::mutate(day = lubridate::day(.data$date)) %>%
-        dplyr::filter(.data$day == paste0(myday))
-
-      # Downscale to hour
-      ihour <- modelday %>%
-        dplyr::group_by(.data$date) %>%
-        dplyr::select(.data$date) %>%
-        dplyr::ungroup() %>%
-        dplyr::mutate(ihour = lubridate::hour(date)) %>%
-        dplyr::distinct(.data$ihour, .keep_all = FALSE) %>%
-        base::expand.grid()
-
-      model_hour <- function(ihour) {
-        myhour <- ihour[1]
-
-        data_model <- modelday %>%
-          dplyr::mutate(
-            hour = lubridate::hour(.data$date),
-            my_id = base::as.factor(.data$my_id)
-          ) %>%
-          dplyr::filter(.data$hour == paste0(myhour))
-
-        # merge data-model with lcz_station to get lcz class
-        lcz_model <-
-          sf::st_as_sf(data_model,
-            coords = c("longitude", "latitude"), crs = 4326
-          ) %>%
-          sf::st_intersection(lcz_shp) %>%
-          sf::st_transform(crs = 3857)
-
-        anomlay_lcz <- function(input = NULL) {
-          mean_df <- lcz_model %>%
-            dplyr::filter(.data$station == paste0(input)) %>%
-            dplyr::group_by(.data$my_id, .data$lcz) %>%
-            dplyr::summarise(mean_value = mean(.data$var_interp), .groups = "drop")
-
-          reference_df <- lcz_model %>%
-            dplyr::filter(.data$station != paste0(input)) %>%
-            dplyr::mutate(reference_value = mean(.data$var_interp))
-          reference_df <- tibble::as.tibble(mean(reference_df$reference_value))
-
-          merged_data <- dplyr::bind_cols(mean_df, reference_df) %>%
-            dplyr::rename(reference_value = .data$value) %>%
-            dplyr::mutate(anomaly = .data$mean_value - .data$reference_value)
-
-          return(merged_data)
-        }
-        anomaly_job <- base::lapply(1:base::length(my_stations$station), FUN = function(i) {
-          anomlay_lcz(input = my_stations$station[i])
-        })
-
-        anomaly_cal <- base::do.call(rbind.data.frame, anomaly_job)
-
-        lcz_anomaly_mod <- sf::st_as_sf(anomaly_cal) %>% sf::st_transform(crs = 3857)
-
-
-        if (LCZinterp == TRUE) {
-          # [using ordinary kriging]
-          krige_vgm <- automap::autofitVariogram(anomaly ~ lcz, lcz_anomaly_mod, model = vg.model)
-          krige_mod <- gstat::gstat(formula = anomaly ~ lcz, model = krige_vgm$var_model, data = lcz_anomaly_mod)
-          krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-          krige_map <- krige_map["var1.pred", , ]
-          anomaly_map <- terra::rast(krige_map)
-          anomaly_map <- terra::focal(anomaly_map, w = 7, fun = mean)
-          mydate <- data_model %>% dplyr::pull(.data$date)
-          mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-          ras_name <- base::paste0("krige_", mydate)
-          base::names(anomaly_map) <- ras_name
-        } else {
-          krige_vgm <- automap::autofitVariogram(anomaly ~ 1, lcz_anomaly_mod, model = vg.model)
-          krige_mod <- gstat::gstat(formula = anomaly ~ 1, model = krige_vgm$var_model, data = lcz_anomaly_mod)
-          krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-          krige_map <- krige_map["var1.pred", , ]
-          anomaly_map <- terra::rast(krige_map)
-          anomaly_map <- terra::focal(anomaly_map, w = 7, fun = mean)
-          mydate <- data_model %>% dplyr::pull(.data$date)
-          mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-          ras_name <- base::paste0("krige_", mydate)
-          base::names(anomaly_map) <- ras_name
-        }
-
-        return(anomaly_map)
-      }
-
-      MapHour <- base::apply(ihour, 1, model_hour)
-      anomaly_hour <- base::unlist(MapHour)
-      return(anomaly_hour)
-    }
-
-    MapDay <- base::apply(iday, 1, model_day)
-    anomaly_day <- base::unlist(MapDay)
-    anomaly_stack <- terra::rast(anomaly_day)
-
-    if (isave == TRUE) {
-      # Create a folder name using paste0
-      folder <- base::paste0("LCZ4r_output/")
-
-      # Check if the folder exists
-      if (!base::dir.exists(folder)) {
-        # Create the folder if it does not exist
-        base::dir.create(folder)
-      }
-
-      # Save map as raster.tif
-      file <- base::paste0(getwd(), "/", folder, "lcz4r_anomaly_map.tif")
-      terra::writeRaster(anomaly_stack, file, overwrite = TRUE)
-      base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
-    }
-
-    return(anomaly_stack)
-  }
-
-  if (is.null(by) & tp.res %in% c("week")) { # Downscale to week
-
-    iweek <- df_processed %>%
-      dplyr::group_by(.data$date) %>%
-      dplyr::select(.data$date) %>%
-      dplyr::ungroup() %>%
-      dplyr::mutate(iweek = lubridate::week(.data$date)) %>%
-      dplyr::distinct(.data$iweek, .keep_all = FALSE) %>%
-      base::expand.grid()
-
-    model_week <- function(iweek) {
-      my_week <- iweek[1]
-
-      data_model <- df_processed %>%
-        dplyr::mutate(
-          iweek = lubridate::week(.data$date),
-          my_id = base::as.factor(.data$my_id)
-        ) %>%
-        dplyr::filter(.data$iweek == paste0(my_week))
-
-      # merge data-model with lcz_station to get lcz class
-      lcz_model <-
-        sf::st_as_sf(data_model,
-          coords = c("longitude", "latitude"), crs = 4326
-        ) %>%
-        sf::st_intersection(lcz_shp) %>%
-        sf::st_transform(crs = 3857)
-
-      anomlay_lcz <- function(input = NULL) {
-        mean_df <- lcz_model %>%
-          dplyr::filter(.data$station == paste0(input)) %>%
-          dplyr::group_by(.data$my_id, .data$lcz) %>%
-          dplyr::summarise(mean_value = mean(.data$var_interp), .groups = "drop")
-
-        reference_df <- lcz_model %>%
-          dplyr::filter(.data$station != paste0(input)) %>%
-          dplyr::mutate(reference_value = mean(.data$var_interp))
-        reference_df <- tibble::as.tibble(mean(reference_df$reference_value))
-
-        merged_data <- dplyr::bind_cols(mean_df, reference_df) %>%
-          dplyr::rename(reference_value = .data$value) %>%
-          dplyr::mutate(anomaly = .data$mean_value - .data$reference_value)
-
-        return(merged_data)
-      }
-      anomaly_job <- base::lapply(1:base::length(my_stations$station), FUN = function(i) {
-        anomlay_lcz(input = my_stations$station[i])
-      })
-
-      anomaly_cal <- base::do.call(rbind.data.frame, anomaly_job)
-
-      lcz_anomaly_mod <- sf::st_as_sf(anomaly_cal) %>% sf::st_transform(crs = 3857)
-
-
-      if (LCZinterp == TRUE) {
-        # [using ordinary kriging]
-        krige_vgm <- automap::autofitVariogram(anomaly ~ lcz, lcz_anomaly_mod, model = vg.model)
-        krige_mod <- gstat::gstat(formula = anomaly ~ lcz, model = krige_vgm$var_model, data = lcz_anomaly_mod)
-        krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-        krige_map <- krige_map["var1.pred", , ]
-        anomaly_map <- terra::rast(krige_map)
-        anomaly_map <- terra::focal(anomaly_map, w = 7, fun = mean)
-        mydate <- data_model %>% dplyr::pull(.data$date)
-        mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-        ras_name <- base::paste0("krige_", mydate)
-        base::names(anomaly_map) <- ras_name
-      } else {
-        krige_vgm <- automap::autofitVariogram(anomaly ~ 1, lcz_anomaly_mod, model = vg.model)
-        krige_mod <- gstat::gstat(formula = anomaly ~ 1, model = krige_vgm$var_model, data = lcz_anomaly_mod)
-        krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-        krige_map <- krige_map["var1.pred", , ]
-        anomaly_map <- terra::rast(krige_map)
-        anomaly_map <- terra::focal(anomaly_map, w = 7, fun = mean)
-        mydate <- data_model %>% dplyr::pull(.data$date)
-        mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-        ras_name <- base::paste0("krige_", mydate)
-        base::names(anomaly_map) <- ras_name
-      }
-
-      return(anomaly_map)
-    }
-
-    mapWeek <- base::apply(iweek, 1, model_week)
-    anomaly_week <- base::unlist(mapWeek)
-    anomaly_stack <- terra::rast(anomaly_week)
-
-    if (isave == TRUE) {
-      # Create a folder name using paste0
-      folder <- base::paste0("LCZ4r_output/")
-
-      # Check if the folder exists
-      if (!base::dir.exists(folder)) {
-        # Create the folder if it does not exist
-        base::dir.create(folder)
-      }
-
-      # Save map as raster.tif
-      file <- base::paste0(getwd(), "/", folder, "lcz4r_anomaly_map.tif")
-      terra::writeRaster(anomaly_stack, file, overwrite = TRUE)
-      base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
-    }
-
-    return(anomaly_stack)
-  }
-
-  if (is.null(by) & tp.res %in% c("month")) { # Downscale to month
-
-    imonth <- df_processed %>%
-      dplyr::group_by(.data$date) %>%
-      dplyr::select(.data$date) %>%
-      dplyr::ungroup() %>%
-      dplyr::mutate(imonth = lubridate::month(.data$date)) %>%
-      dplyr::distinct(.data$imonth, .keep_all = FALSE) %>%
-      base::expand.grid()
-
-    model_month <- function(imonth) {
-      my_month <- imonth[1]
-
-      data_model <- df_processed %>%
-        dplyr::mutate(
-          imonth = lubridate::month(.data$date),
-          my_id = base::as.factor(.data$my_id)
-        ) %>%
-        dplyr::filter(.data$imonth == paste0(my_month))
-
-      # merge data-model with lcz_station to get lcz class
-      lcz_model <-
-        sf::st_as_sf(data_model,
-          coords = c("longitude", "latitude"), crs = 4326
-        ) %>%
-        sf::st_intersection(lcz_shp) %>%
-        sf::st_transform(crs = 3857)
-
-      anomlay_lcz <- function(input = NULL) {
-        mean_df <- lcz_model %>%
-          dplyr::filter(.data$station == paste0(input)) %>%
-          dplyr::group_by(.data$my_id, .data$lcz) %>%
-          dplyr::summarise(mean_value = mean(.data$var_interp), .groups = "drop")
-
-        reference_df <- lcz_model %>%
-          dplyr::filter(.data$station != paste0(input)) %>%
-          dplyr::mutate(reference_value = mean(.data$var_interp))
-        reference_df <- tibble::as.tibble(mean(reference_df$reference_value))
-
-        merged_data <- dplyr::bind_cols(mean_df, reference_df) %>%
-          dplyr::rename(reference_value = .data$value) %>%
-          dplyr::mutate(anomaly = .data$mean_value - .data$reference_value)
-
-        return(merged_data)
-      }
-      anomaly_job <- base::lapply(1:base::length(my_stations$station), FUN = function(i) {
-        anomlay_lcz(input = my_stations$station[i])
-      })
-
-      anomaly_cal <- base::do.call(rbind.data.frame, anomaly_job)
-
-      lcz_anomaly_mod <- sf::st_as_sf(anomaly_cal) %>% sf::st_transform(crs = 3857)
-
-
-      if (LCZinterp == TRUE) {
-        # [using ordinary kriging]
-        krige_vgm <- automap::autofitVariogram(anomaly ~ lcz, lcz_anomaly_mod, model = vg.model)
-        krige_mod <- gstat::gstat(formula = anomaly ~ lcz, model = krige_vgm$var_model, data = lcz_anomaly_mod)
-        krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-        krige_map <- krige_map["var1.pred", , ]
-        anomaly_map <- terra::rast(krige_map)
-        anomaly_map <- terra::focal(anomaly_map, w = 7, fun = mean)
-        mydate <- data_model %>% dplyr::pull(.data$date)
-        mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-        ras_name <- base::paste0("krige_", mydate)
-        base::names(anomaly_map) <- ras_name
-      } else {
-        krige_vgm <- automap::autofitVariogram(anomaly ~ 1, lcz_anomaly_mod, model = vg.model)
-        krige_mod <- gstat::gstat(formula = anomaly ~ 1, model = krige_vgm$var_model, data = lcz_anomaly_mod)
-        krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-        krige_map <- krige_map["var1.pred", , ]
-        anomaly_map <- terra::rast(krige_map)
-        anomaly_map <- terra::focal(anomaly_map, w = 7, fun = mean)
-        mydate <- data_model %>% dplyr::pull(.data$date)
-        mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-        ras_name <- base::paste0("krige_", mydate)
-        base::names(anomaly_map) <- ras_name
-      }
-
-      return(anomaly_map)
-    }
-
-    mapMonth <- base::apply(imonth, 1, model_month)
-    anomaly_month <- base::unlist(mapMonth)
-    anomaly_stack <- terra::rast(anomaly_month)
-
-    if (isave == TRUE) {
-      # Create a folder name using paste0
-      folder <- base::paste0("LCZ4r_output/")
-
-      # Check if the folder exists
-      if (!base::dir.exists(folder)) {
-        # Create the folder if it does not exist
-        base::dir.create(folder)
-      }
-
-      # Save map as raster.tif
-      file <- base::paste0(getwd(), "/", folder, "lcz4r_anomaly_map.tif")
-      terra::writeRaster(anomaly_stack, file, overwrite = TRUE)
-      base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
-    }
-
-    return(anomaly_stack)
-  }
-
-  if (is.null(by) & tp.res %in% c("quarter")) { # Downscale to quarter
-
-    iquarter <- df_processed %>%
-      dplyr::group_by(.data$date) %>%
-      dplyr::select(.data$date) %>%
-      dplyr::ungroup() %>%
-      dplyr::mutate(iquarter = lubridate::quarter(.data$date)) %>%
-      dplyr::distinct(.data$iquarter, .keep_all = FALSE) %>%
-      base::expand.grid()
-
-    model_quarter <- function(iquarter) {
-      my_quarter <- iquarter[1]
-
-      data_model <- df_processed %>%
-        dplyr::mutate(
-          iquarter = lubridate::quarter(.data$date),
-          my_id = base::as.factor(.data$my_id)
-        ) %>%
-        dplyr::filter(.data$iquarter == paste0(my_quarter))
-
-      # merge data-model with lcz_station to get lcz class
-      lcz_model <-
-        sf::st_as_sf(data_model,
-          coords = c("longitude", "latitude"), crs = 4326
-        ) %>%
-        sf::st_intersection(lcz_shp) %>%
-        sf::st_transform(crs = 3857)
-
-      anomlay_lcz <- function(input = NULL) {
-        mean_df <- lcz_model %>%
-          dplyr::filter(.data$station == paste0(input)) %>%
-          dplyr::group_by(.data$my_id, .data$lcz) %>%
-          dplyr::summarise(mean_value = mean(.data$var_interp), .groups = "drop")
-
-        reference_df <- lcz_model %>%
-          dplyr::filter(.data$station != paste0(input)) %>%
-          dplyr::mutate(reference_value = mean(.data$var_interp))
-        reference_df <- tibble::as.tibble(mean(reference_df$reference_value))
-
-        merged_data <- dplyr::bind_cols(mean_df, reference_df) %>%
-          dplyr::rename(reference_value = .data$value) %>%
-          dplyr::mutate(anomaly = .data$mean_value - .data$reference_value)
-
-        return(merged_data)
-      }
-      anomaly_job <- base::lapply(1:base::length(my_stations$station), FUN = function(i) {
-        anomlay_lcz(input = my_stations$station[i])
-      })
-
-      anomaly_cal <- base::do.call(rbind.data.frame, anomaly_job)
-
-      lcz_anomaly_mod <- sf::st_as_sf(anomaly_cal) %>% sf::st_transform(crs = 3857)
-
-
-      if (LCZinterp == TRUE) {
-        # [using ordinary kriging]
-        krige_vgm <- automap::autofitVariogram(anomaly ~ lcz, lcz_anomaly_mod, model = vg.model)
-        krige_mod <- gstat::gstat(formula = anomaly ~ lcz, model = krige_vgm$var_model, data = lcz_anomaly_mod)
-        krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-        krige_map <- krige_map["var1.pred", , ]
-        anomaly_map <- terra::rast(krige_map)
-        anomaly_map <- terra::focal(anomaly_map, w = 7, fun = mean)
-        mydate <- data_model %>% dplyr::pull(.data$date)
-        mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-        ras_name <- base::paste0("krige_", mydate)
-        base::names(anomaly_map) <- ras_name
-      } else {
-        krige_vgm <- automap::autofitVariogram(anomaly ~ 1, lcz_anomaly_mod, model = vg.model)
-        krige_mod <- gstat::gstat(formula = anomaly ~ 1, model = krige_vgm$var_model, data = lcz_anomaly_mod)
-        krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-        krige_map <- krige_map["var1.pred", , ]
-        anomaly_map <- terra::rast(krige_map)
-        anomaly_map <- terra::focal(anomaly_map, w = 7, fun = mean)
-        mydate <- data_model %>% dplyr::pull(.data$date)
-        mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-        ras_name <- base::paste0("krige_", mydate)
-        base::names(anomaly_map) <- ras_name
-      }
-
-      return(anomaly_map)
-    }
-
-    mapQuarter <- base::apply(iquarter, 1, model_quarter)
-    anomaly_quarter <- base::unlist(mapQuarter)
-    anomaly_stack <- terra::rast(anomaly_quarter)
-
-    if (isave == TRUE) {
-      # Create a folder name using paste0
-      folder <- base::paste0("LCZ4r_output/")
-
-      # Check if the folder exists
-      if (!base::dir.exists(folder)) {
-        # Create the folder if it does not exist
-        base::dir.create(folder)
-      }
-
-      # Save map as raster.tif
-      file <- base::paste0(getwd(), "/", folder, "lcz4r_anomaly_map.tif")
-      terra::writeRaster(anomaly_stack, file, overwrite = TRUE)
-      base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
-    }
-
-    return(anomaly_stack)
-  }
-
-  if (is.null(by) & tp.res %in% c("year")) { # Downscale to year
-
-    iyear <- df_processed %>%
+    iyear <- df_interp_mod %>%
       dplyr::group_by(.data$date) %>%
       dplyr::select(.data$date) %>%
       dplyr::ungroup() %>%
@@ -623,80 +301,136 @@ lcz_anomaly_map <- function(x,
       base::expand.grid()
 
     model_year <- function(iyear) {
-      my_year <- iyear[1]
 
-      data_model <- df_processed %>%
-        dplyr::mutate(
-          iyear = lubridate::year(.data$date),
-          my_id = base::as.factor(.data$my_id)
-        ) %>%
-        dplyr::filter(.data$iyear == paste0(my_year))
+      myyear <- iyear[1]
 
-      # merge data-model with lcz_station to get lcz class
-      lcz_model <-
-        sf::st_as_sf(data_model,
-          coords = c("longitude", "latitude"), crs = 4326
-        ) %>%
-        sf::st_intersection(lcz_shp) %>%
-        sf::st_transform(crs = 3857)
+      modelyear <- df_interp_mod %>%
+        dplyr::mutate(year  = lubridate::year(.data$date)) %>%
+        dplyr::filter(.data$year  == paste0(myyear))
 
-      anomlay_lcz <- function(input = NULL) {
-        mean_df <- lcz_model %>%
-          dplyr::filter(.data$station == paste0(input)) %>%
-          dplyr::group_by(.data$my_id, .data$lcz) %>%
-          dplyr::summarise(mean_value = mean(.data$var_interp), .groups = "drop")
+      imonth <- modelyear %>%
+        dplyr::group_by(.data$date) %>%
+        dplyr::select(.data$date) %>%
+        dplyr::ungroup() %>%
+        dplyr::mutate(imonth = lubridate::month(.data$date)) %>%
+        dplyr::distinct(.data$imonth, .keep_all = FALSE) %>%
+        base::expand.grid()
 
-        reference_df <- lcz_model %>%
-          dplyr::filter(.data$station != paste0(input)) %>%
-          dplyr::mutate(reference_value = mean(.data$var_interp))
-        reference_df <- tibble::as.tibble(mean(reference_df$reference_value))
+      model_month <- function(imonth) {
 
-        merged_data <- dplyr::bind_cols(mean_df, reference_df) %>%
-          dplyr::rename(reference_value = .data$value) %>%
-          dplyr::mutate(anomaly = .data$mean_value - .data$reference_value)
+        mymonth <- imonth[1]
 
-        return(merged_data)
+        modelmonth <- modelyear %>%
+          dplyr::mutate(month = lubridate::month(.data$date)) %>%
+          dplyr::filter(.data$month == paste0(mymonth))
+
+        iday <- modelmonth %>%
+          dplyr::group_by(.data$date) %>%
+          dplyr::select(.data$date) %>%
+          dplyr::ungroup() %>%
+          dplyr::mutate(iday = lubridate::day(.data$date)) %>%
+          dplyr::distinct(.data$iday, .keep_all = FALSE) %>%
+          base::expand.grid()
+
+        model_day <- function(iday) {
+
+          myday <- iday[1]
+
+          modelday <- df_interp_mod %>%
+            dplyr::mutate(day = lubridate::day(.data$date)) %>%
+            dplyr::filter(.data$day == paste0(myday))
+
+          # Downscale to hour
+          ihour <- modelday %>%
+            dplyr::group_by(.data$date) %>%
+            dplyr::select(.data$date) %>%
+            dplyr::ungroup() %>%
+            dplyr::mutate(ihour = lubridate::hour(date)) %>%
+            dplyr::distinct(.data$ihour, .keep_all = FALSE) %>%
+            base::expand.grid()
+
+          model_hour <- function(ihour) {
+            myhour <- ihour[1]
+
+            data_model <- modelday %>%
+              dplyr::mutate(
+                hour = lubridate::hour(.data$date),
+                my_id = base::as.factor(.data$my_id)
+              ) %>%
+              dplyr::filter(.data$hour == paste0(myhour))
+
+            anomlay_lcz <- function(input = NULL) {
+              mean_df <- data_model %>%
+                dplyr::filter(.data$station == paste0(input)) %>%
+                dplyr::group_by(.data$my_id, .data$lcz) %>%
+                dplyr::summarise(mean_value = mean(.data$var_interp), .groups = "drop")
+
+              reference_df <- data_model %>%
+                dplyr::filter(.data$station != paste0(input)) %>%
+                dplyr::mutate(reference_value = mean(.data$var_interp))
+              reference_df <- tibble::as.tibble(mean(reference_df$reference_value))
+
+              merged_data <- dplyr::bind_cols(mean_df, reference_df) %>%
+                dplyr::rename(reference_value = .data$value) %>%
+                dplyr::mutate(anomaly = .data$mean_value - .data$reference_value)
+
+              return(merged_data)
+            }
+            anomaly_job <- base::lapply(1:base::length(my_stations$station), FUN = function(i) {
+              anomlay_lcz(input = my_stations$station[i])
+            })
+
+            anomaly_cal <- base::do.call(rbind.data.frame, anomaly_job)
+
+            lcz_anomaly_mod <- sf::st_as_sf(anomaly_cal) %>% sf::st_transform(crs = 3857)
+
+
+            if (LCZinterp == TRUE) {
+              # [using ordinary kriging]
+              krige_vgm <- automap::autofitVariogram(anomaly ~ lcz, lcz_anomaly_mod, model = vg.model)
+              krige_mod <- gstat::gstat(formula = anomaly ~ lcz, model = krige_vgm$var_model, data = lcz_anomaly_mod)
+            } else {
+              krige_vgm <- automap::autofitVariogram(anomaly ~ 1, lcz_anomaly_mod, model = vg.model)
+              krige_mod <- gstat::gstat(formula = anomaly ~ 1, model = krige_vgm$var_model, data = lcz_anomaly_mod)
+            }
+
+            krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
+            krige_map <- krige_map["var1.pred", , ]
+            interp_map <- terra::rast(krige_map)
+            interp_map <- terra::focal(interp_map, w = 7, fun = mean)
+            mydate <- data_model %>% dplyr::pull(.data$date)
+            mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
+            ras_name <- ifelse(LCZinterp, base::paste0("lcz_krige_", mydate), base::paste0("krige_", mydate))
+            base::names(interp_map) <- ras_name
+
+            return(interp_map)
+          }
+
+          MapHour <- base::apply(ihour, 1, model_hour)
+          interp_hour <- base::unlist(MapHour)
+          interp_hour <- terra::rast(interp_hour)
+          return(interp_hour)
+        }
+
+        MapDay <- base::apply(iday, 1, model_day)
+        interp_day <- base::unlist(MapDay)
+        interp_day <- terra::rast(interp_day)
+
+        return(interp_day)
+
       }
-      anomaly_job <- base::lapply(1:base::length(my_stations$station), FUN = function(i) {
-        anomlay_lcz(input = my_stations$station[i])
-      })
 
-      anomaly_cal <- base::do.call(rbind.data.frame, anomaly_job)
+      MapMonth <- base::apply(imonth, 1, model_month)
+      interp_Month <- base::unlist(MapMonth)
+      interp_Month <- terra::rast(interp_Month)
 
-      lcz_anomaly_mod <- sf::st_as_sf(anomaly_cal) %>% sf::st_transform(crs = 3857)
+      return(interp_Month)
 
-
-      if (LCZinterp == TRUE) {
-        # [using ordinary kriging]
-        krige_vgm <- automap::autofitVariogram(anomaly ~ lcz, lcz_anomaly_mod, model = vg.model)
-        krige_mod <- gstat::gstat(formula = anomaly ~ lcz, model = krige_vgm$var_model, data = lcz_anomaly_mod)
-        krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-        krige_map <- krige_map["var1.pred", , ]
-        anomaly_map <- terra::rast(krige_map)
-        anomaly_map <- terra::focal(anomaly_map, w = 7, fun = mean)
-        mydate <- data_model %>% dplyr::pull(.data$date)
-        mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-        ras_name <- base::paste0("krige_", mydate)
-        base::names(anomaly_map) <- ras_name
-      } else {
-        krige_vgm <- automap::autofitVariogram(anomaly ~ 1, lcz_anomaly_mod, model = vg.model)
-        krige_mod <- gstat::gstat(formula = anomaly ~ 1, model = krige_vgm$var_model, data = lcz_anomaly_mod)
-        krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-        krige_map <- krige_map["var1.pred", , ]
-        anomaly_map <- terra::rast(krige_map)
-        anomaly_map <- terra::focal(anomaly_map, w = 7, fun = mean)
-        mydate <- data_model %>% dplyr::pull(.data$date)
-        mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-        ras_name <- base::paste0("krige_", mydate)
-        base::names(anomaly_map) <- ras_name
-      }
-
-      return(anomaly_map)
     }
 
-    mapYear <- base::apply(iyear, 1, model_year)
-    anomaly_year <- base::unlist(mapYear)
-    anomaly_stack <- terra::rast(anomaly_year)
+    MapYear <- base::apply(iyear, 1, model_year)
+    interp_year <- base::unlist(MapYear)
+    interp_stack <- terra::rast(interp_year)
 
     if (isave == TRUE) {
       # Create a folder name using paste0
@@ -709,12 +443,12 @@ lcz_anomaly_map <- function(x,
       }
 
       # Save map as raster.tif
-      file <- base::paste0(getwd(), "/", folder, "lcz4r_anomaly_map.tif")
-      terra::writeRaster(anomaly_stack, file, overwrite = TRUE)
+      file <- base::paste0(getwd(), "/", folder, "lcz4r_interp_map.tif")
+      terra::writeRaster(interp_stack, file, overwrite = TRUE)
       base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
     }
 
-    return(anomaly_stack)
+    return(interp_stack)
   }
 
   if (!is.null(by)) {
@@ -722,7 +456,13 @@ lcz_anomaly_map <- function(x,
       stop("The 'day' does not work with the argument by")
     }
 
-    if (length(by) < 2 & by %in% c("daylight", "season", "seasonyear")) {
+    if (length(by) < 2 && any(c("hour","daylight", "month", "monthyear", "year", "season", "seasonyear", "yearseason") %in% by)) {
+
+      stations_geometry <- dplyr::select(stations_mod, .data$my_id, .data$geometry) %>%
+        dplyr::distinct(.data$my_id, .keep_all = TRUE) %>%
+        sf::st_intersection(lcz_shp) %>%
+        sf::st_transform(crs = 3857)
+
       extract_hemisphere <- function(raster) {
         # Get the extent of the raster
         extent <- raster::extent(raster::raster(raster))
@@ -738,21 +478,15 @@ lcz_anomaly_map <- function(x,
 
       # Extract the hemisphere
       hemisphere <- extract_hemisphere(raster = {{ x }})
-
       my_latitude <- df_processed$latitude[1]
       my_longitude <- df_processed$longitude[1]
-      mydata <- openair::cutData(df_processed,
-        type = by, hemisphere = hemisphere,
-        latitude = my_latitude, longitude = my_longitude
-      ) %>%
-        stats::na.omit() %>%
+      df_interp_mod$geometry <- NULL
+      mydata <- openair::cutData(df_interp_mod,
+                                 type = by, hemisphere = hemisphere,
+                                 latitude = my_latitude, longitude = my_longitude) %>%
+        tidyr::drop_na() %>%
         dplyr::rename(my_time = dplyr::last_col())
-      mydata <- openair::timeAverage(mydata,
-        pollutant = "var_interp",
-        avg.time = tp.res,
-        type = c("station", "my_time")
-      ) %>%
-        stats::na.omit()
+
       iby <- mydata %>%
         dplyr::group_by(.data$my_time) %>%
         dplyr::ungroup() %>%
@@ -760,26 +494,24 @@ lcz_anomaly_map <- function(x,
         base::expand.grid()
 
       model_by <- function(iby) {
+
         my_by <- iby[1]
 
         data_model <- mydata %>%
-          dplyr::filter(.data$my_time == paste0(my_by))
-
-        # merge data-model with lcz_station to get lcz class
-        lcz_model <-
-          sf::st_as_sf(data_model,
-            coords = c("longitude", "latitude"), crs = 4326
-          ) %>%
-          sf::st_intersection(lcz_shp) %>%
-          sf::st_transform(crs = 3857)
+          dplyr::filter(.data$my_time == paste0(my_by)) %>%
+          dplyr::group_by(.data$my_id, .data$station, .data$my_time) %>%
+          dplyr::summarise(var_interp = mean(.data$var_interp), .groups = "drop") %>%
+          dplyr::ungroup() %>%
+          dplyr::inner_join(stations_geometry, by = "my_id") %>%
+          sf::st_as_sf()
 
         anomlay_lcz <- function(input = NULL) {
-          mean_df <- lcz_model %>%
+          mean_df <- data_model %>%
             dplyr::filter(.data$station == paste0(input)) %>%
-            dplyr::group_by(.data$station, .data$lcz) %>%
+            dplyr::group_by(.data$my_id, .data$lcz) %>%
             dplyr::summarise(mean_value = mean(.data$var_interp), .groups = "drop")
 
-          reference_df <- lcz_model %>%
+          reference_df <- data_model %>%
             dplyr::filter(.data$station != paste0(input)) %>%
             dplyr::mutate(reference_value = mean(.data$var_interp))
           reference_df <- tibble::as.tibble(mean(reference_df$reference_value))
@@ -803,33 +535,25 @@ lcz_anomaly_map <- function(x,
           # [using ordinary kriging]
           krige_vgm <- automap::autofitVariogram(anomaly ~ lcz, lcz_anomaly_mod, model = vg.model)
           krige_mod <- gstat::gstat(formula = anomaly ~ lcz, model = krige_vgm$var_model, data = lcz_anomaly_mod)
-          krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-          krige_map <- krige_map["var1.pred", , ]
-          anomaly_map <- terra::rast(krige_map)
-          anomaly_map <- terra::focal(anomaly_map, w = 7, fun = mean)
-          mydate <- data_model %>% dplyr::pull(.data$date)
-          mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-          ras_name <- base::paste0("krige_", mydate)
-          base::names(anomaly_map) <- ras_name
+
         } else {
           krige_vgm <- automap::autofitVariogram(anomaly ~ 1, lcz_anomaly_mod, model = vg.model)
           krige_mod <- gstat::gstat(formula = anomaly ~ 1, model = krige_vgm$var_model, data = lcz_anomaly_mod)
-          krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-          krige_map <- krige_map["var1.pred", , ]
-          anomaly_map <- terra::rast(krige_map)
-          anomaly_map <- terra::focal(anomaly_map, w = 7, fun = mean)
-          mydate <- data_model %>% dplyr::pull(.data$date)
-          mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-          ras_name <- base::paste0("krige_", mydate)
-          base::names(anomaly_map) <- ras_name
         }
 
-        return(anomaly_map)
+        krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
+        krige_map <- krige_map["var1.pred", , ]
+        interp_map <- terra::rast(krige_map)
+        interp_map <- terra::focal(interp_map, w = 7, fun = mean)
+        ras_name <- ifelse(LCZinterp, base::paste0("lcz_krige_", my_by), base::paste0("krige_", my_by))
+        base::names(interp_map) <- ras_name
+
+        return(interp_map)
       }
 
       mapBy <- base::apply(iby, 1, model_by)
-      anomaly_by <- base::unlist(mapBy)
-      anomaly_stack <- terra::rast(anomaly_by)
+      interp_by <- base::unlist(mapBy)
+      interp_stack <- terra::rast(interp_by)
 
       if (isave == TRUE) {
         # Create a folder name using paste0
@@ -842,15 +566,20 @@ lcz_anomaly_map <- function(x,
         }
 
         # Save map as raster.tif
-        file <- base::paste0(getwd(), "/", folder, "lcz4r_anomaly_map.tif")
-        terra::writeRaster(anomaly_stack, file, overwrite = TRUE)
+        file <- base::paste0(getwd(), "/", folder, "lcz4r_interp_map.tif")
+        terra::writeRaster(interp_stack, file, overwrite = TRUE)
         base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
       }
-
-      return(anomaly_stack)
+      return(interp_stack)
     }
 
     if (length(by) > 1 & by %in% "daylight") {
+
+      stations_geometry <- dplyr::select(stations_mod, .data$my_id, .data$geometry) %>%
+        dplyr::distinct(.data$my_id, .keep_all = TRUE) %>%
+        sf::st_intersection(lcz_shp) %>%
+        sf::st_transform(crs = 3857)
+
       extract_hemisphere <- function(raster) {
         # Get the extent of the raster
         extent <- raster::extent(raster::raster(raster))
@@ -869,17 +598,13 @@ lcz_anomaly_map <- function(x,
 
       my_latitude <- df_processed$latitude[1]
       my_longitude <- df_processed$longitude[1]
-      mydata <- openair::cutData(df_processed,
-        type = by, hemisphere = hemisphere,
-        latitude = my_latitude, longitude = my_longitude
+      df_interp_mod$geometry <- NULL
+      mydata <- openair::cutData(df_interp_mod,
+                                 type = by, hemisphere = hemisphere,
+                                 latitude = my_latitude, longitude = my_longitude
       ) %>%
-        stats::na.omit() %>%
+        tidyr::drop_na() %>%
         dplyr::rename(my_time = dplyr::last_col())
-      mydata <- openair::timeAverage(mydata,
-        pollutant = "var_interp",
-        avg.time = tp.res,
-        type = c("station", "daylight", "my_time")
-      ) %>% stats::na.omit()
 
       iby <- mydata %>%
         dplyr::group_by(.data$my_time) %>%
@@ -888,26 +613,25 @@ lcz_anomaly_map <- function(x,
         base::expand.grid()
 
       model_by <- function(iby) {
-        my_by <- iby[1]
+        my_by <- iby$daylight[1]
+        my_by2 <- iby$my_time[1]
 
         data_model <- mydata %>%
-          dplyr::filter(.data$my_time == paste0(my_by))
-
-        # merge data-model with lcz_station to get lcz class
-        lcz_model <-
-          sf::st_as_sf(data_model,
-            coords = c("longitude", "latitude"), crs = 4326
-          ) %>%
-          sf::st_intersection(lcz_shp) %>%
-          sf::st_transform(crs = 3857)
+          dplyr::filter(.data$daylight == paste0(my_by)) %>%
+          dplyr::filter(.data$my_time == paste0(my_by2)) %>%
+          dplyr::group_by(.data$station, .data$my_id,.data$daylight, .data$my_time) %>%
+          dplyr::summarise(var_interp = mean(.data$var_interp), .groups = "drop") %>%
+          dplyr::ungroup() %>%
+          dplyr::inner_join(stations_geometry, by = "my_id") %>%
+          sf::st_as_sf()
 
         anomlay_lcz <- function(input = NULL) {
-          mean_df <- lcz_model %>%
+          mean_df <- data_model %>%
             dplyr::filter(.data$station == paste0(input)) %>%
-            dplyr::group_by(.data$station, .data$lcz) %>%
+            dplyr::group_by(.data$my_id, .data$lcz) %>%
             dplyr::summarise(mean_value = mean(.data$var_interp), .groups = "drop")
 
-          reference_df <- lcz_model %>%
+          reference_df <- data_model %>%
             dplyr::filter(.data$station != paste0(input)) %>%
             dplyr::mutate(reference_value = mean(.data$var_interp))
           reference_df <- tibble::as.tibble(mean(reference_df$reference_value))
@@ -931,33 +655,24 @@ lcz_anomaly_map <- function(x,
           # [using ordinary kriging]
           krige_vgm <- automap::autofitVariogram(anomaly ~ lcz, lcz_anomaly_mod, model = vg.model)
           krige_mod <- gstat::gstat(formula = anomaly ~ lcz, model = krige_vgm$var_model, data = lcz_anomaly_mod)
-          krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-          krige_map <- krige_map["var1.pred", , ]
-          anomaly_map <- terra::rast(krige_map)
-          anomaly_map <- terra::focal(anomaly_map, w = 7, fun = mean)
-          mydate <- data_model %>% dplyr::pull(.data$date)
-          mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-          ras_name <- base::paste0("krige_", mydate)
-          base::names(anomaly_map) <- ras_name
         } else {
           krige_vgm <- automap::autofitVariogram(anomaly ~ 1, lcz_anomaly_mod, model = vg.model)
           krige_mod <- gstat::gstat(formula = anomaly ~ 1, model = krige_vgm$var_model, data = lcz_anomaly_mod)
-          krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-          krige_map <- krige_map["var1.pred", , ]
-          anomaly_map <- terra::rast(krige_map)
-          anomaly_map <- terra::focal(anomaly_map, w = 7, fun = mean)
-          mydate <- data_model %>% dplyr::pull(.data$date)
-          mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-          ras_name <- base::paste0("krige_", mydate)
-          base::names(anomaly_map) <- ras_name
         }
 
-        return(anomaly_map)
+        krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
+        krige_map <- krige_map["var1.pred", , ]
+        interp_map <- terra::rast(krige_map)
+        interp_map <- terra::focal(interp_map, w = 7, fun = mean)
+        ras_name <- ifelse(LCZinterp, base::paste0("lcz_krige_", my_by,"_", my_by2), base::paste0("krige_", my_by, "_", my_by2))
+        base::names(interp_map) <- ras_name
+
+        return(interp_map)
       }
 
       mapBy <- base::apply(iby, 1, model_by)
-      anomaly_by <- base::unlist(mapBy)
-      anomaly_stack <- terra::rast(anomaly_by)
+      interp_by <- base::unlist(mapBy)
+      interp_stack <- terra::rast(interp_by)
 
       if (isave == TRUE) {
         # Create a folder name using paste0
@@ -970,118 +685,14 @@ lcz_anomaly_map <- function(x,
         }
 
         # Save map as raster.tif
-        file <- base::paste0(getwd(), "/", folder, "lcz4r_anomaly_map.tif")
-        terra::writeRaster(anomaly_stack, file, overwrite = TRUE)
+        file <- base::paste0(getwd(), "/", folder, "lcz4r_interp_map.tif")
+        terra::writeRaster(interp_stack, file, overwrite = TRUE)
         base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
       }
 
-      return(anomaly_stack)
-    } else {
-      mydata <-
-        openair::cutData(df_processed, type = by) %>%
-        dplyr::rename(my_time = dplyr::last_col())
-      mydata <- openair::timeAverage(mydata,
-        pollutant = "var_interp",
-        avg.time = tp.res,
-        type = c("station", "my_time")
-      ) %>%
-        stats::na.omit()
-      iby <- mydata %>%
-        dplyr::group_by(.data$my_time) %>%
-        dplyr::ungroup() %>%
-        dplyr::distinct(.data$my_time, .keep_all = FALSE) %>%
-        base::expand.grid()
-
-      model_by <- function(iby) {
-        my_by <- iby[1]
-
-        data_model <- mydata %>%
-          dplyr::filter(.data$my_time == paste0(my_by))
-
-        # merge data-model with lcz_station to get lcz class
-        lcz_model <-
-          sf::st_as_sf(data_model,
-            coords = c("longitude", "latitude"), crs = 4326
-          ) %>%
-          sf::st_intersection(lcz_shp) %>%
-          sf::st_transform(crs = 3857)
-
-        anomlay_lcz <- function(input = NULL) {
-          mean_df <- lcz_model %>%
-            dplyr::filter(.data$station == paste0(input)) %>%
-            dplyr::group_by(.data$station, .data$lcz) %>%
-            dplyr::summarise(mean_value = mean(.data$var_interp), .groups = "drop")
-
-          reference_df <- lcz_model %>%
-            dplyr::filter(.data$station != paste0(input)) %>%
-            dplyr::mutate(reference_value = mean(.data$var_interp))
-          reference_df <- tibble::as.tibble(mean(reference_df$reference_value))
-
-          merged_data <- dplyr::bind_cols(mean_df, reference_df) %>%
-            dplyr::rename(reference_value = .data$value) %>%
-            dplyr::mutate(anomaly = .data$mean_value - .data$reference_value)
-
-          return(merged_data)
-        }
-        anomaly_job <- base::lapply(1:base::length(my_stations$station), FUN = function(i) {
-          anomlay_lcz(input = my_stations$station[i])
-        })
-
-        anomaly_cal <- base::do.call(rbind.data.frame, anomaly_job)
-
-        lcz_anomaly_mod <- sf::st_as_sf(anomaly_cal) %>% sf::st_transform(crs = 3857)
-
-
-        if (LCZinterp == TRUE) {
-          # [using ordinary kriging]
-          krige_vgm <- automap::autofitVariogram(anomaly ~ lcz, lcz_anomaly_mod, model = vg.model)
-          krige_mod <- gstat::gstat(formula = anomaly ~ lcz, model = krige_vgm$var_model, data = lcz_anomaly_mod)
-          krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-          krige_map <- krige_map["var1.pred", , ]
-          anomaly_map <- terra::rast(krige_map)
-          anomaly_map <- terra::focal(anomaly_map, w = 7, fun = mean)
-          mydate <- data_model %>% dplyr::pull(.data$date)
-          mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-          ras_name <- base::paste0("krige_", mydate)
-          base::names(anomaly_map) <- ras_name
-        } else {
-          krige_vgm <- automap::autofitVariogram(anomaly ~ 1, lcz_anomaly_mod, model = vg.model)
-          krige_mod <- gstat::gstat(formula = anomaly ~ 1, model = krige_vgm$var_model, data = lcz_anomaly_mod)
-          krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-          krige_map <- krige_map["var1.pred", , ]
-          anomaly_map <- terra::rast(krige_map)
-          anomaly_map <- terra::focal(anomaly_map, w = 7, fun = mean)
-          mydate <- data_model %>% dplyr::pull(.data$date)
-          mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-          ras_name <- base::paste0("krige_", mydate)
-          base::names(anomaly_map) <- ras_name
-        }
-
-        return(anomaly_map)
-      }
-
-      mapBy <- base::apply(iby, 1, model_by)
-      anomaly_by <- base::unlist(mapBy)
-      anomaly_stack <- terra::rast(anomaly_by)
-
-      if (isave == TRUE) {
-        # Create a folder name using paste0
-        folder <- base::paste0("LCZ4r_output/")
-
-        # Check if the folder exists
-        if (!base::dir.exists(folder)) {
-          # Create the folder if it does not exist
-          base::dir.create(folder)
-        }
-
-        # Save map as raster.tif
-        file <- base::paste0(getwd(), "/", folder, "lcz4r_anomaly_map.tif")
-        terra::writeRaster(anomaly_stack, file, overwrite = TRUE)
-        base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
-      }
-
-      return(anomaly_stack)
+      return(interp_stack)
     }
   }
+
 }
 

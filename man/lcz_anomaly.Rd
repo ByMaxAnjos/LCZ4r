@@ -11,6 +11,7 @@ lcz_anomaly(
   station_id = "",
   ...,
   time.freq = "hour",
+  extract.method = "simple",
   plot_type = "diverging_bar",
   by = NULL,
   impute = NULL,
@@ -46,6 +47,13 @@ lcz_anomaly(
 }}
 
 \item{time.freq}{Defines the time period to average to. Default is \dQuote{hour}, but includes \dQuote{day}, \dQuote{week}, \dQuote{month} or \dQuote{year}.}
+
+\item{extract.method}{A character string specifying the method used to assign the LCZ class to each station point. The default is \code{"simple"}. Available methods are:
+\itemize{
+\item \strong{simple}: Assigns the LCZ class based on the value of the raster cell in which the point falls. It often is used in low-density observational network.
+\item \strong{two.step}: Assigns LCZs to stations while filtering out those located in heterogeneous LCZ areas. This method requires that at least 80\% of the pixels within a 5 × 5 kernel match the LCZ of the center pixel (Daniel et al., 2017). Note that this method reduces the number of stations. It often is used in ultra and high-density observational network, especially in LCZ classes with multiple stations.
+\item \strong{bilinear}: Interpolates the LCZ class values from the four nearest raster cells surrounding the point.
+}}
 
 \item{plot_type}{A character string indicating the type of plot to generate. Options include:
 \itemize{
@@ -95,6 +103,9 @@ my_res <- lcz_anomaly(lcz_map, data_frame = lcz_data, var = "airT",
 }
 \seealso{
 See the documentation for \code{lcz_get_map()} to obtain an LCZ map.
+}
+\author{
+Max Anjos (\url{https://github.com/ByMaxAnjos})
 }
 \keyword{Climate}
 \keyword{LCZ,}

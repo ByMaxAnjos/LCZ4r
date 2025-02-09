@@ -11,6 +11,7 @@ lcz_ts(
   station_id = "",
   ...,
   time.freq = "hour",
+  extract.method = "simple",
   plot_type = "basic_line",
   facet_plot = "LCZ",
   by = NULL,
@@ -47,6 +48,13 @@ lcz_ts(
 }}
 
 \item{time.freq}{Defines the time period to average to. Default is \dQuote{hour}, but includes \dQuote{day}, \dQuote{week}, \dQuote{month} or \dQuote{year}.}
+
+\item{extract.method}{A character string specifying the method used to assign the LCZ class to each station point. The default is \code{"simple"}. Available methods are:
+\itemize{
+\item \strong{simple}: Assigns the LCZ class based on the value of the raster cell in which the point falls. It often is used in low-density observational network.
+\item \strong{two.step}: Assigns LCZs to stations while filtering out those located in heterogeneous LCZ areas. This method requires that at least 80\% of the pixels within a 5 × 5 kernel match the LCZ of the center pixel (Daniel et al., 2017). Note that this method reduces the number of stations. It often is used in ultra and high-density observational network, especially in LCZ classes with multiple stations.
+\item \strong{bilinear}: Interpolates the LCZ class values from the four nearest raster cells surrounding the point.
+}}
 
 \item{plot_type}{A character string indicating the type of plot to generate. Options include: \dQuote{basic_line}, \dQuote{facet_line}, \dQuote{heatmap}, \dQuote{warming_stripes}. The default is \dQuote{basic_line}. Note: This argument does not work if the \code{by} argument is active.}
 
@@ -93,6 +101,9 @@ my_ts <- lcz_ts(lcz_map, df = lcz_data, var = "airT",
 }
 \seealso{
 See the documentation for \code{lcz_get_map()}, \code{lcz_get_map_euro()}, and \code{lcz_get_map_usa()} to obtain an LCZ map.
+}
+\author{
+Max Anjos (\url{https://github.com/ByMaxAnjos})
 }
 \keyword{Climate}
 \keyword{LCZ,}

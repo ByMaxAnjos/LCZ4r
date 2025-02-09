@@ -8,7 +8,9 @@ Authors@R: c( person("Max", "Anjos", role = c("aut", "cre"),
               person("Dayvid", "Medeiros", role = "ctb",
               comment = c(ORCID = "0000-0002-5199-3909")),
               person("Francisco", "Castelhano", role = "ctb",
-              comment = c(ORCID = "0000-0002-6747-3545"))
+              comment = c(ORCID = "0000-0002-6747-3545")),
+              person("Antônio", "Campos Neto", role = "ctb",
+              comment = c(ORCID = "0009-0007-3844-3869"))
   )
 Maintainer: Max Anjos <maxanjos@campus.ul.pt>
 Description: LCZ4r is a comprehensive R package designed for analyzing

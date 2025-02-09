@@ -1,95 +1,95 @@
 # Tools for Local Climate Zone and Urban Heat Island Analysis in R
 
-<img align="right" src="https://github.com/ByMaxAnjos/LCZ4r/blob/main/inst/figures/logo.png?raw=true" alt="logo" width="140"> 
+<img align="right" src="https://github.com/ByMaxAnjos/LCZ4r/blob/main/inst/figures/logo.png?raw=true" alt="LCZ4r Logo" width="140">
 
-  <!-- badges: start -->
-  [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-  <!-- badges: end -->
+<!-- badges: start -->
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+[![GitHub stars](https://img.shields.io/github/stars/ByMaxAnjos/LCZ4r?style=social)](https://github.com/ByMaxAnjos/LCZ4r)
+<!-- badges: end -->
 
-The [LCZ4r package](https://github.com/ByMaxAnjos/LCZ4r) offers a suite of functions designed to analyze and visualize Local Climate Zones and Urban Heat Islands in R.
+The [**LCZ4r package**](https://github.com/ByMaxAnjos/LCZ4r) provides a comprehensive suite of tools for analyzing and visualizing **Local Climate Zones (LCZ)** and **Urban Heat Islands (UHI)** in R. Designed for researchers, urban planners, and climate scientists, LCZ4r simplifies the process of downloading, processing, and interpreting LCZ data.
 
+---
 
 ## Package Overview
 
-The **LCZ4r** is a comprehensive toolkit, including the following functions: 
+The **LCZ4r** package includes the following key functions:
 
-* `lcz_get_map()`  Download your LCZ map from global dataset
-* `lcz_get_map_euro()` Download your LCZ map from European dataset
-* `lcz_get_map_usa()`  Download your LCZ map from Continental United States dataset
-* `lcz_get_map_generator()`  Download your LCZ map from LCZ Generator Platform
-* `lcz_plot_map()`  Visualize the LCZ map 
-* `lcz_cal_area()`  Calculate LCZ areas 
-* `lcz_get_parameters()`  Retrieve LCZ parameters
-* `lcz_plot_parameters()`  Visualize LCZ parameter map
-* `lcz_ts()`  Analyze LCZ Time Series
-* `lcz_anomaly()`  Calculate LCZ Thermal Anomalies
-* `lcz_anomaly_map()`  Map LCZ Thermal Anomaly
-* `lcz_interp_map()`  Map LCZ Interpolation
-* `lcz_plot_interp()`  Visualize LCZ Interpolation
-* `lcz_interp_eval()`  Evaluate LCZ Interpolation
-* `lcz_uhi_intensity()`  Assess LCZ for Urban Heat Island Intensity
+- **Data Download**:
+  - `lcz_get_map()`: Download LCZ maps from the global dataset.
+  - `lcz_get_map_euro()`: Download LCZ maps from the European dataset.
+  - `lcz_get_map_usa()`: Download LCZ maps from the Continental United States dataset.
+  - `lcz_get_map_generator()`: Download LCZ maps from the LCZ Generator Platform.
 
+- **Visualization**:
+  - `lcz_plot_map()`: Visualize LCZ maps.
+  - `lcz_plot_parameters()`: Visualize LCZ parameter maps.
+  - `lcz_plot_interp()`: Visualize LCZ interpolation results.
 
-## 🗃️ Instalation 
+- **Analysis**:
+  - `lcz_cal_area()`: Calculate the area of LCZ classes.
+  - `lcz_get_parameters()`: Retrieve LCZ parameters.
+  - `lcz_ts()`: Analyze LCZ time series.
+  - `lcz_anomaly()`: Calculate LCZ thermal anomalies.
+  - `lcz_anomaly_map()`: Map LCZ thermal anomalies.
+  - `lcz_interp_map()`: Map LCZ interpolation results.
+  - `lcz_interp_eval()`: Evaluate LCZ interpolation accuracy.
+  - `lcz_uhi_intensity()`: Assess urban heat island intensity using LCZ data.
 
-To [Install to the LCZ4r](https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r.html) use the development version on GitHub.
+---
 
-## Function types and tutorials 
+## LCZ4r-QGIS Plugin: Multilingual Integration
 
-These functions are categorized into two main types: general functions and local functions. We highly recommend that users explore the following tutorials to gain a deeper understanding of the capabilities and applications of the LCZ4r package:
+The [**LCZ4r-QGIS plugin**](https://bymaxanjos.github.io/LCZ4r/articles/Introd_QGIS_LCZ4r.html) integrates the LCZ4r package with **QGIS**, enabling users to analyze Local Climate Zones and urban heat islands directly within the QGIS environment. The plugin supports multiple languages, making it accessible to a global audience.
 
-* [Introduction to the General Functions](https://bymaxanjos.github.io/LCZ4r/articles/Introd_general_LCZ4r.html)
+<img width="1217" alt="LCZ4r-QGIS Plugin Screenshot" src="https://github.com/user-attachments/assets/68cdca10-c1d5-4755-8d73-351af809552a">
 
-* [Introduction to the Local Functions](https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html) 
+---
 
+## People
 
-##  LCZ4r-QGIS plugin: A Multilingual Integration
+The development of the **LCZ4r** package is led by [**Dr. Max Anjos**](https://www.researchgate.net/profile/Max-Anjos/research) and supported by a team of researchers:
 
-A [LCZ4r-QGIS plugin repository](https://bymaxanjos.github.io/LCZ4r/articles/Introd_QGIS_LCZ4r.html) that integrates the LCZ4r package with QGIS in multiple languages. It facilitates the integration of the General Functions and Local Functions from LCZ4r package into QGIS, allowing users to analyze Local Climate Zones (LCZ) and urban heat islands directly within the QGIS environment.
+- **Dr. Fred Meier**, Chair of Climatology, Institute of Ecology, Technische Universität Berlin.
+- **Dr. Francisco Castelhano**, Center for Climate Crisis Studies, Department of Geography, Federal University of Rio Grande do Norte, Brazil.
+- **Dayvid Carlos de Medeiros**, Center for Climate Crisis Studies, Department of Geography, Federal University of Rio Grande do Norte, Brazil.
+- **Antônio Campos Neto**, Center for Climate Crisis Studies, Department of Geography, Federal University of Rio Grande do Norte, Brazil.
 
-You can watch a detailed tutorial on installing LCZ4r in QGIS below:
-<!-- Embedded Video -->
-<iframe width="560" height="315" 
-        src="https://www.youtube.com/embed/RalGSgx8v2Q" 
-        title="LCZ4r Installation Tutorial" 
-        frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-        allowfullscreen></iframe>
+---
 
-### People
+## Funding
 
-The development of the package R **LCZ4r** has been led by [Dr. Max Anjos](https://www.researchgate.net/profile/Max-Anjos/research) and joined by:
+This project is supported by:
+- **Coordenação de Aperfeiçoamento de Pessoal de Nível Superior (CAPES)** – Finance Code 001.
+- **Alexander von Humboldt Foundation**.
 
-* –> **Dr.Fred Meier**, Chair of Climatology, Institute of Ecology, Technische Universität Berlin.
+---
 
-* –> **Dr. Francisco Castelhano**, Center for Climate Crisis Studies, Department of Geography, Federal University of Rio Grande do Norte, Brazil.
+## Contact
 
-* –> **Dayvid Carlos de Medeiros**, Center for Climate Crisis Studies, Department of Geography, Federal University of Rio Grande do Norte, Brazil.
+For questions, suggestions, or collaboration opportunities, please contact us at [maxanjos@campus.ul.pt](mailto:maxanjos@campus.ul.p). We welcome contributions to the development of this R package!
 
-* –> **Antônio Campos Neto**, Center for Climate Crisis Studies, Department of Geography, Federal University of Rio Grande do Norte, Brazil.
+---
 
+## Inspiration
 
-### Funding
+The **LCZ4r** package is inspired by the following foundational works:
+- **Stewart, I., and T. Oke, 2012**: [Local Climate Zones for Urban Temperature Studies](https://doi.org/10.1175/BAMS-D-11-00019.1).
+- **Ching, J., et al., 2018**: [WUDAPT: An Urban Weather, Climate, and Environmental Modeling Infrastructure for the Anthropocene](https://doi.org/10.1175/BAMS-D-16-0236.1).
+- **Demuzere, M., et al., 2019**: [Mapping Europe into Local Climate Zones](https://doi.org/10.1371/journal.pone.0214474).
+- **Demuzere, M., et al., 2020**: [Combining Expert and Crowd-Sourced Training Data to Map Urban Form and Functions for the Continental US](https://doi.org/10.1038/s41597-020-00605-z).
+- **Demuzere, M., et al., 2022**: [A Global Map of Local Climate Zones to Support Earth System Modelling and Urban-Scale Environmental Science](https://doi.org/10.5194/essd-14-3835-2022).
 
-This project was financed in part by the Coordenação de Aperfeiçoamento de Pessoal de Nível Superior (CAPES) – Finance Code 001, and by the Alexander von Humboldt Foundation.
+---
 
-### Contact
+## Have Feedback or Suggestions?
 
-Please feel free to contact us if you have any questions or suggestions by emailing [maxanjos\@campus.ul.pt](mailto:maxanjos@campus.ul.pt). If you are interested in contributing to the development of this R package, we welcome you to join our team.
+We value your input! If you have ideas for improvement or spot any issues, please let us know by opening an issue on GitHub.
 
-### Inspiration
-
-* Stewart, I., and T. Oke, 2012: Local climate zones for urban temperature studies. Bull. Amer. Meteor. Soc., 93, 1879–1900 [DOI](https://doi.org/10.1175/BAMS-D-11-00019.1)
-* Ching, J., Mills, G., Bechtel, B., See, L., Feddema, J., Wang, X., … Theeuwes, N. (2018). WUDAPT: An Urban Weather, Climate, and Environmental Modeling Infrastructure for the Anthropocene. Bulletin of the American Meteorological Society, 99(9), 1907–1924 [DOI](https://doi.org/10.1175/BAMS-D-16-0236.1)
-* Demuzere, M., Bechtel, B., Middel, A., & Mills, G. (2019). Mapping Europe into local climate zones. PLOS ONE, 14(4), e0214474 [DOI](https://doi.org/10.1371/journal.pone.0214474)
-* Demuzere, M., Hankey, S., Mills, G., Zhang, W., Lu, T., & Bechtel, B. (2020). Combining expert and crowd-sourced training data to map urban form and functions for the continental US. Scientific Data, 7(1), 264 [DOI](https://doi.org/10.1038/s41597-020-00605-z)
-* Demuzere, M., Kittner, J., Martilli, A., Mills, G., Moede, C., Stewart, I. D., van Vliet, J., and Bechtel, B. (2022). A global map of Local Climate Zones to support earth system modelling and urban scale environmental science, Earth Syst. Sci. Data 14(8) 3835-3873. [DOI](https://doi.org/10.5194/essd-14-3835-2022)
-
-## Have feedback or suggestions?
-Do you have an idea for improvement or did you spot a mistake? We'd love to hear from you! Click the button below to create a new issue (Github) and share your feedback or suggestions directly with us.
-
-<button type="button" class="btn" style="background-color: #008000; color: white; padding: .25rem .5rem; font-size: .75rem; border: none; border-radius: .25rem;">
+<button type="button" class="btn" style="background-color: #008000; color: white; padding: .5rem 1rem; font-size: 1rem; border: none; border-radius: .25rem;">
   <a href='https://github.com/ByMaxAnjos/LCZ4r/issues/new' style="text-decoration: none; color: white;">
-    Open an issue in the Github repository
+    Open an Issue on GitHub
   </a>
 </button>
 
+---

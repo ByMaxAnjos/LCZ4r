@@ -1,54 +1,78 @@
-#' Evaluate the LCZ - interpolated map
+#' Evaluate the LCZ-Based Interpolated Map
 #'
-#' This function evaluate the variability of a spatial and temporal LCZ-Kring related - interpolation. More details: \url{https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html}
+#' This function evaluates the variability of a spatial and temporal interpolation of a variable (e.g., air temperature) using LCZ as background. It supports both LCZ-based and conventional interpolation methods. The function allows for flexible time period selection, cross-validation, and station splitting for training and testing.
 #'
-#' @param x A \code{SpatRaster} object containing the LCZ map. The LCZ map can be obtained using the \code{lcz_get_map()} function.
-#' @param data_frame A data frame containing air temperature measurements and station IDs. The data frame should have a date field in hourly or higher resolution format.
-#' @param var Name of the variable for interpolation, e.g. air temperature, in the dataframe.
-#' @param station_id Name of the station ID variable in the dataframe.
-#' @param ... Additional arguments for the \code{selectByDate} function from the \code{openair} package. These arguments allow for flexible selection of specific time periods (year, month, day, hour). Examples of how to use these arguments include:
-#' \itemize{
-#'   \item \strong{Year(s)}: Numeric value(s) specifying the year(s) to select. For example, \code{year = 1998:2004} selects all years between 1998 and 2004 (inclusive), while \code{year = c(1998, 2004)} selects only the years 1998 and 2004.
-#'   \item \strong{Month(s)}: Numeric or character value(s) specifying the months to select. Numeric examples: \code{month = 1:6} (January to June), or character examples: \code{month = c("January", "December")}.
-#'   \item \strong{Day(s)}: Numeric value(s) specifying the days to select. For instance, \code{day = 1:30} selects days from 1 to 30, or \code{day = 15} selects only the 15th day of the month.
-#'   \item \strong{Hour(s)}: Numeric value(s) specifying the hours to select. For example, \code{hour = 0:23} selects all hours in a day, while \code{hour = 9} selects only the 9th hour.
-#'   \item \strong{Start date}: A string specifying the start date in either start="DD/MM/YYYY" (e.g., "1/2/1999") or "YYYY-mm-dd" format (e.g., "1999-02-01").
-#'   \item \strong{End date}: A string specifying the end date in either end="DD/MM/YYYY" (e.g., "1/2/1999") or "YYYY-mm-dd" format (e.g., "1999-02-01").
-#' }
-#' @param extract.method A character string specifying the method used to assign the LCZ class to each station point. The default is "simple". The available methods are:
-#' \itemize{
-#'   \item \strong{simple}: Assigns the LCZ class based on the value of the raster cell in which the point falls.
-#'   \item \strong{bilinear}: Interpolates the LCZ class values from the four nearest raster cells surrounding the point.
-#'   \item \strong{two.step}: Assigns LCZs to stations while filtering out those located in heterogeneous LCZ areas. This method requires that at least 80% of the pixels within a 5 × 5 kernel match the LCZ of the center pixel (Daniel et al., 2017). Note that this method reduces the number of stations.
-#' }
-#' @param LOOCV IF set to TRUE (default), cross validation functions for kriging is used. Leave-one-out cross validation (LOOCV) visits a data point, and predicts the value at that location by leaving out the observed value, and proceeds with the next data point. 5 n-fold cross validation is used (http://www.gstat.org/).  If set FALSE, the split method into training and testing stations is used.
-#' @param split.ratio A numeric value representing the proportion of meteorological stations to be used for training (interpolation). The remaining stations will be used for testing (evaluation). For example, the default "0.8" indicates that 80% of the stations will be used for traninig and 20% for testing.
-#' @param vg.model If kriging is selected, the list of viogrammodels that will be tested and interpolated with kriging. Default is "Sph". The model are "Sph", "Exp", "Gau", "Ste". They names respective shperical, exponential,gaussian,Matern familiy, Matern, M. Stein's parameterization.
-#' @param sp.res Spatial resolution in unit of meters for interpolation. Default is 100.
-#' @param tp.res Temporal resolution, the time period to average to. Default is \dQuote{hour}, but includes \dQuote{day}, \dQuote{week}, \dQuote{quater}, \dQuote{month}, \dQuote{year}, \dQuote{season}, \dQuote{seasonyear},  \dQuote{monthyear}, \dQuote{weekday}, or \dQuote{weekend}. It also include \dQuote{2 day}, \dQuote{2 week}, \dQuote{3 month} and so on.
-#' @param by data frame time-serie split: \dQuote{year}, \dQuote{season}, \dQuote{seasonyear},  \dQuote{month}, \dQuote{monthyear}, \dQuote{weekday}, \dQuote{weekend},  \dQuote{site},
-#'           \dQuote{daylight}(daytime and nighttime).See argument \emph{type} in openair package:\url{https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option}
-#' @param impute Method to impute missing values (\dQuote{mean}, \dQuote{median}, \dQuote{knn}, \dQuote{bag}).
-#' @param isave Save the plot into your directory.
-#' @param LCZinterp If set to TRUE (default), the LCZ interpolation approach is used. If set to FALSE, conventional interpolation without LCZ is used.
+#' @param x A `SpatRaster` object containing the LCZ map. The LCZ map can be obtained using the `lcz_get_map()` functions.
+#' @param data_frame A data frame containing air temperature measurements and station IDs. The data frame must include a date field in hourly or higher resolution format.
+#' @param var A character string specifying the name of the variable to interpolate (e.g., "airT" for air temperature).
+#' @param station_id A character string specifying the name of the station ID variable in the data frame.
+#' @param ... Additional arguments for the `selectByDate` function from the `openair` package. These arguments allow for flexible selection of specific time periods (year, month, day, hour). Examples include:
+#'   \itemize{
+#'     \item **Year(s)**: Numeric value(s) specifying the year(s) to select. For example, `year = 1998:2004` selects all years between 1998 and 2004 (inclusive), while `year = c(1998, 2004)` selects only the years 1998 and 2004.
+#'     \item **Month(s)**: Numeric or character value(s) specifying the months to select. Numeric examples: `month = 1:6` (January to June), or character examples: `month = c("January", "December")`.
+#'     \item **Day(s)**: Numeric value(s) specifying the days to select. For instance, `day = 1:30` selects days from 1 to 30, or `day = 15` selects only the 15th day of the month.
+#'     \item **Hour(s)**: Numeric value(s) specifying the hours to select. For example, `hour = 0:23` selects all hours in a day, while `hour = 9` selects only the 9th hour.
+#'     \item **Start date**: A string specifying the start date in either `start="DD/MM/YYYY"` (e.g., "1/2/1999") or `"YYYY-mm-dd"` format (e.g., "1999-02-01").
+#'     \item **End date**: A string specifying the end date in either `end="DD/MM/YYYY"` (e.g., "1/2/1999") or `"YYYY-mm-dd"` format (e.g., "1999-02-01").
+#'   }
+#' @param extract.method A character string specifying the method used to assign the LCZ class to each station point. The default is `"simple"`. Available methods are:
+#'   \itemize{
+#'     \item **simple**: Assigns the LCZ class based on the value of the raster cell in which the point falls. It often is used in low-density observational network.
+#'     \item **two.step**: Assigns LCZs to stations while filtering out those located in heterogeneous LCZ areas. This method requires that at least 80% of the pixels within a 5 × 5 kernel match the LCZ of the center pixel (Daniel et al., 2017). Note that this method reduces the number of stations. It often is used in ultra and high-density observational network, especially in LCZ classes with multiple stations.
+#'     \item **bilinear**: Interpolates the LCZ class values from the four nearest raster cells surrounding the point.
+#'   }
+#' @param LOOCV A logical value. If `TRUE` (default), leave-one-out cross-validation (LOOCV) is used for kriging. If `FALSE`, the split method into training and testing stations is used.
+#' @param split.ratio A numeric value representing the proportion of meteorological stations to be used for training (interpolation). The remaining stations will be used for testing (evaluation). For example, the default `0.8` indicates that 80% of the stations will be used for training and 20% for testing.
+#' @param vg.model A character string specifying the variogram model for kriging. The default is `"Sph"`. Available models are:
+#'   \itemize{
+#'     \item **Sph**: Spherical model.
+#'     \item **Exp**: Exponential model.
+#'     \item **Gau**: Gaussian model.
+#'     \item **Ste**: M. Stein's parameterization.
+#'   }
+#' @param sp.res A numeric value specifying the spatial resolution in meters for interpolation. The default is `100`.
+#' @param tp.res A character string specifying the temporal resolution for averaging. The default is `"hour"`. Other options include `"day"`, `"week"`, `"month"`, `"year"`, `"season"`, `"seasonyear"`, `"monthyear"`, `"weekday"`, `"weekend"`, or custom intervals like `"2 day"`, `"2 week"`, `"3 month"`, etc.
+#' @param by A character string specifying how to split the time series in the data frame. Options include `"year"`, `"season"`, `"seasonyear"`, `"month"`, `"monthyear"`, `"weekday"`, `"weekend"`, `"site"`, or `"daylight"` (daytime and nighttime). See the `type` argument in the `openair` package for more details: \url{https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option}.
+#' @param impute A character string specifying the method to impute missing values. Options include `"mean"`, `"median"`, `"knn"`, or `"bag"`.
+#' @param isave A logical value. If `TRUE`, the plot is saved to the working directory.
+#' @param LCZinterp A logical value. If `TRUE` (default), the LCZ interpolation approach is used. If `FALSE`, conventional interpolation without LCZ is used.
 #'
-#' @return A summary table in CSV format containing evaluation metrics, including observed values, predicted values, and residuals.
+#' @return A summary table in CSV format containing time series of observed values, predicted values, and residuals. It also returns an ESRI shapefile (.gpkg) containing metadata of the interpolation.
+#'
+#' @author
+#' Max Anjos (\url{https://github.com/ByMaxAnjos})
+#'
+#' @references
+#' Anjos, M., Targino, A. C., Krecl, P., Oukawa, G. Y. & Braga, R. F. Analysis of the urban heat island under different synoptic patterns using local climate zones. Build. Environ. 185, 107268 (2020).
+#' Fenner, D., Meier, F., Bechtel, B., Otto, M. & Scherer, D. Intra and inter ‘local climate zone’ variability of air temperature as observed by crowdsourced citizen weather stations in Berlin, Germany. Meteorol. Z. 26, 525–547 (2017).
+#' \url{http://www.gstat.org/}
 #'
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#' # Evaluate air temperature values
-#'  my_interp <- lcz_interp_eval(lcz_map, data_frame = lcz_data, var = "airT",
-#'                                station_id = "station", tp.res = "day", sp.res= 100,
-#'                                year = 2019, month=9)
-#'  }
+#' # Evaluate air temperature interpolation values using Berlin data and LOOCV
+#' data("lcz_data")
+#' lcz_map <- lcz_get_map_generator(ID = "8576bde60bfe774e335190f2e8fdd125dd9f4299")
+#' lcz_plot_map(lcz_map)
+#' my_interp <- lcz_interp_eval(
+#'   lcz_map, data_frame = lcz_data, var = "airT",
+#'   station_id = "station", year = 2019, month = 9, day = 5,
+#'   sp.res = 100, tp.res = "hour", LOOCV = TRUE,
+#'   vg.model = "Sph", LCZinterp = TRUE, isave = TRUE
+#' )
+#'
+#' # Evaluate LCZ-based interpolation using split station (80% training, 20% testing)
+#' my_interp <- lcz_interp_eval(
+#'   lcz_map, data_frame = lcz_data, var = "airT",
+#'   station_id = "station", tp.res = "hour", sp.res = 100,
+#'   year = 2019, month = 9, day = 5, LOOCV = FALSE,
+#'   split.ratio = 0.8, vg.model = "Sph", LCZinterp = TRUE, isave = TRUE
+#' )
+#' }
+#'
 #' @importFrom rlang .data
-#'
-#' @seealso
-#' See the documentation for \code{lcz_get_map()} to obtain an LCZ map.
-#'
-#' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis
+#' @keywords Local Climate Zone, interpolation, kriging
 
 lcz_interp_eval <- function(x,
                             data_frame = "",
@@ -127,7 +151,7 @@ lcz_interp_eval <- function(x,
       my_id = base::as.factor(.data$my_id),
       var_interp = base::as.numeric(.data$var_interp),
       date = lubridate::as_datetime(.data$date),
-      station= base::as.factor(station)
+      station= base::as.factor(.data$station)
     ) %>%
     dplyr::ungroup()
 
@@ -135,6 +159,13 @@ lcz_interp_eval <- function(x,
   df_variable$longitude <- base::as.numeric(df_variable$longitude)
 
   # Impute missing values if necessary
+
+  missing_values = c("NAN","NaN", "-9999", "-99", "NULL", "",
+                     "NA", "N/A", "na", "missing", ".",
+                     "inf", "-inf", 9999, 999, Inf, -Inf)
+  df_variable <- df_variable %>%
+    dplyr::mutate(var_interp = ifelse(.data$var_interp %in% missing_values, NA, .data$var_interp))
+
   if (!is.null(impute)) {
     impute_methods <- c("mean", "median", "knn", "bag")
     if (!(impute %in% impute_methods)) {
@@ -162,8 +193,7 @@ lcz_interp_eval <- function(x,
 
   df_processed <- dplyr::inner_join(df_period,
                                     df_variable %>% dplyr::select(-.data$station, -.data$var_interp),
-                                    by = c("date", "my_id")
-  ) %>%
+                                    by = c("date", "my_id")) %>%
     dplyr::ungroup()
 
   # Geospatial operations ---------------------------------------------------
@@ -174,6 +204,7 @@ lcz_interp_eval <- function(x,
 
   #Stratified splitting by LCZ)
   stations_mod <- df_processed %>%
+    stats::na.omit() %>%
     sf::st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
 
   if (extract.method == "simple") {
@@ -247,6 +278,65 @@ lcz_interp_eval <- function(x,
   ras_resample <- terra::resample(ras_project, ras_resolution, method = "mode")
   ras_grid <- stars::st_as_stars(ras_resample, dimensions = "XY")
   base::names(ras_grid) <- "lcz"
+  par_resample <- stars::st_as_stars(ras_resample, dimensions = "XY")
+  dem = stars::st_warp(src = par_resample, ras_grid, method = 'average', use_gdal = TRUE, no_data_value = -9999)
+
+  if (isave == TRUE) {
+
+    # Create a folder name using paste0
+    folder <- base::paste0("LCZ4r_output/")
+
+    # Check if the folder exists
+    if (!base::dir.exists(folder)) {
+      # Create the folder if it does not exist
+      base::dir.create(folder)
+    }
+
+    if(LOOCV==FALSE) {
+      #Export the metadata
+      base::set.seed(123)
+      split_data <- df_interp_mod %>%
+        dplyr::distinct(.data$my_id, .data$lcz, .keep_all = T) %>%
+        dplyr::group_by(.data$lcz) %>%
+        dplyr::mutate(is_train = stats::runif(dplyr::n()) <= split.ratio) %>%
+        dplyr::ungroup()
+      training_set <- dplyr::filter(split_data, .data$is_train)
+      testing_set <- dplyr::filter(split_data, !.data$is_train)
+
+      eval_result_meta <- split_data %>%
+        stats::na.omit() %>%
+        dplyr::mutate(
+          method_interp = ifelse(LCZinterp, "LCZ-Universal kriging", "Conventional-Ordinary kriging"),
+          method_eval = ifelse(LOOCV, "LOOCV", "Split stations"),
+          split = ifelse(.data$is_train, "training", "testing"),
+          spatial_res = sp.res,
+          temporal_res = tp.res,
+          viogrammodel = vg.model,
+        ) %>%
+        dplyr::select(.data$my_id, .data$method_interp, .data$method_eval, .data$spatial_res, .data$temporal_res, .data$viogrammodel,.data$geometry) %>%
+        sf::st_as_sf()
+    } else {
+      eval_result_meta <- df_interp_mod %>%
+        stats::na.omit() %>%
+        dplyr::distinct(.data$my_id, .keep_all = T) %>%
+        dplyr::mutate(
+          method_interp = ifelse(LCZinterp, "LCZ-Universal kriging", "Conventional-Ordinary kriging"),
+          method_eval = ifelse(LOOCV, "LOOCV", "Split stations"),
+          spatial_res = sp.res,
+          temporal_res = tp.res,
+          viogrammodel = vg.model,
+        ) %>%
+        dplyr::rename(observed = .data$var_interp) %>%
+        dplyr::select(.data$my_id, .data$method_interp, .data$method_eval, .data$spatial_res, .data$temporal_res, .data$viogrammodel,.data$geometry) %>%
+        sf::st_as_sf()
+    }
+    #Save as .shp
+    file1 <- base::paste0(getwd(), "/", folder, "lcz4r_interp_eval_meta.gpkg")
+    sf::st_write(eval_result_meta, file1, append = FALSE, quiet = TRUE)
+
+    base::message("Looking at your metadata in the path:", base::paste0(getwd(), "/", folder))
+
+  }
 
   # Calculate interp temporal resolution  ------------------------------------------------------
   if (is.null(by)) {
@@ -308,6 +398,7 @@ lcz_interp_eval <- function(x,
             base::expand.grid()
 
           model_hour <- function(ihour) {
+
             myhour <- ihour[1]
 
             data_model <- modelday %>%
@@ -318,7 +409,6 @@ lcz_interp_eval <- function(x,
               dplyr::filter(.data$hour == paste0(myhour))
 
             if(LOOCV==FALSE) {
-
               base::set.seed(123)
               split_data <- data_model %>%
                 dplyr::group_by(.data$lcz) %>%
@@ -328,18 +418,20 @@ lcz_interp_eval <- function(x,
               testing_set <- dplyr::filter(split_data, !.data$is_train)
 
               if (LCZinterp == TRUE) {
-                krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, training_set, model = vg.model)
-                krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = training_set)
+                krige_vgm <- automap::autofitVariogram(var_interp ~ lcz + SVFmin, training_set, model = vg.model)
+                krige_mod <- gstat::gstat(formula = var_interp ~ lcz + SVFmin, model = krige_vgm$var_model, data = training_set)
               } else {
                 krige_vgm <- automap::autofitVariogram(var_interp ~ 1, training_set, model = vg.model)
                 krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = training_set)
               }
 
               # Predict using kriging and optimize raster processing
-              krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
+              krige_map <- terra::predict(krige_mod, newdata = dem, debug.level = 0)
+
               interp_map <- terra::rast(krige_map["var1.pred", , ])
               interp_map <- terra::focal(interp_map, w = 7, fun = mean)
-              base::names(interp_map) <- "var_pred"
+              base::names(interp_map) <- "predicted"
+
               # Evaluate interpolation
               eval_df <- terra::extract(interp_map, terra::vect(testing_set))
               eval_df$ID <- NULL
@@ -347,15 +439,10 @@ lcz_interp_eval <- function(x,
               eval_result <- eval_df %>%
                 stats::na.omit() %>%
                 dplyr::mutate(
-                  method_interp = ifelse(LCZinterp, "LCZ-Universal kriging", "Conventional-Ordinary kriging"),
-                  method_eval = ifelse(LOOCV, "LOOCV", "Split stations"),
-                  residual = .data$var_interp - .data$var_pred,
-                  spatial_res = sp.res,
-                  temporal_res = tp.res,
-                  viogrammodel = vg.model,
-                ) %>%
+                  lcz = base::as.factor(.data$lcz),
+                  residual = .data$var_interp - .data$predicted) %>%
                 dplyr::rename(observed = .data$var_interp) %>%
-                dplyr::select(.data$date, .data$station, .data$lcz, .data$method_interp, .data$method_eval, .data$spatial_res, .data$temporal_res, .data$viogrammodel, .data$observed, .data$var_pred, .data$residual, .data$geometry)
+                dplyr::select(.data$date, .data$station, .data$my_id, .data$lcz, .data$observed, .data$predicted, .data$residual)
 
               return(eval_result)
 
@@ -368,21 +455,15 @@ lcz_interp_eval <- function(x,
                 krige_vgm <- automap::autofitVariogram(var_interp ~ 1, data_model, model = vg.model)
                 krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = data_model)
               }
-
+              set.seed(123)
               lcz_cv <- gstat::gstat.cv(krige_mod, nfold = 5, debug.level = 0)
               lcz_cv <- sf::st_as_sf(lcz_cv)
               data_model$geometry <- NULL
               lcz_cv_result <- dplyr::bind_cols(data_model, lcz_cv) %>%
                 stats::na.omit() %>%
                 dplyr::mutate(
-                  method_interp = ifelse(LCZinterp, "LCZ-Universal kriging", "Conventional-Ordinary kriging"),
-                  method_eval = ifelse(LOOCV, "LOOCV", "Split stations"),
-                  var_pred = .data$var1.pred,
-                  spatial_res = sp.res,
-                  temporal_res = tp.res,
-                  viogrammodel = vg.model,
-                ) %>%
-                dplyr::select(.data$date, .data$station, .data$lcz, .data$method_interp, .data$method_eval, .data$spatial_res, .data$temporal_res, .data$viogrammodel, .data$observed, .data$var_pred, .data$residual, .data$zscore, .data$fold, .data$geometry)
+                  predicted = .data$var1.pred) %>%
+                dplyr::select(.data$date, .data$station,.data$my_id, .data$lcz, .data$observed, .data$predicted, .data$residual, .data$zscore)
 
               return(lcz_cv_result)
             }
@@ -417,11 +498,9 @@ lcz_interp_eval <- function(x,
         # Create the folder if it does not exist
         base::dir.create(folder)
       }
-
-
-      # Save map as raster.tif
-      file <- base::paste0(getwd(), "/", folder, "lcz4r_interp_eval.csv")
-      utils::write.csv(interp_day, file)
+      # Save as .csv
+      file <- base::paste0(getwd(), "/", folder, "lcz4r_interp_eval_result.csv")
+      utils::write.csv(interp_year, file)
       base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
     }
 
@@ -433,7 +512,13 @@ lcz_interp_eval <- function(x,
       stop("The 'day' does not work with the argument by")
     }
 
-    if (length(by) < 2 & by %in% c("daylight", "season", "seasonyear")) {
+    if (length(by) < 2 && any(c("hour", "daylight", "month", "monthyear", "year", "season", "seasonyear", "yearseason") %in% by)) {
+
+      stations_geometry <- dplyr::select(stations_mod, .data$my_id, .data$geometry) %>%
+        dplyr::distinct(.data$my_id, .keep_all = TRUE) %>%
+          sf::st_intersection(lcz_shp) %>%
+          sf::st_transform(crs = 3857)
+
       extract_hemisphere <- function(raster) {
         # Get the extent of the raster
         extent <- raster::extent(raster::raster(raster))
@@ -451,18 +536,13 @@ lcz_interp_eval <- function(x,
       hemisphere <- extract_hemisphere(raster = {{ x }})
       my_latitude <- df_processed$latitude[1]
       my_longitude <- df_processed$longitude[1]
-      mydata <- openair::cutData(df_processed,
+      df_interp_mod$geometry <- NULL
+      mydata <- openair::cutData(df_interp_mod,
                                  type = by, hemisphere = hemisphere,
-                                 latitude = my_latitude, longitude = my_longitude
-      ) %>%
+                                 latitude = my_latitude, longitude = my_longitude) %>%
         tidyr::drop_na() %>%
         dplyr::rename(my_time = dplyr::last_col())
-      mydata <- openair::timeAverage(mydata,
-                                     pollutant = "var_interp",
-                                     avg.time = tp.res,
-                                     type = c("station", "my_time")
-      ) %>%
-        tidyr::drop_na()
+
       iby <- mydata %>%
         dplyr::group_by(.data$my_time) %>%
         dplyr::ungroup() %>%
@@ -470,16 +550,22 @@ lcz_interp_eval <- function(x,
         base::expand.grid()
 
       model_by <- function(iby) {
+
         my_by <- iby[1]
 
         data_model <- mydata %>%
-          dplyr::filter(.data$my_time == paste0(my_by))
+          dplyr::filter(.data$my_time == paste0(my_by)) %>%
+          dplyr::group_by(.data$my_id, .data$station, .data$my_time) %>%
+          dplyr::summarise(var_interp = mean(.data$var_interp), .groups = "drop") %>%
+          dplyr::ungroup() %>%
+          dplyr::inner_join(stations_geometry, by = "my_id") %>%
+          sf::st_as_sf()
+
 
         if(LOOCV==FALSE) {
-
           base::set.seed(123)
           split_data <- data_model %>%
-            dplyr::group_by(.data$lcz) %>%
+            dplyr::group_by(.data$my_time, .data$lcz) %>%
             dplyr::mutate(is_train = stats::runif(dplyr::n()) <= split.ratio) %>%
             dplyr::ungroup()
           training_set <- dplyr::filter(split_data, .data$is_train)
@@ -497,23 +583,20 @@ lcz_interp_eval <- function(x,
           krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
           interp_map <- terra::rast(krige_map["var1.pred", , ])
           interp_map <- terra::focal(interp_map, w = 7, fun = mean)
-          base::names(interp_map) <- "var_pred"
+          base::names(interp_map) <- "predicted"
+
           # Evaluate interpolation
           eval_df <- terra::extract(interp_map, terra::vect(testing_set))
           eval_df$ID <- NULL
           eval_df <- dplyr::bind_cols(testing_set, eval_df)
+          eval_df$geometry <- NULL
           eval_result <- eval_df %>%
             stats::na.omit() %>%
             dplyr::mutate(
-              method_interp = ifelse(LCZinterp, "LCZ-Universal kriging", "Conventional-Ordinary kriging"),
-              method_eval = ifelse(LOOCV, "LOOCV", "Split stations"),
-              residual = .data$var_interp - .data$var_pred,
-              spatial_res = sp.res,
-              temporal_res = tp.res,
-              viogrammodel = vg.model,
-            ) %>%
-            dplyr::rename(observed = .data$var_interp) %>%
-            dplyr::select(.data$date, .data$station, .data$lcz, .data$method_interp, .data$method_eval, .data$spatial_res, .data$temporal_res, .data$viogrammodel, .data$observed, .data$var_pred, .data$residual, .data$geometry)
+              residual = .data$var_interp - .data$predicted) %>%
+            dplyr::rename(observed = .data$var_interp,
+                          select_time = .data$my_time) %>%
+            dplyr::select(.data$station, .data$my_id, .data$lcz, .data$select_time, .data$observed, .data$predicted, .data$residual)
 
           return(eval_result)
 
@@ -526,29 +609,27 @@ lcz_interp_eval <- function(x,
             krige_vgm <- automap::autofitVariogram(var_interp ~ 1, data_model, model = vg.model)
             krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = data_model)
           }
-
+          set.seed(123)  # Ensure reproducibility
           lcz_cv <- gstat::gstat.cv(krige_mod, nfold = 5, debug.level = 0)
           lcz_cv <- sf::st_as_sf(lcz_cv)
           data_model$geometry <- NULL
           lcz_cv_result <- dplyr::bind_cols(data_model, lcz_cv) %>%
             stats::na.omit() %>%
             dplyr::mutate(
-              method_interp = ifelse(LCZinterp, "LCZ-Universal kriging", "Conventional-Ordinary kriging"),
-              method_eval = ifelse(LOOCV, "LOOCV", "Split stations"),
-              var_pred = .data$var1.pred,
-              spatial_res = sp.res,
-              temporal_res = tp.res,
-              viogrammodel = vg.model,
-            ) %>%
-            dplyr::select(.data$date, .data$station, .data$lcz, .data$method_interp, .data$method_eval, .data$spatial_res, .data$temporal_res, .data$viogrammodel, .data$observed, .data$var_pred, .data$residual, .data$zscore, .data$fold, .data$geometry)
+              predicted = .data$var1.pred,
+              select_time = .data$my_time) %>%
+            dplyr::select(.data$station, .data$my_id, .data$lcz, .data$select_time,.data$observed, .data$predicted, .data$residual, .data$zscore)
 
           return(lcz_cv_result)
         }
+
+      }
 
       mapBy <- base::apply(iby, 1, model_by)
       interp_by <- base::do.call(rbind.data.frame, mapBy)
 
       if (isave == TRUE) {
+
         # Create a folder name using paste0
         folder <- base::paste0("LCZ4r_output/")
 
@@ -558,17 +639,22 @@ lcz_interp_eval <- function(x,
           base::dir.create(folder)
         }
 
-        # Save as table
-        file <- base::paste0(getwd(), "/", folder, "lcz4r_interp_eval.csv")
-        utils::write.csv(interp_day, file)
-        base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
+        # Save as .csv
+        file <- base::paste0(getwd(), "/", folder, "lcz4r_interp_eval_result.csv")
+        utils::write.csv(interp_by, file)
+
+        base::message("Looking at your results in the path:", base::paste0(getwd(), "/", folder))
       }
       return(interp_by)
-      }
-
     }
 
     if (length(by) > 1 & by %in% "daylight") {
+
+      stations_geometry <- dplyr::select(stations_mod, .data$station, .data$my_id, .data$geometry) %>%
+        dplyr::distinct(.data$station, .data$my_id, .keep_all = TRUE)  %>%
+        sf::st_intersection(lcz_shp) %>%
+        sf::st_transform(crs = 3857)
+
       extract_hemisphere <- function(raster) {
         # Get the extent of the raster
         extent <- raster::extent(raster::raster(raster))
@@ -587,29 +673,34 @@ lcz_interp_eval <- function(x,
 
       my_latitude <- df_processed$latitude[1]
       my_longitude <- df_processed$longitude[1]
-      mydata <- openair::cutData(df_processed,
+      df_interp_mod$geometry <- NULL
+      mydata <- openair::cutData(df_interp_mod,
                                  type = by, hemisphere = hemisphere,
                                  latitude = my_latitude, longitude = my_longitude
       ) %>%
         tidyr::drop_na() %>%
         dplyr::rename(my_time = dplyr::last_col())
-      mydata <- openair::timeAverage(mydata,
-                                     pollutant = "var_interp",
-                                     avg.time = tp.res,
-                                     type = c("station", "daylight", "my_time")
-      ) %>% tidyr::drop_na()
 
       iby <- mydata %>%
         dplyr::group_by(.data$my_time) %>%
         dplyr::ungroup() %>%
-        dplyr::distinct(.data$my_time, .keep_all = FALSE) %>%
+        dplyr::distinct(.data$daylight,.data$my_time, .keep_all = FALSE) %>%
         base::expand.grid()
 
       model_by <- function(iby) {
-        my_by <- iby[1]
+
+        my_by <- iby$daylight[1]
+        my_by2 <- iby$my_time[1]
 
         data_model <- mydata %>%
-          dplyr::filter(.data$my_time == paste0(my_by))
+          dplyr::filter(.data$daylight == paste0(my_by)) %>%
+          dplyr::filter(.data$my_time == paste0(my_by2)) %>%
+          dplyr::group_by(.data$station, .data$daylight, .data$my_time) %>%
+          dplyr::summarise(var_interp = mean(.data$var_interp), .groups = "drop") %>%
+          dplyr::ungroup() %>%
+          dplyr::inner_join(stations_geometry, by = "station") %>%
+          sf::st_as_sf()
+
 
         if(LOOCV==FALSE) {
 
@@ -633,23 +724,19 @@ lcz_interp_eval <- function(x,
           krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
           interp_map <- terra::rast(krige_map["var1.pred", , ])
           interp_map <- terra::focal(interp_map, w = 7, fun = mean)
-          base::names(interp_map) <- "var_pred"
+          base::names(interp_map) <- "predicted"
+
           # Evaluate interpolation
           eval_df <- terra::extract(interp_map, terra::vect(testing_set))
           eval_df$ID <- NULL
           eval_df <- dplyr::bind_cols(testing_set, eval_df)
           eval_result <- eval_df %>%
             stats::na.omit() %>%
-            dplyr::mutate(
-              method_interp = ifelse(LCZinterp, "LCZ-Universal kriging", "Conventional-Ordinary kriging"),
-              method_eval = ifelse(LOOCV, "LOOCV", "Split stations"),
-              residual = .data$var_interp - .data$var_pred,
-              spatial_res = sp.res,
-              temporal_res = tp.res,
-              viogrammodel = vg.model,
-            ) %>%
-            dplyr::rename(observed = .data$var_interp) %>%
-            dplyr::select(.data$date, .data$station, .data$lcz, .data$method_interp, .data$method_eval, .data$spatial_res, .data$temporal_res, .data$viogrammodel, .data$observed, .data$var_pred, .data$residual, .data$geometry)
+            dplyr::mutate(residual = .data$var_interp - .data$predicted) %>%
+            dplyr::rename(observed = .data$var_interp,
+                          select_time = .data$my_time) %>%
+            dplyr::select(.data$station, .data$my_id, .data$lcz, .data$daylight, .data$select_time, .data$observed, .data$predicted, .data$residual)
+
 
           return(eval_result)
 
@@ -668,129 +755,8 @@ lcz_interp_eval <- function(x,
           data_model$geometry <- NULL
           lcz_cv_result <- dplyr::bind_cols(data_model, lcz_cv) %>%
             stats::na.omit() %>%
-            dplyr::mutate(
-              method_interp = ifelse(LCZinterp, "LCZ-Universal kriging", "Conventional-Ordinary kriging"),
-              method_eval = ifelse(LOOCV, "LOOCV", "Split stations"),
-              var_pred = .data$var1.pred,
-              spatial_res = sp.res,
-              temporal_res = tp.res,
-              viogrammodel = vg.model,
-            ) %>%
-            dplyr::select(.data$date, .data$station, .data$lcz, .data$method_interp, .data$method_eval, .data$spatial_res, .data$temporal_res, .data$viogrammodel, .data$observed, .data$var_pred, .data$residual, .data$zscore, .data$fold, .data$geometry)
-
-          return(lcz_cv_result)
-        }
-
-
-      mapBy <- base::apply(iby, 1, model_by)
-      interp_by <- base::do.call(rbind.data.frame, mapBy)
-
-      if (isave == TRUE) {
-        # Create a folder name using paste0
-        folder <- base::paste0("LCZ4r_output/")
-
-        # Check if the folder exists
-        if (!base::dir.exists(folder)) {
-          # Create the folder if it does not exist
-          base::dir.create(folder)
-        }
-
-        # Save as table
-        file <- base::paste0(getwd(), "/", folder, "lcz4r_interp_eval.csv")
-        utils::write.csv(interp_day, file)
-        base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
-      }
-
-      return(interp_by)
-      }
-    } else {
-      mydata <-
-        openair::cutData(df_processed, type = by) %>%
-        dplyr::rename(my_time = dplyr::last_col())
-      mydata <- openair::timeAverage(mydata,
-                                     pollutant = "var_interp",
-                                     avg.time = tp.res,
-                                     type = c("station", "my_time")
-      ) %>%
-        tidyr::drop_na()
-      iby <- mydata %>%
-        dplyr::group_by(.data$my_time) %>%
-        dplyr::ungroup() %>%
-        dplyr::distinct(.data$my_time, .keep_all = FALSE) %>%
-        base::expand.grid()
-
-      model_by <- function(iby) {
-        my_by <- iby[1]
-
-        data_model <- mydata %>%
-          dplyr::filter(.data$my_time == paste0(my_by))
-
-        if(LOOCV==FALSE) {
-
-          base::set.seed(123)
-          split_data <- data_model %>%
-            dplyr::group_by(.data$lcz) %>%
-            dplyr::mutate(is_train = stats::runif(dplyr::n()) <= split.ratio) %>%
-            dplyr::ungroup()
-          training_set <- dplyr::filter(split_data, .data$is_train)
-          testing_set <- dplyr::filter(split_data, !.data$is_train)
-
-          if (LCZinterp == TRUE) {
-            krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, training_set, model = vg.model)
-            krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = training_set)
-          } else {
-            krige_vgm <- automap::autofitVariogram(var_interp ~ 1, training_set, model = vg.model)
-            krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = training_set)
-          }
-
-          # Predict using kriging and optimize raster processing
-          krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-          interp_map <- terra::rast(krige_map["var1.pred", , ])
-          interp_map <- terra::focal(interp_map, w = 7, fun = mean)
-          base::names(interp_map) <- "var_pred"
-          # Evaluate interpolation
-          eval_df <- terra::extract(interp_map, terra::vect(testing_set))
-          eval_df$ID <- NULL
-          eval_df <- dplyr::bind_cols(testing_set, eval_df)
-          eval_result <- eval_df %>%
-            stats::na.omit() %>%
-            dplyr::mutate(
-              method_interp = ifelse(LCZinterp, "LCZ-Universal kriging", "Conventional-Ordinary kriging"),
-              method_eval = ifelse(LOOCV, "LOOCV", "Split stations"),
-              residual = .data$var_interp - .data$var_pred,
-              spatial_res = sp.res,
-              temporal_res = tp.res,
-              viogrammodel = vg.model,
-            ) %>%
-            dplyr::rename(observed = .data$var_interp) %>%
-            dplyr::select(.data$date, .data$station, .data$lcz, .data$method_interp, .data$method_eval, .data$spatial_res, .data$temporal_res, .data$viogrammodel, .data$observed, .data$var_pred, .data$residual, .data$geometry)
-
-          return(eval_result)
-
-        } else {
-
-          if (LCZinterp == TRUE) {
-            krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, data_model, model = vg.model)
-            krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = data_model)
-          } else {
-            krige_vgm <- automap::autofitVariogram(var_interp ~ 1, data_model, model = vg.model)
-            krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = data_model)
-          }
-
-          lcz_cv <- gstat::gstat.cv(krige_mod, nfold = 5, debug.level = 0)
-          lcz_cv <- sf::st_as_sf(lcz_cv)
-          data_model$geometry <- NULL
-          lcz_cv_result <- dplyr::bind_cols(data_model, lcz_cv) %>%
-            stats::na.omit() %>%
-            dplyr::mutate(
-              method_interp = ifelse(LCZinterp, "LCZ-Universal kriging", "Conventional-Ordinary kriging"),
-              method_eval = ifelse(LOOCV, "LOOCV", "Split stations"),
-              var_pred = .data$var1.pred,
-              spatial_res = sp.res,
-              temporal_res = tp.res,
-              viogrammodel = vg.model,
-            ) %>%
-            dplyr::select(.data$date, .data$station, .data$lcz, .data$method_interp, .data$method_eval, .data$spatial_res, .data$temporal_res, .data$viogrammodel, .data$observed, .data$var_pred, .data$residual, .data$zscore, .data$fold, .data$geometry)
+            dplyr::mutate(predicted = .data$var1.pred) %>%
+            dplyr::select(.data$station, .data$my_id, .data$lcz, .data$observed, .data$predicted, .data$residual, .data$zscore)
 
           return(lcz_cv_result)
         }
@@ -801,6 +767,7 @@ lcz_interp_eval <- function(x,
       interp_by <- base::do.call(rbind.data.frame, mapBy)
 
       if (isave == TRUE) {
+
         # Create a folder name using paste0
         folder <- base::paste0("LCZ4r_output/")
 
@@ -810,15 +777,15 @@ lcz_interp_eval <- function(x,
           base::dir.create(folder)
         }
 
-        # Save as table
-        file <- base::paste0(getwd(), "/", folder, "lcz4r_interp_eval.csv")
-        utils::write.csv(interp_day, file)
-        base::cat("The interp map rasters are saved into your pc. Look at 'LCZ4r_output' folder.\n")
+        # Save as .csv
+        file <- base::paste0(getwd(), "/", folder, "lcz4r_interp_eval_result.csv")
+        utils::write.csv(interp_by, file)
+
+        base::message("Looking at your results in the path:", base::paste0(getwd(), "/", folder))
       }
 
       return(interp_by)
-    }
-
+      }
   }
 
 }

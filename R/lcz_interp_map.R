@@ -1,52 +1,89 @@
-#' Visualize the LCZ - interpolated map
+#' Interpolate spatial and temporal data using a Local Climate Zones (LCZ)
 #'
-#' This function generates a spatial interpolation of air temperature (or other variable) using Local Climate Zones (LCZs) and Kriging.  More details: \url{https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html}
+#' Generates an interpolated spatial map using LCZ as background.
+#' This function applies geostatistical interpolation techniques (e.g., kriging) to estimate variable values (e.g., air temperature) across the study area,
+#' integrating LCZ classifications. The function allows for flexible time period selection, like hour, daytime, nighttime and so on.
 #'
-#' @param x A \code{SpatRaster} object containing the LCZ map. The LCZ map can be obtained using the \code{lcz_get_map()} function.
-#' @param data_frame A data frame containing air temperature measurements and station IDs. The data frame should have a date field in hourly or higher resolution format.
-#' @param var Name of the variable for interpolation, e.g. air temperature, in the dataframe.
-#' @param station_id Name of the station ID variable in the dataframe.
-#' @param ... Additional arguments for the \code{selectByDate} function from the \code{openair} package. These arguments allow for flexible selection of specific time periods (year, month, day, hour). Examples of how to use these arguments include:
-#' \itemize{
-#'   \item \strong{Year(s)}: Numeric value(s) specifying the year(s) to select. For example, \code{year = 1998:2004} selects all years between 1998 and 2004 (inclusive), while \code{year = c(1998, 2004)} selects only the years 1998 and 2004.
-#'   \item \strong{Month(s)}: Numeric or character value(s) specifying the months to select. Numeric examples: \code{month = 1:6} (January to June), or character examples: \code{month = c("January", "December")}.
-#'   \item \strong{Day(s)}: Numeric value(s) specifying the days to select. For instance, \code{day = 1:30} selects days from 1 to 30, or \code{day = 15} selects only the 15th day of the month.
-#'   \item \strong{Hour(s)}: Numeric value(s) specifying the hours to select. For example, \code{hour = 0:23} selects all hours in a day, while \code{hour = 9} selects only the 9th hour.
-#'   \item \strong{Start date}: A string specifying the start date in either start="DD/MM/YYYY" (e.g., "1/2/1999") or "YYYY-mm-dd" format (e.g., "1999-02-01").
-#'   \item \strong{End date}: A string specifying the end date in either end="DD/MM/YYYY" (e.g., "1/2/1999") or "YYYY-mm-dd" format (e.g., "1999-02-01").
-#' }
-#' @param extract.method A character string specifying the method used to assign the LCZ class to each station point. The default is "simple". The available methods are:
-#' \itemize{
-#'   \item \strong{simple}: Assigns the LCZ class based on the value of the raster cell in which the point falls.
-#'   \item \strong{bilinear}: Interpolates the LCZ class values from the four nearest raster cells surrounding the point.
-#'   \item \strong{two.step}: Assigns LCZs to stations while filtering out those located in heterogeneous LCZ areas. This method requires that at least 80% of the pixels within a 5 × 5 kernel match the LCZ of the center pixel (Daniel et al., 2017). Note that this method reduces the number of stations.
-#' }
-#' @param vg.model If kriging is selected, the list of viogrammodels that will be tested and interpolated with kriging. Default is "Sph". The model are "Sph", "Exp", "Gau", "Ste". They names respective shperical, exponential,gaussian,Matern familiy, Matern, M. Stein's parameterization.
-#' @param sp.res Spatial resolution in unit of meters for interpolation. Default is 100.
-#' @param tp.res Temporal resolution, the time period to average to. Default is \dQuote{hour}, but includes \dQuote{day}, \dQuote{week}, \dQuote{month} or \dQuote{year}.
-#' @param by data frame time-serie split: \dQuote{year}, \dQuote{season}, \dQuote{seasonyear},  \dQuote{month}, \dQuote{monthyear}, \dQuote{weekday}, \dQuote{weekend},  \dQuote{site},
-#'           \dQuote{daylight}(daytime and nighttime).See argument \emph{type} in openair package:\url{https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option}
-#' @param impute Method to impute missing values (\dQuote{mean}, \dQuote{median}, \dQuote{knn}, \dQuote{bag}).
-#' @param isave Save the plot into your directory.
-#' @param LCZinterp If set to TRUE (default), the LCZ interpolation approach is used. If set to FALSE, conventional interpolation without LCZ is used.
+#' @param x A `SpatRaster` object representing the LCZ map, obtained via `lcz_get_map()` functions.
+#' @param data_frame A data frame containing air temperature measurements with station metadata.
+#' The data must include a date column in hourly or higher resolution.
+#' @param var Character. The variable to interpolate (e.g., `"airT"` for air temperature).
+#' @param station_id Character. The column name in `data_frame` identifying weather stations.
+#' @param ... Additional arguments passed to `selectByDate` from the `openair` package
+#' for flexible time selection. Options include:
+#'   \itemize{
+#'     \item **Year(s):** `year = 1998:2004` (selects 1998 to 2004) or `year = c(1998, 2004)`.
+#'     \item **Month(s):** `month = 1:6` (January to June) or `month = c("January", "December")`.
+#'     \item **Day(s):** `day = 1:30` (days 1 to 30) or `day = 15`.
+#'     \item **Hour(s):** `hour = 0:23` (all hours) or `hour = 9`.
+#'     \item **Start/End Date:** `"YYYY-mm-dd"` format (e.g., `"1999-02-01"`).
+#'   }
+#' @param extract.method Character. The method used to assign LCZ classes to stations:
+#'   \itemize{
+#'     \item **"simple"**: Assigns the LCZ based on the raster cell where the station is located. It often is used in low-density observational network.
+#'     \item **"two.step"**: Filters out stations in heterogeneous LCZ areas (Daniel et al., 2017). It often is used in ultra and high-density observational network, especially in LCZ classes with multiple stations.
+#'     \item **"bilinear"**: Uses bilinear interpolation to assign LCZ values.
+#'   }
+#' @param vg.model Character. Variogram model for kriging. Default is `"Sph"` (spherical).
+#' Available models:
+#'   \itemize{
+#'     \item `"Sph"`: Spherical model.
+#'     \item `"Exp"`: Exponential model.
+#'     \item `"Gau"`: Gaussian model.
+#'     \item `"Ste"`: M. Stein's parameterization.
+#'   }
+#' @param sp.res Numeric. Spatial resolution in meters (default: `100`).
+#' @param tp.res Character. Temporal resolution for averaging (`"hour"`, `"day"`, etc.).
+#' @param by Character. Specifies how to split the time series. Options include
+#' `"year"`, `"month"`, `"weekday"`, `"weekend"`, etc.
+#' @param impute Character. Method to impute missing values (`"mean"`, `"median"`, `"knn"`, `"bag"`).
+#' @param isave Logical. If `TRUE`, saves the plot to the working directory.
+#' @param LCZinterp Logical. If `TRUE` (default), applies LCZ-based interpolation.
 #'
-#' @return A map of LCZ-air temperature in \code{terra raster GeoTIF} format
+#' @return A spatially interpolated map in \code{terra raster GeoTIFF} format.
 #'
 #' @export
 #'
+#' @author
+#' Max Anjos (\url{https://github.com/ByMaxAnjos})
+#'
+#' @references
+#' Anjos, M., Targino, A. C., Krecl, P., Oukawa, G. Y. & Braga, R. F. Analysis of the urban heat island under different synoptic patterns using local climate zones. Build. Environ. 185, 107268 (2020).
+#' Fenner, D., Meier, F., Bechtel, B., Otto, M. & Scherer, D. (2017). Intra and inter ‘local climate zone’ variability of air temperature as observed by crowdsourced citizen weather stations in Berlin, Germany. *Meteorol. Z.*, 26, 525–547.
+#' \url{http://www.gstat.org/}
+#'
 #' @examples
 #' \dontrun{
-#' # Daily air temperature values in September 2019 .
-#'  my_interp <- lcz_interp_map(lcz_map, data_frame = lcz_data, var = "airT",
-#'                                station_id = "station", tp.res = "day", sp.res= 100,
-#'                                year = 2019, month=9)
-#'  }
+#' # Load sample data and LCZ map
+#' data("lcz_data")
+#' lcz_map <- lcz_get_map_generator(ID = "8576bde60bfe774e335190f2e8fdd125dd9f4299")
+#'
+#' # Plot the LCZ map
+#' lcz_plot_map(lcz_map)
+#'
+#' # Perform interpolation for 2020-01-02 at 04:00h
+#' my_interp <- lcz_interp_map(
+#'   lcz_map, data_frame = lcz_data, var = "airT",
+#'   station_id = "station", year = 2020, month = 1, day = 2, hour = 4,
+#'   sp.res = 100, tp.res = "hour", vg.model = "Sph",
+#'   LCZinterp = TRUE
+#' )
+#'
+#' # Perform interpolation for an entire day (returns a raster stack of 24 hours)
+#' my_interp <- lcz_interp_map(
+#'   lcz_map, data_frame = lcz_data, var = "airT",
+#'   station_id = "station", year = 2020, month = 1, day = 2,
+#'   sp.res = 100, tp.res = "hour", vg.model = "Sph",
+#'   LCZinterp = TRUE
+#' )
+#' }
+#'
 #' @importFrom rlang .data
 #'
 #' @seealso
-#' See the documentation for \code{lcz_get_map()} to obtain an LCZ map.
+#' See \code{lcz_inter_eval()} for LCZ interpolation evaluation.
 #'
-#' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis
+#' @keywords Local Climate Zone, interpolation, kriging.
 
 
 lcz_interp_map <- function(x,
@@ -131,6 +168,12 @@ lcz_interp_map <- function(x,
   df_variable$longitude <- base::as.numeric(df_variable$longitude)
 
   # Impute missing values if necessary
+  missing_values = c("NAN","NaN", "-9999", "-99", "NULL", "",
+                     "NA", "N/A", "na", "missing", ".",
+                     "inf", "-inf", 9999, 999, Inf, -Inf)
+  df_variable <- df_variable %>%
+    dplyr::mutate(var_interp = ifelse(.data$var_interp %in% missing_values, NA, .data$var_interp))
+
   if (!is.null(impute)) {
     impute_methods <- c("mean", "median", "knn", "bag")
     if (!(impute %in% impute_methods)) {
@@ -158,8 +201,7 @@ lcz_interp_map <- function(x,
 
   df_processed <- dplyr::inner_join(df_period,
     df_variable %>% dplyr::select(-.data$station, -.data$var_interp),
-    by = c("date", "my_id")
-  ) %>%
+    by = c("date", "my_id")) %>%
     dplyr::ungroup()
 
   # Geospatial operations ---------------------------------------------------
@@ -170,6 +212,7 @@ lcz_interp_map <- function(x,
 
   #Stratified splitting by LCZ)
   stations_mod <- df_processed %>%
+    stats::na.omit() %>%
     sf::st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
 
   if (extract.method == "simple") {
@@ -232,6 +275,7 @@ lcz_interp_map <- function(x,
       sf::st_transform(crs = 3857) %>%
       stats::na.omit()
   }
+
   # Re-project and make a grid to interpolation
   lcz_box <- sf::st_transform(lcz_shp, crs = 3857)
   ras_resolution <- sf::st_bbox(lcz_box) %>%
@@ -244,284 +288,8 @@ lcz_interp_map <- function(x,
   base::names(ras_grid) <- "lcz"
 
   # Calculate interp temporal resolution  ------------------------------------------------------
-  if (is.null(by) & tp.res %in% c("hour", "day")) { # Downscale to hour or day
-    iday <- df_interp_mod %>%
-      dplyr::group_by(.data$date) %>%
-      dplyr::select(.data$date) %>%
-      dplyr::ungroup() %>%
-      dplyr::mutate(iday = lubridate::day(.data$date)) %>%
-      dplyr::distinct(.data$iday, .keep_all = FALSE) %>%
-      base::expand.grid()
 
-    model_day <- function(iday) {
-      myday <- iday[1]
-
-      modelday <- df_interp_mod %>%
-        dplyr::mutate(day = lubridate::day(.data$date)) %>%
-        dplyr::filter(.data$day == paste0(myday))
-
-      # Downscale to hour
-      ihour <- modelday %>%
-        dplyr::group_by(.data$date) %>%
-        dplyr::select(.data$date) %>%
-        dplyr::ungroup() %>%
-        dplyr::mutate(ihour = lubridate::hour(date)) %>%
-        dplyr::distinct(.data$ihour, .keep_all = FALSE) %>%
-        base::expand.grid()
-
-      model_hour <- function(ihour) {
-        myhour <- ihour[1]
-
-        data_model <- modelday %>%
-          dplyr::mutate(
-            hour = lubridate::hour(.data$date),
-            my_id = base::as.factor(.data$my_id)
-          ) %>%
-          dplyr::filter(.data$hour == paste0(myhour))
-
-        if (LCZinterp == TRUE) {
-          # [using ordinary kriging]
-          krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, data_model, model = vg.model)
-          krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = data_model)
-        } else {
-          krige_vgm <- automap::autofitVariogram(var_interp ~ 1, data_model, model = vg.model)
-          krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = data_model)
-        }
-
-        krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-        krige_map <- krige_map["var1.pred", , ]
-        interp_map <- terra::rast(krige_map)
-        interp_map <- terra::focal(interp_map, w = 7, fun = mean)
-        mydate <- data_model %>% dplyr::pull(.data$date)
-        mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-        ras_name <- base::paste0("krige_", mydate)
-        base::names(interp_map) <- ras_name
-
-        return(interp_map)
-      }
-
-      MapHour <- base::apply(ihour, 1, model_hour)
-      interp_hour <- base::unlist(MapHour)
-      return(interp_hour)
-    }
-
-    MapDay <- base::apply(iday, 1, model_day)
-    interp_day <- base::unlist(MapDay)
-    interp_stack <- terra::rast(interp_day)
-
-    if (isave == TRUE) {
-      # Create a folder name using paste0
-      folder <- base::paste0("LCZ4r_output/")
-
-      # Check if the folder exists
-      if (!base::dir.exists(folder)) {
-        # Create the folder if it does not exist
-        base::dir.create(folder)
-      }
-
-      # Save map as raster.tif
-      file <- base::paste0(getwd(), "/", folder, "lcz4r_interp_map.tif")
-      terra::writeRaster(interp_stack, file, overwrite = TRUE)
-      base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
-    }
-
-    return(interp_stack)
-  }
-
-  if (is.null(by) & tp.res %in% c("week")) { # Downscale to week
-
-    iweek <- df_interp_mod %>%
-      dplyr::group_by(.data$date) %>%
-      dplyr::select(.data$date) %>%
-      dplyr::ungroup() %>%
-      dplyr::mutate(iweek = lubridate::week(.data$date)) %>%
-      dplyr::distinct(.data$iweek, .keep_all = FALSE) %>%
-      base::expand.grid()
-
-    model_week <- function(iweek) {
-      my_week <- iweek[1]
-
-      data_model <- df_interp_mod%>%
-        dplyr::mutate(
-          iweek = lubridate::week(.data$date),
-          my_id = base::as.factor(.data$my_id)
-        ) %>%
-        dplyr::filter(.data$iweek == paste0(my_week))
-
-      if (LCZinterp == TRUE) {
-        # [using ordinary kriging]
-        krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, data_model, model = vg.model)
-        krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = data_model)
-      } else {
-        krige_vgm <- automap::autofitVariogram(var_interp ~ 1, data_model, model = vg.model)
-        krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = data_model)
-      }
-      krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-      krige_map <- krige_map["var1.pred", , ]
-      interp_map <- terra::rast(krige_map)
-      interp_map <- terra::focal(interp_map, w = 7, fun = mean)
-      mydate <- data_model %>% dplyr::pull(.data$date)
-      mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-      ras_name <- base::paste0("krige_", mydate)
-      base::names(interp_map) <- ras_name
-
-      return(interp_map)
-
-    }
-
-    mapWeek <- base::apply(iweek, 1, model_week)
-    interp_week <- base::unlist(mapWeek)
-    interp_stack <- terra::rast(interp_week)
-
-    if (isave == TRUE) {
-      # Create a folder name using paste0
-      folder <- base::paste0("LCZ4r_output/")
-
-      # Check if the folder exists
-      if (!base::dir.exists(folder)) {
-        # Create the folder if it does not exist
-        base::dir.create(folder)
-      }
-
-      # Save map as raster.tif
-      file <- base::paste0(getwd(), "/", folder, "lcz4r_interp_map.tif")
-      terra::writeRaster(interp_stack, file, overwrite = TRUE)
-      base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
-    }
-
-    return(interp_stack)
-  }
-
-  if (is.null(by) & tp.res %in% c("month")) { # Downscale to month
-
-    imonth <- df_interp_mod %>%
-      dplyr::group_by(.data$date) %>%
-      dplyr::select(.data$date) %>%
-      dplyr::ungroup() %>%
-      dplyr::mutate(imonth = lubridate::month(.data$date)) %>%
-      dplyr::distinct(.data$imonth, .keep_all = FALSE) %>%
-      base::expand.grid()
-
-    model_month <- function(imonth) {
-      my_month <- imonth[1]
-
-      data_model <- df_interp_mod %>%
-        dplyr::mutate(
-          imonth = lubridate::month(.data$date),
-          my_id = base::as.factor(.data$my_id)
-        ) %>%
-        dplyr::filter(.data$imonth == paste0(my_month))
-
-
-      if (LCZinterp == TRUE) {
-        # [using ordinary kriging]
-        krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, data_model, model = vg.model)
-        krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = data_model)
-      } else {
-        krige_vgm <- automap::autofitVariogram(var_interp ~ 1, data_model, model = vg.model)
-        krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = data_model)
-      }
-
-      krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-      krige_map <- krige_map["var1.pred", , ]
-      interp_map <- terra::rast(krige_map)
-      interp_map <- terra::focal(interp_map, w = 7, fun = mean)
-      mydate <- data_model %>% dplyr::pull(.data$date)
-      mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-      ras_name <- base::paste0("krige_", mydate)
-      base::names(interp_map) <- ras_name
-
-      return(interp_map)
-    }
-
-    mapMonth <- base::apply(imonth, 1, model_month)
-    interp_month <- base::unlist(mapMonth)
-    interp_stack <- terra::rast(interp_month)
-
-    if (isave == TRUE) {
-      # Create a folder name using paste0
-      folder <- base::paste0("LCZ4r_output/")
-
-      # Check if the folder exists
-      if (!base::dir.exists(folder)) {
-        # Create the folder if it does not exist
-        base::dir.create(folder)
-      }
-
-      # Save map as raster.tif
-      file <- base::paste0(getwd(), "/", folder, "lcz4r_interp_map.tif")
-      terra::writeRaster(interp_stack, file, overwrite = TRUE)
-      base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
-    }
-
-    return(interp_stack)
-  }
-
-  if (is.null(by) & tp.res %in% c("quarter")) { # Downscale to quarter
-
-    iquarter <- df_interp_mod %>%
-      dplyr::group_by(.data$date) %>%
-      dplyr::select(.data$date) %>%
-      dplyr::ungroup() %>%
-      dplyr::mutate(iquarter = lubridate::quarter(.data$date)) %>%
-      dplyr::distinct(.data$iquarter, .keep_all = FALSE) %>%
-      base::expand.grid()
-
-    model_quarter <- function(iquarter) {
-      my_quarter <- iquarter[1]
-
-      data_model <- df_interp_mod %>%
-        dplyr::mutate(
-          iquarter = lubridate::quarter(.data$date),
-          my_id = base::as.factor(.data$my_id)
-        ) %>%
-        dplyr::filter(.data$iquarter == paste0(my_quarter))
-
-      if (LCZinterp == TRUE) {
-        # [using ordinary kriging]
-        krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, data_model, model = vg.model)
-        krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = data_model)
-      } else {
-        krige_vgm <- automap::autofitVariogram(var_interp ~ 1, data_model, model = vg.model)
-        krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = data_model)
-      }
-
-      krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-      krige_map <- krige_map["var1.pred", , ]
-      interp_map <- terra::rast(krige_map)
-      interp_map <- terra::focal(interp_map, w = 7, fun = mean)
-      mydate <- data_model %>% dplyr::pull(.data$date)
-      mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-      ras_name <- base::paste0("krige_", mydate)
-      base::names(interp_map) <- ras_name
-
-      return(interp_map)
-    }
-
-    mapQuarter <- base::apply(iquarter, 1, model_quarter)
-    interp_quarter <- base::unlist(mapQuarter)
-    interp_stack <- terra::rast(interp_quarter)
-
-    if (isave == TRUE) {
-      # Create a folder name using paste0
-      folder <- base::paste0("LCZ4r_output/")
-
-      # Check if the folder exists
-      if (!base::dir.exists(folder)) {
-        # Create the folder if it does not exist
-        base::dir.create(folder)
-      }
-
-      # Save map as raster.tif
-      file <- base::paste0(getwd(), "/", folder, "lcz4r_interp_map.tif")
-      terra::writeRaster(interp_stack, file, overwrite = TRUE)
-      base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
-    }
-
-    return(interp_stack)
-  }
-
-  if (is.null(by) & tp.res %in% c("year")) { # Downscale to year
+  if (is.null(by)) { # Downscale to hour or day
 
     iyear <- df_interp_mod %>%
       dplyr::group_by(.data$date) %>%
@@ -532,38 +300,109 @@ lcz_interp_map <- function(x,
       base::expand.grid()
 
     model_year <- function(iyear) {
-      my_year <- iyear[1]
 
-      data_model <- df_interp_mod %>%
-        dplyr::mutate(
-          iyear = lubridate::year(.data$date),
-          my_id = base::as.factor(.data$my_id)
-        ) %>%
-        dplyr::filter(.data$iyear == paste0(my_year))
+      myyear <- iyear[1]
 
-      if (LCZinterp == TRUE) {
-        # [using ordinary kriging]
-        krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, data_model, model = vg.model)
-        krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = data_model)
-      } else {
-        krige_vgm <- automap::autofitVariogram(var_interp ~ 1, data_model, model = vg.model)
-        krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = data_model)
+      modelyear <- df_interp_mod %>%
+        dplyr::mutate(year  = lubridate::year(.data$date)) %>%
+        dplyr::filter(.data$year  == paste0(myyear))
+
+      imonth <- modelyear %>%
+        dplyr::group_by(.data$date) %>%
+        dplyr::select(.data$date) %>%
+        dplyr::ungroup() %>%
+        dplyr::mutate(imonth = lubridate::month(.data$date)) %>%
+        dplyr::distinct(.data$imonth, .keep_all = FALSE) %>%
+        base::expand.grid()
+
+      model_month <- function(imonth) {
+
+        mymonth <- imonth[1]
+
+        modelmonth <- modelyear %>%
+          dplyr::mutate(month = lubridate::month(.data$date)) %>%
+          dplyr::filter(.data$month == paste0(mymonth))
+
+        iday <- modelmonth %>%
+          dplyr::group_by(.data$date) %>%
+          dplyr::select(.data$date) %>%
+          dplyr::ungroup() %>%
+          dplyr::mutate(iday = lubridate::day(.data$date)) %>%
+          dplyr::distinct(.data$iday, .keep_all = FALSE) %>%
+          base::expand.grid()
+
+        model_day <- function(iday) {
+
+          myday <- iday[1]
+
+          modelday <- df_interp_mod %>%
+            dplyr::mutate(day = lubridate::day(.data$date)) %>%
+            dplyr::filter(.data$day == paste0(myday))
+
+          # Downscale to hour
+          ihour <- modelday %>%
+            dplyr::group_by(.data$date) %>%
+            dplyr::select(.data$date) %>%
+            dplyr::ungroup() %>%
+            dplyr::mutate(ihour = lubridate::hour(date)) %>%
+            dplyr::distinct(.data$ihour, .keep_all = FALSE) %>%
+            base::expand.grid()
+
+          model_hour <- function(ihour) {
+            myhour <- ihour[1]
+
+            data_model <- modelday %>%
+              dplyr::mutate(
+                hour = lubridate::hour(.data$date),
+                my_id = base::as.factor(.data$my_id)
+              ) %>%
+              dplyr::filter(.data$hour == paste0(myhour))
+
+            if (LCZinterp == TRUE) {
+              # [using ordinary kriging]
+              krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, data_model, model = vg.model)
+              krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = data_model)
+            } else {
+              krige_vgm <- automap::autofitVariogram(var_interp ~ 1, data_model, model = vg.model)
+              krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = data_model)
+            }
+
+            krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
+            krige_map <- krige_map["var1.pred", , ]
+            interp_map <- terra::rast(krige_map)
+            interp_map <- terra::focal(interp_map, w = 7, fun = mean)
+            mydate <- data_model %>% dplyr::pull(.data$date)
+            mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
+            ras_name <- ifelse(LCZinterp, base::paste0("lcz_krige_", mydate), base::paste0("krige_", mydate))
+            base::names(interp_map) <- ras_name
+
+            return(interp_map)
+          }
+
+          MapHour <- base::apply(ihour, 1, model_hour)
+          interp_hour <- base::unlist(MapHour)
+          interp_hour <- terra::rast(interp_hour)
+          return(interp_hour)
+        }
+
+        MapDay <- base::apply(iday, 1, model_day)
+        interp_day <- base::unlist(MapDay)
+        interp_day <- terra::rast(interp_day)
+
+        return(interp_day)
+
       }
 
-      krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-      krige_map <- krige_map["var1.pred", , ]
-      interp_map <- terra::rast(krige_map)
-      interp_map <- terra::focal(interp_map, w = 7, fun = mean)
-      mydate <- data_model %>% dplyr::pull(.data$date)
-      mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-      ras_name <- base::paste0("krige_", mydate)
-      base::names(interp_map) <- ras_name
+      MapMonth <- base::apply(imonth, 1, model_month)
+      interp_Month <- base::unlist(MapMonth)
+      interp_Month <- terra::rast(interp_Month)
 
-      return(interp_map)
+      return(interp_Month)
+
     }
 
-    mapYear <- base::apply(iyear, 1, model_year)
-    interp_year <- base::unlist(mapYear)
+    MapYear <- base::apply(iyear, 1, model_year)
+    interp_year <- base::unlist(MapYear)
     interp_stack <- terra::rast(interp_year)
 
     if (isave == TRUE) {
@@ -590,7 +429,13 @@ lcz_interp_map <- function(x,
       stop("The 'day' does not work with the argument by")
     }
 
-    if (length(by) < 2 & by %in% c("daylight", "season", "seasonyear")) {
+    if (length(by) < 2 && any(c("hour", "daylight", "month", "monthyear", "year", "season", "seasonyear", "yearseason") %in% by)) {
+
+      stations_geometry <- dplyr::select(stations_mod, .data$my_id, .data$geometry) %>%
+        dplyr::distinct(.data$my_id, .keep_all = TRUE) %>%
+        sf::st_intersection(lcz_shp) %>%
+        sf::st_transform(crs = 3857)
+
       extract_hemisphere <- function(raster) {
         # Get the extent of the raster
         extent <- raster::extent(raster::raster(raster))
@@ -608,19 +453,14 @@ lcz_interp_map <- function(x,
       hemisphere <- extract_hemisphere(raster = {{ x }})
       my_latitude <- df_processed$latitude[1]
       my_longitude <- df_processed$longitude[1]
+      df_interp_mod$geometry <- NULL
 
-      mydata <- openair::cutData(df_processed,
+      mydata <- openair::cutData(df_interp_mod,
         type = by, hemisphere = hemisphere,
-        latitude = my_latitude, longitude = my_longitude
-      ) %>%
+        latitude = my_latitude, longitude = my_longitude) %>%
         tidyr::drop_na() %>%
         dplyr::rename(my_time = dplyr::last_col())
-      mydata <- openair::timeAverage(mydata,
-        pollutant = "var_interp",
-        avg.time = tp.res,
-        type = c("station", "my_time")
-      ) %>%
-        tidyr::drop_na()
+
       iby <- mydata %>%
         dplyr::group_by(.data$my_time) %>%
         dplyr::ungroup() %>%
@@ -628,35 +468,32 @@ lcz_interp_map <- function(x,
         base::expand.grid()
 
       model_by <- function(iby) {
+
         my_by <- iby[1]
 
         data_model <- mydata %>%
-          dplyr::filter(.data$my_time == paste0(my_by))
-
-        # merge data-model with lcz_station to get lcz class
-        df_interp_mod <-
-          sf::st_as_sf(data_model,
-            coords = c("longitude", "latitude"), crs = 4326
-          ) %>%
-          sf::st_intersection(lcz_shp) %>%
-          sf::st_transform(crs = 3857)
+          dplyr::filter(.data$my_time == paste0(my_by)) %>%
+          dplyr::group_by(.data$my_id, .data$station, .data$my_time) %>%
+          dplyr::summarise(var_interp = mean(.data$var_interp), .groups = "drop") %>%
+          dplyr::ungroup() %>%
+          dplyr::inner_join(stations_geometry, by = "my_id") %>%
+          sf::st_as_sf()
 
         if (LCZinterp == TRUE) {
           # [using ordinary kriging]
-          krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, df_interp_mod, model = vg.model)
-          krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = df_interp_mod)
-        } else {
-          krige_vgm <- automap::autofitVariogram(var_interp ~ 1, df_interp_mod, model = vg.model)
-          krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = df_interp_mod)
+          krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, data_model, model = vg.model)
+          krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = data_model)
+
+          } else {
+          krige_vgm <- automap::autofitVariogram(var_interp ~ 1, data_model, model = vg.model)
+          krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = data_model)
         }
 
         krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
         krige_map <- krige_map["var1.pred", , ]
         interp_map <- terra::rast(krige_map)
         interp_map <- terra::focal(interp_map, w = 7, fun = mean)
-        mydate <- data_model %>% dplyr::pull(.data$date)
-        mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-        ras_name <- base::paste0("krige_", mydate)
+        ras_name <- ifelse(LCZinterp, base::paste0("lcz_krige_", my_by), base::paste0("krige_", my_by))
         base::names(interp_map) <- ras_name
 
         return(interp_map)
@@ -685,6 +522,12 @@ lcz_interp_map <- function(x,
     }
 
     if (length(by) > 1 & by %in% "daylight") {
+
+      stations_geometry <- dplyr::select(stations_mod, .data$my_id, .data$geometry) %>%
+        dplyr::distinct(.data$my_id, .keep_all = TRUE) %>%
+        sf::st_intersection(lcz_shp) %>%
+        sf::st_transform(crs = 3857)
+
       extract_hemisphere <- function(raster) {
         # Get the extent of the raster
         extent <- raster::extent(raster::raster(raster))
@@ -703,17 +546,13 @@ lcz_interp_map <- function(x,
 
       my_latitude <- df_processed$latitude[1]
       my_longitude <- df_processed$longitude[1]
-      mydata <- openair::cutData(df_processed,
+      df_interp_mod$geometry <- NULL
+      mydata <- openair::cutData(df_interp_mod,
         type = by, hemisphere = hemisphere,
         latitude = my_latitude, longitude = my_longitude
       ) %>%
         tidyr::drop_na() %>%
         dplyr::rename(my_time = dplyr::last_col())
-      mydata <- openair::timeAverage(mydata,
-        pollutant = "var_interp",
-        avg.time = tp.res,
-        type = c("station", "daylight", "my_time")
-      ) %>% tidyr::drop_na()
 
       iby <- mydata %>%
         dplyr::group_by(.data$my_time) %>%
@@ -722,35 +561,33 @@ lcz_interp_map <- function(x,
         base::expand.grid()
 
       model_by <- function(iby) {
-        my_by <- iby[1]
+
+        my_by <- iby$daylight[1]
+        my_by2 <- iby$my_time[1]
 
         data_model <- mydata %>%
-          dplyr::filter(.data$my_time == paste0(my_by))
-
-        # merge data-model with lcz_station to get lcz class
-        df_interp_mod <-
-          sf::st_as_sf(data_model,
-            coords = c("longitude", "latitude"), crs = 4326
-          ) %>%
-          sf::st_intersection(lcz_shp) %>%
-          sf::st_transform(crs = 3857)
+          dplyr::filter(.data$daylight == paste0(my_by)) %>%
+          dplyr::filter(.data$my_time == paste0(my_by2)) %>%
+          dplyr::group_by(.data$my_id,.data$daylight, .data$my_time) %>%
+          dplyr::summarise(var_interp = mean(.data$var_interp), .groups = "drop") %>%
+          dplyr::ungroup() %>%
+          dplyr::inner_join(stations_geometry, by = "my_id") %>%
+          sf::st_as_sf()
 
         if (LCZinterp == TRUE) {
           # [using ordinary kriging]
-          krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, df_interp_mod, model = vg.model)
-          krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = df_interp_mod)
+          krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, data_model, model = vg.model)
+          krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = data_model)
         } else {
-          krige_vgm <- automap::autofitVariogram(var_interp ~ 1, df_interp_mod, model = vg.model)
-          krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = df_interp_mod)
+          krige_vgm <- automap::autofitVariogram(var_interp ~ 1, data_model, model = vg.model)
+          krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = data_model)
         }
 
         krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
         krige_map <- krige_map["var1.pred", , ]
         interp_map <- terra::rast(krige_map)
         interp_map <- terra::focal(interp_map, w = 7, fun = mean)
-        mydate <- data_model %>% dplyr::pull(.data$date)
-        mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-        ras_name <- base::paste0("krige_", mydate)
+        ras_name <- ifelse(LCZinterp, base::paste0("lcz_krige_", my_by,"_", my_by2), base::paste0("krige_", my_by, "_", my_by2))
         base::names(interp_map) <- ras_name
 
         return(interp_map)
@@ -774,78 +611,6 @@ lcz_interp_map <- function(x,
         file <- base::paste0(getwd(), "/", folder, "lcz4r_interp_map.tif")
         terra::writeRaster(interp_stack, file, overwrite = TRUE)
         base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
-      }
-
-      return(interp_stack)
-    } else {
-      mydata <-
-        openair::cutData(df_processed, type = by) %>%
-        dplyr::rename(my_time = dplyr::last_col())
-      mydata <- openair::timeAverage(mydata,
-        pollutant = "var_interp",
-        avg.time = tp.res,
-        type = c("station", "my_time")
-      ) %>%
-        tidyr::drop_na()
-      iby <- mydata %>%
-        dplyr::group_by(.data$my_time) %>%
-        dplyr::ungroup() %>%
-        dplyr::distinct(.data$my_time, .keep_all = FALSE) %>%
-        base::expand.grid()
-
-      model_by <- function(iby) {
-        my_by <- iby[1]
-
-        data_model <- mydata %>%
-          dplyr::filter(.data$my_time == paste0(my_by))
-
-        # merge data-model with lcz_station to get lcz class
-        df_interp_mod <-
-          sf::st_as_sf(data_model,
-            coords = c("longitude", "latitude"), crs = 4326
-          ) %>%
-          sf::st_intersection(lcz_shp) %>%
-          sf::st_transform(crs = 3857)
-
-        if (LCZinterp == TRUE) {
-          # [using ordinary kriging]
-          krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, df_interp_mod, model = vg.model)
-          krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = df_interp_mod)
-        } else {
-          krige_vgm <- automap::autofitVariogram(var_interp ~ 1, df_interp_mod, model = vg.model)
-          krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = df_interp_mod)
-        }
-
-        krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-        krige_map <- krige_map["var1.pred", , ]
-        interp_map <- terra::rast(krige_map)
-        interp_map <- terra::focal(interp_map, w = 7, fun = mean)
-        mydate <- data_model %>% dplyr::pull(.data$date)
-        mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
-        ras_name <- base::paste0("krige_", mydate)
-        base::names(interp_map) <- ras_name
-
-        return(interp_map)
-      }
-
-      mapBy <- base::apply(iby, 1, model_by)
-      interp_by <- base::unlist(mapBy)
-      interp_stack <- terra::rast(interp_by)
-
-      if (isave == TRUE) {
-        # Create a folder name using paste0
-        folder <- base::paste0("LCZ4r_output/")
-
-        # Check if the folder exists
-        if (!base::dir.exists(folder)) {
-          # Create the folder if it does not exist
-          base::dir.create(folder)
-        }
-
-        # Save map as raster.tif
-        file <- base::paste0(folder, "lcz4r_interp_map.tif")
-        terra::writeRaster(interp_stack, file, overwrite = TRUE)
-        base::cat("The interp map rasters are saved into your pc. Look at 'LCZ4r_output' folder.\n")
       }
 
       return(interp_stack)
