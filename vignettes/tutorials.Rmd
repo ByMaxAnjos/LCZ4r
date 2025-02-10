@@ -26,7 +26,7 @@ knitr::opts_chunk$set(
 
 **Mastering General and Local Functions in the LCZ4r Package**
 
-
+---
 ```{r, include = FALSE}
 if(!require(remotes)) install.packages("remotes")
 remotes::install_github("djnavarro/bs4cards", upgrade = "never")
@@ -85,6 +85,8 @@ bs4cards::cards(
     border_colour = "#F2F0ED"
   )
 ```
+
+---
 
 ## 🚀 General Functions
 
@@ -147,6 +149,8 @@ bs4cards::cards(
     
   )
 ```
+
+---
 
 ## 🚀 Local Functions
 
@@ -236,7 +240,7 @@ bs4cards::cards(
   )
 ```
 
-
+---
 
 ## 📬 Have feedback or suggestions?
 

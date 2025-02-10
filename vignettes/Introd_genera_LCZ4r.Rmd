@@ -216,7 +216,6 @@ lcz_plot_map(lcz_map)
 
 ```
 
-
 ```{r echo=F, out.width = '100%', fig.align='center'}
 knitr::include_graphics("fig_general_7.png")
 ```

@@ -73,7 +73,8 @@ For questions, suggestions, or collaboration opportunities, please contact us at
 
 ## Inspiration
 
-The **LCZ4r** package is inspired by the following foundational works:
+The **LCZ4r** package is inspired by the following works:
+
 - **Stewart, I., and T. Oke, 2012**: [Local Climate Zones for Urban Temperature Studies](https://doi.org/10.1175/BAMS-D-11-00019.1).
 - **Ching, J., et al., 2018**: [WUDAPT: An Urban Weather, Climate, and Environmental Modeling Infrastructure for the Anthropocene](https://doi.org/10.1175/BAMS-D-16-0236.1).
 - **Demuzere, M., et al., 2019**: [Mapping Europe into Local Climate Zones](https://doi.org/10.1371/journal.pone.0214474).
@@ -91,5 +92,3 @@ We value your input! If you have ideas for improvement or spot any issues, pleas
     Open an Issue on GitHub
   </a>
 </button>
-
----
