@@ -95,8 +95,7 @@ qtm(shp_stations, text = "station")
 ## Demo: interpolate map for a specific hour of day
 
 ```{r eval=FALSE, message=FALSE, warning=FALSE}
-Copy
-# Map air temperatures for June 2, 2020, at 15:00
+# Map air temperatures for January 2, 2020, at 04:00
 my_interp_map <- lcz_interp_map(
   lcz_map,
   data_frame = lcz_data,
@@ -104,18 +103,15 @@ my_interp_map <- lcz_interp_map(
   station_id = "station",
   sp.res = 100,
   tp.res = "hour",
-  year = 2020,
-  month = 7,
-  day = 6,
-  hour = 13
+  year = 2020, month = 1, day = 2, hour = 4
 )
 
 # Customize the plot with titles and labels
 lcz_plot_interp(
   my_interp_map,
-  title = "Thermal Field",
-  subtitle = "Berlin - July 6, 2020 at 13:00",
-  caption = "Source: LCZ4r, 2024.",
+  title = "Thermal field",
+  subtitle = "Berlin - January 2, 2020, at 04:00",
+  caption = "Source:LCZ4r, 2024.",
   fill = "[ºC]"
 )
 
@@ -140,7 +136,7 @@ In this demo, we select hourly air temperature data for January 2020 at a 500-me
 * extract.method: simple (assigns the LCZ class based on the value of the raster cell in which the point falls).
 * LOOCV: TRUE (leave-one-out cross-validation for evaluation).
 * vg.model: Sph (spherical variogram model for kriging)
-*LCZinterp: TRUE (activates interpolation with LCZ).
+* LCZinterp: TRUE (activates interpolation with LCZ).
 
 Note: This process may take a while, but don’t worry—grab a cup of coffee!
 
@@ -163,7 +159,7 @@ df_eval <- lcz_interp_eval(
 
 ```
 
-### Check output out
+### Check the results out!
 
 Let’s examine the structure of the output data frame. The function returns a data frame with *date*, *station*, *lcz*, **observed values**, **predicted values**, and **residuals** (the difference between observed and predicted values). If isave = TRUE, a shapefile with additional information will also be saved to your computer.
 
