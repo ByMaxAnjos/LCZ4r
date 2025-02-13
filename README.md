@@ -4,7 +4,6 @@
 
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-[![GitHub stars](https://img.shields.io/github/stars/ByMaxAnjos/LCZ4r?style=social)](https://github.com/ByMaxAnjos/LCZ4r)
 <!-- badges: end -->
 
 The [**LCZ4r package**](https://github.com/ByMaxAnjos/LCZ4r) provides a comprehensive suite of tools for analyzing and visualizing **Local Climate Zones (LCZ)** and **Urban Heat Islands (UHI)** in R. Designed for researchers, urban planners, and climate scientists, LCZ4r simplifies the process of downloading, processing, and interpreting LCZ data.
@@ -76,6 +75,7 @@ For questions, suggestions, or collaboration opportunities, please contact us at
 The **LCZ4r** package is inspired by the following works:
 
 - **Stewart, I., and T. Oke, 2012**: [Local Climate Zones for Urban Temperature Studies](https://doi.org/10.1175/BAMS-D-11-00019.1).
+
 - **Ching, J., et al., 2018**: [WUDAPT: An Urban Weather, Climate, and Environmental Modeling Infrastructure for the Anthropocene](https://doi.org/10.1175/BAMS-D-16-0236.1).
 - **Demuzere, M., et al., 2019**: [Mapping Europe into Local Climate Zones](https://doi.org/10.1371/journal.pone.0214474).
 - **Demuzere, M., et al., 2020**: [Combining Expert and Crowd-Sourced Training Data to Map Urban Form and Functions for the Continental US](https://doi.org/10.1038/s41597-020-00605-z).

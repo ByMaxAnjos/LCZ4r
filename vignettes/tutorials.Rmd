@@ -26,7 +26,7 @@ knitr::opts_chunk$set(
 
 **Mastering General and Local Functions in the LCZ4r Package**
 
----
+
 ```{r, include = FALSE}
 if(!require(remotes)) install.packages("remotes")
 remotes::install_github("djnavarro/bs4cards", upgrade = "never")
@@ -86,7 +86,6 @@ bs4cards::cards(
   )
 ```
 
----
 
 ## 🚀 General Functions
 
@@ -99,7 +98,7 @@ text_generator <- "The LCZ Generator is a web application for creating Local Cli
 
 ```{r, echo=FALSE}
 # Create the dataframe
-df_default <- data.frame(
+df_default2 <- data.frame(
   title_card = c(
                 "Getting started with General Functions",
                 "Download LCZ map from LCZ Generator Platform."
@@ -134,7 +133,7 @@ df_default <- data.frame(
 ```{r, echo=FALSE}
 # Generate cards
 bs4cards::cards(
-    data = df_default,
+    data = df_default2,
     title = title_card,
     text = description,
     link = gallery_url,
@@ -150,7 +149,6 @@ bs4cards::cards(
   )
 ```
 
----
 
 ## 🚀 Local Functions
 
@@ -159,7 +157,6 @@ bs4cards::cards(
 text_local_introduction <- "The Local functions in LCZ4r, offer powerful tools to handle and analyze urban climate data.They enable time-series analysis, mapping of thermal anomalies, spatial interpolation, and more."
 text_ts <- "The lcz_ts() function allows you to analyze air temperature data associated with Local Climate Zones (LCZ) over time."
 text_anomaly <- "The thermal anomaly is a great way to evaluate the intra-urban air temperatures differences."
-text_modelling <- "In this guide, we’ll demonstrate how to use LCZ4r to model temperature data."
 text_uhi <- "This guide demonstrates how to use the lcz_uhi_intensity() function to calculate and analyze UHI intensity using LCZ classes."
 
 ```
@@ -167,18 +164,16 @@ text_uhi <- "This guide demonstrates how to use the lcz_uhi_intensity() function
 
 ```{r, echo=FALSE}
 # Create the dataframe
-df_translation <- data.frame(
+df_default3 <- data.frame(
   title_card = c(
                 "Introduction to Local Functions", 
                 "Time Series Analysis", 
                 "Thermal Anomalies",
-                "Temperature Modeling with LCZ",
                 "Urban Heat Island (UHI) Analysis"
                 ),
   short_name = c(
                  "Tutorial", 
                  "Tutorial", 
-                 "Tutorial",
                  "Tutorial",
                  "Tutorial"
                  ),
@@ -186,18 +181,15 @@ df_translation <- data.frame(
            "©LCZ4r", 
            "©LCZ4r",
            "©LCZ4r", 
-           "©LCZ4r",
            "©LCZ4r"
            ),
   description = c(
     text_local_introduction,
     text_ts,
     text_anomaly,
-    text_modelling,
     text_uhi
   ),
   type_translation = c(
-    "Local Functions",
     "Local Functions",
     "Local Functions",
     "Local Functions",
@@ -207,14 +199,12 @@ df_translation <- data.frame(
     "introd_local_card.png",
     "fig_local_ts_5.png",
     "fig_local_anomaly_1.png",
-    "fig_local_modeling_1.png",
     "fig_local_uhi_4.png"
   ),
   gallery_url = c(
     "https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html",
     "https://bymaxanjos.github.io/LCZ4r/articles/local_func_time_series.html",
     "https://bymaxanjos.github.io/LCZ4r/articles/local_func_anomaly.html",
-    "https://bymaxanjos.github.io/LCZ4r/articles/local_func_modeling.html",
     "https://bymaxanjos.github.io/LCZ4r/articles/local_func_uhi.html"
   )
 )
@@ -224,7 +214,7 @@ df_translation <- data.frame(
 ```{r, echo=FALSE}
 # Generate cards
 bs4cards::cards(
-    data = df_translation,
+    data = df_default3,
     title = title_card,
     text = description,
     link = gallery_url,
@@ -240,7 +230,75 @@ bs4cards::cards(
   )
 ```
 
----
+
+## 🚀 Modelling air temperature with LCZ4r
+
+```{r, echo=FALSE}
+
+#Multilingual
+text_modelling_1 <- "In this guide, we’ll introduce how to use LCZ4r
+to interpolate air temperature and thermal anomalies, using the lcz_interp_map and lcz_anomaly_map funtions"
+
+text_modelling_eval <- "Here we'll show how to evalute the LCZ-based interpolation for low-density observational data in Berlin"
+
+```
+
+
+```{r, echo=FALSE}
+# Create the dataframe
+df_default4 <- data.frame(
+  title_card = c(
+                "Interpolating air temperature and anomalies as LCZ background",
+                "Evaluating LCZ-based interpolation"
+                ),
+  short_name = c(
+                 "Tutorial",
+                 "Tutorial"
+                 ),
+    author = c(
+           "©LCZ4r",
+           "©LCZ4r"
+           ),
+  description = c(
+    text_modelling_1,
+    text_modelling_eval
+
+  ),
+  type_translation = c(
+    "Local Functions",
+    "Local Functions"
+  ),
+  image_url = c(
+    "fig_local_modeling_1.png",
+    "fig_local_modeling_eval_card.png"
+  ),
+  gallery_url = c(
+    "https://bymaxanjos.github.io/LCZ4r/articles/local_func_modeling.html",
+    "https://bymaxanjos.github.io/LCZ4r/articles/local_func_modeling_eval.html"
+  )
+)
+```
+
+
+```{r, echo=FALSE}
+# Generate cards
+bs4cards::cards(
+    data = df_default4,
+    title = title_card,
+    text = description,
+    link = gallery_url,
+    image = image_url,
+    footer = author,
+    header = short_name,
+    width = "row-cols-2",
+    spacing = 5,
+    border_width = 1,
+    border_radius = 4,
+    border_colour = "#F2F0ED"
+
+  )
+```
+
 
 ## 📬 Have feedback or suggestions?
 

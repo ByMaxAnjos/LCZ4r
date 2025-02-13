@@ -32,14 +32,14 @@ Understanding temperature variations within urban environments is very important
 
 In this guide, we’ll demonstrate how to use the `lcz_interp_map()` or `lcz_anomaly_map`functions to model temperature data across Berlin's LCZ. This will involve creating maps at specific times, customizing spatial and temporal resolutions, and visualizing thermal anomalies.
 
-## Modelling climate with LCZ 
+## Interpolating with LCZ 
 
 The `lcz_interp_map()` or `lcz_anomaly_map()` functions are used to generate a map of interpolated air temperatures. These functions apply interpolation techniques, like the Kriging model, to estimate air temperatures based on LCZ classes, enabling a spatially-resolved understanding of temperature variations. The parameters for time frequency and data segmentation are consistent with those used in `lcz_ts()` and `lcz_anomaly()`, but two additional arguments are introduced:
 
 * **sp.res**: Specifies the spatial resolution of the output map in meters. Default is 100
 * **tp.res**: Defines the time frequency at which values are averaged. Default is hour
 
-The lcz_interp_map() and lcz_anomaly_map() functions generate either a single raster file or a stack of rasters. You can visualize the resulting interpolated map using the `lcz_plot_interp()` function, creating a clear representation of air temperature distributions across the selected LCZs.
+The `lcz_interp_map()` and `lcz_anomaly_map()` functions generate either a single raster file or a stack of rasters. You can visualize the resulting interpolated map using the `lcz_plot_interp()` function, creating a clear representation of air temperature distributions across the selected LCZs.
 
 ```{r eval=FALSE, message=FALSE, warning=FALSE}
 # Get the LCZ map for your city
@@ -49,7 +49,7 @@ lcz_map <- lcz_get_map_euro(city="Berlin")
 data("lcz_data")
 ```
 
-## Interpolating air temperature with LCZ 
+## Interpolating air temperature 
 
 ### Single hour map interpolation
 
@@ -105,7 +105,7 @@ lcz_plot_interp(my_interp_map,
 knitr::include_graphics("fig_local_modeling_2.png")
 ```
 
-## Interpolating thermal anomalies with LCZ 
+## Interpolating thermal anomalies
 
 The `lcz_anomaly_map()` function can be used to highlight temperature anomalies relative to the average conditions across LCZs. Anomaly maps are useful in identifying areas where temperatures significantly differ from typical values, such as heat hotspots within urban areas.
 
