@@ -36,11 +36,16 @@ Quantifying interpolated air temperature is crucial for climate research, especi
 
 ## Load package
 ```{r eval=TRUE, message=FALSE, warning=FALSE}
-library(LCZ4r)
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(dplyr, sf, tmap, ggplot2, ggExtra, ggpmisc)
+
+library(LCZ4r) # For LCZ and UHI analysis
 library(dplyr)  # For data manipulation
 library(sf)         # For vector data manipulation
 library(tmap)       # For interactive map visualization
-
+library(ggplot2) #For data visualization
+library(ggExtra) # For marginal histograms
+library(ggpmisc) # For regression equation and R2
 ```
 
 ## Dataset
@@ -197,9 +202,6 @@ knitr::include_graphics("fig_local_modeling_eval_4.png")
 ### Correlation between observed and prediced values
 
 ```{r eval=FALSE, message=FALSE, warning=FALSE}
-#Load addtional packages
-library(ggExtra) # For marginal histograms
-#library(ggpmisc) # For regression equation and R2
 
 # Correlation plot with regression equation and R2
 p1 <- ggplot(df_eval, aes(x = observed, y = predicted)) +
@@ -207,13 +209,13 @@ p1 <- ggplot(df_eval, aes(x = observed, y = predicted)) +
   geom_smooth(method = "lm", color = "red", se = FALSE) + # Regression line
   stat_density2d(aes(fill = ..level..), geom = "polygon", alpha = 0.3) + # Density contours
   scale_fill_viridis_c() + # Viridis color scale for density
-  # stat_poly_eq(
-  #   aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")),
-  #   formula = y ~ x,
-  #   parse = TRUE,
-  #   label.x.npc = "left", # Position of the equation
-  #   label.y.npc = "top"
-  # ) + # Add regression equation and R2
+  stat_poly_eq(
+    aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")),
+    formula = y ~ x,
+    parse = TRUE,
+    label.x.npc = "left", # Position of the equation
+    label.y.npc = "top"
+  ) + # Add regression equation and R2
   labs(
     title = "",
     x = "Observed values",
