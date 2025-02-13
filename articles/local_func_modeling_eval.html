@@ -136,8 +136,7 @@ metrics.</p>
 <h2 id="demo-interpolate-map-for-a-specific-hour-of-day">Demo: interpolate map for a specific hour of day<a class="anchor" aria-label="anchor" href="#demo-interpolate-map-for-a-specific-hour-of-day"></a>
 </h2>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">Copy</span></span>
-<span><span class="co"># Map air temperatures for June 2, 2020, at 15:00</span></span>
+<code class="sourceCode R"><span><span class="co"># Map air temperatures for January 2, 2020, at 04:00</span></span>
 <span><span class="va">my_interp_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lcz_interp_map.html">lcz_interp_map</a></span><span class="op">(</span></span>
 <span>  <span class="va">lcz_map</span>,</span>
 <span>  data_frame <span class="op">=</span> <span class="va">lcz_data</span>,</span>
@@ -145,18 +144,15 @@ metrics.</p>
 <span>  station_id <span class="op">=</span> <span class="st">"station"</span>,</span>
 <span>  sp.res <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>  tp.res <span class="op">=</span> <span class="st">"hour"</span>,</span>
-<span>  year <span class="op">=</span> <span class="fl">2020</span>,</span>
-<span>  month <span class="op">=</span> <span class="fl">7</span>,</span>
-<span>  day <span class="op">=</span> <span class="fl">6</span>,</span>
-<span>  hour <span class="op">=</span> <span class="fl">13</span></span>
+<span>  year <span class="op">=</span> <span class="fl">2020</span>, month <span class="op">=</span> <span class="fl">1</span>, day <span class="op">=</span> <span class="fl">2</span>, hour <span class="op">=</span> <span class="fl">4</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Customize the plot with titles and labels</span></span>
 <span><span class="fu"><a href="../reference/lcz_plot_interp.html">lcz_plot_interp</a></span><span class="op">(</span></span>
 <span>  <span class="va">my_interp_map</span>,</span>
-<span>  title <span class="op">=</span> <span class="st">"Thermal Field"</span>,</span>
-<span>  subtitle <span class="op">=</span> <span class="st">"Berlin - July 6, 2020 at 13:00"</span>,</span>
-<span>  caption <span class="op">=</span> <span class="st">"Source: LCZ4r, 2024."</span>,</span>
+<span>  title <span class="op">=</span> <span class="st">"Thermal field"</span>,</span>
+<span>  subtitle <span class="op">=</span> <span class="st">"Berlin - January 2, 2020, at 04:00"</span>,</span>
+<span>  caption <span class="op">=</span> <span class="st">"Source:LCZ4r, 2024."</span>,</span>
 <span>  fill <span class="op">=</span> <span class="st">"[ºC]"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 <p>Wow! That’s great. We can see a well-defined urban heat island in
@@ -184,8 +180,8 @@ at a 500-meter spatial resolution, using:</p>
 <li>extract.method: simple (assigns the LCZ class based on the value of
 the raster cell in which the point falls).</li>
 <li>LOOCV: TRUE (leave-one-out cross-validation for evaluation).</li>
-<li>vg.model: Sph (spherical variogram model for kriging) *LCZinterp:
-TRUE (activates interpolation with LCZ).</li>
+<li>vg.model: Sph (spherical variogram model for kriging)</li>
+<li>LCZinterp: TRUE (activates interpolation with LCZ).</li>
 </ul>
 <p>Note: This process may take a while, but don’t worry—grab a cup of
 coffee!</p>
@@ -207,7 +203,7 @@ coffee!</p>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
-<h3 id="check-output-out">Check output out<a class="anchor" aria-label="anchor" href="#check-output-out"></a>
+<h3 id="check-the-results-out">Check the results out!<a class="anchor" aria-label="anchor" href="#check-the-results-out"></a>
 </h3>
 <p>Let’s examine the structure of the output data frame. The function
 returns a data frame with <em>date</em>, <em>station</em>, <em>lcz</em>,
