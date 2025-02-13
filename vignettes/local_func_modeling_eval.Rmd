@@ -37,9 +37,10 @@ Quantifying interpolated air temperature is crucial for climate research, especi
 ## Load package
 ```{r eval=TRUE, message=FALSE, warning=FALSE}
 library(LCZ4r)
-library(tidyverse)  # For data manipulation
+library(dplyr)  # For data manipulation
 library(sf)         # For vector data manipulation
 library(tmap)       # For interactive map visualization
+
 ```
 
 ## Dataset
