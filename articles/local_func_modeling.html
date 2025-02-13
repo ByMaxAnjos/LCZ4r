@@ -57,7 +57,7 @@
       <h1>Temperature Modeling with LCZ</h1>
                         <h4 data-toc-skip class="author">Max Anjos</h4>
             
-            <h4 data-toc-skip class="date">February 09, 2025</h4>
+            <h4 data-toc-skip class="date">February 13, 2025</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ByMaxAnjos/LCZ4r/blob/main/vignettes/local_func_modeling.Rmd" class="external-link"><code>vignettes/local_func_modeling.Rmd</code></a></small>
       <div class="d-none name"><code>local_func_modeling.Rmd</code></div>
@@ -84,7 +84,7 @@ creating maps at specific times, customizing spatial and temporal
 resolutions, and visualizing thermal anomalies.</p>
 </div>
 <div class="section level2">
-<h2 id="modelling-climate-with-lcz">Modelling climate with LCZ<a class="anchor" aria-label="anchor" href="#modelling-climate-with-lcz"></a>
+<h2 id="interpolating-with-lcz">Interpolating with LCZ<a class="anchor" aria-label="anchor" href="#interpolating-with-lcz"></a>
 </h2>
 <p>The <code><a href="../reference/lcz_interp_map.html">lcz_interp_map()</a></code> or <code><a href="../reference/lcz_anomaly_map.html">lcz_anomaly_map()</a></code>
 functions are used to generate a map of interpolated air temperatures.
@@ -102,11 +102,11 @@ output map in meters. Default is 100</li>
 <strong>tp.res</strong>: Defines the time frequency at which values
 are averaged. Default is hour</li>
 </ul>
-<p>The lcz_interp_map() and lcz_anomaly_map() functions generate either
-a single raster file or a stack of rasters. You can visualize the
-resulting interpolated map using the <code><a href="../reference/lcz_plot_interp.html">lcz_plot_interp()</a></code>
-function, creating a clear representation of air temperature
-distributions across the selected LCZs.</p>
+<p>The <code><a href="../reference/lcz_interp_map.html">lcz_interp_map()</a></code> and <code><a href="../reference/lcz_anomaly_map.html">lcz_anomaly_map()</a></code>
+functions generate either a single raster file or a stack of rasters.
+You can visualize the resulting interpolated map using the
+<code><a href="../reference/lcz_plot_interp.html">lcz_plot_interp()</a></code> function, creating a clear representation
+of air temperature distributions across the selected LCZs.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Get the LCZ map for your city</span></span>
 <span><span class="va">lcz_map</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lcz_get_map_euro.html">lcz_get_map_euro</a></span><span class="op">(</span>city<span class="op">=</span><span class="st">"Berlin"</span><span class="op">)</span></span>
@@ -115,7 +115,7 @@ distributions across the selected LCZs.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"lcz_data"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="interpolating-air-temperature-with-lcz">Interpolating air temperature with LCZ<a class="anchor" aria-label="anchor" href="#interpolating-air-temperature-with-lcz"></a>
+<h2 id="interpolating-air-temperature">Interpolating air temperature<a class="anchor" aria-label="anchor" href="#interpolating-air-temperature"></a>
 </h2>
 <div class="section level3">
 <h3 id="single-hour-map-interpolation">Single hour map interpolation<a class="anchor" aria-label="anchor" href="#single-hour-map-interpolation"></a>
@@ -167,7 +167,7 @@ represented by an individual raster layer.</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="interpolating-thermal-anomalies-with-lcz">Interpolating thermal anomalies with LCZ<a class="anchor" aria-label="anchor" href="#interpolating-thermal-anomalies-with-lcz"></a>
+<h2 id="interpolating-thermal-anomalies">Interpolating thermal anomalies<a class="anchor" aria-label="anchor" href="#interpolating-thermal-anomalies"></a>
 </h2>
 <p>The <code><a href="../reference/lcz_anomaly_map.html">lcz_anomaly_map()</a></code> function can be used to highlight
 temperature anomalies relative to the average conditions across LCZs.
