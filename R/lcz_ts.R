@@ -174,9 +174,9 @@ lcz_ts <- function(x,
 
   # Convert lcz_map to polygon
   base::names(x) <- "lcz"
-  lcz_shp <- terra::as.polygons(x) %>%
-    sf::st_as_sf() %>%
-    sf::st_transform(crs = "+proj=longlat +datum=WGS84 +no_defs")
+  # lcz_shp <- terra::as.polygons(x) %>%
+  #   sf::st_as_sf() %>%
+  #   sf::st_transform(crs = "+proj=longlat +datum=WGS84 +no_defs")
 
   # Get shp LCZ stations from lat and long
   stations_mod <- df_processed %>%
