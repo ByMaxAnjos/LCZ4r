@@ -11,6 +11,7 @@ lcz_uhi_intensity(
   station_id = "",
   ...,
   time.freq = "hour",
+  extract.method = "simple",
   method = "LCZ",
   Turban = NULL,
   Trural = NULL,
@@ -47,6 +48,13 @@ lcz_uhi_intensity(
 }}
 
 \item{time.freq}{The time period to average to. Default is \dQuote{hour}, but can also be \dQuote{day}, \dQuote{week}, \dQuote{month}, or \dQuote{year}.}
+
+\item{extract.method}{A character string specifying the method used to assign the LCZ class to each station point. The default is \code{"simple"}. Available methods are:
+\itemize{
+\item \strong{simple}: Assigns the LCZ class based on the value of the raster cell in which the point falls. It often is used in low-density observational network.
+\item \strong{two.step}: Assigns LCZs to stations while filtering out those located in heterogeneous LCZ areas. This method requires that at least 80\% of the pixels within a 5 × 5 kernel match the LCZ of the center pixel (Daniel et al., 2017). Note that this method reduces the number of stations. It often is used in ultra and high-density observational network, especially in LCZ classes with multiple stations.
+\item \strong{bilinear}: Interpolates the LCZ class values from the four nearest raster cells surrounding the point.
+}}
 
 \item{method}{Method to calculate the UHI intensity. Options include: LCZ and manual. The LCZ method automatically identifies the LCZ build types, starting from LCZ 1 and progressing to LCZ 10, to represent the urban temperature, then it starts from LCZ natural LCZ (11-16) to represent the rural temperature. The manual method is a character string indicating the stations as references for the urban and rural areas.}
 
@@ -95,6 +103,9 @@ my_uhi <- lcz_uhi_intensity(lcz_map, data_frame = lcz_data, var = "airT",
 }
 \seealso{
 See the documentation for \code{lcz_get_map()} to obtain an LCZ map.
+}
+\author{
+Max Anjos (\url{https://github.com/ByMaxAnjos})
 }
 \keyword{Climate}
 \keyword{LCZ,}

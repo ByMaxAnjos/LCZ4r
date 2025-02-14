@@ -15,6 +15,12 @@
 #'   \item \strong{Start date}: A string specifying the start date in either start="DD/MM/YYYY" (e.g., "1/2/1999") or "YYYY-mm-dd" format (e.g., "1999-02-01").
 #'   \item \strong{End date}: A string specifying the start date in either end="DD/MM/YYYY" (e.g., "1/2/1999") or "YYYY-mm-dd" format (e.g., "1999-02-01").
 #' }
+#' @param extract.method A character string specifying the method used to assign the LCZ class to each station point. The default is `"simple"`. Available methods are:
+#'   \itemize{
+#'     \item **simple**: Assigns the LCZ class based on the value of the raster cell in which the point falls. It often is used in low-density observational network.
+#'     \item **two.step**: Assigns LCZs to stations while filtering out those located in heterogeneous LCZ areas. This method requires that at least 80% of the pixels within a 5 × 5 kernel match the LCZ of the center pixel (Daniel et al., 2017). Note that this method reduces the number of stations. It often is used in ultra and high-density observational network, especially in LCZ classes with multiple stations.
+#'     \item **bilinear**: Interpolates the LCZ class values from the four nearest raster cells surrounding the point.
+#'   }
 #' @param method Method to calculate the UHI intensity. Options include: LCZ and manual. The LCZ method automatically identifies the LCZ build types, starting from LCZ 1 and progressing to LCZ 10, to represent the urban temperature, then it starts from LCZ natural LCZ (11-16) to represent the rural temperature. The manual method is a character string indicating the stations as references for the urban and rural areas.
 #' @param Turban Urban station references, if the method "manual" is selected.
 #' @param Trural Rural station references, if the method "manual" is selected.
@@ -32,6 +38,9 @@
 #' @param caption The source data caption.
 #'
 #' @return A visual representation of the time series of UHI in \code{ggplot} or data frame .csv format.
+#'
+#' @author
+#' Max Anjos (\url{https://github.com/ByMaxAnjos})
 #'
 #' @export
 #'
@@ -59,6 +68,7 @@ lcz_uhi_intensity <- function(x,
                               station_id = "",
                               ...,
                               time.freq = "hour",
+                              extract.method = "simple",
                               method = "LCZ",
                               Turban = NULL,
                               Trural = NULL,
@@ -116,12 +126,20 @@ lcz_uhi_intensity <- function(x,
     stop("The 'longitude' input must be a column name in 'data_frame' representing each station's longitude")
   }
 
+  if (!(extract.method %in% c("simple", "bilinear", "two.step"))) {
+    stop("Invalid extract-based pixel model. Choose from 'simple', 'bilinear', or 'two.step'.")
+  }
+
   # Pre-processing time series ----------------------------------------------
 
   # Rename and define my_id for each lat and long
   df_processed <- data_frame %>%
     dplyr::rename(var_interp = {{ var }}, station = {{ station_id }}) %>%
     janitor::clean_names() %>%
+    dplyr::rename(
+      latitude = base::grep("lat", names(.), value = TRUE),
+      longitude = base::grep("long", names(.), value = TRUE)
+    ) %>%
     dplyr::group_by(.data$latitude, .data$longitude) %>%
     dplyr::mutate(
       station = base::as.factor(.data$station),
@@ -136,6 +154,13 @@ lcz_uhi_intensity <- function(x,
   df_processed$longitude <- base::as.numeric(df_processed$longitude)
 
   # Impute missing values if necessary
+
+  missing_values = c("NAN","NaN", "-9999", "-99", "NULL", "",
+                     "NA", "N/A", "na", "missing", ".",
+                     "inf", "-inf", 9999, 999, Inf, -Inf)
+  df_processed <- df_processed %>%
+    dplyr::mutate(var_interp = ifelse(.data$var_interp %in% missing_values, NA, .data$var_interp))
+
   if (!is.null(impute)) {
     impute_methods <- c("mean", "median", "knn", "bag")
     if (!(impute %in% impute_methods)) {
@@ -159,28 +184,81 @@ lcz_uhi_intensity <- function(x,
 
   # Convert lcz_map to polygon
   base::names(x) <- "lcz"
-  lcz_shp <- terra::as.polygons(x) %>%
-    sf::st_as_sf() %>%
-    sf::st_transform(crs = "+proj=longlat +datum=WGS84 +no_defs")
+  # lcz_shp <- terra::as.polygons(x) %>%
+  #   sf::st_as_sf() %>%
+  #   sf::st_transform(crs = "+proj=longlat +datum=WGS84 +no_defs")
 
   # Get shp LCZ stations from lat and long
-  shp_stations <- df_processed %>%
-    dplyr::distinct(.data$latitude, .data$longitude, .keep_all = T) %>%
+  stations_mod <- df_processed %>%
     stats::na.omit() %>%
-    sf::st_as_sf(coords = c("longitude", "latitude"), crs = "+proj=longlat +datum=WGS84 +no_defs")
+    sf::st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
 
-  # Intersect poi shp stations with lcz shp
-  lcz_stations <- sf::st_intersection(shp_stations, lcz_shp) %>%
-    sf::st_drop_geometry() %>%
-    dplyr::select(.data$my_id, .data$station, .data$lcz)
-  # merge data-model with lcz_station to get lcz class
-  df_model <-
-    dplyr::inner_join(df_processed, lcz_stations, by = c("station", "my_id")) %>%
-    dplyr::mutate(
-      lcz = base::as.factor(.data$lcz),
-      my_id = base::as.factor(.data$my_id)
-    ) %>%
-    dplyr::ungroup()
+  if (extract.method == "simple") {
+    stations_lcz <- terra::extract(x, terra::vect(stations_mod))
+    stations_lcz$ID <- NULL
+    df_model <- base::cbind(stations_mod, stations_lcz) %>%
+      sf::st_drop_geometry() %>%
+      stats::na.omit() %>%
+      dplyr::mutate(
+        lcz = base::as.factor(.data$lcz)
+      )
+  }
+
+  if (extract.method == "bilinear") {
+    stations_lcz <- terra::extract(x, terra::vect(stations_mod), method= "bilinear")
+    stations_lcz$ID <- NULL
+    stations_lcz$lcz <- as.integer(stations_lcz$lcz)
+    df_model <- base::cbind(stations_mod, stations_lcz) %>%
+      sf::st_drop_geometry() %>%
+      stats::na.omit() %>%
+      dplyr::mutate(
+        lcz = base::as.factor(.data$lcz)
+      )
+  }
+
+  if (extract.method == "two.step") {
+    # Step 2: Define a function to filter stations based on LCZ homogeneity
+    filter_homogeneous_lcz <- function(df, raster, kernel_size = 5, threshold = 0.8) {
+      # Convert stations to SpatVector
+      stations_vect <- terra::vect(df)
+
+      # Create a moving kernel to analyze LCZ homogeneity
+      kernel <- matrix(1, nrow = kernel_size, ncol = kernel_size)
+
+      # Extract LCZ values in the kernel around each station
+      lcz_homogeneity <- terra::focal(raster, w = kernel, fun = function(values) {
+        # Compute percentage of pixels matching the center pixel
+        center_pixel <- values[ceiling(length(values) / 2)]
+        if (is.na(center_pixel)) {
+          return(NA)
+        }
+        mean(values == center_pixel, na.rm = TRUE)
+      })
+
+      # Extract homogeneity values at station locations
+      homogeneity_values <- terra::extract(lcz_homogeneity, stations_vect)
+
+      # Add homogeneity values to the station data frame
+      df$homogeneity <- homogeneity_values[, 2]  # Second column contains the homogeneity value
+
+      # Filter stations where homogeneity meets or exceeds the threshold
+      df_filtered <- df %>%
+        dplyr::filter(.data$homogeneity >= threshold)
+
+      return(df_filtered)
+    }
+
+    # Step 3: Apply the function to filter stations
+    df_homogeneous <- filter_homogeneous_lcz(stations_mod, x, kernel_size = 5, threshold = 0.8)
+    stations_lcz <- terra::extract(x, terra::vect(df_homogeneous))
+    stations_lcz$ID <- NULL
+    df_model <- base::cbind(df_homogeneous, stations_lcz) %>%
+      sf::st_drop_geometry() %>%
+      stats::na.omit() %>%
+      dplyr::mutate(
+        lcz = base::as.factor(.data$lcz)
+      )
+  }
 
   my_stations <- df_model %>%
     dplyr::distinct(.data$my_id, .data$lcz, .data$station)

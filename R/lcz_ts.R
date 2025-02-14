@@ -132,6 +132,10 @@ lcz_ts <- function(x,
   df_processed <- data_frame %>%
     dplyr::rename(var_interp = {{ var }}, station = {{ station_id }}) %>%
     janitor::clean_names() %>%
+    dplyr::rename(
+      latitude = base::grep("lat", names(.), value = TRUE),
+      longitude = base::grep("long", names(.), value = TRUE)
+    ) %>%
     dplyr::group_by(.data$latitude, .data$longitude) %>%
     dplyr::mutate(
       lcz_id = dplyr::cur_group_id(),
