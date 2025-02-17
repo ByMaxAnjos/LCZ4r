@@ -41,7 +41,6 @@ Imports:
     tibble (>= 3.2.1),
     openair (>= 2.9.0),
     recipes (>= 1.0.9),
-    janitor (>= 2.1.0),
     automap (>= 1.1.9),
     gstat (>= 2.1.0),
     MetBrewer (>= 0.2.0),

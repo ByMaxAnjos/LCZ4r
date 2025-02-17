@@ -134,14 +134,6 @@ lcz_interp_map <- function(x,
     stop("The 'station_id' input must be a column name in 'data_frame' representing stations.")
   }
 
-  if (!("Latitude" %in% tolower(colnames(data_frame)) || "latitude" %in% tolower(colnames(data_frame)))) {
-    stop("The 'latitude' input must be a column name in 'data_frame' representing each station's latitude.")
-  }
-
-  if (!("Longitude" %in% tolower(colnames(data_frame)) || "longitude" %in% tolower(colnames(data_frame)))) {
-    stop("The 'longitude' input must be a column name in 'data_frame' representing each station's longitude")
-  }
-
   if (!(vg.model %in% c("Sph", "Exp", "Gau", "Ste"))) {
     stop("Invalid viogram model. Choose from 'Sph', 'Exp', 'Gau', or 'Ste'.")
   }
@@ -151,25 +143,37 @@ lcz_interp_map <- function(x,
   }
   # Pre-processing time series ----------------------------------------------
 
-  # Rename and define my_id for each lat and long
+  #Latitude and Longitude
   df_variable <- data_frame %>%
-    dplyr::rename(var_interp = {{ var }}, station = {{ station_id }}) %>%
-    janitor::clean_names() %>%
     dplyr::rename(
-      latitude = base::grep("lat", names(.), value = TRUE),
-      longitude = base::grep("long", names(.), value = TRUE)
-    ) %>%
+      latitude = base::grep("(?i)^(lat|latitude)$", names(.), value = TRUE, perl = TRUE),
+      longitude = base::grep("(?i)^(lon|long|longitude)$", names(.), value = TRUE, perl = TRUE),
+      date = base::grep("(?i)^(date|time|timestamp|datetime)$", names(.), value = TRUE, perl = TRUE)
+    )
+
+  df_variable$latitude <- base::as.numeric(df_variable$latitude)
+  df_variable$longitude <- base::as.numeric(df_variable$longitude)
+
+  if (!("Latitude" %in% tolower(colnames(df_variable)) || "latitude" %in% tolower(colnames(df_variable)))) {
+    stop("The 'latitude' input must be a column name in 'data_frame' representing each station's latitude.")
+  }
+
+  if (!("Longitude" %in% tolower(colnames(df_variable)) || "longitude" %in% tolower(colnames(df_variable)))) {
+    stop("The 'longitude' input must be a column name in 'data_frame' representing each station's longitude")
+  }
+
+  # Rename and define my_id for each lat and long
+  df_variable <- df_variable %>%
+    dplyr::rename(var_interp = {{ var }}, station = {{ station_id }}) %>%
     dplyr::group_by(.data$latitude, .data$longitude) %>%
     dplyr::mutate(
       my_id = dplyr::cur_group_id(),
       my_id = base::as.factor(.data$my_id),
+      station = base::as.factor(.data$station),
       var_interp = base::as.numeric(.data$var_interp),
       date = lubridate::as_datetime(.data$date)
     ) %>%
     dplyr::ungroup()
-
-  df_variable$latitude <- base::as.numeric(df_variable$latitude)
-  df_variable$longitude <- base::as.numeric(df_variable$longitude)
 
   # Impute missing values if necessary
   missing_values = c("NAN","NaN", "-9999", "-99", "NULL", "",
@@ -201,12 +205,16 @@ lcz_interp_map <- function(x,
   df_period <- df_variable %>%
     dplyr::select(.data$date, .data$station, .data$my_id, .data$var_interp) %>%
     openair::selectByDate(...) %>%
-    openair::timeAverage(avg.time = tp.res, type = c("station", "my_id"))
-
-  df_processed <- dplyr::inner_join(df_period,
-    df_variable %>% dplyr::select(-.data$station, -.data$var_interp),
-    by = c("date", "my_id")) %>%
+    openair::timeAverage(avg.time = tp.res, type = c("station", "my_id")) %>%
     dplyr::ungroup()
+
+  get_lat <- df_variable %>%
+    dplyr::distinct(.data$my_id, .keep_all = T) %>%
+    dplyr::select(.data$my_id, .data$latitude, .data$longitude)
+
+  df_processed <- dplyr::inner_join(df_period, get_lat, by = c("my_id")) %>%
+    stats::na.omit()
+
 
   # Geospatial operations ---------------------------------------------------
   # Convert lcz_map to polygon
@@ -216,7 +224,6 @@ lcz_interp_map <- function(x,
 
   #Stratified splitting by LCZ)
   stations_mod <- df_processed %>%
-    stats::na.omit() %>%
     sf::st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
 
   if (extract.method == "simple") {
@@ -353,8 +360,8 @@ lcz_interp_map <- function(x,
             base::expand.grid()
 
           model_hour <- function(ihour) {
-            myhour <- ihour[1]
 
+            myhour <- ihour[1]
             data_model <- modelday %>%
               dplyr::mutate(
                 hour = lubridate::hour(.data$date),
@@ -382,7 +389,6 @@ lcz_interp_map <- function(x,
 
             return(interp_map)
           }
-
           MapHour <- base::apply(ihour, 1, model_hour)
           interp_hour <- base::unlist(MapHour)
           interp_hour <- terra::rast(interp_hour)

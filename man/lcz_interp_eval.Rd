@@ -17,6 +17,7 @@ lcz_interp_eval(
   tp.res = "hour",
   vg.model = "Sph",
   by = NULL,
+  Anomaly = FALSE,
   impute = NULL,
   isave = FALSE,
   LCZinterp = TRUE
@@ -65,6 +66,8 @@ lcz_interp_eval(
 }}
 
 \item{by}{A character string specifying how to split the time series in the data frame. Options include \code{"year"}, \code{"season"}, \code{"seasonyear"}, \code{"month"}, \code{"monthyear"}, \code{"weekday"}, \code{"weekend"}, \code{"site"}, or \code{"daylight"} (daytime and nighttime). See the \code{type} argument in the \code{openair} package for more details: \url{https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option}.}
+
+\item{Anomaly}{If \code{TRUE},the anomalies are calculated. If \code{FALSE} (default) the raw air temperatures are used.}
 
 \item{impute}{A character string specifying the method to impute missing values. Options include \code{"mean"}, \code{"median"}, \code{"knn"}, or \code{"bag"}.}
 

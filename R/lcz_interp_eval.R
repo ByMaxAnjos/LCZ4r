@@ -33,6 +33,7 @@
 #' @param sp.res A numeric value specifying the spatial resolution in meters for interpolation. The default is `100`.
 #' @param tp.res A character string specifying the temporal resolution for averaging. The default is `"hour"`. Other options include `"day"`, `"week"`, `"month"`, `"year"`, `"season"`, `"seasonyear"`, `"monthyear"`, `"weekday"`, `"weekend"`, or custom intervals like `"2 day"`, `"2 week"`, `"3 month"`, etc.
 #' @param by A character string specifying how to split the time series in the data frame. Options include `"year"`, `"season"`, `"seasonyear"`, `"month"`, `"monthyear"`, `"weekday"`, `"weekend"`, `"site"`, or `"daylight"` (daytime and nighttime). See the `type` argument in the `openair` package for more details: \url{https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option}.
+#' @param Anomaly If `TRUE`,the anomalies are calculated. If `FALSE` (default) the raw air temperatures are used.
 #' @param impute A character string specifying the method to impute missing values. Options include `"mean"`, `"median"`, `"knn"`, or `"bag"`.
 #' @param isave A logical value. If `TRUE`, the plot is saved to the working directory.
 #' @param LCZinterp A logical value. If `TRUE` (default), the LCZ interpolation approach is used. If `FALSE`, conventional interpolation without LCZ is used.
@@ -86,6 +87,7 @@ lcz_interp_eval <- function(x,
                             tp.res = "hour",
                             vg.model = "Sph",
                             by = NULL,
+                            Anomaly = FALSE,
                             impute = NULL,
                             isave = FALSE,
                             LCZinterp = TRUE) {
@@ -124,14 +126,6 @@ lcz_interp_eval <- function(x,
     stop("The 'station_id' input must be a column name in 'data_frame' representing stations.")
   }
 
-  if (!("Latitude" %in% tolower(colnames(data_frame)) || "latitude" %in% tolower(colnames(data_frame)))) {
-    stop("The 'latitude' input must be a column name in 'data_frame' representing each station's latitude.")
-  }
-
-  if (!("Longitude" %in% tolower(colnames(data_frame)) || "longitude" %in% tolower(colnames(data_frame)))) {
-    stop("The 'longitude' input must be a column name in 'data_frame' representing each station's longitude")
-  }
-
   if (!(vg.model %in% c("Sph", "Exp", "Gau", "Ste"))) {
     stop("Invalid viogram model. Choose from 'Sph', 'Exp', 'Gau', or 'Ste'.")
   }
@@ -141,14 +135,28 @@ lcz_interp_eval <- function(x,
   }
   # Pre-processing time series ----------------------------------------------
 
-  # Rename and define my_id for each lat and long
+  #Latitude and Longitude
   df_variable <- data_frame %>%
-    dplyr::rename(var_interp = {{ var }}, station = {{ station_id }}) %>%
-    janitor::clean_names() %>%
     dplyr::rename(
-      latitude = base::grep("lat", names(.), value = TRUE),
-      longitude = base::grep("long", names(.), value = TRUE)
-    ) %>%
+      latitude = base::grep("(?i)^(lat|latitude)$", names(.), value = TRUE, perl = TRUE),
+      longitude = base::grep("(?i)^(lon|long|longitude)$", names(.), value = TRUE, perl = TRUE),
+      date = base::grep("(?i)^(date|time|timestamp|datetime)$", names(.), value = TRUE, perl = TRUE)
+    )
+
+  df_variable$latitude <- base::as.numeric(df_variable$latitude)
+  df_variable$longitude <- base::as.numeric(df_variable$longitude)
+
+  if (!("Latitude" %in% tolower(colnames(df_variable)) || "latitude" %in% tolower(colnames(df_variable)))) {
+    stop("The 'latitude' input must be a column name in 'data_frame' representing each station's latitude.")
+  }
+
+  if (!("Longitude" %in% tolower(colnames(df_variable)) || "longitude" %in% tolower(colnames(df_variable)))) {
+    stop("The 'longitude' input must be a column name in 'data_frame' representing each station's longitude")
+  }
+
+  # Rename and define my_id for each lat and long
+  df_variable <- df_variable %>%
+    dplyr::rename(var_interp = {{ var }}, station = {{ station_id }}) %>%
     dplyr::group_by(.data$latitude, .data$longitude) %>%
     dplyr::mutate(
       my_id = dplyr::cur_group_id(),
@@ -158,9 +166,6 @@ lcz_interp_eval <- function(x,
       station= base::as.factor(.data$station)
     ) %>%
     dplyr::ungroup()
-
-  df_variable$latitude <- base::as.numeric(df_variable$latitude)
-  df_variable$longitude <- base::as.numeric(df_variable$longitude)
 
   # Impute missing values if necessary
 
@@ -193,12 +198,15 @@ lcz_interp_eval <- function(x,
   df_period <- df_variable %>%
     dplyr::select(.data$date, .data$station, .data$my_id, .data$var_interp) %>%
     openair::selectByDate(...) %>%
-    openair::timeAverage(avg.time = tp.res, type = c("station", "my_id"))
-
-  df_processed <- dplyr::inner_join(df_period,
-                                    df_variable %>% dplyr::select(-.data$station, -.data$var_interp),
-                                    by = c("date", "my_id")) %>%
+    openair::timeAverage(avg.time = tp.res, type = c("station", "my_id"))%>%
     dplyr::ungroup()
+
+  get_lat <- df_variable %>%
+    dplyr::distinct(.data$my_id, .keep_all = T) %>%
+    dplyr::select(.data$my_id, .data$latitude, .data$longitude)
+
+  df_processed <- dplyr::inner_join(df_period, get_lat, by = c("my_id")) %>%
+    stats::na.omit()
 
   # Geospatial operations ---------------------------------------------------
   # Convert lcz_map to polygon
@@ -206,9 +214,12 @@ lcz_interp_eval <- function(x,
     sf::st_as_sf() %>%
     sf::st_transform(crs = 4326)
 
+  # Get id stations
+  my_stations <- df_processed %>%
+    dplyr::distinct(.data$station, .keep_all = F)
+
   #Stratified splitting by LCZ)
   stations_mod <- df_processed %>%
-    stats::na.omit() %>%
     sf::st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
 
   if (extract.method == "simple") {
@@ -282,8 +293,6 @@ lcz_interp_eval <- function(x,
   ras_resample <- terra::resample(ras_project, ras_resolution, method = "mode")
   ras_grid <- stars::st_as_stars(ras_resample, dimensions = "XY")
   base::names(ras_grid) <- "lcz"
-  par_resample <- stars::st_as_stars(ras_resample, dimensions = "XY")
-  dem = stars::st_warp(src = par_resample, ras_grid, method = 'average', use_gdal = TRUE, no_data_value = -9999)
 
   if (isave == TRUE) {
 
@@ -412,9 +421,35 @@ lcz_interp_eval <- function(x,
               ) %>%
               dplyr::filter(.data$hour == paste0(myhour))
 
-            if(LOOCV==FALSE) {
+            if(Anomaly == TRUE){
+              anomlay_lcz <- function(input = NULL) {
+                mean_df <- data_model %>%
+                  dplyr::filter(.data$station == paste0(input)) %>%
+                  dplyr::group_by(.data$my_id, .data$lcz) %>%
+                  dplyr::summarise(mean_value = mean(.data$var_interp), .groups = "drop")
+
+                reference_df <- data_model %>%
+                  dplyr::filter(.data$station != paste0(input)) %>%
+                  dplyr::mutate(reference_value = mean(.data$var_interp))
+                reference_df <- tibble::as.tibble(mean(reference_df$reference_value))
+
+                merged_data <- dplyr::bind_cols(mean_df, reference_df) %>%
+                  dplyr::rename(reference_value = .data$value) %>%
+                  dplyr::mutate(anomaly = .data$mean_value - .data$reference_value)
+
+                return(merged_data)
+              }
+              anomaly_job <- base::lapply(1:base::length(my_stations$station), FUN = function(i) {
+                anomlay_lcz(input = my_stations$station[i])
+              })
+
+              anomaly_cal <- base::do.call(rbind.data.frame, anomaly_job)
+
+              lcz_anomaly_mod <- sf::st_as_sf(anomaly_cal) %>% sf::st_transform(crs = 3857)
+
+              if(LOOCV==FALSE) {
               base::set.seed(123)
-              split_data <- data_model %>%
+              split_data <- lcz_anomaly_mod %>%
                 dplyr::group_by(.data$lcz) %>%
                 dplyr::mutate(is_train = stats::runif(dplyr::n()) <= split.ratio) %>%
                 dplyr::ungroup()
@@ -422,16 +457,15 @@ lcz_interp_eval <- function(x,
               testing_set <- dplyr::filter(split_data, !.data$is_train)
 
               if (LCZinterp == TRUE) {
-                krige_vgm <- automap::autofitVariogram(var_interp ~ lcz + SVFmin, training_set, model = vg.model)
-                krige_mod <- gstat::gstat(formula = var_interp ~ lcz + SVFmin, model = krige_vgm$var_model, data = training_set)
+                krige_vgm <- automap::autofitVariogram(anomaly ~ lcz, training_set, model = vg.model)
+                krige_mod <- gstat::gstat(formula = anomaly ~ lcz, model = krige_vgm$var_model, data = training_set)
               } else {
-                krige_vgm <- automap::autofitVariogram(var_interp ~ 1, training_set, model = vg.model)
-                krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = training_set)
+                krige_vgm <- automap::autofitVariogram(anomaly ~ 1, training_set, model = vg.model)
+                krige_mod <- gstat::gstat(formula = anomaly ~ 1, model = krige_vgm$var_model, data = training_set)
               }
 
               # Predict using kriging and optimize raster processing
-              krige_map <- terra::predict(krige_mod, newdata = dem, debug.level = 0)
-
+              krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
               interp_map <- terra::rast(krige_map["var1.pred", , ])
               interp_map <- terra::focal(interp_map, w = 7, fun = mean)
               base::names(interp_map) <- "predicted"
@@ -453,17 +487,17 @@ lcz_interp_eval <- function(x,
             } else {
 
               if (LCZinterp == TRUE) {
-                krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, data_model, model = vg.model)
-                krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = data_model)
+                krige_vgm <- automap::autofitVariogram(anomaly ~ lcz, lcz_anomaly_mod, model = vg.model)
+                krige_mod <- gstat::gstat(formula = anomaly ~ lcz, model = krige_vgm$var_model, data = lcz_anomaly_mod)
               } else {
-                krige_vgm <- automap::autofitVariogram(var_interp ~ 1, data_model, model = vg.model)
-                krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = data_model)
+                krige_vgm <- automap::autofitVariogram(anomaly ~ 1, lcz_anomaly_mod, model = vg.model)
+                krige_mod <- gstat::gstat(formula = anomaly ~ 1, model = krige_vgm$var_model, data = lcz_anomaly_mod)
               }
               set.seed(123)
               lcz_cv <- gstat::gstat.cv(krige_mod, nfold = 5, debug.level = 0)
               lcz_cv <- sf::st_as_sf(lcz_cv)
-              data_model$geometry <- NULL
-              lcz_cv_result <- dplyr::bind_cols(data_model, lcz_cv) %>%
+              lcz_anomaly_mod$geometry <- NULL
+              lcz_cv_result <- dplyr::bind_cols(lcz_anomaly_mod, lcz_cv) %>%
                 stats::na.omit() %>%
                 dplyr::mutate(
                   predicted = .data$var1.pred) %>%
@@ -471,6 +505,70 @@ lcz_interp_eval <- function(x,
 
               return(lcz_cv_result)
             }
+
+            } else {
+
+              if(LOOCV==FALSE) {
+                base::set.seed(123)
+                split_data <- data_model %>%
+                  dplyr::group_by(.data$lcz) %>%
+                  dplyr::mutate(is_train = stats::runif(dplyr::n()) <= split.ratio) %>%
+                  dplyr::ungroup()
+                training_set <- dplyr::filter(split_data, .data$is_train)
+                testing_set <- dplyr::filter(split_data, !.data$is_train)
+
+                if (LCZinterp == TRUE) {
+                  krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, training_set, model = vg.model)
+                  krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = training_set)
+                } else {
+                  krige_vgm <- automap::autofitVariogram(var_interp ~ 1, training_set, model = vg.model)
+                  krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = training_set)
+                }
+
+                # Predict using kriging and optimize raster processing
+                krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
+                interp_map <- terra::rast(krige_map["var1.pred", , ])
+                interp_map <- terra::focal(interp_map, w = 7, fun = mean)
+                base::names(interp_map) <- "predicted"
+
+                # Evaluate interpolation
+                eval_df <- terra::extract(interp_map, terra::vect(testing_set))
+                eval_df$ID <- NULL
+                eval_df <- dplyr::bind_cols(testing_set, eval_df)
+                eval_result <- eval_df %>%
+                  stats::na.omit() %>%
+                  dplyr::mutate(
+                    lcz = base::as.factor(.data$lcz),
+                    residual = .data$var_interp - .data$predicted) %>%
+                  dplyr::rename(observed = .data$var_interp) %>%
+                  dplyr::select(.data$date, .data$station, .data$my_id, .data$lcz, .data$observed, .data$predicted, .data$residual)
+
+                return(eval_result)
+
+              } else {
+
+                if (LCZinterp == TRUE) {
+                  krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, data_model, model = vg.model)
+                  krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = data_model)
+                } else {
+                  krige_vgm <- automap::autofitVariogram(var_interp ~ 1, data_model, model = vg.model)
+                  krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = data_model)
+                }
+                set.seed(123)
+                lcz_cv <- gstat::gstat.cv(krige_mod, nfold = 5, debug.level = 0)
+                lcz_cv <- sf::st_as_sf(lcz_cv)
+                data_model$geometry <- NULL
+                lcz_cv_result <- dplyr::bind_cols(data_model, lcz_cv) %>%
+                  stats::na.omit() %>%
+                  dplyr::mutate(
+                    predicted = .data$var1.pred) %>%
+                  dplyr::select(.data$date, .data$station,.data$my_id, .data$lcz, .data$observed, .data$predicted, .data$residual, .data$zscore)
+
+                return(lcz_cv_result)
+              }
+
+            }
+
 
           }
 
@@ -566,65 +664,155 @@ lcz_interp_eval <- function(x,
           sf::st_as_sf()
 
 
-        if(LOOCV==FALSE) {
-          base::set.seed(123)
-          split_data <- data_model %>%
-            dplyr::group_by(.data$my_time, .data$lcz) %>%
-            dplyr::mutate(is_train = stats::runif(dplyr::n()) <= split.ratio) %>%
-            dplyr::ungroup()
-          training_set <- dplyr::filter(split_data, .data$is_train)
-          testing_set <- dplyr::filter(split_data, !.data$is_train)
+        if(Anomaly == TRUE){
+          anomlay_lcz <- function(input = NULL) {
+            mean_df <- data_model %>%
+              dplyr::filter(.data$station == paste0(input)) %>%
+              dplyr::group_by(.data$my_id, .data$lcz) %>%
+              dplyr::summarise(mean_value = mean(.data$var_interp), .groups = "drop")
 
-          if (LCZinterp == TRUE) {
-            krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, training_set, model = vg.model)
-            krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = training_set)
-          } else {
-            krige_vgm <- automap::autofitVariogram(var_interp ~ 1, training_set, model = vg.model)
-            krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = training_set)
+            reference_df <- data_model %>%
+              dplyr::filter(.data$station != paste0(input)) %>%
+              dplyr::mutate(reference_value = mean(.data$var_interp))
+            reference_df <- tibble::as.tibble(mean(reference_df$reference_value))
+
+            merged_data <- dplyr::bind_cols(mean_df, reference_df) %>%
+              dplyr::rename(reference_value = .data$value) %>%
+              dplyr::mutate(anomaly = .data$mean_value - .data$reference_value)
+
+            return(merged_data)
           }
+          anomaly_job <- base::lapply(1:base::length(my_stations$station), FUN = function(i) {
+            anomlay_lcz(input = my_stations$station[i])
+          })
 
-          # Predict using kriging and optimize raster processing
-          krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
-          interp_map <- terra::rast(krige_map["var1.pred", , ])
-          interp_map <- terra::focal(interp_map, w = 7, fun = mean)
-          base::names(interp_map) <- "predicted"
+          anomaly_cal <- base::do.call(rbind.data.frame, anomaly_job)
 
-          # Evaluate interpolation
-          eval_df <- terra::extract(interp_map, terra::vect(testing_set))
-          eval_df$ID <- NULL
-          eval_df <- dplyr::bind_cols(testing_set, eval_df)
-          eval_df$geometry <- NULL
-          eval_result <- eval_df %>%
-            stats::na.omit() %>%
-            dplyr::mutate(
-              residual = .data$var_interp - .data$predicted) %>%
-            dplyr::rename(observed = .data$var_interp,
-                          select_time = .data$my_time) %>%
-            dplyr::select(.data$station, .data$my_id, .data$lcz, .data$select_time, .data$observed, .data$predicted, .data$residual)
+          lcz_anomaly_mod <- sf::st_as_sf(anomaly_cal) %>% sf::st_transform(crs = 3857)
 
-          return(eval_result)
+          if(LOOCV==FALSE) {
+            base::set.seed(123)
+            split_data <- lcz_anomaly_mod %>%
+              dplyr::group_by(.data$my_time, .data$lcz) %>%
+              dplyr::mutate(is_train = stats::runif(dplyr::n()) <= split.ratio) %>%
+              dplyr::ungroup()
+            training_set <- dplyr::filter(split_data, .data$is_train)
+            testing_set <- dplyr::filter(split_data, !.data$is_train)
+
+            if (LCZinterp == TRUE) {
+              krige_vgm <- automap::autofitVariogram(anomaly ~ lcz, training_set, model = vg.model)
+              krige_mod <- gstat::gstat(formula = anomaly ~ lcz, model = krige_vgm$var_model, data = training_set)
+            } else {
+              krige_vgm <- automap::autofitVariogram(anomaly ~ 1, training_set, model = vg.model)
+              krige_mod <- gstat::gstat(formula = anomaly ~ 1, model = krige_vgm$var_model, data = training_set)
+            }
+
+            # Predict using kriging and optimize raster processing
+            krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
+            interp_map <- terra::rast(krige_map["var1.pred", , ])
+            interp_map <- terra::focal(interp_map, w = 7, fun = mean)
+            base::names(interp_map) <- "predicted"
+
+            # Evaluate interpolation
+            eval_df <- terra::extract(interp_map, terra::vect(testing_set))
+            eval_df$ID <- NULL
+            eval_df <- dplyr::bind_cols(testing_set, eval_df)
+            eval_result <- eval_df %>%
+              stats::na.omit() %>%
+              dplyr::mutate(
+                lcz = base::as.factor(.data$lcz),
+                residual = .data$var_interp - .data$predicted) %>%
+              dplyr::rename(observed = .data$var_interp,
+                            select_time = .data$my_time) %>%
+              dplyr::select(.data$date, .data$station, .data$my_id, .data$lcz, .data$observed, .data$predicted, .data$residual)
+
+            return(eval_result)
+
+          } else {
+
+            if (LCZinterp == TRUE) {
+              krige_vgm <- automap::autofitVariogram(anomaly ~ lcz, lcz_anomaly_mod, model = vg.model)
+              krige_mod <- gstat::gstat(formula = anomaly ~ lcz, model = krige_vgm$var_model, data = lcz_anomaly_mod)
+            } else {
+              krige_vgm <- automap::autofitVariogram(anomaly ~ 1, lcz_anomaly_mod, model = vg.model)
+              krige_mod <- gstat::gstat(formula = anomaly ~ 1, model = krige_vgm$var_model, data = lcz_anomaly_mod)
+            }
+            set.seed(123)
+            lcz_cv <- gstat::gstat.cv(krige_mod, nfold = 5, debug.level = 0)
+            lcz_cv <- sf::st_as_sf(lcz_cv)
+            lcz_anomaly_mod$geometry <- NULL
+            lcz_cv_result <- dplyr::bind_cols(lcz_anomaly_mod, lcz_cv) %>%
+              stats::na.omit() %>%
+              dplyr::mutate(
+                predicted = .data$var1.pred,
+                select_time = .data$my_time) %>%
+              dplyr::select(.data$date, .data$station,.data$my_id, .data$lcz, .data$observed, .data$predicted, .data$residual, .data$zscore)
+
+            return(lcz_cv_result)
+          }
 
         } else {
 
-          if (LCZinterp == TRUE) {
-            krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, data_model, model = vg.model)
-            krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = data_model)
-          } else {
-            krige_vgm <- automap::autofitVariogram(var_interp ~ 1, data_model, model = vg.model)
-            krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = data_model)
-          }
-          set.seed(123)  # Ensure reproducibility
-          lcz_cv <- gstat::gstat.cv(krige_mod, nfold = 5, debug.level = 0)
-          lcz_cv <- sf::st_as_sf(lcz_cv)
-          data_model$geometry <- NULL
-          lcz_cv_result <- dplyr::bind_cols(data_model, lcz_cv) %>%
-            stats::na.omit() %>%
-            dplyr::mutate(
-              predicted = .data$var1.pred,
-              select_time = .data$my_time) %>%
-            dplyr::select(.data$station, .data$my_id, .data$lcz, .data$select_time,.data$observed, .data$predicted, .data$residual, .data$zscore)
+          if(LOOCV==FALSE) {
+            base::set.seed(123)
+            split_data <- data_model %>%
+              dplyr::group_by(.data$my_time, .data$lcz) %>%
+              dplyr::mutate(is_train = stats::runif(dplyr::n()) <= split.ratio) %>%
+              dplyr::ungroup()
+            training_set <- dplyr::filter(split_data, .data$is_train)
+            testing_set <- dplyr::filter(split_data, !.data$is_train)
 
-          return(lcz_cv_result)
+            if (LCZinterp == TRUE) {
+              krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, training_set, model = vg.model)
+              krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = training_set)
+            } else {
+              krige_vgm <- automap::autofitVariogram(var_interp ~ 1, training_set, model = vg.model)
+              krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = training_set)
+            }
+
+            # Predict using kriging and optimize raster processing
+            krige_map <- terra::predict(krige_mod, newdata = ras_grid, debug.level = 0)
+            interp_map <- terra::rast(krige_map["var1.pred", , ])
+            interp_map <- terra::focal(interp_map, w = 7, fun = mean)
+            base::names(interp_map) <- "predicted"
+
+            # Evaluate interpolation
+            eval_df <- terra::extract(interp_map, terra::vect(testing_set))
+            eval_df$ID <- NULL
+            eval_df <- dplyr::bind_cols(testing_set, eval_df)
+            eval_df$geometry <- NULL
+            eval_result <- eval_df %>%
+              stats::na.omit() %>%
+              dplyr::mutate(
+                residual = .data$var_interp - .data$predicted) %>%
+              dplyr::rename(observed = .data$var_interp,
+                            select_time = .data$my_time) %>%
+              dplyr::select(.data$station, .data$my_id, .data$lcz, .data$select_time, .data$observed, .data$predicted, .data$residual)
+
+            return(eval_result)
+
+          } else {
+
+            if (LCZinterp == TRUE) {
+              krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, data_model, model = vg.model)
+              krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = data_model)
+            } else {
+              krige_vgm <- automap::autofitVariogram(var_interp ~ 1, data_model, model = vg.model)
+              krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = data_model)
+            }
+            set.seed(123)  # Ensure reproducibility
+            lcz_cv <- gstat::gstat.cv(krige_mod, nfold = 5, debug.level = 0)
+            lcz_cv <- sf::st_as_sf(lcz_cv)
+            data_model$geometry <- NULL
+            lcz_cv_result <- dplyr::bind_cols(data_model, lcz_cv) %>%
+              stats::na.omit() %>%
+              dplyr::mutate(
+                predicted = .data$var1.pred,
+                select_time = .data$my_time) %>%
+              dplyr::select(.data$station, .data$my_id, .data$lcz, .data$select_time,.data$observed, .data$predicted, .data$residual, .data$zscore)
+
+            return(lcz_cv_result)
+          }
         }
 
       }

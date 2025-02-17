@@ -241,6 +241,8 @@ to interpolate air temperature and thermal anomalies, using the lcz_interp_map a
 
 text_modelling_eval <- "Here we'll show how to evalute the LCZ-based interpolation for low-density observational data in Berlin"
 
+text_modelling_crows <- "In this guide, we'll apply the LCZ4r to model Urban Heat Island with Crowdsourced air temperatures in Berlin"
+
 ```
 
 
@@ -249,32 +251,38 @@ text_modelling_eval <- "Here we'll show how to evalute the LCZ-based interpolati
 df_default4 <- data.frame(
   title_card = c(
                 "Interpolating air temperature and anomalies as LCZ background",
-                "Evaluating LCZ-based interpolation"
-                ),
+                "Evaluating LCZ-based interpolation",
+                "Modelling Urban Heat Island with Crowdsourced air temperatures"),
   short_name = c(
+                 "Tutorial",
                  "Tutorial",
                  "Tutorial"
                  ),
     author = c(
-           "©LCZ4r",
-           "©LCZ4r"
+           "©LCZ4r: Max Anjos",
+           "©LCZ4r: Max Anjos",
+           "©LCZ4r: Max Anjos"
            ),
   description = c(
     text_modelling_1,
-    text_modelling_eval
+    text_modelling_eval,
+    text_modelling_crows
 
   ),
   type_translation = c(
+    "Local Functions",
     "Local Functions",
     "Local Functions"
   ),
   image_url = c(
     "fig_local_modeling_1.png",
-    "fig_local_modeling_eval_card.png"
+    "fig_local_modeling_eval_card.png",
+    "fig_local_modeling_crows_card.png"
   ),
   gallery_url = c(
     "https://bymaxanjos.github.io/LCZ4r/articles/local_func_modeling.html",
-    "https://bymaxanjos.github.io/LCZ4r/articles/local_func_modeling_eval.html"
+    "https://bymaxanjos.github.io/LCZ4r/articles/local_func_modeling_eval.html",
+    "https://bymaxanjos.github.io/LCZ4r/articles/local_func_modeling_crows.html"
   )
 )
 ```

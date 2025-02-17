@@ -118,40 +118,45 @@ lcz_uhi_intensity <- function(x,
     stop("The 'station_id' input must be a column name in 'data_frame' representing stations.")
   }
 
-  if (!("Latitude" %in% tolower(colnames(data_frame)) || "latitude" %in% tolower(colnames(data_frame)))) {
-    stop("The 'latitude' input must be a column name in 'data_frame' representing each station's latitude.")
-  }
-
-  if (!("Longitude" %in% tolower(colnames(data_frame)) || "longitude" %in% tolower(colnames(data_frame)))) {
-    stop("The 'longitude' input must be a column name in 'data_frame' representing each station's longitude")
-  }
-
   if (!(extract.method %in% c("simple", "bilinear", "two.step"))) {
     stop("Invalid extract-based pixel model. Choose from 'simple', 'bilinear', or 'two.step'.")
   }
 
   # Pre-processing time series ----------------------------------------------
 
-  # Rename and define my_id for each lat and long
+  #Latitude and Longitude
   df_processed <- data_frame %>%
-    dplyr::rename(var_interp = {{ var }}, station = {{ station_id }}) %>%
-    janitor::clean_names() %>%
     dplyr::rename(
-      latitude = base::grep("lat", names(.), value = TRUE),
-      longitude = base::grep("long", names(.), value = TRUE)
-    ) %>%
+      latitude = base::grep("(?i)^(lat|latitude)$", names(.), value = TRUE, perl = TRUE),
+      longitude = base::grep("(?i)^(lon|long|longitude)$", names(.), value = TRUE, perl = TRUE),
+      date = base::grep("(?i)^(date|time|timestamp|datetime)$", names(.), value = TRUE, perl = TRUE)
+    )
+
+  df_processed$latitude <- base::as.numeric(df_processed$latitude)
+  df_processed$longitude <- base::as.numeric(df_processed$longitude)
+
+  if (!("Latitude" %in% tolower(colnames(df_processed)) || "latitude" %in% tolower(colnames(df_processed)))) {
+    stop("The 'latitude' input must be a column name in 'data_frame' representing each station's latitude.")
+  }
+
+  if (!("Longitude" %in% tolower(colnames(df_processed)) || "longitude" %in% tolower(colnames(df_processed)))) {
+    stop("The 'longitude' input must be a column name in 'data_frame' representing each station's longitude")
+  }
+
+  # Rename and define my_id for each lat and long
+  df_processed <- df_processed %>%
+    dplyr::rename(var_interp = {{ var }}, station = {{ station_id }}) %>%
     dplyr::group_by(.data$latitude, .data$longitude) %>%
     dplyr::mutate(
       station = base::as.factor(.data$station),
       my_id = dplyr::cur_group_id(),
+      my_id = base::as.factor(.data$my_id),
       date = lubridate::as_datetime(.data$date)
     ) %>%
     dplyr::select(.data$date, .data$var_interp, .data$station, .data$my_id, .data$longitude, .data$latitude) %>%
     openair::selectByDate(...)
 
   df_processed$var_interp <- base::as.numeric(df_processed$var_interp)
-  df_processed$latitude <- base::as.numeric(df_processed$latitude)
-  df_processed$longitude <- base::as.numeric(df_processed$longitude)
 
   # Impute missing values if necessary
 
@@ -201,7 +206,8 @@ lcz_uhi_intensity <- function(x,
       stats::na.omit() %>%
       dplyr::mutate(
         lcz = base::as.factor(.data$lcz)
-      )
+      )  %>%
+      dplyr::inner_join(df_processed %>% dplyr::select(.data$my_id, .data$latitude, .data$longitude), by="my_id")
   }
 
   if (extract.method == "bilinear") {
@@ -213,7 +219,8 @@ lcz_uhi_intensity <- function(x,
       stats::na.omit() %>%
       dplyr::mutate(
         lcz = base::as.factor(.data$lcz)
-      )
+      ) %>%
+      dplyr::inner_join(df_processed %>% dplyr::select(.data$my_id, .data$latitude, .data$longitude), by="my_id")
   }
 
   if (extract.method == "two.step") {
@@ -257,7 +264,8 @@ lcz_uhi_intensity <- function(x,
       stats::na.omit() %>%
       dplyr::mutate(
         lcz = base::as.factor(.data$lcz)
-      )
+      )  %>%
+      dplyr::inner_join(df_processed %>% dplyr::select(.data$my_id, .data$latitude, .data$longitude), by="my_id")
   }
 
   my_stations <- df_model %>%
