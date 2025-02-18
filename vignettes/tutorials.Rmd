@@ -275,7 +275,7 @@ df_default4 <- data.frame(
     "Local Functions"
   ),
   image_url = c(
-    "fig_local_modeling_1.png",
+    "fig_local_modeling_card.png",
     "fig_local_modeling_eval_card.png",
     "fig_local_modeling_crows_card.png"
   ),

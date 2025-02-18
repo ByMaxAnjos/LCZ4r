@@ -17,6 +17,9 @@ resource_files:
   - articles/fig_local_modeling_crows_4.png
   - articles/fig_local_modeling_crows_5.png
   - articles/fig_local_modeling_crows_6.png
+  - articles/fig_local_modeling_crows_7.png
+  - articles/fig_local_modeling_crows_8.png
+  - articles/fig_local_modeling_crows_9.png
 vignette: >
   %\VignetteIndexEntry{Analyzing Urban Heat Islands using Crowdsourced air Temperature data and LCZ4r}
   %\VignetteEngine{rmarkdown::render}
@@ -58,9 +61,6 @@ library(CrowdQCplus) # For Quality Control of CWS data
 ```{r eval=FALSE, message=FALSE, warning=FALSE}
 # Retrieve the LCZ map for Berlin using the LCZ Generator Platform
 lcz_map <- lcz_get_map_generator(ID = "8576bde60bfe774e335190f2e8fdd125dd9f4299")
-
-# Optional: Clip the LCZ map to the Berlin area
-lcz_map <- lcz_get_map2(lcz_map, city = "Berlin")
 
 # Visualize the LCZ map
 lcz_plot_map(lcz_map)
@@ -109,13 +109,16 @@ data_check <- cqcp_check_input(data_crows)
 if (data_check) {
    data_qc <- cqcp_qcCWS(data_crows) # QC
 }
-data_qc
+
+head(data_qc)
+
 ```
 
 
 ```{r eval=TRUE, message=FALSE, warning=FALSE}
 # Display QC output statistics
 n_data_qc <- cqcp_output_statistics(data_qc)
+
 ```
 
 ## Dive into CWS LCZs
@@ -130,7 +133,7 @@ cws_ts <- lcz_ts(lcz_map, data_frame = data_qc,
                 time.freq = "hour",
                 extract.method = "two.step",
                 year = 2023, month = 5, day = 1,
-                by = "daylight", isave = T)
+                by = "daylight")
 cws_ts
 
 ```
@@ -138,49 +141,6 @@ cws_ts
 
 ```{r echo=F, out.width = '100%', fig.align='center'}
 knitr::include_graphics("fig_local_modeling_crows_2.png")
-```
-
-### Monthly Mean Temperature Anomalies
-
-We calculated monthly mean temperature anomalies for May 2023. 
-
-```{r eval=FALSE, message=FALSE, warning=FALSE}
-# Calculate monthly anomalies
-cws_anomaly <- lcz_anomaly(lcz_map,data_frame = data_qc,
-                var = "ta_int", station_id = "p_id",
-                time.freq = "month",
-                extract.method = "two.step",
-                year = 2023, month = 5)
-cws_anomaly
-
-```
-
-```{r echo=F, out.width = '100%', fig.align='center'}
-knitr::include_graphics("fig_local_modeling_crows_3.png")
-```
-
-In this case, stations classified as LCZ 17 (Water) were excluded due to potential misclassification issues. As shown in the figure, we removed stations identified as LCZ 17 (Water bodies), specifically stations 55280926 and 363960316.
-
-```{r eval=FALSE, message=FALSE, warning=FALSE}
-
-#Check and delete stations
-new_data_qc <- data_qc %>% 
-  mutate(p_id = as.factor(p_id)) %>% 
-  filter(!p_id %in% c("55280926", "363960316"))
-
-# Calculate daily anomalies
-cws_anomaly <- lcz_anomaly(lcz_map,data_frame = new_data_qc,
-                var = "ta_int", station_id = "p_id",
-                time.freq = "day",
-                extract.method = "two.step",
-                year = 2023, month = 5, day =1,
-                isave = T)
-cws_anomaly
-
-```
-
-```{r echo=F, out.width = '100%', fig.align='center'}
-knitr::include_graphics("fig_local_modeling_crows_4.png")
 ```
 
 ## Urban heat island Analysis
@@ -191,13 +151,12 @@ We calculated hourly UHI intensities for May 2023 using the LCZ method, which au
 
 ```{r eval=FALSE, message=FALSE, warning=FALSE}
 
-cws_uhi <- lcz_uhi_intensity(lcz_map, data_frame = new_data_qc,
+cws_uhi <- lcz_uhi_intensity(lcz_map, data_frame = data_qc,
                 var = "ta_int", station_id = "p_id",
                 time.freq = "hour",
                 extract.method = "two.step",
                 year = 2023, month = 5,
-                method = "LCZ",
-                )
+                method = "LCZ")
 cws_uhi
 
 ```
@@ -208,13 +167,13 @@ knitr::include_graphics("fig_local_modeling_crows_5.png")
 
 ### UHI mapping
 
-We modeled the UHI for May 13, 2023, at 16:00, using spatial interpolation.
+We modeled the UHI for May 13, 2023, at 16:00, using LCZ-based spatial interpolation.
 
 ```{r eval=FALSE, message=FALSE, warning=FALSE}
 # Map air temperatures for 2023-05-13 at 16h.
 my_interp_map <- lcz_interp_map(
   lcz_map,
-  data_frame = new_data_qc,
+  data_frame = data_qc,
   var = "ta_int",
   station_id = "p_id",
   sp.res = 100,
@@ -228,15 +187,42 @@ lcz_plot_interp(
   title = "Thermal field - CWS data",
   subtitle = "Berlin - 2023-05-13 at 16h",
   caption = "Source: LCZ4r, 2024.",
-  fill = "[ºC]", isave = T
-)
+  fill = "[ºC]")
 
 ```
+
 ```{r echo=F, out.width = '100%', fig.align='center'}
 knitr::include_graphics("fig_local_modeling_crows_6.png")
 ```
 
-### Evaluate UHI map interpolation 
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Map air temperatures for 2023-05-13 at 16h.
+my_anomaly_map <- lcz_anomaly_map(
+  lcz_map,
+  data_frame = data_qc,
+  var = "ta_int",
+  station_id = "p_id",
+  sp.res = 100,
+  tp.res = "hour",
+  year = 2023, month = 5, day = 13, hour = 16
+)
+
+# Customize the plot with titles and labels
+lcz_plot_interp(
+  title = "Thermal anomaly field - CWS data",
+  subtitle = "Berlin - 2023-05-13 at 16h",
+  caption = "Source: LCZ4r, 2024.",
+  fill = "[ºC]", 
+  palette = "bl_yl_rd")
+
+```
+
+```{r echo=F, out.width = '100%', fig.align='center'}
+knitr::include_graphics("fig_local_modeling_crows_7.png")
+```
+
+### Evaluate UHI map
 
 We evaluated the interpolation accuracy using Leave-One-Out Cross-Validation (LOOCV) and calculated metrics such as RMSE, MAE, and sMAPE.
 
@@ -244,7 +230,7 @@ We evaluated the interpolation accuracy using Leave-One-Out Cross-Validation (LO
 # Evaluate the interpolation
 df_eval <- lcz_interp_eval(
   lcz_map,
-  data_frame = new_data_qc,
+  data_frame = data_qc,
   var = "ta_int",
   station_id = "p_id",
   year = 2023, month = 5, day = 13, 
@@ -255,8 +241,6 @@ df_eval <- lcz_interp_eval(
   vg.model = "Sph",
   LCZinterp = TRUE
 )
-
-df_eval
 
 ```
 
@@ -313,6 +297,10 @@ p1_with_marginals
 ```
 
 
+```{r echo=F, out.width = '100%', fig.align='center'}
+knitr::include_graphics("fig_local_modeling_crows_8.png")
+```
+
 
 ```{r eval=FALSE, message=FALSE, warning=FALSE}
 
@@ -354,6 +342,10 @@ p2 <- ggplot(df_eval, aes(x = observed, y = residual)) +
 # Print the plot
 p2
 
+```
+
+```{r echo=F, out.width = '100%', fig.align='center'}
+knitr::include_graphics("fig_local_modeling_crows_9.png")
 ```
 
 

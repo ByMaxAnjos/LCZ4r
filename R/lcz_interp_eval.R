@@ -480,6 +480,9 @@ lcz_interp_eval <- function(x,
                   lcz = base::as.factor(.data$lcz),
                   residual = .data$var_interp - .data$predicted) %>%
                 dplyr::rename(observed = .data$var_interp) %>%
+                dplyr::inner_join(data_model %>% dplyr::select(date, my_id, station) %>%
+                                    sf::st_drop_geometry(), by = "my_id"
+                ) %>%
                 dplyr::select(.data$date, .data$station, .data$my_id, .data$lcz, .data$observed, .data$predicted, .data$residual)
 
               return(eval_result)
@@ -501,7 +504,10 @@ lcz_interp_eval <- function(x,
                 stats::na.omit() %>%
                 dplyr::mutate(
                   predicted = .data$var1.pred) %>%
-                dplyr::select(.data$date, .data$station,.data$my_id, .data$lcz, .data$observed, .data$predicted, .data$residual, .data$zscore)
+                dplyr::inner_join(data_model %>% dplyr::select(date, my_id, station) %>%
+                                  sf::st_drop_geometry(), by = "my_id"
+                                  ) %>%
+                dplyr::select(.data$date, .data$station, .data$my_id, .data$lcz, .data$observed, .data$predicted, .data$residual, .data$zscore)
 
               return(lcz_cv_result)
             }

@@ -464,7 +464,6 @@ lcz_interp_map <- function(x,
       my_latitude <- df_processed$latitude[1]
       my_longitude <- df_processed$longitude[1]
       df_interp_mod$geometry <- NULL
-
       mydata <- openair::cutData(df_interp_mod,
         type = by, hemisphere = hemisphere,
         latitude = my_latitude, longitude = my_longitude) %>%
