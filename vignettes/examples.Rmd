@@ -73,7 +73,7 @@ df_default <- data.frame(
   image_url = c(
     "logo_qgis.png",
     "installing.png",
-    "qgis_general"
+    "qgis_general.png"
   ),
   gallery_url = c(
     "https://bymaxanjos.github.io/LCZ4r/articles/Introd_QGIS_LCZ4r.html",
