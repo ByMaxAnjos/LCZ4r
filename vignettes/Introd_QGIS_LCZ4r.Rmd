@@ -25,7 +25,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# A Multilingual Integration
+## A Multilingual Integration
 
 A **LCZ4r-QGIS plugin** repository that integrates the **LCZ4r package** with [QGIS](https://qgis.org/) in multiple languages. It facilitates the integration of the [General Functions](https://bymaxanjos.github.io/LCZ4r/articles/Introd_genera_LCZ4r.html) and [Local Functions](https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html) from LCZ4r package into QGIS, allowing users to analyze Local Climate Zones (LCZ) and urban heat islands directly within the QGIS environment.
 
@@ -35,20 +35,18 @@ A **LCZ4r-QGIS plugin** repository that integrates the **LCZ4r package** with [Q
 
 <img width="1217" alt="logo_qgis" src="https://github.com/user-attachments/assets/68cdca10-c1d5-4755-8d73-351af809552a">
 
+## Key Features
+* Seamless Integration: smooth interaction between QGIS and the LCZ4r package, enabling users to leverage R's statistical and graphical capabilities within the QGIS interface 
+
+* User-Friendly Interface: accessible for users familiar with QGIS, making complex analyses simpler to execute without requiring extensive programming knowledge.
+
+* Urban Climate Analysis: tools for analyzing and visualizing Local Climate Zones and urban heat islands.
+
 
 ## 🗃️ Install plugin 
 
 For detailed installation instructions, please visit the [LCZ4r installation guide.](https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r_qgis.html)
 
-## Tutorials
-
-You can watch a detailed tutorial on LCZ4r General functions in QGIS below:
-<!-- Embedded Video -->
-<iframe width="560" height="315" 
-        src="https://www.youtube.com/embed/EL56VI8Ok0Q" 
-        title="LCZ4r-QGIS General Functions Tutorial" 
-        frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-        allowfullscreen></iframe>
 
 ## Translation plugin process
 The translation process evolves three levels:
@@ -63,22 +61,13 @@ Translations initially performed by AI and then reviewed and refined by  by huma
 
 <img src="https://github.com/user-attachments/assets/ed21bd61-b2c5-4dbb-9601-6485292d7b4c" width="400" height="300">
 
-
 ### Human Translation
 The functions and documentations of the LCZ4r were translated manually by experts familiar with Climatology, LCZ and GIS.
 
 <img src="https://github.com/user-attachments/assets/b30e9a14-0730-403d-8cd5-19ab70baa3ec" width="400" height="300">
 
 
-## Key Features
-* Seamless Integration: smooth interaction between QGIS and the LCZ4r package, enabling users to leverage R's statistical and graphical capabilities within the QGIS interface 
-
-* User-Friendly Interface: accessible for users familiar with QGIS, making complex analyses simpler to execute without requiring extensive programming knowledge.
-
-* Urban Climate Analysis: tools for analyzing and visualizing Local Climate Zones and urban heat islands.
-
-
-### Contact
+## Contact
 Please feel free to contact us if you have any questions or suggestions by emailing [maxanjos\@campus.ul.pt](mailto:maxanjos@campus.ul.pt). If you are interested in contributing to the development of this LCZ4r-QGIS plugin, we welcome you to join our team.
 
 ## Have feedback or suggestions?

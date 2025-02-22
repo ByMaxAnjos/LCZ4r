@@ -1,0 +1,60 @@
+---
+title: "Mastering LCZ4r General Functions in QGIS"
+author: "Max Anjos"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+    rmarkdown::html_vignette:
+    toc: true
+    toc_float: TRUE
+    toc_depth: 2
+    number_sections: false
+    highlight: "textmate"
+    css: custom.css
+resource_files:
+  - articles/fig_local_1.png
+vignette: >
+  %\VignetteIndexEntry{Mastering LCZ4r General Functions in QGIS}
+  %\VignetteEngine{rmarkdown::render}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.align = "center",
+  fig.width = 8,
+  fig.height = 5,
+  out.width = "90%"
+)
+```
+
+# Introduction
+
+The LCZ4r[General Functions](https://bymaxanjos.github.io/LCZ4r/articles/Introd_genera_LCZ4r.html) are designed to facilitate the retrieval, analysis, and visualization of Local Climate Zones (LCZ) when LCZ related data is not readily available. These functions enable users to download LCZ maps, compute LCZ classes, and extract specific parameters of interest, such as Sky View Factor (SVF), impervious surface fraction, and roughness element height.
+
+  <!-- badges: start -->
+  [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+  <!-- badges: end -->
+
+## Tutorial
+
+You can watch a detailed tutorial on LCZ4r General functions (EN) in QGIS below:
+<!-- Embedded Video -->
+<iframe width="560" height="315" 
+        src="https://www.youtube.com/embed/EL56VI8Ok0Q" 
+        title="LCZ4r-QGIS General Functions Tutorial" 
+        frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen></iframe>
+
+## Contact
+Please feel free to contact us if you have any questions or suggestions by emailing [maxanjos\@campus.ul.pt](mailto:maxanjos@campus.ul.pt). If you are interested in contributing to the development of this LCZ4r-QGIS plugin, we welcome you to join our team.
+
+# Have feedback or suggestions?
+Do you have an idea for improvement or did you spot a mistake? We'd love to hear from you! Click the button below to create a new issue (Github) and share your feedback or suggestions directly with us.
+
+<button type="button" class="btn" style="background-color: #008000; color: white; padding: .25rem .5rem; font-size: .75rem; border: none; border-radius: .25rem;">
+  <a href='https://github.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/issues/new'style="text-decoration: none; color: white;">
+    Open an issue in the Github repository
+  </a>
+</button>

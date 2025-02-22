@@ -39,6 +39,7 @@ library(bs4cards)
 #Text
 text_introduction <- "LCZ-QGIS plugin integrates the General Functions and Local Functions from LCZ4r package into QGIS, allowing users to analyze LCZs and urban heat islands directly within the QGIS environment."
 text_instalation <- "You can watch a detailed tutorial on installing LCZ4r in QGIS above or link below."
+text_general<- "Mastering LCZ4r General Functions in QGIS"
 
 ```
 
@@ -47,30 +48,37 @@ text_instalation <- "You can watch a detailed tutorial on installing LCZ4r in QG
 # Create the dataframe
 df_default <- data.frame(
   title_card = c("Introduction to LCZ4r-QGIS plugin", 
-                "Installing LCZ4r in QGIS"
+                "Installing LCZ4r in QGIS",
+                "LCZ4r General Functions in QGIS"
                 ),
   short_name = c("LCZ4r project", 
+                 "LCZ4r project",
                  "LCZ4r project"
                  ),
   author = c(
            "Published on 01 Jan 2025", 
-           "Published on 01 Jan 2025"
+           "Published on 01 Jan 2025",
+           "Published on 22 Feb 2025"
            ),
   description = c(
     text_introduction,
-    text_instalation
+    text_instalation,
+    text_general
   ),
   type_translation = c(
-    "LCZ4r Project",
-    "LCZ4r project"
+    "ENGLISH",
+    "ENGLISH",
+    "ENGLISH"
   ),
   image_url = c(
     "logo_qgis.png",
-    "installing.png"
+    "installing.png",
+    "qgis_general"
   ),
   gallery_url = c(
     "https://bymaxanjos.github.io/LCZ4r/articles/Introd_QGIS_LCZ4r.html",
-    "https://www.youtube.com/embed/RalGSgx8v2Q"
+    "https://www.youtube.com/embed/RalGSgx8v2Q",
+    "https://bymaxanjos.github.io/LCZ4r/articles/Introd_QGIS_LCZ4r_general.html"
   )
 )
 ```
@@ -96,16 +104,46 @@ bs4cards::cards(
 ```
 
 
-## Multilingual Plugins
+## 🌐 Multilingual Plugins
 
-Please, select your preferred language:
+Please, select your preferred language by continent:
 
 ```{r, echo=FALSE}
-#Multilingual texts
-text_english <- "A LCZ4r-QGIS plugin integrates the General Functions and Local Functions from LCZ4r package into QGIS environment."
-text_portuguese <- "O plugin LCZ4r-QGIS integra as Funções Gerais e as Funções Locais do pacote LCZ4r no ambiente QGIS."
-text_deutsch <- "Das LCZ4r-QGIS-Plugin integriert die allgemeinen Funktionen und lokalen Funktionen des LCZ4r-Pakets in die QGIS-Umgebung."
+# English
+text_english <- "The LCZ4r-QGIS plugin integrates the General and Local Functions from the LCZ4r package into the QGIS environment."
+
+# Portuguese
+text_portuguese <- "O plugin LCZ4r-QGIS integra as Funções Gerais e Locais do pacote LCZ4r no ambiente QGIS."
+
+# German
+text_deutsch <- "Das LCZ4r-QGIS-Plugin integriert sowohl die allgemeinen als auch die lokalen Funktionen des LCZ4r-Pakets in die QGIS-Umgebung."
+
+# Chinese
 text_chinese <- "LCZ4r-QGIS插件将LCZ4r包中的通用功能和地方功能集成到QGIS环境中。"
+
+# Spanish
+text_spanish <- "El plugin LCZ4r-QGIS integra las Funciones Generales y Locales del paquete LCZ4r en el entorno QGIS."
+
+# Japanese
+text_japanese <- "LCZ4r-QGISプラグインは、LCZ4rパッケージの一般機能とローカル機能をQGIS環境に統合します。"
+
+# French
+text_french <- "Le plugin LCZ4r-QGIS intègre les fonctions générales et locales du paquet LCZ4r dans l'environnement QGIS."
+
+# Italian
+text_italian <- "Il plugin LCZ4r-QGIS integra le funzioni generali e locali del pacchetto LCZ4r nell'ambiente QGIS."
+
+# Hindi
+text_hindi <- "LCZ4r-QGIS प्लगइन LCZ4r पैकेज से सामान्य कार्यों और स्थानीय कार्यों को QGIS वातावरण में एकीकृत करता है।"
+
+# Arabic (fixed missing "QGIS")
+text_arabic <- "يدمج ملحق LCZ4r-QGIS الوظائف العامة والمحلية من حزمة LCZ4r في بيئة QGIS."
+
+# Bengali
+text_bengali <- "LCZ4r-QGIS প্লাগইন LCZ4r প্যাকেজের সাধারণ এবং স্থানীয় কার্যকারিতা QGIS পরিবেশে একত্রিত করে।"
+
+# Russian
+text_russian <- "Плагин LCZ4r-QGIS интегрирует общие и локальные функции из пакета LCZ4r в среду QGIS."
 
 ```
 
@@ -117,43 +155,85 @@ df_translation <- data.frame(
                 "English - Download plugin", 
                 "Português - Baixar plugin", 
                 "Deutsch - Plugin herunterladen",
-                "中文 - 下载插件"
+                "中文 - 下载插件",
+                "Español - Descargar plugin",
+                "日本語 - プラグインをダウンロード",
+                "Français - Télécharger le plugin",
+                "Italiano - Scarica il plugin",
+                "हिंदी - प्लगइन डाउनलो, करें",
+                "العربية - تحميل الإضافة",
+                "বাংলা - প্লাগইন ডাউনলোড করুন",
+                "Русский - Скачать плагин"
                 ),
   short_name = c(
-                 "Human Translation", 
-                 "Human Translation", 
-                 "Translation-based Generative AI",
-                 "Translation-based Generative AI"
+                 "✅ Available Now (Human translation)",
+                 "🔄 In Progress", 
+                 "Coming soon",
+                 "Coming soon",
+                 "Coming soon",
+                 "Coming soon",
+                 "Coming soon",
+                 "Coming soon",
+                 "Coming soon",
+                 "Coming soon",
+                 "Coming soon",
+                 "Coming soon"
                  ),
   author = c(
-           "Published on 01 Jan 2025 - Max Anjos (maxanjos@campus.ul.pt)", 
-           "Published on 01 Jan 2025 - Max Anjos (maxanjos@campus.ul.pt) • Antônio Campos Neto • Dayvid Madeiros", 
-           "Published on 01 Jan 2025 - Author(s)",
-           "Published on 01 Jan 2025 - Author(s)"
+           "Author: Max Anjos (maxanjos@campus.ul.pt)", 
+           "...", 
+           "...",
+           "...",
+           "...",
+           "...",
+           "...",
+           "...",
+           "...",
+           "...",
+           "...",
+           "..."
            ),
   description = c(
     text_english,
     text_portuguese,
     text_deutsch,
-    text_chinese
-  ),
-  type_translation = c(
-    "Human translation",
-    "HUman translation",
-    "Translation-based Generative AI; Chatgpt4o",
-    "Translation-based Generative AI; Chatgpt4o"
+    text_chinese,
+    text_spanish,
+    text_japanese,
+    text_french,
+    text_italian,
+    text_hindi,
+    text_arabic,
+    text_bengali,
+    text_russian
   ),
   image_url = c(
     "english_card.png",
     "logo_qgis.png",
     "logo_qgis.png",
-    "logo_qgis.png"
+    "logo_qgis.png",
+    "logo_qgis.png",
+    "logo_qgis.png",
+    "logo_qgis.png",
+    "logo_qgis.png",
+    "logo_qgis.png",
+    "logo_qgis.png",
+    "logo_qgis.png",
+     "logo_qgis.png"
   ),
   gallery_url = c(
     "https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/English_LCZ4r.zip",
     "https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Portuguese_LCZ4r.zip",
     "https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Deutsch_LCZ4r.zip",
-    "https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Chinese_LCZ4r.zip"
+    "https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Chinese_LCZ4r.zip",
+    "https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Spanish_LCZ4r.zip",
+    "https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Japanese_LCZ4r.zip",
+    "https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/French_LCZ4r.zip",
+    "https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Italian_LCZ4r.zip",
+    "https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Hindi_LCZ4r.zip",
+    "https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Arabic_LCZ4r.zip",
+    "https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Bengali_LCZ4r.zip",
+    "https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Russian_LCZ4r.zip"
   )
 )
 ```
