@@ -18,7 +18,7 @@ The **LCZ4r** package is supported by the following peer-reviewed publication:
 
 <a href="https://www.nature.com/articles/s41598-025-92000-0" target="_blank">
 <p style="text-align:center;">
-<img src= "vignettes/paper_nature.png"
+<img src= "https://github.com/ByMaxAnjos/LCZ4r/blob/main/vignettes/paper_nature.png"
 alt="Full Article" width="60%"/>
 </p>
 <p style="text-align:center">

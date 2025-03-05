@@ -3,6 +3,7 @@ pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   Introd_QGIS_LCZ4r: Introd_QGIS_LCZ4r.html
+  Introd_QGIS_LCZ4r_general: Introd_QGIS_LCZ4r_general.html
   Introd_genera_LCZ4r: Introd_genera_LCZ4r.html
   Introd_local_LCZ4r: Introd_local_LCZ4r.html
   english_lcz4r_qgis: english_lcz4r_qgis.html
@@ -17,7 +18,7 @@ articles:
   local_func_uhi: local_func_uhi.html
   portuguese_instalation_lcz4r_qgis: portuguese_instalation_lcz4r_qgis.html
   tutorials: tutorials.html
-last_built: 2025-02-17T17:03Z
+last_built: 2025-03-05T15:33Z
 urls:
   reference: https://bymaxanjos.github.io/LCZ4r/reference
   article: https://bymaxanjos.github.io/LCZ4r/articles
