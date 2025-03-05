@@ -17,14 +17,15 @@ The **LCZ4r** package is supported by the following peer-reviewed publication:
 [![Nature Scientific Reports](https://img.shields.io/badge/Published%20in-Nature%20Scientific%20Reports-2A6B92)](https://www.nature.com/scientificreports)
 
 <a href="https://www.nature.com/articles/s41598-025-92000-0" target="_blank">
-<p style="text-align:center;">
-<img src= "https://github.com/ByMaxAnjos/LCZ4r/blob/main/vignettes/paper_nature.png"
-alt="Full Article" width="60%"/>
-</p>
-<p style="text-align:center">
-(Click the image to explore the full publication in Nature Scientific Reports.)
-</p>
-
+  <p style="text-align:center;">
+    <img src="https://github.com/ByMaxAnjos/LCZ4r/raw/main/inst/figures/paper_nature.png" 
+         alt="LCZ4r Publication in Nature Scientific Reports" 
+         width="60%" 
+         style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); transition: transform 0.3s ease;">
+  </p>
+  <p style="text-align:center;">
+    (Click the image to explore the full publication in Nature Scientific Reports.)
+  </p>
 </a>
 
 ---
