@@ -10,6 +10,39 @@ The [**LCZ4r package**](https://github.com/ByMaxAnjos/LCZ4r) provides a comprehe
 
 ---
 
+## Scientific publication
+
+The **LCZ4r** package is supported by the following peer-reviewed publication:
+
+[![Nature Scientific Reports](https://img.shields.io/badge/Published%20in-Nature%20Scientific%20Reports-2A6B92)](https://www.nature.com/scientificreports)
+
+<a href="https://www.nature.com/articles/s41598-025-92000-0" target="_blank">
+<p style="text-align:center;">
+<img src= "vignettes/paper_nature.jpg"
+alt="Full Article" width="60%"/>
+</p>
+<p style="text-align:center">
+(Click the image to explore the full publication in Nature Scientific Reports.)
+</p>
+
+</a>
+
+---
+
+### **Listen to the LCZ4r Podcast**
+Dive deeper into the science behind LCZ4r with our exclusive podcast episode, where we discuss the package's development, applications, and impact on urban climate research.
+
+<audio controls style="width: 100%; margin: 1rem 0; border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+  <source src="https://drive.google.com/uc?export=download&id=11kBmvsvR5XPC4U2v78mp8sQq0PMMUyd1" type="audio/mpeg">
+  Your browser does not support the audio element. [Download the podcast here](https://drive.google.com/file/d/11kBmvsvR5XPC4U2v78mp8sQq0PMMUyd1/view?usp=sharing).
+</audio>
+
+<p style="text-align:center; font-size: 0.9em; color: #555;">
+  Can't play the audio? <a href="https://drive.google.com/file/d/11kBmvsvR5XPC4U2v78mp8sQq0PMMUyd1/view?usp=sharing" target="_blank">Download the podcast</a>.
+</p>
+
+---
+
 ## Package Overview
 
 The **LCZ4r** package includes the following key functions:
