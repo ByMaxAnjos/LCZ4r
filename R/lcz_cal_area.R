@@ -59,7 +59,7 @@ lcz_cal_area <- function(x,
   # Calculate raster area ---------------------------------------------------
 
   freq_df <- tibble::as_tibble(terra::freq({{ x }}, bylayer = FALSE, usenames = TRUE)) %>%
-    purrr::set_names(c("lcz", "count")) %>%
+    dplyr::rename(lcz=value) %>%
     dplyr::mutate(lcz = base::as.factor(lcz))
 
   if (base::any((freq_df$lcz == 0))) {
@@ -72,12 +72,9 @@ lcz_cal_area <- function(x,
 
   lcz_area <- terra::cellSize({{ x }}, unit = "km")
 
-
   lcz_areas_df <- base::data.frame(
     LCZ = terra::values({{ x }}),
-    Area_Km2 = terra::values(lcz_area)
-  ) %>%
-    purrr::set_names(c("lcz", "area")) %>%
+    Area_Km2 = terra::values(lcz_area)) %>%
     stats::na.omit() %>%
     dplyr::group_by(lcz) %>%
     dplyr::summarise(area_km2 = base::round(base::sum(.data$area), digits = 2)) %>%
@@ -88,7 +85,7 @@ lcz_cal_area <- function(x,
 
   lcz <- c(base::seq(1, 10, 1), base::seq(11, 17)) %>%
     tibble::as_tibble() %>%
-    purrr::set_names("ID")
+    dplyr::rename(ID = .data$value)
 
   lcz.name <- c(
     "Compact highrise", "Compact midrise", "Compact lowrise", "Open highrise",
@@ -97,7 +94,7 @@ lcz_cal_area <- function(x,
     "Bush, scrub", "Low plants", "Bare rock or paved", "Bare soil or sand", "Water"
   ) %>%
     tibble::as_tibble() %>%
-    purrr::set_names("lcz.name")
+    dplyr::rename(lcz.name = .data$value)
 
   lcz.col <- c(
     "#910613", "#D9081C", "#FF0A22", "#C54F1E", "#FF6628", "#FF985E",
@@ -105,7 +102,7 @@ lcz_cal_area <- function(x,
     "#628432", "#B5DA7F", "#000000", "#FCF7B1", "#656BFA"
   ) %>%
     tibble::as_tibble() %>%
-    purrr::set_names("lcz.col")
+    dplyr::rename(lcz.col = .data$value)
 
   lcz_colorblind <- c(
     "#E16A86", "#D8755E", "#C98027", "#B48C00",
@@ -115,7 +112,7 @@ lcz_cal_area <- function(x,
     "#E264A9"
   ) %>%
     tibble::as_tibble() %>%
-    purrr::set_names("lcz_colorblind")
+    dplyr::rename(lcz_colorblind = .data$value)
 
   lcz_df <- dplyr::bind_cols(lcz, lcz.name, lcz.col, lcz_colorblind) %>%
     dplyr::mutate(lcz = .data$ID) %>%

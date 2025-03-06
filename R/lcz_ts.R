@@ -278,7 +278,7 @@ lcz_ts <- function(x,
     dplyr::distinct(.data$lcz_id, .data$lcz, .data$station)
 
   lcz <- tibble::as_tibble(c(seq(1, 10, 1), seq(11, 17))) %>%
-    purrr::set_names("lcz")
+    dplyr::rename(lcz= .data$value)
 
   lcz.name <- tibble::as_tibble(c(
     "Compact highrise", "Compact midrise", "Compact lowrise",
@@ -288,7 +288,7 @@ lcz_ts <- function(x,
     "Bush, scrub", "Low plants", "Bare rock or paved",
     "Bare soil or sand", "Water"
   )) %>%
-    purrr::set_names("lcz.name")
+    dplyr::rename(lcz.name= .data$value)
 
   lcz.col <- c(
    "1"= "#910613",

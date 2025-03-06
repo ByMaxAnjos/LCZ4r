@@ -334,7 +334,7 @@ lcz_uhi_intensity <- function(x,
   # Settings for plots ------------------------------------------------------
 
   lcz <- tibble::as_tibble(c(seq(1, 10, 1), seq(11, 17))) %>%
-    purrr::set_names("lcz")
+    dplyr::rename(lcz= .data$value)
 
   lcz.name <- tibble::as_tibble(c(
     "Compact highrise", "Compact midrise", "Compact lowrise",
@@ -344,14 +344,14 @@ lcz_uhi_intensity <- function(x,
     "Bush, scrub", "Low plants", "Bare rock or paved",
     "Bare soil or sand", "Water"
   )) %>%
-    purrr::set_names("lcz.name")
+    dplyr::rename(lcz.name= .data$value)
 
   lcz.col <- tibble::as_tibble(c(
     "#910613", "#D9081C", "#FF0A22", "#C54F1E", "#FF6628", "#FF985E",
     "#FDED3F", "#BBBBBB", "#FFCBAB", "#565656", "#006A18", "#00A926",
     "#628432", "#B5DA7F", "#000000", "#FCF7B1", "#656BFA"
   )) %>%
-    purrr::set_names("lcz.col")
+    dplyr::rename(lcz.col= .data$value)
 
   if (method == "LCZ") {
     lcz_df <- dplyr::bind_cols(lcz, lcz.name, lcz.col) %>%

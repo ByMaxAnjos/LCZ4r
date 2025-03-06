@@ -58,27 +58,31 @@ lcz_plot_map <- function(x,
     # Check if 'ID' column contains 0 and replace it with 17 if it does
     ID <- c(base::seq(1, 10, 1), base::seq(11, 17)) %>%
       tibble::as_tibble() %>%
-      purrr::set_names("ID")
+      dplyr::rename(ID = .data$value)
+
 
     lcz.name <- c("Compact highrise", "Compact midrise", "Compact lowrise", "Open highrise",
                   "Open midrise", "Open lowrise", "Lightweight low-rise", "Large lowrise",
                   "Sparsely built", "Heavy Industry", "Dense trees", "Scattered trees",
                   "Bush, scrub", "Low plants", "Bare rock or paved", "Bare soil or sand", "Water") %>%
       tibble::as_tibble() %>%
-      purrr::set_names("lcz.name")
+      dplyr::rename(lcz.name = .data$value)
+
 
     lcz.col <- c("#910613", "#D9081C", "#FF0A22", "#C54F1E", "#FF6628", "#FF985E",
                  "#FDED3F", "#BBBBBB", "#FFCBAB", "#565656", "#006A18", "#00A926",
                  "#628432", "#B5DA7F", "#000000", "#FCF7B1", "#656BFA") %>%
       tibble::as_tibble() %>%
-      purrr::set_names("lcz.col")
+      dplyr::rename(lcz.col = .data$value)
+
     lcz_colorblind <- c("#E16A86", "#D8755E", "#C98027", "#B48C00",
                         "#989600", "#739F00", "#36A631", "#00AA63",
                         "#00AD89", "#00ACAA", "#00A7C5", "#009EDA",
                         "#6290E5", "#9E7FE5", "#C36FDA", "#D965C6",
                         "#E264A9") %>%
       tibble::as_tibble() %>%
-      purrr::set_names("lcz_colorblind")
+      dplyr::rename(lcz_colorblind = .data$value)
+
 
     lcz_df <- dplyr::bind_cols(ID, lcz.name, lcz.col, lcz_colorblind) %>%
       dplyr::inner_join(rat, by = "ID") %>%

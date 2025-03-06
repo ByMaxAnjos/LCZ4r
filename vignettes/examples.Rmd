@@ -77,7 +77,7 @@ df_default <- data.frame(
   ),
   gallery_url = c(
     "https://bymaxanjos.github.io/LCZ4r/articles/Introd_QGIS_LCZ4r.html",
-    "https://www.youtube.com/embed/RalGSgx8v2Q",
+    "https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r_qgis.html",
     "https://bymaxanjos.github.io/LCZ4r/articles/Introd_QGIS_LCZ4r_general.html"
   )
 )

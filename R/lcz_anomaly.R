@@ -281,7 +281,7 @@ lcz_anomaly <- function(x,
   # Setting
   lcz <- c(base::seq(1, 10, 1), base::seq(11, 17)) %>%
     tibble::as_tibble() %>%
-    purrr::set_names("lcz")
+    dplyr::rename(lcz= .data$value)
 
   lcz.name <- tibble::as_tibble(c(
     "Compact highrise", "Compact midrise", "Compact lowrise",
@@ -291,14 +291,14 @@ lcz_anomaly <- function(x,
     "Bush, scrub", "Low plants", "Bare rock or paved",
     "Bare soil or sand", "Water"
   )) %>%
-    purrr::set_names("lcz.name")
+    dplyr::rename(lcz.name= .data$value)
 
   lcz.col <- tibble::as_tibble(c(
     "#910613", "#D9081C", "#FF0A22", "#C54F1E", "#FF6628", "#FF985E",
     "#FDED3F", "#BBBBBB", "#FFCBAB", "#565656", "#006A18", "#00A926",
     "#628432", "#B5DA7F", "#000000", "#FCF7B1", "#656BFA"
   )) %>%
-    purrr::set_names("lcz.col")
+    dplyr::rename(lcz.col= .data$value)
 
   lcz_colorblind <- c(
     "#E16A86", "#D8755E", "#C98027", "#B48C00",
@@ -308,7 +308,7 @@ lcz_anomaly <- function(x,
     "#E264A9"
   ) %>%
     tibble::as_tibble() %>%
-    purrr::set_names("lcz_colorblind")
+    dplyr::rename(lcz_colorblind= .data$value)
 
   lcz_df <- dplyr::bind_cols(lcz, lcz.name, lcz.col, lcz_colorblind) %>%
     dplyr::mutate(lcz = base::as.factor(.data$lcz)) %>%
