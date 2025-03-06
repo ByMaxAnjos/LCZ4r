@@ -50,10 +50,10 @@ The **Local functions in `LCZ4r`**, offer powerful tools to handle and analyze u
 
 To ensure smooth operation of the local functions, input data should be structured as a data frame with the following columns:
 
-1.  *date*: This column should contain date-time information. This column must labeled "date".
+1.  *date*: This column should contain date-time information. This column must labeled as "date", "time", "timestamp" or "datetime".
 2.  *Station Identifier*: A column for identifying meteorological stations.
 3.  *Air Temperature or other variable*: At least one column representing the air temperature or any other target variable.
-4.  *Latitude* and *Longitude*: Two columns for the geographical coordinates of each station.
+4.  *Latitude* and *Longitude*: Two columns for the geographical coordinates of each station. Ensure the column is named "lat" or "latitude and "lon", "long" or "longitude".
 
 Ensure that the date-time format aligns with R's conventions (e.g., YYYY-MM-DD HH:MM:SS). Acceptable formats include "1/2/1999" or "1999-02-01"
 
