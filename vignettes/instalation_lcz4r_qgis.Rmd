@@ -62,8 +62,8 @@ The [Processing R provider](https://north-road.github.io/qgis-processing-r/) plu
 
 To integrate LCZ4r functionality into QGIS, you need to download the R scripts for your preferred language:
 
-* 1. Visit the [QGIS-LCZ4r Integration page](https://bymaxanjos.github.io/LCZ4r/index.html).
-* 2. [Download](https://bymaxanjos.github.io/LCZ4r/articles/english_lcz4r_qgis.html) the R scripts in your preferred language.
+* 1. Visit the [QGIS-LCZ4r Integration page](https://bymaxanjos.github.io/LCZ4r/articles/examples.html).
+* 2. [Download](https://bymaxanjos.github.io/LCZ4r/articles/examples.html#multilingual-plugins) the R scripts in your preferred language.
 * 3. Unzip the downloaded file and save the scripts in an easily accessible location.
 * 4. Open **QGIS** and got to **Settings** \> **Options...** \> **Processing** \> **Providers** \> **R**.
 * 5. Under **R scripts folder**, add the path where you saved the LCZ4r scripts.
