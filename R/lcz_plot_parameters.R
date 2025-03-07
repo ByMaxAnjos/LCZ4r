@@ -521,7 +521,7 @@ lcz_plot_parameters <- function(x,
       # Convert the raster layer to a data frame
       parameter_df <- terra::as.data.frame(LCZpar[[i]], xy = TRUE) %>%
         stats::na.omit() %>%
-        dplyr::rename(values=.data$lcz)
+        dplyr::rename(values= dplyr::last_col())
         #purrr::set_names(c("x", "y", "values"))
 
       # Plot the lcz parameters
@@ -581,7 +581,7 @@ lcz_plot_parameters <- function(x,
         # Convert the raster layer to a data frame
         parameter_df <- terra::as.data.frame(select_raster[[i]], xy = TRUE) %>%
           stats::na.omit() %>%
-          dplyr::rename(values=.data$lcz)
+          dplyr::rename(values= dplyr::last_col())
           #purrr::set_names(c("x", "y", "values"))
 
         # Plot the lcz parameters
@@ -636,7 +636,7 @@ lcz_plot_parameters <- function(x,
       # Convert the raster layer to a data frame
       parameter_df <- terra::as.data.frame(select_raster, xy = TRUE) %>%
         stats::na.omit() %>%
-        dplyr::rename(values=.data$lcz)
+        dplyr::rename(values= dplyr::last_col())
         #purrr::set_names(c("x", "y", "values"))
 
       # Plot the lcz parameters
