@@ -225,7 +225,7 @@ To save a plot and dataframe, set isave = TRUE and specify the file type with sa
 #Save daylight plot and dataframe into PC
 lcz_ts(lcz_map, data_frame = lcz_data, var = "airT", 
        station_id = "station", time.freq = "hour",
-       year = 2020, month=1, day=15
+       year = 2020, month=1, day=15,
        plot_type = "basic_line", by="daylight", 
        isave=TRUE
        ) 
@@ -240,7 +240,7 @@ To save return in R, set iplot = FALSE and create an object.
 #Return daylight dataframe on 15th January of 2020
 my_output <- lcz_ts(lcz_map, data_frame = lcz_data, var = "airT", 
        station_id = "station", time.freq = "hour",
-       year = 2020, month=1, day=15
+       year = 2020, month=1, day=15,
        plot_type = "basic_line", by="daylight", 
        iplot=FALSE
        ) 
