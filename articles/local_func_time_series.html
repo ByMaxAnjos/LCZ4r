@@ -57,7 +57,7 @@
       <h1>Time Series Analysis</h1>
                         <h4 data-toc-skip class="author">Max Anjos</h4>
             
-            <h4 data-toc-skip class="date">March 07, 2025</h4>
+            <h4 data-toc-skip class="date">March 08, 2025</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ByMaxAnjos/LCZ4r/blob/main/vignettes/local_func_time_series.Rmd" class="external-link"><code>vignettes/local_func_time_series.Rmd</code></a></small>
       <div class="d-none name"><code>local_func_time_series.Rmd</code></div>
@@ -232,25 +232,27 @@ additive model (GAM) line to show the temperature trend.</p>
 <p>To save a plot and dataframe, set isave = TRUE and specify the file
 type with save_extension (e.g., “png”,“jpeg”, “svg”, and “pdf”). A
 folder LCZ4r_output is created into PC.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co">#Save daylight plot and dataframe into PC</span></span>
-<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="fu">lcz_ts</span>(lcz_map, <span class="at">data_frame =</span> lcz_data, <span class="at">var =</span> <span class="st">"airT"</span>, </span>
-<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>       <span class="at">station_id =</span> <span class="st">"station"</span>, <span class="at">time.freq =</span> <span class="st">"hour"</span>,</span>
-<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>       <span class="at">year =</span> <span class="dv">2020</span>, <span class="at">month=</span><span class="dv">1</span>, <span class="at">day=</span><span class="dv">15</span></span>
-<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>       <span class="at">plot_type =</span> <span class="st">"basic_line"</span>, <span class="at">by=</span><span class="st">"daylight"</span>, </span>
-<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>       <span class="at">isave=</span><span class="cn">TRUE</span></span>
-<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>       ) </span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#Save daylight plot and dataframe into PC</span></span>
+<span><span class="fu"><a href="../reference/lcz_ts.html">lcz_ts</a></span><span class="op">(</span><span class="va">lcz_map</span>, data_frame <span class="op">=</span> <span class="va">lcz_data</span>, var <span class="op">=</span> <span class="st">"airT"</span>, </span>
+<span>       station_id <span class="op">=</span> <span class="st">"station"</span>, time.freq <span class="op">=</span> <span class="st">"hour"</span>,</span>
+<span>       year <span class="op">=</span> <span class="fl">2020</span>, month<span class="op">=</span><span class="fl">1</span>, day<span class="op">=</span><span class="fl">15</span>,</span>
+<span>       plot_type <span class="op">=</span> <span class="st">"basic_line"</span>, by<span class="op">=</span><span class="st">"daylight"</span>, </span>
+<span>       isave<span class="op">=</span><span class="cn">TRUE</span></span>
+<span>       <span class="op">)</span> </span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="return-a-dataframe-as-result">Return a dataframe as result<a class="anchor" aria-label="anchor" href="#return-a-dataframe-as-result"></a>
 </h2>
 <p>To save return in R, set iplot = FALSE and create an object.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="co">#Return daylight dataframe on 15th January of 2020</span></span>
-<span id="cb12-2"><a href="#cb12-2" tabindex="-1"></a>my_output <span class="ot">&lt;-</span> <span class="fu">lcz_ts</span>(lcz_map, <span class="at">data_frame =</span> lcz_data, <span class="at">var =</span> <span class="st">"airT"</span>, </span>
-<span id="cb12-3"><a href="#cb12-3" tabindex="-1"></a>       <span class="at">station_id =</span> <span class="st">"station"</span>, <span class="at">time.freq =</span> <span class="st">"hour"</span>,</span>
-<span id="cb12-4"><a href="#cb12-4" tabindex="-1"></a>       <span class="at">year =</span> <span class="dv">2020</span>, <span class="at">month=</span><span class="dv">1</span>, <span class="at">day=</span><span class="dv">15</span></span>
-<span id="cb12-5"><a href="#cb12-5" tabindex="-1"></a>       <span class="at">plot_type =</span> <span class="st">"basic_line"</span>, <span class="at">by=</span><span class="st">"daylight"</span>, </span>
-<span id="cb12-6"><a href="#cb12-6" tabindex="-1"></a>       <span class="at">iplot=</span><span class="cn">FALSE</span></span>
-<span id="cb12-7"><a href="#cb12-7" tabindex="-1"></a>       ) </span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#Return daylight dataframe on 15th January of 2020</span></span>
+<span><span class="va">my_output</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/lcz_ts.html">lcz_ts</a></span><span class="op">(</span><span class="va">lcz_map</span>, data_frame <span class="op">=</span> <span class="va">lcz_data</span>, var <span class="op">=</span> <span class="st">"airT"</span>, </span>
+<span>       station_id <span class="op">=</span> <span class="st">"station"</span>, time.freq <span class="op">=</span> <span class="st">"hour"</span>,</span>
+<span>       year <span class="op">=</span> <span class="fl">2020</span>, month<span class="op">=</span><span class="fl">1</span>, day<span class="op">=</span><span class="fl">15</span>,</span>
+<span>       plot_type <span class="op">=</span> <span class="st">"basic_line"</span>, by<span class="op">=</span><span class="st">"daylight"</span>, </span>
+<span>       iplot<span class="op">=</span><span class="cn">FALSE</span></span>
+<span>       <span class="op">)</span> </span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="have-feedback-or-suggestions">Have feedback or suggestions?<a class="anchor" aria-label="anchor" href="#have-feedback-or-suggestions"></a>
