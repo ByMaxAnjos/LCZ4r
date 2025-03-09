@@ -10,7 +10,7 @@ lcz_ts(
   var = "",
   station_id = "",
   ...,
-  time.freq = "month",
+  time.freq = "hour",
   extract.method = "simple",
   plot_type = "basic_line",
   facet_plot = "LCZ",
