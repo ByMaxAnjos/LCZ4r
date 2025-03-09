@@ -35,7 +35,7 @@ To run LCZ4r in Posit Cloud, follow these steps:
 
 **1. Access the Posit Workspace**:
 Click on the following link to access the LCZ4r workspace:
-LCZ4r::demo General and Local Functions: https://posit.cloud/content/9908130
+LCZ4r::demo General and Local Functions: https://posit.cloud/content/9921467
 
 **2. Log in or create an account (It's free!)**:
 
