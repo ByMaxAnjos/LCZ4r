@@ -207,8 +207,11 @@ lcz_uhi_intensity <- function(x,
       stats::na.omit() %>%
       dplyr::mutate(
         lcz = base::as.factor(.data$lcz)
-      )  %>%
-      dplyr::inner_join(df_processed %>% dplyr::select(.data$my_id, .data$latitude, .data$longitude), by="my_id")
+      ) %>%
+      dplyr::select(.data$my_id, .data$lcz)
+
+    df_model <- dplyr::inner_join(df_processed, df_model, by="my_id")
+
   }
 
   if (extract.method == "bilinear") {
@@ -221,7 +224,9 @@ lcz_uhi_intensity <- function(x,
       dplyr::mutate(
         lcz = base::as.factor(.data$lcz)
       ) %>%
-      dplyr::inner_join(df_processed %>% dplyr::select(.data$my_id, .data$latitude, .data$longitude), by="my_id")
+      dplyr::select(.data$my_id, .data$lcz)
+
+    df_model <- dplyr::inner_join(df_processed, df_model, by="my_id")
   }
 
   if (extract.method == "two.step") {
@@ -265,8 +270,10 @@ lcz_uhi_intensity <- function(x,
       stats::na.omit() %>%
       dplyr::mutate(
         lcz = base::as.factor(.data$lcz)
-      )  %>%
-      dplyr::inner_join(df_processed %>% dplyr::select(.data$my_id, .data$latitude, .data$longitude), by="my_id")
+      ) %>%
+      dplyr::select(.data$my_id, .data$lcz)
+
+    df_model <- dplyr::inner_join(df_processed, df_model, by="my_id")
   }
 
   my_stations <- df_model %>%

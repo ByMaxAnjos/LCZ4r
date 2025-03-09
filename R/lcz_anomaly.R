@@ -208,7 +208,11 @@ lcz_anomaly <- function(x,
         lcz_id = base::as.factor(.data$lcz_id),
         station = base::as.factor(paste0(.data$station, "(", lcz, ")"))
       ) %>%
-      dplyr::inner_join(df_processed %>% dplyr::select(.data$lcz_id, .data$latitude, .data$longitude), by="lcz_id")
+      dplyr::select(.data$station, .data$lcz, .data$lcz_id)
+
+    lcz_model <- dplyr::inner_join(df_processed %>%
+                                     dplyr::select(.data$date, .data$lcz_id, .data$var_interp, .data$latitude, .data$longitude),
+                                   lcz_model, by="lcz_id")
   }
 
   if (extract.method == "bilinear") {
@@ -223,7 +227,11 @@ lcz_anomaly <- function(x,
         lcz_id = base::as.factor(.data$lcz_id),
         station = base::as.factor(paste0(.data$station, "(", lcz, ")"))
       ) %>%
-      dplyr::inner_join(df_processed %>% dplyr::select(.data$lcz_id, .data$latitude, .data$longitude), by="lcz_id")
+      dplyr::select(.data$station, .data$lcz, .data$lcz_id)
+
+    lcz_model <- dplyr::inner_join(df_processed %>%
+                                     dplyr::select(.data$date, .data$lcz_id, .data$var_interp, .data$latitude, .data$longitude),
+                                   lcz_model, by="lcz_id")
   }
 
   if (extract.method == "two.step") {
@@ -270,7 +278,11 @@ lcz_anomaly <- function(x,
         lcz_id = base::as.factor(.data$lcz_id),
         station = base::as.factor(paste0(.data$station, "(", lcz, ")"))
       ) %>%
-      dplyr::inner_join(df_processed %>% dplyr::select(.data$lcz_id, .data$latitude, .data$longitude), by="lcz_id")
+      dplyr::select(.data$station, .data$lcz, .data$lcz_id)
+
+    lcz_model <- dplyr::inner_join(df_processed %>%
+                                     dplyr::select(.data$date, .data$lcz_id, .data$var_interp, .data$latitude, .data$longitude),
+                                   lcz_model, by="lcz_id")
   }
 
   # Settings for plots ------------------------------------------------------
