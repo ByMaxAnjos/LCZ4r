@@ -39,6 +39,7 @@ library(bs4cards)
 #Text
 text_introduction <- "LCZ-QGIS plugin integrates the General Functions and Local Functions from LCZ4r package into QGIS, allowing users to analyze LCZs and urban heat islands directly within the QGIS environment."
 text_instalation <- "You can watch a detailed tutorial on installing LCZ4r in QGIS above or link below."
+text_first <- "Using the LCZ4r-QGIS Plugin for the first time. The initial package installation may take some time, so please be patient."
 text_general<- "Mastering LCZ4r General Functions in QGIS"
 
 ```
@@ -49,23 +50,28 @@ text_general<- "Mastering LCZ4r General Functions in QGIS"
 df_default <- data.frame(
   title_card = c("Introduction to LCZ4r-QGIS plugin", 
                 "Installing LCZ4r in QGIS",
+                "Using the LCZ4r-QGIS Plugin for the first time!",
                 "LCZ4r General Functions in QGIS"
                 ),
   short_name = c("LCZ4r project", 
+                 "LCZ4r project",
                  "LCZ4r project",
                  "LCZ4r project"
                  ),
   author = c(
            "Published on 01 Jan 2025", 
            "Published on 01 Jan 2025",
+           "Published on 08 Mar 2025",
            "Published on 22 Feb 2025"
            ),
   description = c(
     text_introduction,
     text_instalation,
+    text_first,
     text_general
   ),
   type_translation = c(
+    "ENGLISH",
     "ENGLISH",
     "ENGLISH",
     "ENGLISH"
@@ -73,11 +79,13 @@ df_default <- data.frame(
   image_url = c(
     "logo_qgis.png",
     "installing.png",
+    "first_time.png",
     "qgis_general.png"
   ),
   gallery_url = c(
     "https://bymaxanjos.github.io/LCZ4r/articles/Introd_QGIS_LCZ4r.html",
     "https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r_qgis.html",
+    "https://youtu.be/w9B5atgdqis",
     "https://bymaxanjos.github.io/LCZ4r/articles/Introd_QGIS_LCZ4r_general.html"
   )
 )

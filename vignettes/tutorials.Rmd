@@ -39,30 +39,39 @@ library(bs4cards)
 ```{r, echo=FALSE}
 #Text
 text_instalation <- "To install R package LCZ4r, use the development version on GitHub with latest features"
+
+text_posit <- "Run LCZ4r directly in Posit Cloud—no RStudio installation required!"
 ```
 
 
 ```{r, echo=FALSE}
 # Create the dataframe
 df_default <- data.frame(
-  title_card = c("Install LCZ4r in RStudio"
+  title_card = c("Install LCZ4r in RStudio",
+                 "Runing LCZ4r in Posit Cloud"
                 ),
-  short_name = c("Installation"
+  short_name = c("Installation",
+                 "LCZ4r Cloud"
                  ),
   author = c(
-           "©LCZ4r"
+           "©LCZ4r",
+           "©PositCloud"
            ),
   description = c(
-    text_instalation
+    text_instalation,
+    text_posit
   ),
   type_translation = c(
-    "LCZ4r Project"
+    "LCZ4r Project",
+    "LCZ4r and Posit Cloud Project"
   ),
   image_url = c(
-    "instalation_rstudio.png"
+    "instalation_rstudio.png",
+    "posit_cloud.png"
   ),
   gallery_url = c(
-    "https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r.html"
+    "https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r.html",
+    "https://bymaxanjos.github.io/LCZ4r/articles/posit_cloud.html"
   )
 )
 ```

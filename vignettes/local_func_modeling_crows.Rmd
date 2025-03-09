@@ -41,7 +41,7 @@ Urban Heat Islands (UHIs) are a critical environmental issue in cities, where ur
 ```{r eval=TRUE, message=FALSE, warning=FALSE}
 # Install and load necessary packages
 if (!require("pacman")) install.packages("pacman")
-pacman::p_load(dplyr, sf, tmap, ggplot2, devtools)
+pacman::p_load(remotes, dplyr, sf, tmap, ggplot2, devtools)
 
 library(LCZ4r) # For LCZ and UHI analysis
 library(dplyr)  # For data manipulation
@@ -51,7 +51,7 @@ library(ggplot2) #For data visualization
 library(data.table)
 
 #Install
-if (!require("CrowdQCplus")) devtools::install_github("dafenner/CrowdQCplus")
+if (!require("CrowdQCplus")) {remotes::install_github("dafenner/CrowdQCplus")}
 library(CrowdQCplus) # For Quality Control of CWS data
 
 ```
