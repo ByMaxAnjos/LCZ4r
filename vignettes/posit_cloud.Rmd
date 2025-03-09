@@ -11,7 +11,7 @@ output:
     highlight: "textmate"
     css: custom.css
 resource_files:
-  - articles/posit_cloud.png
+  - articles/image_cloud.png
 vignette: >
   %\VignetteIndexEntry{Running LCZ4r in Posit Cloud}
   %\VignetteEngine{rmarkdown::render}
@@ -30,7 +30,6 @@ Welcome to the LCZ4r package demonstration on Posit Cloud! This guide will walk 
 ---
 
 ## Getting Started
-
 
 To run LCZ4r in Posit Cloud, follow these steps:
 
@@ -67,7 +66,7 @@ Simply open the scripts, run the code, and explore the results.
 Below is a screenshot of the Posit Cloud workspace to help you get oriented:
 
 ```{r echo=F, out.width = '100%', fig.align='center'}
-knitr::include_graphics("posit_cloud.png")
+knitr::include_graphics("image_cloud.png")
 ```
 
 

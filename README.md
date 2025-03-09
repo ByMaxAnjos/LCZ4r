@@ -70,6 +70,11 @@ The **LCZ4r** package includes the following key functions:
 
 ---
 
+## [Run LCZ4r in Posit Cloud, no RStudio installation required!](https://bymaxanjos.github.io/LCZ4r/articles/posit_cloud.html)
+
+
+---
+
 ## LCZ4r-QGIS Plugin: Multilingual Integration
 
 The [**LCZ4r-QGIS plugin**](https://bymaxanjos.github.io/LCZ4r/articles/Introd_QGIS_LCZ4r.html) integrates the LCZ4r package with **QGIS**, enabling users to analyze Local Climate Zones and urban heat islands directly within the QGIS environment. The plugin supports multiple languages, making it accessible to a global audience.

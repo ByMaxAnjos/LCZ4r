@@ -6,14 +6,14 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="description" content="LCZ4r">
-<title>Mastering LCZ4r General Functions in QGIS • LCZ4r</title>
+<title>Running LCZ4r in Posit Cloud • LCZ4r</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/Open_Sans-0.4.9/font.css" rel="stylesheet">
 <link href="../deps/Montserrat-0.4.9/font.css" rel="stylesheet">
 <!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
-<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Mastering LCZ4r General Functions in QGIS">
+<!-- bootstrap-toc --><script src="https://cdn.jsdelivr.net/gh/afeld/bootstrap-toc@v1.0.1/dist/bootstrap-toc.min.js" integrity="sha256-4veVQbu7//Lk5TSmc7YV48MxtMy98e26cf5MrgZYnwo=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Running LCZ4r in Posit Cloud">
 <meta property="og:description" content="LCZ4r">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -76,42 +76,56 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-      <img src="" class="logo" alt=""><h1>Mastering LCZ4r General Functions in QGIS</h1>
+      <img src="" class="logo" alt=""><h1>Running LCZ4r in Posit Cloud</h1>
                         <h4 data-toc-skip class="author">Max Anjos</h4>
             
             <h4 data-toc-skip class="date">March 08, 2025</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/ByMaxAnjos/LCZ4r/blob/HEAD/vignettes/Introd_QGIS_LCZ4r_general.Rmd" class="external-link"><code>vignettes/Introd_QGIS_LCZ4r_general.Rmd</code></a></small>
-      <div class="d-none name"><code>Introd_QGIS_LCZ4r_general.Rmd</code></div>
+      <small class="dont-index">Source: <a href="https://github.com/ByMaxAnjos/LCZ4r/blob/HEAD/vignettes/posit_cloud.Rmd" class="external-link"><code>vignettes/posit_cloud.Rmd</code></a></small>
+      <div class="d-none name"><code>posit_cloud.Rmd</code></div>
     </div>
 
     
     
+<p>Welcome to the LCZ4r package demonstration on Posit Cloud! This guide
+will walk you through the steps to run LCZ4r and explore its powerful
+tools for Local Climate Zone (LCZ) analysis.</p>
+<hr>
 <div class="section level2">
-<h2 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
+<h2 id="getting-started">Getting Started<a class="anchor" aria-label="anchor" href="#getting-started"></a>
 </h2>
-<p>The LCZ4r<a href="https://bymaxanjos.github.io/LCZ4r/articles/Introd_genera_LCZ4r.html">General
-Functions</a> are designed to facilitate the retrieval, analysis, and
-visualization of Local Climate Zones (LCZ) when LCZ related data is not
-readily available. These functions enable users to download LCZ maps,
-compute LCZ classes, and extract specific parameters of interest, such
-as Sky View Factor (SVF), impervious surface fraction, and roughness
-element height.</p>
-<p><!-- badges: start --> <a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a> <!-- badges: end --></p>
-<div class="section level3">
-<h3 id="tutorial">Tutorial<a class="anchor" aria-label="anchor" href="#tutorial"></a>
-</h3>
-<p>You can watch a detailed tutorial on LCZ4r General functions (EN) in
-QGIS below: <!-- Embedded Video --> <iframe width="560" height="315" src="https://www.youtube.com/embed/EL56VI8Ok0Q" title="LCZ4r-QGIS General Functions Tutorial" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></p>
+<p>To run LCZ4r in Posit Cloud, follow these steps:</p>
+<p><strong>1. Access the Posit Workspace</strong>: Click on the
+following link to access the LCZ4r workspace: LCZ4r::demo General and
+Local Functions: <a href="https://posit.cloud/content/9908130" class="external-link uri">https://posit.cloud/content/9908130</a></p>
+<p><strong>2. Log in or create an account (It’s free!)</strong>:</p>
+<p>If you don’t already have a Posit Cloud account, create one. Log in
+to your account to access the workspace.</p>
+<p><strong>3. Make a Permanent Copy</strong>:</p>
+<p>Make sure to <strong>make a Permanent Copy</strong> of the project
+and workspace in your Posit Cloud account.</p>
+<p><strong>4. Explore the R Scripts</strong>: The project contains three
+R scripts:</p>
+<ul>
+<li><p><strong>general_functions.R</strong>: Demonstrates general
+functions for LCZ analysis, such as downloading and visualizing LCZ
+maps.</p></li>
+<li><p><strong>local_functions.R</strong>: Focuses on localized LCZ
+analysis, including advanced geostatistical methods.</p></li>
+<li><p><strong>modelling_temperature.R</strong>: Focuses on temperature
+interpolation and Urban Heat Island analysis.</p></li>
+</ul>
+<p><strong>5.Run the Scripts</strong>:</p>
+<p>The LCZ4r package and all dependencies are already installed in the
+Posit Cloud environment, so you’re ready to go!</p>
+<p>Simply open the scripts, run the code, and explore the results.</p>
 </div>
-<div class="section level3">
-<h3 id="contact">Contact<a class="anchor" aria-label="anchor" href="#contact"></a>
-</h3>
-<p>Please feel free to contact us if you have any questions or
-suggestions by emailing <a href="mailto:maxanjos@campus.ul.pt">maxanjos@campus.ul.pt</a>. If you
-are interested in contributing to the development of this LCZ4r-QGIS
-plugin, we welcome you to join our team.</p>
-</div>
+<div class="section level2">
+<h2 id="visualizing-the-workspace">Visualizing the Workspace<a class="anchor" aria-label="anchor" href="#visualizing-the-workspace"></a>
+</h2>
+<p>Below is a screenshot of the Posit Cloud workspace to help you get
+oriented:</p>
+<p><img src="posit_cloud.png" width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level2">
 <h2 id="have-feedback-or-suggestions">Have feedback or suggestions?<a class="anchor" aria-label="anchor" href="#have-feedback-or-suggestions"></a>
