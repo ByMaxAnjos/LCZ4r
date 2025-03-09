@@ -63,7 +63,7 @@ lcz_ts <- function(x,
                    var = "",
                    station_id = "",
                    ...,
-                   time.freq = "hour",
+                   time.freq = "month",
                    extract.method = "simple",
                    plot_type = "basic_line",
                    facet_plot = "LCZ",
@@ -191,11 +191,12 @@ lcz_ts <- function(x,
 
   # Get shp LCZ stations from lat and long
   stations_mod <- df_processed %>%
+    dplyr::distinct(.data$longitude, .data$latitude, .keep_all = T) %>%
     stats::na.omit() %>%
     sf::st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
 
   if (extract.method == "simple") {
-    stations_lcz <- terra::extract(x, terra::vect(stations_mod))
+    stations_lcz <- terra::extract(x, terra::vect(stations_mod), method= "simple")
     stations_lcz$ID <- NULL
     lcz_model <- base::cbind(stations_mod, stations_lcz) %>%
       sf::st_drop_geometry() %>%

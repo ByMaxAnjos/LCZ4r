@@ -224,6 +224,7 @@ lcz_interp_map <- function(x,
 
   #Stratified splitting by LCZ)
   stations_mod <- df_processed %>%
+    dplyr::distinct(.data$longitude, .data$latitude, .keep_all = T) %>%
     sf::st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
 
   if (extract.method == "simple") {

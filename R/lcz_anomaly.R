@@ -193,6 +193,7 @@ lcz_anomaly <- function(x,
 
   # Get shp LCZ stations from lat and long
   stations_mod <- df_processed %>%
+    dplyr::distinct(.data$longitude, .data$latitude, .keep_all = T) %>%
     stats::na.omit() %>%
     sf::st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
 
