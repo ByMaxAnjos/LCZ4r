@@ -17,8 +17,9 @@ articles:
   local_func_time_series: local_func_time_series.html
   local_func_uhi: local_func_uhi.html
   portuguese_instalation_lcz4r_qgis: portuguese_instalation_lcz4r_qgis.html
+  posit_cloud: posit_cloud.html
   tutorials: tutorials.html
-last_built: 2025-03-08T17:06Z
+last_built: 2025-03-09T01:07Z
 urls:
   reference: https://bymaxanjos.github.io/LCZ4r/reference
   article: https://bymaxanjos.github.io/LCZ4r/articles
