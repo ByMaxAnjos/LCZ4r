@@ -75,7 +75,7 @@ If everything is configured correctly, you will see **LCZ4r General Functions** 
 You can watch a detailed tutorial on installing LCZ4r in QGIS below:
 <!-- Embedded Video -->
 <iframe width="560" height="315" 
-        src="https://youtu.be/fM2Mf94eA7w?si=PerPmbVbD60AN9Ed" 
+        src="https://youtu.be/fM2Mf94eA7w" 
         title="Installing LCZ4r in QGIS" 
         frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
         allowfullscreen></iframe>
