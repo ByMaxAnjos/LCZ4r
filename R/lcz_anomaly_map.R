@@ -380,7 +380,7 @@ lcz_anomaly_map <- function(x,
               reference_df <- data_model %>%
                 dplyr::filter(.data$station != paste0(input)) %>%
                 dplyr::mutate(reference_value = mean(.data$var_interp))
-              reference_df <- tibble::as.tibble(mean(reference_df$reference_value))
+              reference_df <- tibble::as_tibble(mean(reference_df$reference_value))
 
               merged_data <- dplyr::bind_cols(mean_df, reference_df) %>%
                 dplyr::rename(reference_value = .data$value) %>%
@@ -526,7 +526,7 @@ lcz_anomaly_map <- function(x,
           reference_df <- data_model %>%
             dplyr::filter(.data$station != paste0(input)) %>%
             dplyr::mutate(reference_value = mean(.data$var_interp))
-          reference_df <- tibble::as.tibble(mean(reference_df$reference_value))
+          reference_df <- tibble::as_tibble(mean(reference_df$reference_value))
 
           merged_data <- dplyr::bind_cols(mean_df, reference_df) %>%
             dplyr::rename(reference_value = .data$value) %>%
@@ -646,7 +646,7 @@ lcz_anomaly_map <- function(x,
           reference_df <- data_model %>%
             dplyr::filter(.data$station != paste0(input)) %>%
             dplyr::mutate(reference_value = mean(.data$var_interp))
-          reference_df <- tibble::as.tibble(mean(reference_df$reference_value))
+          reference_df <- tibble::as_tibble(mean(reference_df$reference_value))
 
           merged_data <- dplyr::bind_cols(mean_df, reference_df) %>%
             dplyr::rename(reference_value = .data$value) %>%
