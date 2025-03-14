@@ -57,7 +57,7 @@
       <h1>Introduction to Local Functions</h1>
                         <h4 data-toc-skip class="author">Max Anjos</h4>
             
-            <h4 data-toc-skip class="date">March 10, 2025</h4>
+            <h4 data-toc-skip class="date">March 14, 2025</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ByMaxAnjos/LCZ4r/blob/main/vignettes/Introd_local_LCZ4r.Rmd" class="external-link"><code>vignettes/Introd_local_LCZ4r.Rmd</code></a></small>
       <div class="d-none name"><code>Introd_local_LCZ4r.Rmd</code></div>
@@ -156,8 +156,11 @@ be structured as a data frame with the following columns:</p>
 <ol style="list-style-type: decimal">
 <li>
 <em>date</em>: This column should contain date-time information.
-This column must labeled as “date”, “time”, “timestamp” or
-“datetime”.</li>
+This column must labeled as <strong>“date”, “time”, “timestamp” or
+“datetime”</strong>. Ensure that the date-time format aligns with R’s
+conventions (e.g., YYYY-MM-DD HH:MM:SS). Acceptable formats include
+“1999-02-01”. For more details, see format dates and times in the <a href="https://openair-project.github.io/book/sections/intro/openair-package.html#reading-and-formatting-dates-and-times" class="external-link">openair
+pak R</a>.</li>
 <li>
 <em>Station Identifier</em>: A column for identifying meteorological
 stations.</li>
@@ -167,11 +170,9 @@ representing the air temperature or any other target variable.</li>
 <li>
 <em>Latitude</em> and <em>Longitude</em>: Two columns for the
 geographical coordinates of each station. Ensure the column is named
-“lat” or “latitude and”lon”, “long” or “longitude”.</li>
+<strong>“lat” or “latitude and”lon”, “long” or
+“longitude”</strong>.</li>
 </ol>
-<p>Ensure that the date-time format aligns with R’s conventions (e.g.,
-YYYY-MM-DD HH:MM:SS). Acceptable formats include “1/2/1999” or
-“1999-02-01”</p>
 <p>To simplify this setup, LCZ4r provides a sample data frame, which you
 can load with the following command:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
