@@ -35,7 +35,8 @@
 #' @param sp.res Numeric. Spatial resolution in meters (default: `100`).
 #' @param tp.res Character. Temporal resolution for averaging (`"hour"`, `"day"`, etc.).
 #' @param by  data frame time-serie split: \dQuote{year}, \dQuote{season}, \dQuote{seasonyear},  \dQuote{month}, \dQuote{monthyear}, \dQuote{weekday}, \dQuote{weekend},  \dQuote{site},
-#'            \dQuote{daylight}, \dQuote{dst} (daylight saving time). Note that the **Daylight option may result in both daytime and nighttime hours being represented in UTC**. See argument \emph{type} in openair package: \url{https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option}#' @param impute Character. Method to impute missing values (`"mean"`, `"median"`, `"knn"`, `"bag"`).
+#'            \dQuote{daylight}, \dQuote{dst} (daylight saving time). Note that the **Daylight option may result in both daytime and nighttime hours being represented in UTC**. See NOAA \url{https://gml.noaa.gov/grad/solcalc/} and argument \emph{type} in openair package: \url{https://openair-project.github.io/book/sections/intro/openair-package.html#the-type-option}
+#' @param impute Character. Method to impute missing values (`"mean"`, `"median"`, `"knn"`, `"bag"`).
 #' @param isave Logical. If `TRUE`, saves the plot to the working directory.
 #' @param LCZinterp Logical. If `TRUE` (default), applies LCZ-based interpolation.
 #'

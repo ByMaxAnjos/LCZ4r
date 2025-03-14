@@ -33,7 +33,7 @@
 #' @param sp.res A numeric value specifying the spatial resolution in meters for interpolation. The default is `100`.
 #' @param tp.res A character string specifying the temporal resolution for averaging. The default is `"hour"`. Other options include `"day"`, `"week"`, `"month"`, `"year"`, `"season"`, `"seasonyear"`, `"monthyear"`, `"weekday"`, `"weekend"`, or custom intervals like `"2 day"`, `"2 week"`, `"3 month"`, etc.
 #' @param by  data frame time-serie split: \dQuote{year}, \dQuote{season}, \dQuote{seasonyear},  \dQuote{month}, \dQuote{monthyear}, \dQuote{weekday}, \dQuote{weekend},  \dQuote{site},
-#'            \dQuote{daylight}, \dQuote{dst} (daylight saving time). Note that the **Daylight option may result in both daytime and nighttime hours being represented in UTC**. See argument \emph{type} in openair package: \url{https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option}
+#'            \dQuote{daylight}, \dQuote{dst} (daylight saving time). Note that the **Daylight option may result in both daytime and nighttime hours being represented in UTC**. See NOAA \url{https://gml.noaa.gov/grad/solcalc/} and argument \emph{type} in openair package: \url{https://openair-project.github.io/book/sections/intro/openair-package.html#the-type-option}
 #' @param Anomaly If `TRUE`,the anomalies are calculated. If `FALSE` (default) the raw air temperatures are used.
 #' @param impute A character string specifying the method to impute missing values. Options include `"mean"`, `"median"`, `"knn"`, or `"bag"`.
 #' @param isave A logical value. If `TRUE`, the plot is saved to the working directory.
