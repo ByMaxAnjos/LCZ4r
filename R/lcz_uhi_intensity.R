@@ -26,7 +26,8 @@
 #' @param Trural Rural station references, if the method "manual" is selected.
 #' @param group If TRUE urban, rural and UHI - related temperatures are grouped in the same plot.
 #' @param time.freq The time period to average to. Default is \dQuote{hour}, but can also be \dQuote{day}, \dQuote{week}, \dQuote{month}, or \dQuote{year}.
-#' @param by The time-series split option. Options include \dQuote{year}, \dQuote{season}, \dQuote{seasonyear}, \dQuote{month}, \dQuote{monthyear}, \dQuote{weekday}, \dQuote{weekend}, \dQuote{site}, \dQuote{daylight}, or \dQuote{dst} (daylight saving time). See the \code{type} argument in the \code{openair} package: \url{https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option}.
+#' @param by  data frame time-serie split: \dQuote{year}, \dQuote{season}, \dQuote{seasonyear},  \dQuote{month}, \dQuote{monthyear}, \dQuote{weekday}, \dQuote{weekend},  \dQuote{site},
+#'            \dQuote{daylight}, \dQuote{dst} (daylight saving time). Note that the **Daylight option may result in both daytime and nighttime hours being represented in UTC**. See argument \emph{type} in openair package: \url{https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option}
 #' @param impute Method to impute missing values. Options include \dQuote{mean}, \dQuote{median}, \dQuote{knn}, or \dQuote{bag}.
 #' @param iplot Set to \code{TRUE} to return a plot. If \code{FALSE}, a data frame is returned.
 #' @param isave Set to \code{TRUE} to save all results (plot, time-series, station references) into your directory.

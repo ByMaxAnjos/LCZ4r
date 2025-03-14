@@ -65,7 +65,8 @@ lcz_interp_eval(
 \item \strong{Ste}: M. Stein's parameterization.
 }}
 
-\item{by}{A character string specifying how to split the time series in the data frame. Options include \code{"year"}, \code{"season"}, \code{"seasonyear"}, \code{"month"}, \code{"monthyear"}, \code{"weekday"}, \code{"weekend"}, \code{"site"}, or \code{"daylight"} (daytime and nighttime). See the \code{type} argument in the \code{openair} package for more details: \url{https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option}.}
+\item{by}{data frame time-serie split: \dQuote{year}, \dQuote{season}, \dQuote{seasonyear},  \dQuote{month}, \dQuote{monthyear}, \dQuote{weekday}, \dQuote{weekend},  \dQuote{site},
+\dQuote{daylight}, \dQuote{dst} (daylight saving time). Note that the \strong{Daylight option may result in both daytime and nighttime hours being represented in UTC}. See argument \emph{type} in openair package: \url{https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option}}
 
 \item{Anomaly}{If \code{TRUE},the anomalies are calculated. If \code{FALSE} (default) the raw air temperatures are used.}
 

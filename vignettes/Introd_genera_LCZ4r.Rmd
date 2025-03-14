@@ -37,7 +37,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-The **`LCZ4r` general functions** are designed to facilitate the retrieval, analysis, and visualization of Local Climate Zones (LCZ) when LCZ related data is not readily available. These functions enable users to download LCZ maps, compute LCZ classes, and extract specific parameters of interest, such as Sky View Factor (SVF), impervious surface fraction, and roughness element height.
+The **`LCZ4r` general functions** are designed to facilitate the retrieval, analysis, and visualization of LCZs, when data is not readily available. These functions enable users to download quickly LCZ maps, compute LCZ classes, and extract specific urban canopy parameters (UCPs) of interest, such as Sky View Factor, impervious surface fraction, and roughness element height and so on.
 
 ## Getting Started
 

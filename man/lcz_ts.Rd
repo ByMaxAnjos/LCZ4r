@@ -61,7 +61,7 @@ lcz_ts(
 \item{facet_plot}{A character string indicating whether to divide the plot by \dQuote{LCZ} or \dQuote{station}. The default is \dQuote{LCZ}.}
 
 \item{by}{data frame time-serie split: \dQuote{year}, \dQuote{season}, \dQuote{seasonyear},  \dQuote{month}, \dQuote{monthyear}, \dQuote{weekday}, \dQuote{weekend},  \dQuote{site},
-\dQuote{daylight}, \dQuote{dst} (daylight saving time).See argument \emph{type} in openair package: \url{https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option}}
+\dQuote{daylight}, \dQuote{dst} (daylight saving time). Note that the \strong{Daylight option may result in both daytime and nighttime hours being represented in UTC}. See argument \emph{type} in openair package: \url{https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option}}
 
 \item{smooth}{Logical. Set to \code{TRUE} to add a smoothed trend line using a generalized additive model (GAM). The default is \code{FALSE}.}
 
