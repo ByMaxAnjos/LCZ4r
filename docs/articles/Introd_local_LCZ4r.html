@@ -79,7 +79,7 @@
       <img src="" class="logo" alt=""><h1>Introduction to Local Functions</h1>
                         <h4 data-toc-skip class="author">Max Anjos</h4>
             
-            <h4 data-toc-skip class="date">March 08, 2025</h4>
+            <h4 data-toc-skip class="date">March 15, 2025</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ByMaxAnjos/LCZ4r/blob/HEAD/vignettes/Introd_local_LCZ4r.Rmd" class="external-link"><code>vignettes/Introd_local_LCZ4r.Rmd</code></a></small>
       <div class="d-none name"><code>Introd_local_LCZ4r.Rmd</code></div>
@@ -178,8 +178,11 @@ be structured as a data frame with the following columns:</p>
 <ol style="list-style-type: decimal">
 <li>
 <em>date</em>: This column should contain date-time information.
-This column must labeled as “date”, “time”, “timestamp” or
-“datetime”.</li>
+This column must labeled as <strong>“date”, “time”, “timestamp” or
+“datetime”</strong>. Ensure that the date-time format aligns with R’s
+conventions (e.g., YYYY-MM-DD HH:MM:SS). Acceptable formats include
+“1999-02-01”. For more details, see format dates and times in the <a href="https://openair-project.github.io/book/sections/intro/openair-package.html#reading-and-formatting-dates-and-times" class="external-link">openair
+pak R</a>.</li>
 <li>
 <em>Station Identifier</em>: A column for identifying meteorological
 stations.</li>
@@ -189,11 +192,9 @@ representing the air temperature or any other target variable.</li>
 <li>
 <em>Latitude</em> and <em>Longitude</em>: Two columns for the
 geographical coordinates of each station. Ensure the column is named
-“lat” or “latitude and”lon”, “long” or “longitude”.</li>
+<strong>“lat” or “latitude and”lon”, “long” or
+“longitude”</strong>.</li>
 </ol>
-<p>Ensure that the date-time format aligns with R’s conventions (e.g.,
-YYYY-MM-DD HH:MM:SS). Acceptable formats include “1/2/1999” or
-“1999-02-01”</p>
 <p>To simplify this setup, LCZ4r provides a sample data frame, which you
 can load with the following command:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
@@ -212,13 +213,10 @@ can load with the following command:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw">if</span><span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"data.table"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-datatable.com" class="external-link">data.table</a></span><span class="op">)</span></span>
+<span><span class="co"># Replace the path with the actual path to your CSV file</span></span>
+<span><span class="va">my_data</span> <span class="op">&lt;-</span> <span class="fu">data.table</span><span class="fu">::</span><span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="st">"PC/path/file_name.csv"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co">#Load data from your PC</span></span>
-<span><span class="va">my_data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdatatable.gitlab.io/data.table/reference/fread.html" class="external-link">fread</a></span><span class="op">(</span><span class="st">"PC/path/file_name.csv"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co">#Check data structure out</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">my_data</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">my_data</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="customizing-local-functions-in-lcz4r">Customizing Local Functions in LCZ4r<a class="anchor" aria-label="anchor" href="#customizing-local-functions-in-lcz4r"></a>
@@ -301,7 +299,12 @@ sites. Available split options include:</p>
 </ol></li>
 <li><ol start="2" style="list-style-type: decimal">
 <li>Daylight split: “daylight”, which divides data into daytime and
-nighttime periods.</li>
+nighttime periods. Note that the
+<strong><code>Daylight option may result in both daytime and nighttime hours being represented in UTC</code></strong>.
+See <a href="https://gml.noaa.gov/grad/solcalc/" class="external-link">NOAA</a> and argument
+type and in <a href="https://openair-project.github.io/book/sections/intro/openair-package.html#the-type-option" class="external-link">openair
+package</a>
+</li>
 </ol></li>
 <li><ol start="3" style="list-style-type: decimal">
 <li>You can use also c(“daylight”, “month”), c(“daylight”,

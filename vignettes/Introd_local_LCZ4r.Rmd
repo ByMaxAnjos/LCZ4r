@@ -77,14 +77,13 @@ knitr::include_graphics("fig_local_1.png")
 ```{r eval=FALSE, message=FALSE, warning=FALSE}
 if(!require(data.table)) install.packages("data.table")
 
-library(data.table)
+# Replace the path with the actual path to your CSV file
+my_data <- data.table::fread("PC/path/file_name.csv")
 
-#Load data from your PC
-my_data <- fread("PC/path/file_name.csv")
+head(my_data)
 
-#Check data structure out
-str(my_data)
 ```
+
 
 ## Customizing Local Functions in LCZ4r
 
@@ -150,11 +149,12 @@ You can segment the LCZ time series data using the *by* argument, allowing for a
 
 * 1. Temporal segments: "year", "season", "seasonyear", "month", "monthyear", "weekday", "weekend".
 
-* 2. Daylight split: "daylight", which divides data into daytime and nighttime periods.
+* 2. Daylight split: "daylight", which divides data into daytime and nighttime periods. Note that the **`Daylight option may result in both daytime and nighttime hours being represented in UTC`**. See [NOAA](https://gml.noaa.gov/grad/solcalc/) and argument type and in [openair package](https://openair-project.github.io/book/sections/intro/openair-package.html#the-type-option)
 
 * 3. You can use also c("daylight", "month"), c("daylight", ""season")
 
 For further details, refer to the [type in openair package:](https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option)
+
 
 
 ## Have feedback or suggestions?

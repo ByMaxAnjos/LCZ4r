@@ -137,8 +137,8 @@ Available models:</p><ul><li><p><code>"Sph"</code>: Spherical model.</p></li>
 
 
 <dt>by</dt>
-<dd><p>Character. Specifies how to split the time series. Options include
-<code>"year"</code>, <code>"month"</code>, <code>"weekday"</code>, <code>"weekend"</code>, etc.</p></dd>
+<dd><p>data frame time-serie split: “year”, “season”, “seasonyear”,  “month”, “monthyear”, “weekday”, “weekend”,  “site”,
+“daylight”, “dst” (daylight saving time). Note that the <strong>Daylight option may result in both daytime and nighttime hours being represented in UTC</strong>. See NOAA <a href="https://gml.noaa.gov/grad/solcalc/" class="external-link">https://gml.noaa.gov/grad/solcalc/</a> and argument <em>type</em> in openair package: <a href="https://openair-project.github.io/book/sections/intro/openair-package.html#the-type-option" class="external-link">https://openair-project.github.io/book/sections/intro/openair-package.html#the-type-option</a></p></dd>
 
 
 <dt>impute</dt>

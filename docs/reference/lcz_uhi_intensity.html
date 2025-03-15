@@ -137,7 +137,8 @@
 
 
 <dt>by</dt>
-<dd><p>The time-series split option. Options include “year”, “season”, “seasonyear”, “month”, “monthyear”, “weekday”, “weekend”, “site”, “daylight”, or “dst” (daylight saving time). See the <code>type</code> argument in the <code>openair</code> package: <a href="https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option" class="external-link">https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option</a>.</p></dd>
+<dd><p>data frame time-serie split: “year”, “season”, “seasonyear”,  “month”, “monthyear”, “weekday”, “weekend”,  “site”,
+“daylight”, “dst” (daylight saving time). Note that the <strong>Daylight option may result in both daytime and nighttime hours being represented in UTC</strong>. See NOAA <a href="https://gml.noaa.gov/grad/solcalc/" class="external-link">https://gml.noaa.gov/grad/solcalc/</a> and argument <em>type</em> in openair package: <a href="https://openair-project.github.io/book/sections/intro/openair-package.html#the-type-option" class="external-link">https://openair-project.github.io/book/sections/intro/openair-package.html#the-type-option</a></p></dd>
 
 
 <dt>impute</dt>
