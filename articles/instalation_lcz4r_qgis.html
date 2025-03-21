@@ -57,7 +57,7 @@
       <h1>Installing LCZ4r in QGIS</h1>
                         <h4 data-toc-skip class="author">Max Anjos</h4>
             
-            <h4 data-toc-skip class="date">March 15, 2025</h4>
+            <h4 data-toc-skip class="date">March 21, 2025</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ByMaxAnjos/LCZ4r/blob/main/vignettes/instalation_lcz4r_qgis.Rmd" class="external-link"><code>vignettes/instalation_lcz4r_qgis.Rmd</code></a></small>
       <div class="d-none name"><code>instalation_lcz4r_qgis.Rmd</code></div>
@@ -65,7 +65,6 @@
 
     
     
-<p><img src="logo_qgis.png" width="100%" style="display: block; margin: auto;"></p>
 <div class="section level2">
 <h2 id="getting-started-installing-lcz4r-in-qgis">🚀 Getting Started: Installing LCZ4r in QGIS<a class="anchor" aria-label="anchor" href="#getting-started-installing-lcz4r-in-qgis"></a>
 </h2>
@@ -74,6 +73,8 @@ This document will guide you through the setup process to enable Local
 Climate Zone (LCZ) analysis within QGIS. With LCZ4r, you can enhance
 urban climate analysis by integrating advanced R functionalities
 directly into your GIS environment.</p>
+<p>You can watch a detailed tutorial on installing LCZ4r in QGIS below:
+<!-- Embedded Video --> <iframe width="560" height="315" src="https://www.youtube.com/embed/fM2Mf94eA7w" title="Installing LCZ4r in QGIS" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></p>
 </div>
 <div class="section level2">
 <h2 id="prerequisites">📌 Prerequisites<a class="anchor" aria-label="anchor" href="#prerequisites"></a>
@@ -155,24 +156,45 @@ libraries</strong>.</li>
 </ol></li>
 <li>7.Click <strong>OK</strong> to confirm your setup.</li>
 </ul>
+<p><img src="directory_QGIS.png" width="100%" style="display: block; margin: auto;"></p>
 <p>If everything is configured correctly, you will see <strong>LCZ4r
-General Functions</strong> and <strong>LCZ4r Local Functions</strong> in
-the <em>Processing Toolbox</em> &gt;<em>R</em> below Example
-Scripts.</p>
-<p>You can watch a detailed tutorial on installing LCZ4r in QGIS below:
-<!-- Embedded Video --> <iframe width="560" height="315" src="https://www.youtube.com/embed/fM2Mf94eA7w" title="Installing LCZ4r in QGIS" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></p>
+General Functions</strong>, <strong>LCZ4r Local Functions</strong>, and
+<strong>LCZ4r Setup Functions</strong> in the <em>Processing
+Toolbox</em> &gt;<em>R</em> below Example Scripts.</p>
+<p><img src="install_QGIS.png" width="100%" style="display: block; margin: auto;"></p>
 </div>
 <div class="section level3">
-<h3 id="run-your-first-lcz4r-script">4. Run your first LCZ4r Script<a class="anchor" aria-label="anchor" href="#run-your-first-lcz4r-script"></a>
+<h3 id="install-the-lcz4r-package-and-additional-necessary-packages">4. Install the LCZ4r package and additional necessary packages<a class="anchor" aria-label="anchor" href="#install-the-lcz4r-package-and-additional-necessary-packages"></a>
 </h3>
-<p>Start by running the <strong>Download LCZ Map</strong> function under
-<em>LCZ4r General Functions</em>. This step will install any additional
-necessary packages; it may take a few minutes, so please be patient.</p>
-<p>💡 <strong>First-Time Setup</strong>: The first script run may take
-longer as it installs all dependencies.</p>
+<p>Begin by running the <strong>Install LCZ4r</strong> function under
+<strong>LCZ4r Setup Functions</strong>. This step will install the LCZ4r
+package along with any additional necessary packages.</p>
+<p>💡 <em>Please note that the first time you run this script, it may
+take longer as it installs all dependencies. Thank you for your
+patience!</em></p>
+</div>
+<div class="section level3">
+<h3 id="run-your-first-lcz4r-script">5. Run your first LCZ4r Script<a class="anchor" aria-label="anchor" href="#run-your-first-lcz4r-script"></a>
+</h3>
+<p>Next, run the <strong>Download LCZ map</strong> function under
+<strong>LCZ4r General Functions</strong>.</p>
 <p>🌟 <em>Once the process is complete, you should see the output LCZ
-map. Congratulations! You’re now ready to enjoy the functions of the
-LCZ4r-QGIS plugin</em>.</p>
+map. Congratulations! You’re now ready to explore the functions of the
+LCZ4r-QGIS plugin!</em>.</p>
+</div>
+<div class="section level3">
+<h3 id="upgrade-lcz4r-regularly-and-select-language-functions">5. Upgrade LCZ4r regularly and select language functions<a class="anchor" aria-label="anchor" href="#upgrade-lcz4r-regularly-and-select-language-functions"></a>
+</h3>
+<p>To ensure you benefit from the latest improvements (including new
+languages), run the <strong>Upgrade LCZ4r</strong> function under
+<strong>LCZ4r Setup Functions</strong>.</p>
+<p>Select the folder where the script be stored. To do this, navigate
+first to the same directory where the scripts are installed:</p>
+<p>🌟Open <strong>QGIS</strong> and got to <strong>Settings</strong>
+&gt; <strong>Options…</strong> &gt; <strong>Processing</strong> &gt;
+<strong>Providers</strong> &gt; <strong>R</strong> &gt; <strong>R
+scripts folder</strong>.</p>
+<p>Next, select your language and click <strong>Run</strong>.</p>
 </div>
 </div>
 <div class="section level2">
