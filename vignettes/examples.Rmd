@@ -160,8 +160,13 @@ text_russian <- "Плагин LCZ4r-QGIS интегрирует общие и л
 # Create the dataframe
 df_translation <- data.frame(
   title_card = c(
-                "English - Download plugin", 
-                "Português - Baixar plugin", 
+                  "<button type='button' class='btn' style='background-color: #008000; color: white; padding: .25rem .5rem; font-size: .75rem; border: none; border-radius: .25rem;'>
+      <a href='https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/English_LCZ4r.zip' style='text-decoration: none; color: white;'>
+        <img src='download-icon.png' alt='Download Icon' style='width: 16px; height: 16px; vertical-align: middle; margin-right: 5px;'>
+        Download Ensligh Plugin File.zip
+      </a>
+    </button>",
+    "Português - Baixar plugin", 
                 "Deutsch - Plugin herunterladen",
                 "中文 - 下载插件",
                 "Español - Descargar plugin",

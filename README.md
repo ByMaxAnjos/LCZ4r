@@ -72,6 +72,17 @@ The **LCZ4r** package includes the following key functions:
 
 ## [Run LCZ4r in Posit Cloud, no RStudio installation required!](https://bymaxanjos.github.io/LCZ4r/articles/posit_cloud.html)
 
+<a href="https://posit.cloud/content/9921467" target="_blank">
+  <p style="text-align:center;">
+    <img src="https://github.com/ByMaxAnjos/LCZ4r/raw/main/inst/figures/posit_cloud.png" 
+         alt="Posit Cloud" 
+         width="60%" 
+         style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); transition: transform 0.3s ease;">
+  </p>
+  <p style="text-align:center;">
+    (Click the image to explore the LCZ4r in Posit Cloud.)
+  </p>
+</a>
 
 ---
 
