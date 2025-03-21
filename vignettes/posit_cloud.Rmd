@@ -42,9 +42,9 @@ LCZ4r::demo General and Local Functions: https://posit.cloud/content/9921467
 If you don’t already have a Posit Cloud account, create one.
 Log in to your account to access the workspace.
 
-**3. Make a Permanent Copy**:
+**3. Save a Permanent Copy**:
 
-Make sure to **make a Permanent Copy** of the project and workspace in your Posit Cloud account.
+Make sure to **Save a Permanent Copy** of the project and workspace in your Posit Cloud account.
 
 **4. Explore the R Scripts**:
 The project contains three R scripts:
