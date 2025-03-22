@@ -99,7 +99,7 @@ Next, run the **Download LCZ map** function under **LCZ4r General Functions**.
 
 🌟 *Once the process is complete, you should see the output LCZ map. Congratulations! You’re now ready to explore the functions of the LCZ4r-QGIS plugin!*.
 
-### 5. Upgrade LCZ4r regularly and select language functions
+### 6. Upgrade LCZ4r regularly and select language functions
 
 To ensure you benefit from the latest improvements (including new languages), run the **Upgrade LCZ4r** function under **LCZ4r Setup Functions**. 
 

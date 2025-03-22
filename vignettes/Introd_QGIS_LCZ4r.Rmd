@@ -33,7 +33,9 @@ A **LCZ4r-QGIS plugin** repository that integrates the **LCZ4r package** with [Q
   [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
   <!-- badges: end -->
 
-<img width="1217" alt="logo_qgis" src="https://github.com/user-attachments/assets/68cdca10-c1d5-4755-8d73-351af809552a">
+```{r echo=F, out.width = '100%', fig.align='center'}
+knitr::include_graphics("install_QGIS.png")
+```
 
 ## Key Features
 * Seamless Integration: smooth interaction between QGIS and the LCZ4r package, enabling users to leverage R's statistical and graphical capabilities within the QGIS interface 

@@ -114,7 +114,7 @@ bs4cards::cards(
 
 ## 🌐 Multilingual Plugins
 
-Please, select your preferred language by continent:
+Select your preferred language:
 
 ```{r, echo=FALSE}
 # English
