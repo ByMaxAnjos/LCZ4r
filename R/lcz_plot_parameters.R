@@ -35,10 +35,10 @@
 #'   \item \strong{SALmean}: Mean Surface Albedo
 #'   \item \strong{SALmax}: Maximum Surface Albedo
 #'   \item \strong{SALmin}: Minimum Surface Albedo
-#'   \item \strong{AHmean}: Mean Anthropogenic Heat Outupt
-#'   \item \strong{AHmax}: Maximum Anthropogenic Heat Outupt
-#'   \item \strong{AHmin}: Minimum Anthropogenic Heat Outupt
-#'   \item \strong{z0}: Roughness Lenght class
+#'   \item \strong{AHmean}: Mean Anthropogenic Heat Output
+#'   \item \strong{AHmax}: Maximum Anthropogenic Heat Output
+#'   \item \strong{AHmin}: Minimum Anthropogenic Heat Output
+#'   \item \strong{z0}: Roughness Length class
 #' }
 #' @param isave Logical, indicating whether to save the plot to your directory. Default is FALSE.
 #' @param save_extension File format for saving the plot. Options: "png", "jpg", "jpeg", "tif", "pdf", "svg" (default is "png").
@@ -177,16 +177,16 @@ lcz_plot_parameters <- function(x,
       return("Mean Surface Albedo")
     }
     if (x == "AHmin") {
-      return("Minimum Anthropogenic Heat Outupt")
+      return("Minimum Anthropogenic Heat Output")
     }
     if (x == "AHmax") {
-      return("Maximum Anthropogenic Heat Outupt")
+      return("Maximum Anthropogenic Heat Output")
     }
     if (x == "AHmean") {
-      return("Mean Anthropogenic Heat Outupt")
+      return("Mean Anthropogenic Heat Output")
     }
     if (x == "z0") {
-      return("Roughness Lenght")
+      return("Roughness Length")
     }
   }
 
