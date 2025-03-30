@@ -49,10 +49,10 @@ lcz_plot_parameters(
 \item \strong{SALmean}: Mean Surface Albedo
 \item \strong{SALmax}: Maximum Surface Albedo
 \item \strong{SALmin}: Minimum Surface Albedo
-\item \strong{AHmean}: Mean Anthropogenic Heat Outupt
-\item \strong{AHmax}: Maximum Anthropogenic Heat Outupt
-\item \strong{AHmin}: Minimum Anthropogenic Heat Outupt
-\item \strong{z0}: Roughness Lenght class
+\item \strong{AHmean}: Mean Anthropogenic Heat Output
+\item \strong{AHmax}: Maximum Anthropogenic Heat Output
+\item \strong{AHmin}: Minimum Anthropogenic Heat Output
+\item \strong{z0}: Roughness Length class
 }}
 
 \item{all}{Logical, specifying whether to save all selected parameters into LCZ4r_output. Default is FALSE.}

@@ -28,7 +28,6 @@
 #'
 #' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis
 
-
 lcz_plot_interp <- function(x,
                             palette = "muted",
                             direction = 1,
@@ -36,97 +35,65 @@ lcz_plot_interp <- function(x,
                             isave = FALSE,
                             save_extension = "png",
                             ...) {
-  # Validate inputs
+  # Validate inputs more efficiently
   if (is.null(x)) {
     stop("The input must be a SpatRaster object. Please use lcz_anomaly_map() or lcz_interp_map() to generate the input.")
-  } else if (!inherits(x, "SpatRaster")) {
-    x <- terra::rast(x)
   }
 
-  if (terra::nlyr({{ x }}) > 1) {
-    final_graph <- ggplot2::ggplot() +
-      tidyterra::geom_spatraster(data = {{ x }}) +
-      tidyterra::scale_fill_whitebox_c(palette = palette, direction = direction) +
-      ggplot2::facet_wrap(~lyr, ncol = {{ ncol }}, nrow = {{ nrow }}) +
-      ggplot2::guides(fill = ggplot2::guide_colorbar(title.position = "top")) +
-      ggplot2::coord_sf(expand = FALSE, clip = "off") +
-      ggplot2::labs(...) +
-      ggplot2::theme_void() +
-      ggplot2::theme(
-        legend.position = "right",
-        legend.direction = "vertical",
-        legend.key.height = ggplot2::unit(40L, "pt"),
-        legend.title = ggplot2::element_text(size = 15, hjust = 0.5),
-        strip.text = ggplot2::element_text(hjust = 0, size = 14),
-        legend.text = ggplot2::element_text(size = 12),
-        # plot.background = ggplot2::element_rect(fill = "grey98", color = NA),
-        plot.title = ggplot2::element_text(face = "bold", size = 20),
-        plot.subtitle = ggplot2::element_text(margin = ggplot2::margin(5, 0, 15, 0), size = 17),
-        plot.caption = ggplot2::element_text(color = "grey40", size = 10),
-        plot.margin = ggplot2::margin(0, 10, 0, 10)
-      )
+  # Convert to SpatRaster if needed (only once)
+  x <- if (!inherits(x, "SpatRaster")) terra::rast(x) else x
 
-    if (isave == TRUE) {
-      # Create a folder name using paste0
-      folder <- base::paste0("LCZ4r_output/")
+  # Create base plot elements (common to both cases)
+  base_plot <- ggplot2::ggplot() +
+    tidyterra::geom_spatraster(data = x, na.rm = TRUE) +  # Handle NA values
+    tidyterra::scale_fill_whitebox_c(
+      palette = palette,
+      direction = direction,
+      na.value = "transparent"
+    ) +
+    ggplot2::guides(fill = ggplot2::guide_colorbar(title.position = "top")) +
+    ggplot2::coord_sf(expand = FALSE, clip = "off") +
+    ggplot2::labs(...) +
+    ggplot2::theme_void() +
+    ggplot2::theme(
+      legend.position = "right",
+      legend.direction = "vertical",
+      legend.key.height = ggplot2::unit(40L, "pt"),
+      legend.title = ggplot2::element_text(size = 15, hjust = 0.5),
+      strip.text = ggplot2::element_text(hjust = 0, size = 14),
+      legend.text = ggplot2::element_text(size = 12),
+      plot.title = ggplot2::element_text(face = "bold", size = 20),
+      plot.subtitle = ggplot2::element_text(margin = ggplot2::margin(5, 0, 15, 0), size = 17),
+      plot.caption = ggplot2::element_text(color = "grey30", size = 12),
+      plot.margin = ggplot2::margin(0, 10, 0, 10)
+    )
 
-      # Check if the folder exists
-      if (!base::dir.exists(folder)) {
-        # Create the folder if it does not exist
-        base::dir.create(folder)
-      }
-
-      # Save map as figure.png
-      file <- base::paste0(getwd(), "/", folder, "lcz_interp_map.", save_extension)
-      ggplot2::ggsave(file, final_graph, height = 9, width = 16, units = "in", dpi = 600)
-      base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
-    }
-
-    return(final_graph)
+  # Add faceting only if multiple layers exist
+  if (terra::nlyr(x) > 1) {
+    final_graph <- base_plot +
+      ggplot2::facet_wrap(~lyr, ncol = ncol, nrow = nrow)
   } else {
-    final_graph <- ggplot2::ggplot() +
-      tidyterra::geom_spatraster(data = {{ x }}) +
-      tidyterra::scale_fill_whitebox_c(palette = palette, direction = direction) +
-      ggplot2::guides(fill = ggplot2::guide_colorbar(title.position = "top")) +
-      ggplot2::coord_sf(expand = FALSE, clip = "off") +
-      ggplot2::labs(...) +
-      ggplot2::theme_void() +
-      ggplot2::theme(
-        legend.position = "right",
-        legend.direction = "vertical",
-        legend.key.height = ggplot2::unit(40L, "pt"),
-        legend.title = ggplot2::element_text(size = 15, hjust = 0.5),
-        strip.text = ggplot2::element_text(hjust = 0, size = 14),
-        legend.text = ggplot2::element_text(size = 12),
-        # plot.background = ggplot2::element_rect(fill = "grey98", color = NA),
-        plot.title = ggplot2::element_text(face = "bold", size = 20),
-        plot.subtitle = ggplot2::element_text(margin = ggplot2::margin(5, 0, 15, 0), size = 17),
-        plot.caption = ggplot2::element_text(color = "grey30", size = 12),
-        plot.margin = ggplot2::margin(0, 10, 0, 10)
-      )
-    if (isave == TRUE) {
-      # Create a folder name using paste0
-      folder <- base::paste0("LCZ4r_output/")
-
-      # Check if the folder exists
-      if (!base::dir.exists(folder)) {
-        # Create the folder if it does not exist
-        base::dir.create(folder)
-      }
-
-      # Save map as figure.png
-      file <- base::paste0(getwd(), "/", folder, "lcz_interp_map.", save_extension)
-      ggplot2::ggsave(file, final_graph, height = 9, width = 16, units = "in", dpi = 600)
-      base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
-    }
-
-    return(final_graph)
+    final_graph <- base_plot
   }
+
+  # Handle saving (common to both cases)
+  if (isave) {
+    folder <- "LCZ4r_output/"
+    if (!dir.exists(folder)) dir.create(folder, recursive = TRUE)
+
+    file <- file.path(getwd(), folder, paste0("lcz_interp_map.", save_extension))
+    ggplot2::ggsave(
+      filename = file,
+      plot = final_graph,
+      height = 9,
+      width = 16,
+      units = "in",
+      dpi = 600
+    )
+    message("Looking at your files in the path: ", file.path(getwd(), folder))
+  }
+
+  return(final_graph)
 }
-
-
-
-
-
 
 
