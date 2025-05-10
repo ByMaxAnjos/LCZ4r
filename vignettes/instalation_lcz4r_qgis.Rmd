@@ -48,9 +48,10 @@ Before proceeding, ensure that you have the following:
 ### 1. Install R (Version <= 4.3)
 
 The [R](https://www.r-project.org/) is an open-source software environment for statistical computing and graphics, required to run LCZ4r scripts. Follow these steps:
--   Download and install R (version <= 4.3) from CRAN for your operating system: [Windows](https://cran.r-project.org/bin/windows/base/old/4.3.3/), [macOS](https://cran.r-project.org/bin/macosx/big-sur-arm64/base/), or [Linux](https://www.r-project.org/).
--   If using Windows, also install the corresponding version of [Rtools](https://cran.r-project.org/bin/windows/Rtools/). 
--   **Tip**: Ensure R is added to your system’s PATH so QGIS can interact with it.
+
+1.  Download and install R (version <= 4.3) from CRAN for your operating system: [Windows](https://cran.r-project.org/bin/windows/base/old/4.3.3/), [macOS](https://cran.r-project.org/bin/macosx/big-sur-arm64/base/), or [Linux](https://www.r-project.org/).
+2.  If using Windows, also install the corresponding version of [Rtools](https://cran.r-project.org/bin/windows/Rtools/). 
+3.  **Tip**: Ensure R is added to your system’s PATH so QGIS can interact with it.
 
 ### 2. Install the Processing R Provider in QGIS
 
