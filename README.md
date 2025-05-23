@@ -98,10 +98,13 @@ The [**LCZ4r-QGIS plugin**](https://bymaxanjos.github.io/LCZ4r/articles/Introd_Q
 
 The development of the **LCZ4r** package is led by [**Dr. Max Anjos**](https://www.researchgate.net/profile/Max-Anjos/research) and supported by a team of researchers:
 
-- **Dr. Fred Meier**, Chair of Climatology, Institute of Ecology, Technische Universität Berlin.
-- **Dr. Francisco Castelhano**, Center for Climate Crisis Studies, Department of Geography, Federal University of Rio Grande do Norte, Brazil.
-- **Dayvid Carlos de Medeiros**, Center for Climate Crisis Studies, Department of Geography, Federal University of Rio Grande do Norte, Brazil.
-- **Antônio Campos Neto**, Center for Climate Crisis Studies, Department of Geography, Federal University of Rio Grande do Norte, Brazil.
+With the following contributors:
+
+- **Dr. Fred Meier**, Chair of Climatology, Institute of Ecology, Technische Universität Berlin (fred.meier@tu-berlin.de).
+- **Dr. Francisco Castelhano**, Center for Climate Crisis Studies, Department of Geography, Federal University of Rio Grande do Norte, Brazil (fjcastelhano@gmail.com).
+- **Dayvid Carlos de Medeiros**, Center for Climate Crisis Studies, Department of Geography, Federal University of Rio Grande do Norte, Brazil (Dayvid.medeiros.123@ufrn.edu.br).
+- **Antônio Campos Neto**, Center for Climate Crisis Studies, Department of Geography, Federal University of Rio Grande do Norte, Braziln (antoniocamposneto9@gmail.com).
+- **José Felipe da Costa Neto**, Department of Geography, Federal University of Rio Grande do Norte, Braziln (jose.felipe.124@ufrn.edu.br).
 
 ---
 

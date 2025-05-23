@@ -31,7 +31,7 @@ knitr::opts_chunk$set(
 Welcome to the **LCZ4r-QGIS plugin installation guide!** This document will guide you through the setup process to enable Local Climate Zone (LCZ) analysis within QGIS. With LCZ4r, you can enhance urban climate analysis by integrating advanced R functionalities directly into your GIS environment.
 
 You can watch a detailed tutorial on installing LCZ4r in QGIS below: <!-- Embedded Video --> <iframe width="560" height="315" 
-        src="https://www.youtube.com/embed/fM2Mf94eA7w" 
+        src="https://www.youtube.com/embed/qG_BbyDb-P8" 
         title="Installing LCZ4r in QGIS" 
         frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
         allowfullscreen></iframe>
