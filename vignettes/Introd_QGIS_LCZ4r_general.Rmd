@@ -42,7 +42,7 @@ The LCZ4r[General Functions](https://bymaxanjos.github.io/LCZ4r/articles/Introd_
 You can watch a detailed tutorial on LCZ4r General functions (EN) in QGIS below:
 <!-- Embedded Video -->
 <iframe width="560" height="315" 
-        src="https://www.youtube.com/embed/EL56VI8Ok0Q" 
+        src="https://www.youtube.com/embed/WeaP1a2DCyw" 
         title="LCZ4r-QGIS General Functions Tutorial" 
         frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
         allowfullscreen></iframe>
