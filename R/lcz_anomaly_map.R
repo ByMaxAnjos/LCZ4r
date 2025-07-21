@@ -174,7 +174,8 @@ lcz_anomaly_map <- function(x,
       var_interp = base::as.numeric(.data$var_interp),
       date = lubridate::as_datetime(.data$date)
     ) %>%
-    dplyr::ungroup()
+    dplyr::ungroup() %>%
+    dplyr::select(.data$date, .data$station, .data$my_id, .data$var_interp, .data$latitude, .data$longitude)
 
   # Impute missing values if necessary
   missing_values = c("NAN","NaN", "-9999", "-99", "NULL", "",
