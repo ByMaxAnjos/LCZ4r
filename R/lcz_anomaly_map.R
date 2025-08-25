@@ -115,12 +115,22 @@ lcz_anomaly_map <- function(x,
     x <- x[[2]]
   }
 
-  if (terra::crs(x, proj = TRUE) != "+proj=longlat +datum=WGS84 +no_defs") {
-    warning("The input 'x' is not in WGS84 projection. Reprojecting to WGS84.")
-    x <- terra::project(x, "+proj=longlat +datum=WGS84 +no_defs")
+  # if (terra::crs(x, proj = TRUE) != "+proj=longlat +datum=WGS84 +no_defs") {
+  #   warning("The input 'x' is not in WGS84 projection. Reprojecting to WGS84.")
+  #   x <- terra::project(x, "+proj=longlat +datum=WGS84 +no_defs")
+  # }
+
+  target_crs_lonlat <- "EPSG:4326"  # WGS84
+  target_crs_projected <- "EPSG:3857"  # Web Mercator
+
+  if (terra::crs(x, proj = TRUE) != terra::crs(target_crs_lonlat, proj = TRUE)) {
+    warning("Reprojecting input raster to WGS84 (EPSG:4326)")
+    x <- terra::project(x, target_crs_lonlat)
   }
 
-
+  if (is.na(terra::crs(x))) {
+    terra::crs(x) <- target_crs_lonlat
+  }
   # Check data inputs -------------------------------------------------------
   if (!is.data.frame(data_frame)) {
     stop("The 'data_frame' input must be a data frame containing air temperature measurements,station IDs, latitude, and longitude.")
@@ -415,7 +425,7 @@ lcz_anomaly_map <- function(x,
             mydate <- base::gsub("[: -]", "", mydate[1], perl = TRUE)
             ras_name <- ifelse(LCZinterp, base::paste0("lcz_krige_", mydate), base::paste0("krige_", mydate))
             base::names(interp_map) <- ras_name
-
+            interp_map <- terra::project(interp_map, target_crs_lonlat)
             return(interp_map)
           }
 
@@ -560,7 +570,7 @@ lcz_anomaly_map <- function(x,
         interp_map <- terra::focal(interp_map, w = 7, fun = mean)
         ras_name <- ifelse(LCZinterp, base::paste0("lcz_krige_", my_by), base::paste0("krige_", my_by))
         base::names(interp_map) <- ras_name
-
+        interp_map <- terra::project(interp_map, target_crs_lonlat)
         return(interp_map)
       }
 
@@ -679,7 +689,7 @@ lcz_anomaly_map <- function(x,
         interp_map <- terra::focal(interp_map, w = 7, fun = mean)
         ras_name <- ifelse(LCZinterp, base::paste0("lcz_krige_", my_by,"_", my_by2), base::paste0("krige_", my_by, "_", my_by2))
         base::names(interp_map) <- ras_name
-
+        interp_map <- terra::project(interp_map, target_crs_lonlat)
         return(interp_map)
       }
 

@@ -31,7 +31,8 @@
 lcz_plot_interp <- function(x,
                             palette = "muted",
                             direction = 1,
-                            ncol = NULL, nrow = NULL,
+                            ncol = NULL,
+                            nrow = NULL,
                             isave = FALSE,
                             save_extension = "png",
                             ...) {
