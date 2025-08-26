@@ -108,11 +108,29 @@ lcz_interp_eval <- function(x,
     x <- x[[2]]
   }
 
-  if (terra::crs(x, proj = TRUE) != "+proj=longlat +datum=WGS84 +no_defs") {
-    warning("The input 'x' is not in WGS84 projection. Reprojecting to WGS84.")
-    x <- terra::project(x, "+proj=longlat +datum=WGS84 +no_defs")
+  target_crs_lonlat <- "EPSG:4326"  # WGS84
+
+  if (terra::crs(x, proj = TRUE) != terra::crs(target_crs_lonlat, proj = TRUE)) {
+    warning("Reprojecting input raster to WGS84 (EPSG:4326)")
+    x <- terra::project(x, target_crs_lonlat)
   }
 
+  if (is.na(terra::crs(x))) {
+    terra::crs(x) <- target_crs_lonlat
+  }
+
+  #Proj for interpolation
+  bbox <- terra::ext(x)
+  lon <- (bbox[1] + bbox[2]) / 2
+  lat <- (bbox[3] + bbox[4]) / 2
+  utm_zone <- floor((lon + 180) / 6) + 1
+
+  if (lat >= 0) {
+    epsg_code <- paste0("EPSG:326", utm_zone) #Hemisphere North
+  } else {
+    epsg_code <- paste0("EPSG:327", utm_zone) #Hemisphere South
+  }
+  target_crs <- epsg_code
 
   # Check data inputs -------------------------------------------------------
   if (!is.data.frame(data_frame)) {
@@ -213,7 +231,7 @@ lcz_interp_eval <- function(x,
   # Convert lcz_map to polygon
   lcz_shp <- terra::as.polygons(x) %>%
     sf::st_as_sf() %>%
-    sf::st_transform(crs = 4326)
+    sf::st_transform(crs = target_crs_lonlat)
 
   # Get id stations
   my_stations <- df_processed %>%
@@ -222,14 +240,14 @@ lcz_interp_eval <- function(x,
   #Stratified splitting by LCZ)
   stations_mod <- df_processed %>%
     #dplyr::distinct(.data$longitude, .data$latitude, .keep_all = T) %>%
-    sf::st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
+    sf::st_as_sf(coords = c("longitude", "latitude"), crs = target_crs_lonlat)
 
   if (extract.method == "simple") {
     stations_lcz <- terra::extract(x, terra::vect(stations_mod))
     stations_lcz$ID <- NULL
     df_interp_mod <- base::cbind(stations_mod, stations_lcz) %>%
       sf::st_as_sf() %>%
-      sf::st_transform(crs = 3857) %>%
+      sf::st_transform(crs = target_crs) %>%
       stats::na.omit()
     }
 
@@ -239,7 +257,7 @@ lcz_interp_eval <- function(x,
     stations_lcz$lcz <- as.integer(stations_lcz$lcz)
     df_interp_mod <- base::cbind(stations_mod, stations_lcz) %>%
       sf::st_as_sf() %>%
-      sf::st_transform(crs = 3857) %>%
+      sf::st_transform(crs = target_crs) %>%
       stats::na.omit()
   }
 
@@ -281,17 +299,23 @@ lcz_interp_eval <- function(x,
     stations_lcz$ID <- NULL
     df_interp_mod <- base::cbind(df_homogeneous, stations_lcz) %>%
       sf::st_as_sf() %>%
-      sf::st_transform(crs = 3857) %>%
+      sf::st_transform(crs = target_crs) %>%
       stats::na.omit()
   }
 
   # Re-project and make a grid to interpolation
-  lcz_box <- sf::st_transform(lcz_shp, crs = 3857)
+  x <- terra::project(x, target_crs)
+
+  if (is.na(terra::crs(x))) {
+    terra::crs(x) <- target_crs
+  }
+
+  lcz_box <- sf::st_transform(lcz_shp, crs = target_crs)
   ras_resolution <- sf::st_bbox(lcz_box) %>%
     stars::st_as_stars(dx = sp.res)
   ras_resolution <- terra::rast(ras_resolution)
 
-  ras_project <- terra::project(x, "EPSG:3857")
+  ras_project <- terra::project(x, target_crs)
   ras_resample <- terra::resample(ras_project, ras_resolution, method = "mode")
   ras_grid <- stars::st_as_stars(ras_resample, dimensions = "XY")
   base::names(ras_grid) <- "lcz"
@@ -627,7 +651,7 @@ lcz_interp_eval <- function(x,
       stations_geometry <- dplyr::select(stations_mod, .data$my_id, .data$geometry) %>%
         dplyr::distinct(.data$my_id, .keep_all = TRUE) %>%
           sf::st_intersection(lcz_shp) %>%
-          sf::st_transform(crs = 3857)
+          sf::st_transform(crs = target_crs)
 
       extract_hemisphere <- function(raster) {
         # Get the extent of the raster
@@ -853,7 +877,7 @@ lcz_interp_eval <- function(x,
       stations_geometry <- dplyr::select(stations_mod, .data$station, .data$my_id, .data$geometry) %>%
         dplyr::distinct(.data$station, .data$my_id, .keep_all = TRUE)  %>%
         sf::st_intersection(lcz_shp) %>%
-        sf::st_transform(crs = 3857)
+        sf::st_transform(crs = target_crs)
 
       extract_hemisphere <- function(raster) {
         # Get the extent of the raster

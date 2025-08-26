@@ -8,8 +8,6 @@ lcz_plot_interp(
   x,
   palette = "muted",
   direction = 1,
-  ncol = NULL,
-  nrow = NULL,
   isave = FALSE,
   save_extension = "png",
   ...
@@ -21,10 +19,6 @@ lcz_plot_interp(
 \item{palette}{Gradient palettes available in the tidyterra package. Default is "muted". More palettes can be found in the tidyterra documentation: https://dieghernan.github.io/tidyterra/articles/palettes.html#scale_fill_whitebox_}
 
 \item{direction}{Sets order of colors. Default palette is 1. If direction is -1, palette color order is reversed}
-
-\item{ncol}{Number of columns in the plot.}
-
-\item{nrow}{Number of rows in the plot.}
 
 \item{isave}{Logical, indicating whether to save the plot to your directory. Default is FALSE.}
 

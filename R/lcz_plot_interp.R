@@ -5,8 +5,6 @@
 #' @param x The LCZ map in SpatRaster format, either as a single raster or a raster stack, obtained from functions like lcz_anomaly_map() or lcz_interp_map().
 #' @param palette Gradient palettes available in the tidyterra package. Default is "muted". More palettes can be found in the tidyterra documentation: https://dieghernan.github.io/tidyterra/articles/palettes.html#scale_fill_whitebox_
 #' @param direction Sets order of colors. Default palette is 1. If direction is -1, palette color order is reversed
-#' @param ncol Number of columns in the plot.
-#' @param nrow Number of rows in the plot.
 #' @param isave Logical, indicating whether to save the plot to your directory. Default is FALSE.
 #' @param save_extension File format for saving the plot. Options: "png", "jpg", "jpeg", "tif", "pdf", "svg" (default is "png").
 #' @param ... Additional arguments to modify axis, legend, and plot labels, including title, subtitle, and caption.
@@ -31,8 +29,6 @@
 lcz_plot_interp <- function(x,
                             palette = "muted",
                             direction = 1,
-                            ncol = NULL,
-                            nrow = NULL,
                             isave = FALSE,
                             save_extension = "png",
                             ...) {
@@ -44,12 +40,17 @@ lcz_plot_interp <- function(x,
   # Convert to SpatRaster if needed (only once)
   x <- if (!inherits(x, "SpatRaster")) terra::rast(x) else x
 
+  min_val_comum <- floor(min(terra::values(x), na.rm = TRUE))
+  max_val_comum <- ceiling(max(terra::values(x), na.rm = TRUE))
+  color_limits <- c(min_val_comum, max_val_comum)
+
   # Create base plot elements (common to both cases)
   base_plot <- ggplot2::ggplot() +
     tidyterra::geom_spatraster(data = x, na.rm = TRUE) +  # Handle NA values
     tidyterra::scale_fill_whitebox_c(
       palette = palette,
       direction = direction,
+      limits = color_limits,
       na.value = "transparent"
     ) +
     ggplot2::guides(fill = ggplot2::guide_colorbar(title.position = "top")) +
@@ -72,7 +73,7 @@ lcz_plot_interp <- function(x,
   # Add faceting only if multiple layers exist
   if (terra::nlyr(x) > 1) {
     final_graph <- base_plot +
-      ggplot2::facet_wrap(~lyr, ncol = ncol, nrow = nrow)
+      ggplot2::facet_wrap(~lyr)
   } else {
     final_graph <- base_plot
   }
