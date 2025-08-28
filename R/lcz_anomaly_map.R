@@ -423,7 +423,8 @@ lcz_anomaly_map <- function(x,
 
             anomaly_cal <- base::do.call(rbind.data.frame, anomaly_job)
 
-            lcz_anomaly_mod <- sf::st_as_sf(anomaly_cal) %>% sf::st_transform(crs = 3857)
+            lcz_anomaly_mod <- sf::st_as_sf(anomaly_cal) %>%
+              sf::st_transform(crs = target_crs)
 
 
             if (LCZinterp == TRUE) {
@@ -568,7 +569,8 @@ lcz_anomaly_map <- function(x,
 
         anomaly_cal <- base::do.call(rbind.data.frame, anomaly_job)
 
-        lcz_anomaly_mod <- sf::st_as_sf(anomaly_cal) %>% sf::st_transform(crs = 3857)
+        lcz_anomaly_mod <- sf::st_as_sf(anomaly_cal) %>%
+          sf::st_transform(crs = target_crs)
 
 
         if (LCZinterp == TRUE) {
@@ -687,7 +689,8 @@ lcz_anomaly_map <- function(x,
 
         anomaly_cal <- base::do.call(rbind.data.frame, anomaly_job)
 
-        lcz_anomaly_mod <- sf::st_as_sf(anomaly_cal) %>% sf::st_transform(crs = 3857)
+        lcz_anomaly_mod <- sf::st_as_sf(anomaly_cal) %>%
+          sf::st_transform(crs = target_crs)
 
 
         if (LCZinterp == TRUE) {
