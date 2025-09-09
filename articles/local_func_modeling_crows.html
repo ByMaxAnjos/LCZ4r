@@ -54,13 +54,13 @@
 <script src="local_func_modeling_crows_files/htmlwidgets-1.6.4/htmlwidgets.js"></script><link href="local_func_modeling_crows_files/leaflet-1.3.1/leaflet.css" rel="stylesheet">
 <script src="local_func_modeling_crows_files/leaflet-1.3.1/leaflet.js"></script><link href="local_func_modeling_crows_files/leafletfix-1.0.0/leafletfix.css" rel="stylesheet">
 <script src="local_func_modeling_crows_files/proj4-2.6.2/proj4.min.js"></script><script src="local_func_modeling_crows_files/Proj4Leaflet-1.0.1/proj4leaflet.js"></script><link href="local_func_modeling_crows_files/rstudio_leaflet-1.3.1/rstudio_leaflet.css" rel="stylesheet">
-<script src="local_func_modeling_crows_files/leaflet-binding-2.2.2/leaflet.js"></script><script src="local_func_modeling_crows_files/leaflet-providers-2.0.0/leaflet-providers_2.0.0.js"></script><script src="local_func_modeling_crows_files/leaflet-providers-plugin-2.2.2/leaflet-providers-plugin.js"></script><script src="local_func_modeling_crows_files/Leaflet.glify-3.2.0/addGlifyPoints.js"></script><script src="local_func_modeling_crows_files/Leaflet.glify-3.2.0/addGlifyPolygons.js"></script><script src="local_func_modeling_crows_files/Leaflet.glify-3.2.0/addGlifyPolylines.js"></script><script src="local_func_modeling_crows_files/Leaflet.glify-3.2.0/glify-browser.js"></script><script src="local_func_modeling_crows_files/clipboard-0.0.1/setClipboardText.js"></script><div class="row">
+<script src="local_func_modeling_crows_files/leaflet-binding-2.2.3/leaflet.js"></script><script src="local_func_modeling_crows_files/leaflet-providers-2.0.0/leaflet-providers_2.0.0.js"></script><script src="local_func_modeling_crows_files/leaflet-providers-plugin-2.2.3/leaflet-providers-plugin.js"></script><script src="local_func_modeling_crows_files/Leaflet.glify-3.2.0/addGlifyPoints.js"></script><script src="local_func_modeling_crows_files/Leaflet.glify-3.2.0/addGlifyPolygons.js"></script><script src="local_func_modeling_crows_files/Leaflet.glify-3.2.0/addGlifyPolylines.js"></script><script src="local_func_modeling_crows_files/Leaflet.glify-3.2.0/glify-browser.js"></script><script src="local_func_modeling_crows_files/clipboard-0.0.1/setClipboardText.js"></script><div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Analyzing Urban Heat Islands Using Crowdsourced Air Temperature Data and LCZ4r</h1>
                         <h4 data-toc-skip class="author">Max Anjos</h4>
             
-            <h4 data-toc-skip class="date">August 28, 2025</h4>
+            <h4 data-toc-skip class="date">September 09, 2025</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ByMaxAnjos/LCZ4r/blob/main/vignettes/local_func_modeling_crows.Rmd" class="external-link"><code>vignettes/local_func_modeling_crows.Rmd</code></a></small>
       <div class="d-none name"><code>local_func_modeling_crows.Rmd</code></div>
@@ -97,11 +97,11 @@ package in R</a>.</p>
 <span></span>
 <span><span class="co">#Install</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">require</a></span><span class="op">(</span><span class="st"><a href="https://github.com/dafenner/CrowdQCplus" class="external-link">"CrowdQCplus"</a></span><span class="op">)</span><span class="op">)</span> <span class="op">{</span><span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"dafenner/CrowdQCplus"</span><span class="op">)</span><span class="op">}</span></span>
-<span><span class="co">#&gt; DEoptimR   (NA -&gt; 1.1-4   ) [CRAN]</span></span>
-<span><span class="co">#&gt; geodata    (NA -&gt; 0.6-2   ) [CRAN]</span></span>
-<span><span class="co">#&gt; robustbase (NA -&gt; 0.99-4-1) [CRAN]</span></span>
+<span><span class="co">#&gt; DEoptimR   (NA -&gt; 1.1-4 ) [CRAN]</span></span>
+<span><span class="co">#&gt; geodata    (NA -&gt; 0.6-2 ) [CRAN]</span></span>
+<span><span class="co">#&gt; robustbase (NA -&gt; 0.99-6) [CRAN]</span></span>
 <span><span class="co">#&gt; <span style="color: #00BBBB;">──</span> <span style="color: #00BBBB;">R CMD build</span> <span style="color: #00BBBB;">─────────────────────────────────────────────────────────────────</span></span></span>
-<span><span class="co">#&gt; * checking for file ‘/tmp/RtmpaX6QZJ/remotes26804bb49ef6/dafenner-CrowdQCplus-74a92e5/DESCRIPTION’ ... OK</span></span>
+<span><span class="co">#&gt; * checking for file ‘/tmp/RtmpKVLtoW/remotes264d6b84adc1/dafenner-CrowdQCplus-74a92e5/DESCRIPTION’ ... OK</span></span>
 <span><span class="co">#&gt; * preparing ‘CrowdQCplus’:</span></span>
 <span><span class="co">#&gt; * checking DESCRIPTION meta-information ... OK</span></span>
 <span><span class="co">#&gt; * checking for LF line-endings in source and make files and shell scripts</span></span>
