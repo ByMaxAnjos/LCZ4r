@@ -38,25 +38,17 @@ To install the **LCZ4r package**, use the development version from GitHub. This 
 
 If you don’t already have the remotes package installed, run the following command:
 
-```{r eval=FALSE, message=FALSE, warning=FALSE}
-if(!require(remotes)) install.packages("remotes")
-```
+**if(!require(remotes)) install.packages("remotes")**
 
 ### Step 2: Install LCZ4r from GitHub
 
 Use the remotes::install_github() function to install the LCZ4r package:
 
-```{r eval=FALSE, message=FALSE, warning=FALSE}
-remotes::install_github("ByMaxAnjos/LCZ4r", upgrade = "never")
-```
-
-### Step 3: Install LCZ4r from GitHub
+**remotes::install_github("ByMaxAnjos/LCZ4r", upgrade = "never")**
 
 Once installed, load the package to start using its functions:
 
-```{r eval=FALSE, message=FALSE, warning=FALSE}
-library(LCZ4r)
-```
+**library(LCZ4r)**
 
 ---
 
