@@ -76,21 +76,8 @@
 <h2 id="id_️-installation-in-r">🗃️ Installation in R<a class="anchor" aria-label="anchor" href="#id_%EF%B8%8F-installation-in-r"></a>
 </h2>
 <p>To install the <strong>LCZ4r package</strong>, use the development version from GitHub. This ensures you have access to the latest features and improvements.</p>
-<div class="section level3">
-<h3 id="step-1-install-the-remotes-package">Step 1: Install the remotes Package<a class="anchor" aria-label="anchor" href="#step-1-install-the-remotes-package"></a>
-</h3>
-<p>If you don’t already have the remotes package installed, run the following command:</p>
-<p><strong>if(!require(remotes)) install.packages(“remotes”)</strong></p>
-</div>
-<div class="section level3">
-<h3 id="step-2-install-lcz4r-from-github">Step 2: Install LCZ4r from GitHub<a class="anchor" aria-label="anchor" href="#step-2-install-lcz4r-from-github"></a>
-</h3>
-<p>Use the remotes::install_github() function to install the LCZ4r package:</p>
-<p><strong>remotes::install_github(“ByMaxAnjos/LCZ4r”, upgrade = “never”)</strong></p>
-<p>Once installed, load the package to start using its functions:</p>
-<p><strong>library(LCZ4r)</strong></p>
+<p><code>{r eval=FALSE, message=FALSE, warning=FALSE} if(!require(remotes)) install.packages("remotes") remotes::install_github("ByMaxAnjos/LCZ4r", upgrade = "never") library(LCZ4r)</code></p>
 <hr>
-</div>
 </div>
 <div class="section level2">
 <h2 id="package-overview">Package Overview<a class="anchor" aria-label="anchor" href="#package-overview"></a>
