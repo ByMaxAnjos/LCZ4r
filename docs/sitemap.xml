@@ -1,129 +1,45 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/404.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/articles/Introd_QGIS_LCZ4r.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/articles/Introd_QGIS_LCZ4r_general.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/articles/Introd_genera_LCZ4r.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/articles/english_lcz4r_qgis.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/articles/examples.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r_qgis.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/articles/local_func_anomaly.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/articles/local_func_modeling.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/articles/local_func_modeling_crows.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/articles/local_func_modeling_eval.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/articles/local_func_time_series.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/articles/local_func_uhi.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/articles/portuguese_instalation_lcz4r_qgis.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/articles/posit_cloud.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/articles/tutorials.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/index.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_anomaly.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_anomaly_map.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_cal_area.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_data.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_get_map.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_get_map2.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_get_map_euro.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_get_map_generator.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_get_map_usa.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_get_parameters.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_interp_eval.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_interp_map.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_plot_interp.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_plot_map.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_plot_parameters.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_ts.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_tutorial.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_uhi_intensity.html</loc>
-  </url>
-  <url>
-    <loc>https://bymaxanjos.github.io/LCZ4r/reference/pipe.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/404.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/LICENSE-text.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/articles/Introd_QGIS_LCZ4r.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/articles/Introd_QGIS_LCZ4r_general.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/articles/Introd_genera_LCZ4r.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/articles/english_lcz4r_qgis.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/articles/examples.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/articles/index.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r_qgis.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/articles/local_func_anomaly.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/articles/local_func_modeling.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/articles/local_func_modeling_crows.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/articles/local_func_modeling_eval.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/articles/local_func_time_series.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/articles/local_func_uhi.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/articles/portuguese_instalation_lcz4r_qgis.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/articles/posit_cloud.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/articles/tutorials.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/authors.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/index.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/reference/index.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_anomaly.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_anomaly_map.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_cal_area.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_data.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_get_map.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_get_map2.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_get_map_euro.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_get_map_generator.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_get_map_usa.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_get_parameters.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_interp_eval.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_interp_map.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_plot_interp.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_plot_map.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_plot_parameters.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_ts.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_tutorial.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/reference/lcz_uhi_intensity.html</loc></url>
+<url><loc>https://bymaxanjos.github.io/LCZ4r/reference/pipe.html</loc></url>
 </urlset>
+
