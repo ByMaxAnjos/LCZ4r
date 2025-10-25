@@ -34,10 +34,15 @@ The **LCZ4r** package is supported by the following peer-reviewed publication:
 
 To install the **LCZ4r package**, use the development version from GitHub. This ensures you have access to the latest features and improvements.
 
-```{r eval=FALSE, message=FALSE, warning=FALSE}
+```
+{r eval=FALSE, message=FALSE, warning=FALSE}
+
 if(!require(remotes)) install.packages("remotes")
+
 remotes::install_github("ByMaxAnjos/LCZ4r", upgrade = "never")
+
 library(LCZ4r)
+
 ```
 
 ---

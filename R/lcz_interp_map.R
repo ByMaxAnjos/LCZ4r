@@ -244,7 +244,6 @@ lcz_interp_map <- function(x,
   lcz_shp <- terra::as.polygons(x) %>%
     sf::st_as_sf() %>%
     sf::st_transform(crs = target_crs_lonlat)
-
   #Stratified splitting by LCZ)
   stations_mod <- df_processed %>%
     #dplyr::distinct(.data$longitude, .data$latitude, .keep_all = T) %>%
