@@ -39,6 +39,7 @@ To install the **LCZ4r package**, use the development version from GitHub. This 
 
 if(!require(remotes)) install.packages("remotes")
 
+options(timeout=300)
 remotes::install_github("ByMaxAnjos/LCZ4r", upgrade = "never")
 
 library(LCZ4r)
