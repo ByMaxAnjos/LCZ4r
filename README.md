@@ -30,20 +30,70 @@ The **LCZ4r** package is supported by the following peer-reviewed publication:
 
 ---
 
-## 🗃️ Installation in R
 
-To install the **LCZ4r package**, use the development version from GitHub. This ensures you have access to the latest features and improvements.
+# 1. Installation
 
+The `LCZ4r` package is available on GitHub and can be installed in two ways.  
+We recommend **Option 1** for most users.
+
+---
+
+## Option 1: Install from GitHub (Recommended)
+
+This is the fastest way to get the latest version of the package.
+
+::: callout-tip
+**Prerequisite:** If you already have `remotes` or `devtools` installed, you can skip this step.
+:::
+
+```r
+if (!require("remotes")) { install.packages("remotes")}
+# Install or update directly from GitHub
+remotes::install_github("ByMaxAnjos/climasus4r", upgrade = "never")
 ```
-{r eval=FALSE, message=FALSE, warning=FALSE}
+::: callout-warning
+Updates: `LCZ4r` is under active development. To update, simply run the command above again.
+R will automatically overwrite the previous version. After updating, it is recommended to restart your R session
+(Session > Restart R).
+:::
 
-if(!require(remotes)) install.packages("remotes")
+## Option 2: Install from Local File (.zip)
 
-options(timeout=300)
-remotes::install_github("ByMaxAnjos/LCZ4r", upgrade = "never")
+This option is recommended for: unstable internet connections, restricted networks (e.g., institutional environments), and training sessions with multiple users.
 
+Steps:
+
+1. **Download the package**
+👉 https://github.com/ByMaxAnjos/LCZ4r/archive/refs/heads/main.zip
+
+2. **Extract the file**
+👉 After downloading, extract the .zip file to a local folder (e.g., Downloads or Desktop)
+
+3. **Install locally**
+
+```r
+# IMPORTANT: Adjust the path to where you extracted the folder
+remotes::install_local(
+  "C:/Path/to/your/folder/LCZ4r-main", 
+  upgrade = "never"
+)
+```
+::: callout-tip
+Example: If you downloaded and extracted the file to your Downloads folder:
+
+```r
+remotes::install_local(
+   "/Users/maxanjos/Downloads/LCZ4r-main",
+  upgrade = "never"
+)
+```
+:::
+
+## Loading the package
+
+After installation, load the package whenever you start a new R session:
+```r
 library(LCZ4r)
-
 ```
 
 ---
@@ -115,7 +165,7 @@ With the following contributors:
 
 ## Funding
 
-This project is supported by:
+This project was supported by:
 - **Coordenação de Aperfeiçoamento de Pessoal de Nível Superior (CAPES)** – Finance Code 001.
 - **Alexander von Humboldt Foundation**.
 
