@@ -89,14 +89,12 @@ reference:
   - lcz_data
 
 articles:
+  - title: "Introduction"
+    contents:
+      - about
   - title: "Tutorials"
     contents:
-      - tutorials_card
-      - Introd_genera_LCZ4r
-  - title: "LCZ4r-QGIS Plugin"
-    contents:
-      - tutorials_card
-      - examples
+      - tutorials
 
 
 

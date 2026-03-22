@@ -1,11 +1,22 @@
 .Rproj.user
 .Rhistory
-<<<<<<< HEAD
 .RData
-.Ruserdata
-=======
->>>>>>> 0dbe3003254f11d9ed268fa2a9fca26b2fc71610
-.Rdata
 .httr-oauth
 .DS_Store
-.Rbuildignore
+.quarto
+# R build artifacts
+*.Rproj
+*.tar.gz
+*.check/
+*.log
+
+# Package directories
+/man/*
+!/man/*.Rd
+/vignettes/*.html
+/vignettes/*.pdf
+
+# Misc
+.DS_Store
+Thumbs.db
+/.quarto/

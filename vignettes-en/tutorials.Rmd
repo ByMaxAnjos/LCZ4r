@@ -1,327 +1,340 @@
 ---
-title: "Tutorials"
-description: >
-  Training for General and Local Functions from the LCZ4r package.
-output:
-    rmarkdown::html_vignette:
-      code_folding: hide
-    toc: true
-    toc_float: TRUE
-    toc_depth: 2
-    number_sections: false
-    highlight: "textmate"
-    css: custom.css
-vignette: >
-  %\VignetteIndexEntry{Tutorials}
-  %\VignetteEncoding{UTF-8}
-  %\VignetteEngine{rmarkdown::render}
+title: "Tutoriais"
 ---
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
+```{=html}
+<style>
+  /* ================================================================
+     Forest Canopy Theme — Tutorial Grid (with image cards)
+     Aligned with: LCZ4r landing page · custom-modern.css · style.css
+     Tokens: #f8faf7 bg · #1a2e1a text · #10b981 primary · #0ea5e9 sky
+  ================================================================ */
+
+  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --fc-bg-page:       #f8faf7;
+    --fc-bg-card:       rgba(255, 255, 255, 0.90);
+    --fc-bg-elevated:   #e6ede4;
+    --fc-primary:       #10b981;
+    --fc-primary-dark:  #059669;
+    --fc-sky:           #0ea5e9;
+    --fc-text-main:     #1a2e1a;
+    --fc-text-body:     #4a6741;
+    --fc-text-muted:    #8aaa82;
+    --fc-border:        rgba(16, 185, 129, 0.18);
+    --fc-border-hover:  rgba(16, 185, 129, 0.55);
+    --fc-shadow:        0 4px 24px -4px rgba(16, 40, 16, 0.10);
+    --fc-shadow-hover:  0 16px 48px -8px rgba(16, 40, 16, 0.20);
+    --fc-radius:        16px;
+    --fc-radius-sm:     8px;
+    --fc-ease:          cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+
+  /* ── Grid layout ─────────────────────────────────────────────── */
+  .tutorial-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.75rem;
+    padding: 2rem 0;
+    font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  /* ── Card base ────────────────────────────────────────────────── */
+  .tutorial-card {
+    background: var(--fc-bg-card);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: var(--fc-radius);
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--fc-border);
+    box-shadow: var(--fc-shadow);
+    transition: transform 0.32s var(--fc-ease),
+                box-shadow 0.32s var(--fc-ease),
+                border-color 0.32s var(--fc-ease);
+    overflow: hidden;
+  }
+
+  .tutorial-card:hover {
+    transform: translateY(-7px);
+    box-shadow: var(--fc-shadow-hover);
+    border-color: var(--fc-border-hover);
+  }
+
+  /* ── Card image ───────────────────────────────────────────────── */
+  .card-image-wrapper {
+    position: relative;
+    width: 100%;
+    padding-bottom: 52%;   /* ~16:8 aspect ratio — wide cinematic crop */
+    overflow: hidden;
+    background: var(--fc-bg-elevated);
+  }
+
+  .card-image-wrapper img {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    transition: transform 0.45s var(--fc-ease);
+    filter: saturate(0.92) brightness(0.97);
+  }
+
+  .tutorial-card:hover .card-image-wrapper img {
+    transform: scale(1.05);
+    filter: saturate(1.05) brightness(1.00);
+  }
+
+  /* Gradient overlay at bottom of image */
+  .card-image-wrapper::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 55%;
+    background: linear-gradient(
+      to top,
+      rgba(248, 250, 247, 0.95) 0%,
+      rgba(248, 250, 247, 0.40) 55%,
+      transparent 100%
+    );
+    pointer-events: none;
+  }
+
+  /* Badge floated over the image */
+  .card-image-badge {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    z-index: 2;
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(8px);
+    color: var(--fc-primary-dark);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    padding: 4px 12px;
+    border-radius: 100px;
+    text-transform: uppercase;
+    border: 1px solid var(--fc-border);
+  }
+
+  /* ── Card body (text area) ────────────────────────────────────── */
+  .card-body {
+    padding: 1.5rem 1.75rem 1.75rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+
+  /* ── Card header row (icon + badge) ──────────────────────────── */
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 0.9rem;
+  }
+
+  .card-icon {
+    color: var(--fc-primary);
+    background: linear-gradient(135deg, #e8f5e9 0%, #d1fae5 100%);
+    padding: 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(16, 185, 129, 0.20);
+    transition: background 0.3s var(--fc-ease), transform 0.3s var(--fc-ease);
+    flex-shrink: 0;
+  }
+
+  .tutorial-card:hover .card-icon {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    transform: scale(1.10) rotate(-5deg);
+  }
+
+  /* ── Card content ─────────────────────────────────────────────── */
+  .card-title {
+    color: var(--fc-text-main);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0 0 0.55rem 0;
+    line-height: 1.25;
+  }
+
+  .card-description {
+    color: var(--fc-text-body);
+    font-size: 0.90rem;
+    line-height: 1.65;
+    flex-grow: 1;
+    margin-bottom: 1.5rem;
+  }
+
+  /* ── CTA button ───────────────────────────────────────────────── */
+  .card-cta-button {
+    background: linear-gradient(135deg, var(--fc-primary) 0%, var(--fc-primary-dark) 100%);
+    color: #ffffff !important;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none !important;
+    padding: 11px 20px;
+    border-radius: var(--fc-radius-sm);
+    transition: filter 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 10px rgba(16, 185, 129, 0.28);
+    letter-spacing: 0.01em;
+  }
+
+  .card-cta-button:hover {
+    filter: brightness(1.08);
+    transform: translateX(4px);
+    box-shadow: 0 4px 18px rgba(16, 185, 129, 0.40);
+    text-decoration: none !important;
+    color: #ffffff !important;
+  }
+
+  /* ── SVG icons ────────────────────────────────────────────────── */
+  .tutorial-card svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  /* ── GitHub feedback button ───────────────────────────────────── */
+  .github-feedback-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, var(--fc-primary) 0%, var(--fc-sky) 100%);
+    color: #ffffff !important;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 11px 22px;
+    border-radius: var(--fc-radius-sm);
+    border: none;
+    cursor: pointer;
+    text-decoration: none !important;
+    transition: filter 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 12px rgba(16, 185, 129, 0.28);
+    letter-spacing: 0.01em;
+  }
+
+  .github-feedback-btn:hover {
+    filter: brightness(1.08);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.38);
+    text-decoration: none !important;
+    color: #ffffff !important;
+  }
+
+  /* ── Responsive ───────────────────────────────────────────────── */
+  @media (max-width: 640px) {
+    .tutorial-grid {
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+      padding: 1rem 0;
+    }
+    .card-body {
+      padding: 1.25rem 1.4rem 1.5rem;
+    }
+    .card-title { font-size: 1.1rem; }
+  }
+
+  /* ── Reduced motion ───────────────────────────────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    .tutorial-card,
+    .card-cta-button,
+    .card-icon,
+    .card-image-wrapper img,
+    .github-feedback-btn { transition: none; }
+  }
+
+</style>
+
+<div class="tutorial-grid">
+
+  <!-- Card 1: Tutorial Introdutório -->
+  <div class="tutorial-card">
+    <div class="card-image-wrapper">
+      <span class="card-image-badge">Essencial</span>
+      <img
+        src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/vignettes/fig_general_1_1.png"
+        alt="Mapa LCZ de São Paulo gerado com LCZ4r"
+        loading="lazy"
+        onerror="this.parentElement.style.display='none'">
+    </div>
+    <div class="card-body">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        </div>
+      </div>
+      <h3 class="card-title">Tutorial Introdutório</h3>
+      <p class="card-description">Aprenda o fluxo completo: desde a instalação do pacote até a criação de séries temporais. Ideal para iniciantes sem experiência prévia.</p>
+      <a href="https://bymaxanjos.github.io/climasus4r/pt/articles/tutorial_introducao.html" class="card-cta-button">
+        Começar Agora
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- Card 2: RAPs -->
+  <div class="tutorial-card">
+    <div class="card-image-wrapper">
+      <span class="card-image-badge">RAPs</span>
+      <img
+        src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/vignettes/fig_local_uhi_2.png"
+        alt="Análise de Ilha de Calor Urbana por estação do ano"
+        loading="lazy"
+        onerror="this.parentElement.style.display='none'">
+    </div>
+    <div class="card-body">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.58 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.58 4 8 4s8-1.79 8-4M4 7c0-2.21 3.58-4 8-4s8 1.79 8 4m0 5c0 2.21-3.58 4-8 4s-8-1.79-8-4" />
+          </svg>
+        </div>
+      </div>
+      <h3 class="card-title">Pipelines Analíticos Reprodutíveis (RAPs)</h3>
+      <p class="card-description">Apresenta quatro estudos de caso práticos que demonstram o poder e a flexibilidade do pacote <code>climasus4r</code> para análises epidemiológicas usando os RAPs.</p>
+      <a href="https://bymaxanjos.github.io/climasus4r/pt/articles/tutorial_estudos_casos.html" class="card-cta-button">
+        Ver Tutorial
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+      </a>
+    </div>
+  </div>
+
+</div>
 ```
 
-**Mastering General and Local Functions in the LCZ4r Package**
 
+---
 
-```{r, include = FALSE}
-if(!require(remotes)) install.packages("remotes")
-remotes::install_github("djnavarro/bs4cards", upgrade = "never")
-library(bs4cards)
+## 🌲 Tem feedback ou sugestões?
 
+Você tem alguma ideia de melhoria ou encontrou algum erro? Adoraríamos ouvir você! Clique no botão abaixo para abrir uma nova *issue* no GitHub e compartilhar suas sugestões diretamente conosco.
+
+```{=html}
+<a href='https://github.com/ByMaxAnjos/climasus4r/issues/new' class="github-feedback-btn">
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+  </svg>
+  Abrir uma issue no GitHub
+</a>
 ```
-
-## 🗃️ Installation in R
-
-```{r, echo=FALSE}
-#Text
-text_instalation <- "To install R package LCZ4r, use the development version on GitHub with latest features"
-
-text_posit <- "Run LCZ4r directly in Posit Cloud—no RStudio installation required!"
-```
-
-
-```{r, echo=FALSE}
-# Create the dataframe
-df_default <- data.frame(
-  title_card = c("Install LCZ4r in RStudio",
-                 "Runing LCZ4r in Posit Cloud"
-                ),
-  short_name = c("Installation",
-                 "LCZ4r Cloud"
-                 ),
-  author = c(
-           "©LCZ4r",
-           "©PositCloud"
-           ),
-  description = c(
-    text_instalation,
-    text_posit
-  ),
-  type_translation = c(
-    "LCZ4r Project",
-    "LCZ4r and Posit Cloud Project"
-  ),
-  image_url = c(
-    "instalation_rstudio.png",
-    "posit_cloud.png"
-  ),
-  gallery_url = c(
-    "https://bymaxanjos.github.io/LCZ4r/articles/instalation_lcz4r.html",
-    "https://bymaxanjos.github.io/LCZ4r/articles/posit_cloud.html"
-  )
-)
-```
-
-
-```{r, echo=FALSE}
-# Generate cards
-bs4cards::cards(
-    data = df_default,
-    title = title_card,
-    text = description,
-    link = gallery_url,
-    image = image_url,
-    footer = author,
-    #header = short_name,
-    width = "row-cols-2",
-    spacing = 5,
-    border_width = 1,
-    border_radius = 4,
-    border_colour = "#F2F0ED"
-  )
-```
-
-
-## 🚀 General Functions
-
-```{r, echo=FALSE}
-#Text
-text_general <- "General Functions facilitate the retrieval, analysis, and visualization of LCZs"
-text_generator <- "The LCZ Generator is a web application for creating Local Climate Zone (LCZ) maps. This guide provides step-by-step instructions to generate an LCZ map for your city using the LCZ4r package."
-```
-
-
-```{r, echo=FALSE}
-# Create the dataframe
-df_default2 <- data.frame(
-  title_card = c(
-                "Getting started with General Functions",
-                "Download LCZ map from LCZ Generator Platform."
-                ),
-  short_name = c("Tutorial", 
-                 "Tutotial"
-                 ),
-  author = c(
-           "©LCZ4r", 
-           "©LCZ4r"
-           ),
-  description = c(
-    text_general,
-    text_generator
-  ),
-  type_translation = c(
-    "General Functions",
-    "General Functions"
-  ),
-  image_url = c(
-    "fig_general_1_1.png",
-    "generator_card.png"
-  ),
-  gallery_url = c(
-    "https://bymaxanjos.github.io/LCZ4r/articles/Introd_genera_LCZ4r.html",
-    "https://bymaxanjos.github.io/LCZ4r/articles/Introd_genera_LCZ4r.html#download-lcz-map-from-lcz-generator-platform"
-  )
-)
-```
-
-
-```{r, echo=FALSE}
-# Generate cards
-bs4cards::cards(
-    data = df_default2,
-    title = title_card,
-    text = description,
-    link = gallery_url,
-    image = image_url,
-    footer = author,
-    header = short_name,
-    width = "row-cols-2",
-    spacing = 5,
-    border_width = 1,
-    border_radius = 4,
-    border_colour = "#F2F0ED"
-    
-  )
-```
-
-
-## 🚀 Local Functions
-
-```{r, echo=FALSE}
-#Multilingual texts
-text_local_introduction <- "The Local functions in LCZ4r, offer powerful tools to handle and analyze urban climate data.They enable time-series analysis, mapping of thermal anomalies, spatial interpolation, and more."
-text_ts <- "The lcz_ts() function allows you to analyze air temperature data associated with Local Climate Zones (LCZ) over time."
-text_anomaly <- "The thermal anomaly is a great way to evaluate the intra-urban air temperatures differences."
-text_uhi <- "This guide demonstrates how to use the lcz_uhi_intensity() function to calculate and analyze UHI intensity using LCZ classes."
-
-```
-
-
-```{r, echo=FALSE}
-# Create the dataframe
-df_default3 <- data.frame(
-  title_card = c(
-                "Introduction to Local Functions", 
-                "Time Series Analysis", 
-                "Thermal Anomalies",
-                "Urban Heat Island (UHI) Analysis"
-                ),
-  short_name = c(
-                 "Tutorial", 
-                 "Tutorial", 
-                 "Tutorial",
-                 "Tutorial"
-                 ),
-    author = c(
-           "©LCZ4r", 
-           "©LCZ4r",
-           "©LCZ4r", 
-           "©LCZ4r"
-           ),
-  description = c(
-    text_local_introduction,
-    text_ts,
-    text_anomaly,
-    text_uhi
-  ),
-  type_translation = c(
-    "Local Functions",
-    "Local Functions",
-    "Local Functions",
-    "Local Functions"
-  ),
-  image_url = c(
-    "introd_local_card.png",
-    "fig_local_ts_5.png",
-    "fig_local_anomaly_1.png",
-    "fig_local_uhi_4.png"
-  ),
-  gallery_url = c(
-    "https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html",
-    "https://bymaxanjos.github.io/LCZ4r/articles/local_func_time_series.html",
-    "https://bymaxanjos.github.io/LCZ4r/articles/local_func_anomaly.html",
-    "https://bymaxanjos.github.io/LCZ4r/articles/local_func_uhi.html"
-  )
-)
-```
-
-
-```{r, echo=FALSE}
-# Generate cards
-bs4cards::cards(
-    data = df_default3,
-    title = title_card,
-    text = description,
-    link = gallery_url,
-    image = image_url,
-    footer = author,
-    header = short_name,
-    width = "row-cols-2",
-    spacing = 5,
-    border_width = 1,
-    border_radius = 4,
-    border_colour = "#F2F0ED"
-    
-  )
-```
-
-
-## 🚀 Modelling air temperature with LCZ4r
-
-```{r, echo=FALSE}
-
-#Multilingual
-text_modelling_1 <- "In this guide, we’ll introduce how to use LCZ4r
-to interpolate air temperature and thermal anomalies, using the lcz_interp_map and lcz_anomaly_map funtions"
-
-text_modelling_eval <- "Here we'll show how to evalute the LCZ-based interpolation for low-density observational data in Berlin"
-
-text_modelling_crows <- "In this guide, we'll apply the LCZ4r to model Urban Heat Island with Crowdsourced air temperatures in Berlin"
-
-```
-
-
-```{r, echo=FALSE}
-# Create the dataframe
-df_default4 <- data.frame(
-  title_card = c(
-                "Interpolating air temperature and anomalies as LCZ background",
-                "Evaluating LCZ-based interpolation",
-                "Modelling Urban Heat Island with Crowdsourced air temperatures"),
-  short_name = c(
-                 "Tutorial",
-                 "Tutorial",
-                 "Tutorial"
-                 ),
-    author = c(
-           "©LCZ4r: Max Anjos",
-           "©LCZ4r: Max Anjos",
-           "©LCZ4r: Max Anjos"
-           ),
-  description = c(
-    text_modelling_1,
-    text_modelling_eval,
-    text_modelling_crows
-
-  ),
-  type_translation = c(
-    "Local Functions",
-    "Local Functions",
-    "Local Functions"
-  ),
-  image_url = c(
-    "fig_local_modeling_card.png",
-    "fig_local_modeling_eval_card.png",
-    "fig_local_modeling_crows_card.png"
-  ),
-  gallery_url = c(
-    "https://bymaxanjos.github.io/LCZ4r/articles/local_func_modeling.html",
-    "https://bymaxanjos.github.io/LCZ4r/articles/local_func_modeling_eval.html",
-    "https://bymaxanjos.github.io/LCZ4r/articles/local_func_modeling_crows.html"
-  )
-)
-```
-
-
-```{r, echo=FALSE}
-# Generate cards
-bs4cards::cards(
-    data = df_default4,
-    title = title_card,
-    text = description,
-    link = gallery_url,
-    image = image_url,
-    footer = author,
-    header = short_name,
-    width = "row-cols-2",
-    spacing = 5,
-    border_width = 1,
-    border_radius = 4,
-    border_colour = "#F2F0ED"
-
-  )
-```
-
-
-## 📬 Have feedback or suggestions?
-
-We welcome your feedback and suggestions! If you have ideas for improvements or spot any issues, please let us know. Click the button below to submit a new issue on our GitHub repository.
-
-<button type="button" class="btn" style="background-color: #008000; color: white; padding: .25rem .5rem; font-size: .75rem; border: none; border-radius: .25rem;">
-
-<a href='https://github.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/issues/new'style="text-decoration: none; color: white;"> Open an issue in the Github repository </a>
-</button>

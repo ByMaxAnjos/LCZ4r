@@ -1,18 +1,31 @@
-^.*\.Rproj$
+^climasus4r\.Rproj$
 ^\.Rproj\.user$
 ^LICENSE\.md$
 
-^_pkgdown\.yml$
-^docs$
-^docs/.*$
 
-^pkgdown$
 ^\.github$
 
-^README.md$
+
+^README-en\.md$
+^README-es\.md$
+^README-pt\.md$
+
+
 ^index\.html$
-^vignettes$      
-^vignettes/.*$ 
+^_pkgdown-pt\.yml$
+^_pkgdown-en\.yml$
+^_pkgdown-es\.yml$
+^pkgdown$
+^pkgdown/.*               
+^pkgdown/.*$
+
+^vignettes-en$      
+^vignettes-en/.*$    
+^vignettes-es$    
+^vignettes-es/.*$    
+^vignettes-pt$      
+^vignettes-pt/.*$    
+
 
 ^inst$
 ^inst/.*$
