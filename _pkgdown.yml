@@ -15,9 +15,11 @@ template:
     base_font:
       google:
         family: Open Sans
-    includes:
+
+  includes:
     in_header: |
       <link rel="stylesheet" href="vignettes/custom.css">
+
 
 navbar:
   type: dark
