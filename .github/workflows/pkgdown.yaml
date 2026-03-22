@@ -1,48 +1,159 @@
-# Workflow derived from https://github.com/r-lib/actions/tree/v2/examples
-# Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
+name: Build and Deploy Multilingual pkgdown Site
+
 on:
   push:
     branches: [main, master]
   pull_request:
     branches: [main, master]
-  release:
-    types: [published]
   workflow_dispatch:
 
-name: pkgdown
+permissions:
+  contents: write
+  pages: write
+  id-token: write
 
 jobs:
-  pkgdown:
+  build-deploy:
     runs-on: ubuntu-latest
-    # Only restrict concurrency for non-PR jobs
-    concurrency:
-      group: pkgdown-${{ github.event_name != 'pull_request' || github.run_id }}
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-    permissions:
-      contents: write
+    
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: r-lib/actions/setup-pandoc@v2
-
-      - uses: r-lib/actions/setup-r@v2
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Setup R
+        uses: r-lib/actions/setup-r@v2
         with:
+          r-version: '4.3.0'
           use-public-rspm: true
-
-      - uses: r-lib/actions/setup-r-dependencies@v2
+      
+      - name: Setup Pandoc
+        uses: r-lib/actions/setup-pandoc@v2
+      
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev libfontconfig1-dev libharfbuzz-dev libfribidi-dev
+      
+      - name: Cache R packages
+        uses: actions/cache@v3
         with:
-          extra-packages: any::pkgdown, local::.
-          needs: website
-
-      - name: Build site
-        run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE)
+          path: ${{ env.R_LIBS_USER }}
+          key: ${{ runner.os }}-r-pkgdown-${{ hashFiles('DESCRIPTION') }}
+          restore-keys: |
+            ${{ runner.os }}-r-pkgdown-
+      
+      - name: Install pkgdown and dependencies
+        run: |
+          install.packages(c("pkgdown", "knitr", "rmarkdown", "desc"), dependencies = TRUE)
         shell: Rscript {0}
-
-      - name: Deploy to GitHub pages 🚀
-        if: github.event_name != 'pull_request'
-        uses: JamesIves/github-pages-deploy-action@v4.5.0
+      
+      - name: Create deployment directory
+        run: mkdir -p deploy
+      
+      - name: Build Portuguese site
+        run: |
+          # Use Portuguese README
+          cp README-pt.md README.md
+          
+          # Copy vignettes
+          mkdir -p vignettes
+          cp -r vignettes-pt/* vignettes/
+          
+          # Copy pkgdown config
+          cp _pkgdown-pt.yml _pkgdown.yml
+          
+          # Build site WITHOUT running examples
+          Rscript -e '
+            pkg <- pkgdown::as_pkgdown(".")
+            pkgdown::init_site(pkg)
+            pkgdown::build_home(pkg)
+            pkgdown::build_reference(pkg, examples = FALSE, run_dont_run = FALSE)
+            pkgdown::build_articles(pkg)
+            pkgdown::build_news(pkg)
+          '
+          
+          # Move to deployment folder
+          mkdir -p deploy/pt
+          cp -r docs/* deploy/pt/
+          
+          # Clean up
+          rm -rf docs vignettes README.md _pkgdown.yml
+      
+      - name: Build English site
+        run: |
+          # Use English README
+          cp README-en.md README.md
+          
+          # Copy vignettes
+          mkdir -p vignettes
+          cp -r vignettes-en/* vignettes/
+          
+          # Copy pkgdown config
+          cp _pkgdown-en.yml _pkgdown.yml
+          
+          # Build site WITHOUT running examples
+          Rscript -e '
+            pkg <- pkgdown::as_pkgdown(".")
+            pkgdown::init_site(pkg)
+            pkgdown::build_home(pkg)
+            pkgdown::build_reference(pkg, examples = FALSE, run_dont_run = FALSE)
+            pkgdown::build_articles(pkg)
+            pkgdown::build_news(pkg)
+          '
+          
+          # Move to deployment folder
+          mkdir -p deploy/en
+          cp -r docs/* deploy/en/
+          
+          # Clean up
+          rm -rf docs vignettes README.md _pkgdown.yml
+      
+      - name: Build Spanish site
+        run: |
+          # Use Spanish README
+          cp README-es.md README.md
+          
+          # Copy vignettes
+          mkdir -p vignettes
+          cp -r vignettes-es/* vignettes/
+          
+          # Copy pkgdown config
+          cp _pkgdown-es.yml _pkgdown.yml
+          
+          # Build site WITHOUT running examples
+          Rscript -e '
+            pkg <- pkgdown::as_pkgdown(".")
+            pkgdown::init_site(pkg)
+            pkgdown::build_home(pkg)
+            pkgdown::build_reference(pkg, examples = FALSE, run_dont_run = FALSE)
+            pkgdown::build_articles(pkg)
+            pkgdown::build_news(pkg)
+          '
+          
+          # Move to deployment folder
+          mkdir -p deploy/es
+          cp -r docs/* deploy/es/
+          
+          # Clean up
+          rm -rf docs vignettes README.md _pkgdown.yml
+      
+      - name: Copy landing page and assets
+        run: |
+          # Copy the main landing page (language selector)
+          cp index.html deploy/
+          
+          # Copy pkgdown assets to all language directories
+          mkdir -p deploy/pt/pkgdown deploy/en/pkgdown deploy/es/pkgdown
+          cp -r pkgdown/* deploy/pt/pkgdown/ 2>/dev/null || true
+          cp -r pkgdown/* deploy/en/pkgdown/ 2>/dev/null || true
+          cp -r pkgdown/* deploy/es/pkgdown/ 2>/dev/null || true
+      
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
         with:
-          clean: false
-          branch: gh-pages
-          folder: docs
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./deploy
+          force_orphan: true
