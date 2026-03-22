@@ -1,6 +1,4 @@
 url: https://bymaxanjos.github.io/LCZ4r/
-development:
-  mode: auto
 
 template:
   bootstrap: 5
@@ -17,6 +15,9 @@ template:
     base_font:
       google:
         family: Open Sans
+    includes:
+    in_header: |
+      <link rel="stylesheet" href="vignettes/custom.css">
 
 navbar:
   type: dark
