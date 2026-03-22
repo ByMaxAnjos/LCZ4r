@@ -1,0 +1,28 @@
+---
+title: "Sobre ClimaSus4R"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Sobre ClimaSus4R}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## El Proyecto
+
+**climasus4r** es un paquete en R desarrollado para integrar, estandarizar y automatizar análisis espacio-temporales que involucran datos de salud pública, clima y medio ambiente en Brasil. El paquete fue concebido en el marco del proyecto INCT Conexão – Amazônia, con el objetivo de apoyar investigaciones epidemiológicas y ambientales que requieren la integración de grandes bases de datos procedentes de sistemas oficiales de salud, información climática y variables ambientales. climasus4r busca reducir significativamente el esfuerzo técnico asociado a las etapas de adquisición, limpieza, armonización e integración de los datos, ofreciendo un flujo de trabajo estructurado, reproducible y escalable. De esta manera, el paquete permite a los investigadores concentrar sus esfuerzos en el análisis científico y la interpretación de los resultados, en lugar de en los procesos operativos de preparación de los datos.
+
+## El Equipo
+
+El desarrollo de **climasus4r** está a cargo de un equipo multidisciplinario compuesto por investigadores y estudiantes de las áreas de salud, climatología, geografía, estadística y ciencia de datos, vinculados a instituciones de enseñanza e investigación en Brasil. El equipo trabaja de forma colaborativa en el desarrollo, la validación metodológica y la aplicación del paquete en estudios científicos, con énfasis en la reproducibilidad, la transparencia metodológica y el rigor científico.
+
+## Socios
+
+El desarrollo de **climasus4r** está a cargo de un equipo multidisciplinario compuesto por investigadores y estudiantes de las áreas de salud, climatología, geografía, estadística y ciencia de datos, vinculados a instituciones de enseñanza e investigación en Brasil. El equipo trabaja de forma colaborativa en el desarrollo, la validación metodológica y la aplicación del paquete en estudios científicos, con énfasis en la reproducibilidad, la transparencia metodológica y el rigor científico.
+

@@ -1,0 +1,98 @@
+url: https://bymaxanjos.github.io/climasus4r/es
+lang: es
+
+template:
+  bootstrap: 5
+  bslib:
+    bg: "#f8fafc"
+    fg: "#1e293b"
+    primary: "#10b981"
+    secondary: "#3b82f6"
+    base_font:
+      google: "Inter"
+    code_font:
+      google: "Fira Code"
+  includes:
+    in_header: |
+      <link rel="stylesheet" href="pkgdown/assets/custom-modern.css">
+      <link rel="icon" type="image/png" href="pkgdown/assets/favicon.png">
+
+navbar:
+  title: "LCZ4r"
+  left:
+    - text: "Inicio"
+      href: index.html
+    - text: "Tutoriales"
+      href: articles/tutorials.html
+    - text: "LCZ4r-QGIS Plugin"
+      href: articles/examples.html
+    - text: "Comunidad"
+      menu:
+        - text: "Issues en GitHub"
+          href: https://github.com/ByMaxAnjos/LCZ4r/issues
+    - text: "Funciones"
+      href: reference/index.html
+    - text: "Novedades"
+      href: news/index.html
+  right:
+    - icon: fa-robot
+      text: "Plataforma LCZ4r"
+      href: https://clima-urbano.streamlit.app/
+      target: "_blank"
+    - icon: fa-github
+      href: https://github.com/ByMaxAnjos/LCZ4r/
+    - text: "English"
+      href: ../en/index.html
+    - text: "Español"
+      href: ../es/index.html
+
+logo:
+  src: inst/figures/logo.png
+  alt: "Logotipo de LCZ4r"
+
+home:
+  title: "LCZ4r"
+  description: "Paquete en R para el análisis de Zonas Climáticas Locales (Local Climate Zones) e islas de calor urbanas"
+
+reference:
+- title: "Funciones Generales"
+  desc: >
+    Estas funciones permiten extraer mapas de LCZ y calcular parámetros asociados para análisis espaciales y ambientales.
+  contents:
+  - lcz_get_map
+  - lcz_get_map_euro
+  - lcz_get_map_usa
+  - lcz_get_map_generator
+  - lcz_get_map2
+  - lcz_plot_map
+  - lcz_cal_area
+  - lcz_get_parameters
+  - lcz_plot_parameters
+
+- title: "Funciones Locales"
+  desc: >
+    Estas funciones apoyan la modelización de la temperatura del aire, la detección de anomalías y el cálculo de la intensidad de la Isla de Calor Urbana (ICU).
+  contents:
+  - lcz_ts
+  - lcz_anomaly
+  - lcz_interp_map
+  - lcz_anomaly_map
+  - lcz_plot_interp
+  - lcz_interp_eval
+  - lcz_uhi_intensity
+
+- title: "Tutoriales y Acceso a Datos LCZ"
+  desc: >
+    Accede a tutoriales detallados y conjuntos de datos de ejemplo para mejorar la comprensión y aplicación del paquete LCZ4r.
+  contents:
+  - lcz_tutorial
+  - lcz_data
+
+articles:
+  - title: "Introducción"
+    contents:
+      - about
+  - title: "Tutoriales"
+    contents:
+      - tutorials
+

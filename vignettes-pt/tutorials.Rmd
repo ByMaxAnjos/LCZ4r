@@ -1,0 +1,158 @@
+---
+title: "Tutorials"
+---
+
+<style>
+  /* Container Principal */
+  .climasus-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+    padding: 20px 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  /* O Card */
+  .climasus-card {
+    position: relative;
+    border-radius: 12px;
+    overflow: hidden;
+    text-decoration: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    height: 320px; /* Altura fixa para uniformidade */
+  }
+
+  /* Efeito Hover (Ao passar o mouse) */
+  .climasus-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 20px rgba(46, 125, 50, 0.25); /* Sombra Verde Floresta */
+  }
+
+  /* Imagem de Fundo */
+  .card-image {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .climasus-card:hover .card-image {
+    transform: scale(1.05); /* Zoom suave na imagem */
+  }
+
+  /* Gradiente e Texto (Overlay) */
+  .card-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(20, 50, 20, 0.95), rgba(46, 125, 50, 0.6), transparent);
+    padding: 24px;
+    color: white;
+    height: 70%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+
+  /* Tipografia */
+  .card-category {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #A5D6A7; /* Verde claro */
+    margin-bottom: 8px;
+    font-weight: bold;
+  }
+
+  .card-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0 0 6px 0;
+    line-height: 1.2;
+    color: #ffffff;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  }
+
+  .card-subtitle {
+    font-size: 0.9rem;
+    color: #E8F5E9;
+    margin: 0;
+    opacity: 0.9;
+    line-height: 1.4;
+  }
+
+  /* Seta de ação */
+  .card-arrow {
+    margin-top: 15px;
+    font-weight: bold;
+    color: #fff;
+    font-size: 1.1rem;
+    opacity: 0;
+    transform: translateX(-10px);
+    transition: all 0.3s ease;
+  }
+
+  .climasus-card:hover .card-arrow {
+    opacity: 1;
+    transform: translateX(0);
+  }
+</style>
+
+<div class="climasus-grid">
+
+  <a href="/tutoriais/data-engineering" class="climasus-card">
+    <img src="https://github.com/ByMaxAnjos/climasus4r/blob/master/inst/figures/logo.png?raw=true" alt="Data Science" class="card-image">
+    <div class="card-overlay">
+      <span class="card-category">Engenharia de Dados</span>
+      <h3 class="card-title">Fundamentos & Integração SUS</h3>
+      <p class="card-subtitle">Domine a extração do DATASUS, limpeza de dados e unificação com bases meteorológicas.</p>
+      <div class="card-arrow">Começar →</div>
+    </div>
+  </a>
+
+  <a href="/tutoriais/case-studies" class="climasus-card">
+    <img src="https://github.com/ByMaxAnjos/climasus4r/blob/master/inst/figures/logo.png?raw=true" alt="Epidemiology Map" class="card-image">
+    <div class="card-overlay">
+      <span class="card-category">Epidemiologia Aplicada</span>
+      <h3 class="card-title">Estudos de Caso & Modelagem</h3>
+      <p class="card-subtitle">Pipelines reprodutíveis: de surtos de Dengue a análises de ondas de calor.</p>
+      <div class="card-arrow">Explorar →</div>
+    </div>
+  </a>
+
+  <a href="/tutoriais/education" class="climasus-card">
+    <img src="https://github.com/ByMaxAnjos/climasus4r/blob/master/inst/figures/logo.png?raw=true" alt="Education" class="card-image">
+    <div class="card-overlay">
+      <span class="card-category">Academia</span>
+      <h3 class="card-title">Educação em Saúde Planetária</h3>
+      <p class="card-subtitle">Recursos didáticos para ensinar R, GIS e saúde ambiental na graduação e pós.</p>
+      <div class="card-arrow">Aprender →</div>
+    </div>
+  </a>
+
+  <a href="/tutoriais/public-policy" class="climasus-card">
+    <img src="https://github.com/ByMaxAnjos/climasus4r/blob/master/inst/figures/logo.png?raw=true" alt="Meeting Strategy" class="card-image">
+    <div class="card-overlay">
+      <span class="card-category">Tomada de Decisão</span>
+      <h3 class="card-title">Gestão & Políticas Públicas</h3>
+      <p class="card-subtitle">Transforme dados brutos em evidências estratégicas, relatórios e dashboards.</p>
+      <div class="card-arrow">Visualizar →</div>
+    </div>
+  </a>
+
+</div>
+
+
+## 🌲 Have feedback or suggestions?
+Do you have an idea for improvement or did you spot a mistake? We'd love to hear from you! Click the button below to create a new issue on GitHub and share your feedback directly with us.
+
+<a href='https://github.com/ByMaxAnjos/climasus4r/issues/new'>
+  <button type="button" class="btn" style="background-color: #2E7D32; color: white; padding: 8px 16px; font-size: 14px; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; transition: background-color 0.3s;">
+    Open an issue in the Github repository
+  </button>
+</a>

@@ -1,0 +1,103 @@
+url: https://bymaxanjos.github.io/LCZ4r/en
+lang: en
+
+template:
+  bootstrap: 5
+  bslib:
+    bg: "#f8fafc"
+    fg: "#1e293b"
+    primary: "#10b981"
+    secondary: "#3b82f6"
+    base_font:
+      google: "Inter"
+    code_font:
+      google: "Fira Code"
+  includes:
+    in_header: |
+      <link rel="stylesheet" href="pkgdown/assets/custom-modern.css">
+      <link rel="icon" type="image/png" href="pkgdown/assets/favicon.png">
+
+navbar:
+  title: "LCZ4r"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Tutorials"
+      href: articles/tutorials.html
+    - text: "LCZ4r-QGIS Plugin"
+      href: articles/examples.html
+    - text: "Community"
+      menu:
+        - text: "GitHub Issues"
+          href: https://github.com/ByMaxAnjos/LCZ4r/issues
+    - text: "Functions"
+      href: reference/index.html
+    - text: "News"
+      href: news/index.html
+  right:
+    - icon: fa-robot
+      text: "LCZ4r Platform"
+      href: https://clima-urbano.streamlit.app/
+      target: "_blank"
+    - icon: fa-github
+      href: https://github.com/ByMaxAnjos/LCZ4r/
+    - text: "English"
+      href: ../en/index.html
+    - text: "Español"
+      href: ../es/index.html
+
+logo:
+  src: inst/figures/logo.png
+  alt: "LCZ4r logo"
+
+home:
+  title: "LCZ4r"
+  description: "An R package for analyzing Local Climate Zones (LCZ) and Urban Heat Islands (UHI)"
+
+reference:
+- title: "General Functions"
+  desc: >
+    These functions allow you to extract LCZ maps and compute associated parameters for spatial and environmental analysis.
+  contents:
+  - lcz_get_map
+  - lcz_get_map_euro
+  - lcz_get_map_usa
+  - lcz_get_map_generator
+  - lcz_get_map2
+  - lcz_plot_map
+  - lcz_cal_area
+  - lcz_get_parameters
+  - lcz_plot_parameters
+
+- title: "Local Functions"
+  desc: >
+    These functions support air temperature modeling, anomaly detection, and Urban Heat Island (UHI) intensity calculations.
+  contents:
+  - lcz_ts
+  - lcz_anomaly
+  - lcz_interp_map
+  - lcz_anomaly_map
+  - lcz_plot_interp
+  - lcz_interp_eval
+  - lcz_uhi_intensity
+
+- title: "LCZ Tutorials and Data Access"
+  desc: >
+    Access detailed tutorials and example datasets to enhance your understanding and application of the LCZ4r package.
+  contents:
+  - lcz_tutorial
+  - lcz_data
+
+articles:
+  - title: "Tutorials"
+    contents:
+      - tutorials_card
+      - Introd_genera_LCZ4r
+  - title: "LCZ4r-QGIS Plugin"
+    contents:
+      - tutorials_card
+      - examples
+
+
+
+ 

@@ -1,0 +1,30 @@
+---
+title: "About ClimaSus4R"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{About ClimaSus4R}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## The Project
+
+**climasus4r** is an R package developed to integrate, standardize, and automate spatiotemporal analyses involving public health, climate, and environmental data in Brazil. The package was designed as part of the INCT Conexão – Amazônia project, with the aim of supporting epidemiological and environmental research that requires the integration of large databases from official health systems, climate information, and environmental variables. climasus4r seeks to significantly reduce the technical effort associated with the stages of data acquisition, cleaning, harmonization, and integration, offering a structured, reproducible, and scalable workflow. In this way, the package allows researchers to focus their efforts on scientific analysis and interpretation of results, rather than on the operational processes of data preparation.
+
+## The Team
+
+The development of **climasus4r** is carried out by a multidisciplinary team composed of researchers and students from the fields of health, climatology, geography, statistics, and data science, linked to educational and research institutions in Brazil. The team works collaboratively on the development, methodological validation, and application of the package in scientific studies, with an emphasis on reproducibility, methodological transparency, and scientific rigor.
+
+
+
+## Partners
+
+The development of **climasus4r** is carried out by a multidisciplinary team composed of researchers and students from the fields of health, climatology, geography, statistics, and data science, linked to educational and research institutions in Brazil. The team works collaboratively on the development, methodological validation, and application of the package in scientific studies, with an emphasis on reproducibility, methodological transparency, and scientific rigor.
+

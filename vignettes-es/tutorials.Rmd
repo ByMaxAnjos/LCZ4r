@@ -1,0 +1,35 @@
+---
+title: "Tutoriales"
+---
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">Inicio Rápido</h5>
+          <p class="card-text">Aprenda los conceptos básicos de climasus4r en 5 minutos.</p>
+          <a href="quickstart.html" class="btn btn-primary">Empezar</a>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card h-100">
+        <div class="card-body">
+          <h5 class="card-title">Análisis de Series Temporales</h5>
+          <p class="card-text">Una guía completa para analizar datos de salud y clima.</p>
+          <a href="time-series.html" class="btn btn-primary">Ver Tutorial</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+## 🌲 ¿Tienes comentarios o sugerencias?
+¿Tienes una idea para mejorar o encontraste un error? ¡Nos encantaría escucharte! Haz clic en el botón de abajo para crear un nuevo *issue* en GitHub y compartir tus comentarios directamente con nosotros.
+
+<a href='https://github.com/ByMaxAnjos/climasus4r/issues/new'>
+  <button type="button" class="btn" style="background-color: #2E7D32; color: white; padding: 8px 16px; font-size: 14px; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; transition: background-color 0.3s;">
+    Abrir un issue en el repositorio GitHub
+  </button>
+</a>
