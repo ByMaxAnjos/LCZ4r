@@ -1,0 +1,127 @@
+---
+title: "LCZ4r-QGIS 插件"
+---
+```{=html}
+<style>
+  /* ================================================================
+     Forest Canopy Theme — QGIS Plugin Page
+     Aligned with: LCZ4r landing page · custom-modern.css · style.css
+     Tokens: #f8faf7 bg · #1a2e1a text · #10b981 primary · #0ea5e9 sky
+  ================================================================ */
+  @import url("https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&family=Inter:wght@400;500;600&display=swap");
+  .qgis-plugin-container {
+    font-family: "Inter", sans-serif;
+    background-color: #f8faf7;
+    color: #1a2e1a;
+    padding: 2rem 1rem;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+  .qgis-header {
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+  .qgis-header h1 {
+    font-family: "Source Serif 4", serif;
+    font-size: 2.75rem;
+    font-weight: 700;
+    color: #1a2e1a;
+    margin-bottom: 0.5rem;
+  }
+  .qgis-header p {
+    font-size: 1.15rem;
+    color: #4a6741;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .qgis-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: center;
+  }
+  .qgis-text-content h2 {
+    font-family: "Source Serif 4", serif;
+    font-size: 2rem;
+    font-weight: 600;
+    color: #1a2e1a;
+    margin-bottom: 1rem;
+  }
+  .qgis-text-content p {
+    font-size: 1.1rem;
+    line-height: 1.7;
+    color: #4a6741;
+    margin-bottom: 1.5rem;
+  }
+  .lang-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+  }
+  .lang-badge {
+    background-color: #e6ede4;
+    color: #4a6741;
+    padding: 5px 12px;
+    border-radius: 99px;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+  .qgis-image-content img {
+    width: 100%;
+    border-radius: 16px;
+    box-shadow: 0 8px 32px -8px rgba(16, 40, 16, 0.2);
+    border: 1px solid rgba(16, 185, 129, 0.18);
+  }
+  .cta-button {
+    display: inline-block;
+    margin-top: 1rem;
+    padding: 12px 28px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    font-weight: 600;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+    transition: all 0.3s ease;
+  }
+  .cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+    color: white;
+  }
+  @media (max-width: 768px) {
+    .qgis-content { grid-template-columns: 1fr; }
+    .qgis-image-content { order: -1; }
+  }
+</style>
+<div class="qgis-plugin-container">
+  <div class="qgis-header">
+    <h1>LCZ4r-QGIS 插件</h1>
+    <p>将 R 的统计能力与 QGIS 的地理空间可视化无缝结合。</p>
+  </div>
+  <div class="qgis-content">
+    <div class="qgis-text-content">
+      <h2>简化的地理空间分析</h2>
+      <p>LCZ4r-QGIS 插件将 LCZ4r 的强大功能直接带入您的 QGIS 环境。这个多语言插件允许对局地气候区和城市热岛进行交互式分析和可视化，将 R 的统计能力与 QGIS 的制图功能相结合。</p>
+      <p>该插件与 QGIS 3.x 及以上版本兼容，并直接与 LCZ4r R 软件包集成，为您的城市气候研究提供一个统一的平台。</p>
+      <div class="lang-badges">
+        <span class="lang-badge">English</span>
+        <span class="lang-badge">Português</span>
+        <span class="lang-badge">Español</span>
+        <span class="lang-badge">中文</span>
+        <span class="lang-badge">Deutsch</span>
+        <span class="lang-badge">Français</span>
+        <span class="lang-badge">Italiano</span>
+        <span class="lang-badge">日本語</span>
+        <span class="lang-badge">한국어</span>
+        <span class="lang-badge">Русский</span>
+      </div>
+      <a href="https://lcz-rast.github.io/lcz-qgis/" target="_blank" class="cta-button">了解更多关于插件的信息</a>
+    </div>
+    <div class="qgis-image-content">
+      <img src="https://raw.githubusercontent.com/lcz-rast/lcz-qgis/main/img/lcz_qgis_en.png" alt="LCZ4r-QGIS Plugin Interface">
+    </div>
+  </div>
+</div>
+```

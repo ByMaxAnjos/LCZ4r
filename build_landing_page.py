@@ -1,12 +1,202 @@
-<!DOCTYPE html>
+#!/usr/bin/env python3
+"""
+build_landing_page.py — LCZ4r "Forest Canopy" Edition
+=====================================================
+Generates index.html from landing_page_config.yml using Jinja2.
+
+Design: Forest Canopy + Nature Gradients + Glassmorphism Bento Box
+        + Scroll Animations + Interactive Canvas Background
+
+Usage:
+    python3 build_landing_page.py
+
+Requirements:
+    pip install pyyaml jinja2
+"""
+
+import json
+import yaml
+from jinja2 import Environment, BaseLoader
+
+# -----------------------------------------------------------------------
+# Static Data: Team, Functions, Funding
+# -----------------------------------------------------------------------
+
+TEAM_MEMBERS = [
+    {
+        "name": "Dr. Max Anjos",
+        "initials": "MA",
+        "role": {
+            "en": "Lead Developer & Maintainer",
+            "pt": "Desenvolvedor Principal & Mantenedor",
+            "es": "Desarrollador Principal & Mantenedor",
+            "zh": "首席开发者和维护者"
+        },
+        "org": "Fundação Oswaldo Cruz Rondônia (FIOCRUZ-RO), Brasil",
+        "github": "https://github.com/ByMaxAnjos",
+        "email": "maxanjos@campus.ul.pt",
+        "avatar": "https://github.com/ByMaxAnjos.png"
+    },
+    {
+        "name": "Dr. Fred Meier",
+        "initials": "FM",
+        "role": {
+            "en": "Contributor & LCZ Expert",
+            "pt": "Contribuidor & LCZ Expert",
+            "es": "Contribuidor & LCZ Expert",
+            "zh": "贡献者和局地气候区专家"
+        },
+        "org": "Technische Universität Berlin, German",
+        "email": "fred.meier@tu-berlin.de",
+        "avatar": "https://i1.rgstatic.net/ii/profile.image/11431281800865835-1766133374907_Q128/Fred-Meier.jpg"
+    },
+    {
+        "name": "Dr. Francisco Castelhano",
+        "initials": "FC",
+        "role": {
+            "en": "Contributor & LCZ Expert",
+            "pt": "Contribuidor & LCZ Expert",
+            "es": "Contribuido & LCZ Expert",
+            "zh": "贡献者和局地气候区专家"
+        },
+        "org": "Universidade Federal do Rio Grande do Norte, Brasil",
+        "email": "francisco.castelhano@ufrn.br",
+        "avatar": "https://i1.rgstatic.net/ii/profile.image/279797101023232-1443720235054_Q128/Francisco-Castelhano.jpg"
+    },
+    {
+        "name": "Dr. António Lopes",
+        "initials": "AL",
+        "role": {
+            "en": "Contributor & LCZ Expert",
+            "pt": "Contribuidor & LCZ Expert",
+            "es": "Contribuido & LCZ Expert",
+            "zh": "贡献者和局地气候区专家"
+        },
+        "org": "University of Lisbon, Portugal",
+        "email": "antonio.lopes@edu.ulisboa.pt",
+        "avatar": "https://i1.rgstatic.net/ii/profile.image/983488543068164-1611493349847_Q128/Antonio-Lopes-28.jpg"
+    },
+    {
+        "name": "Dayvid Carlos de Medeiros",
+        "initials": "DM",
+        "role": {
+            "en": "Contributor R",
+            "pt": "Contribuidor R",
+            "es": "Contribuidor R",
+            "zh": "R 语言贡献者"
+        },
+        "org": "Universidade Federal do Rio Grande do Norte, Brasil",
+        "email": "dayvid.medeiros@ufrn.br",
+        "avatar": "https://i1.rgstatic.net/ii/profile.image/11431281123980602-1677837423007_Q128/Dayvid-Medeiros.jpg"
+    },
+    {
+        "name": "Dr.Tiago Silva",
+        "initials": "AL",
+        "role": {
+            "en": "Contributor R",
+            "pt": "Contribuidor R",
+            "es": "Contribuido R",
+            "zh": "R 语言贡献者"
+        },
+        "org": "University of Lisbon, Portugal",
+        "email": "silvatiago@edu.ulisboa.pt",
+        "avatar": "https://i1.rgstatic.net/ii/profile.image/11431281799214433-1766064515532_Q128/Tiago-Silva-114.jpg"
+    },
+    {
+        "name": "Antônio Campos Neto",
+        "initials": "AN",
+        "role": {
+            "en": "Contributor R",
+            "pt": "Contribuidor R",
+            "es": "Contribuidor R",
+            "zh": "R 语言贡献者"
+        },
+        "org": "Universidade Federal do Rio Grande do Norte, Brasil",
+        "email": "antonio.neto@ufrn.br",
+        "avatar": "https://i1.rgstatic.net/ii/profile.image/11431281289464224-1731204092950_Q128/Antonio-Neto-76.jpg"
+    },
+    {
+        "name": "José Felipe da Costa Neto",
+        "initials": "JF",
+        "role": {
+            "en": "Contributor R",
+            "pt": "Contribuidor R",
+            "es": "Contribuidor R",
+            "zh": "R 语言贡献者"
+        },
+        "org": "Universidade Federal do Rio Grande do Norte, Brasil",
+        "email": "jose.neto@ufrn.br",
+        "avatar": "https://arquivos.info.ufrn.br/get?k=k42ZsWT2r8rbXtDE0Nn4qblBaW8RxeS9Ep2BZ3x2IQRgr16feSOe1cGA%2Bwg7AnkBIjMk8%2BefBkvGVqf0H2GbXLE%2B%2BChSCeTFBgrelTR8mLuB3ktXRpOl%2FTWiDt5Xzp2prWeG1keW2W3XdzyRZtuoHiK8JOVQI2pm4xOCqCOpleQPWC%2BOTXfJqsrqe810QUyPAImRtKxNzlbqUO0I9IRZBNeP3PS%2FtYagZHnyyDEDsSx0Bc4fundnsZqtG%2BKWqtgfFXs0D810YUwTj%2Bythv6gqsrQQmrd2eNi4dlIhhagU6ruY9f%2Fyy2sakz6yrhEfNjBODe%2BpR%2BMI37r%2BTYJ1ATk1yoK0iz5xNYPIbtxaKHm5wCdeaIptX%2BdZ%2FiUmyCca%2Fhu7whFNuy%2FIeNW3rNYHNRSAOQJMLZWkDXrVGxiw9kE1f6byht2882ocCdz8LgVfPxwMSCWMVZGMhLX15n9idNf8UUC1YsP2iF5Y%2BhKiuY%2F58QRPHUSTT0d4hq3OTHWe7I0OL6hQqzdN%2BGEw4bVJazwBKj2jmO6tjqp3BHIasPd4YatGXh6ICt7m3KFD5Jh0ayWkJwJukETO53vUFqj1f0EFKXHGb%2BCWcLuXXoiQE5%2FItnW%2FXcMzM3v7Jt1YmtHCP9U"
+    },
+]
+
+FUNCTIONS = [
+    {"name": "lcz_get_map()",          "icon": "globe",   "desc": {"en": "Download LCZ maps from the global dataset",           "pt": "Baixar mapas LCZ do conjunto de dados global",          "es": "Descargar mapas LCZ del conjunto de datos global",          "zh": "从全球数据集下载局地气候区地图"}},
+    {"name": "lcz_get_map_euro()",     "icon": "map",     "desc": {"en": "Download LCZ maps from the European dataset",         "pt": "Baixar mapas LCZ do conjunto de dados europeu",         "es": "Descargar mapas LCZ del conjunto de datos europeo",         "zh": "从欧洲数据集下载局地气候区地图"}},
+    {"name": "lcz_get_map_usa()",      "icon": "map",     "desc": {"en": "Download LCZ maps from the USA dataset",              "pt": "Baixar mapas LCZ do conjunto de dados dos EUA",         "es": "Descargar mapas LCZ del conjunto de datos de EE. UU.",         "zh": "从美国数据集下载局地气候区地图"}},
+    {"name": "lcz_get_map_generator()","icon": "tool",    "desc": {"en": "Download LCZ maps from the LCZ Generator Platform",  "pt": "Baixar mapas LCZ da Plataforma Geradora LCZ",           "es": "Descargar mapas LCZ de la Plataforma Generadora LCZ",           "zh": "从局地气候区生成器平台下载地图"}},
+    {"name": "lcz_plot_map()",         "icon": "globe",  "desc": {"en": "Visualize LCZ maps",                                  "pt": "Visualizar mapas LCZ",                                  "es": "Visualizar mapas LCZ",                                  "zh": "可视化局地气候区地图"}},
+    {"name": "lcz_plot_parameters()",  "icon": "bar-chart","desc": {"en": "Visualize LCZ parameter maps",                       "pt": "Visualizar mapas de parâmetros LCZ",                    "es": "Visualizar mapas de parámetros LCZ",                    "zh": "可视化局地气候区参数地图"}},
+    {"name": "lcz_cal_area()",         "icon": "grid",    "desc": {"en": "Calculate the area of LCZ classes",                  "pt": "Calcular a área das classes LCZ",                       "es": "Calcular el área de las clases LCZ",                       "zh": "计算局地气候区类别面积"}},
+    {"name": "lcz_get_parameters()",   "icon": "sliders", "desc": {"en": "Retrieve LCZ parameters",                            "pt": "Recuperar parâmetros LCZ",                              "es": "Recuperar parámetros LCZ",                              "zh": "获取局地气候区参数"}},
+    {"name": "lcz_ts()",               "icon": "activity","desc": {"en": "Analyze LCZ time series",                            "pt": "Analisar séries temporais LCZ",                         "es": "Analizar series temporales LCZ",                         "zh": "分析局地气候区时间序列"}},
+    {"name": "lcz_anomaly()",          "icon": "thermometer","desc": {"en": "Calculate LCZ thermal anomalies",                 "pt": "Calcular anomalias térmicas LCZ",                       "es": "Calcular anomalías térmicas LCZ",                       "zh": "计算局地气候区热异常"}},
+    {"name": "lcz_anomaly_map()",      "icon": "thermometer","desc": {"en": "Map LCZ thermal anomalies",                       "pt": "Mapear anomalias térmicas LCZ",                         "es": "Mapear anomalías térmicas LCZ",                         "zh": "绘制局地气候区热异常地图"}},
+    {"name": "lcz_interp_map()",       "icon": "cpu",     "desc": {"en": "Map LCZ interpolation results",                      "pt": "Mapear resultados de interpolação LCZ",                 "es": "Mapear resultados de interpolación LCZ",                 "zh": "绘制局地气候区插值结果地图"}},
+    {"name": "lcz_interp_eval()",      "icon": "activity","desc": {"en": "Evaluate LCZ interpolation accuracy",            "pt": "Avaliar a precisão da interpolação LCZ",                "es": "Evaluar la precisión de la interpolación LCZ",                "zh": "评估局地气候区插值精度"}},
+    {"name": "lcz_uhi_intensity()",    "icon": "zap",     "desc": {"en": "Assess Urban Heat Island intensity",                 "pt": "Avaliar a intensidade da Ilha de Calor Urbana",         "es": "Evaluar la intensidad de la Isla de Calor Urbana",         "zh": "评估城市热岛强度"}},
+]
+
+FUNDING = [
+    "CAPES — Coordenação de Aperfeiçoamento de Pessoal de Nível Superior (Finance Code 001)",
+    "Alexander von Humboldt Foundation",
+]
+
+QGIS_LANGUAGES = ["English", "Português", "Español", "Deutsch", "Français", "Italiano", "中文", "日本語", "한국어", "Русский"]
+
+# -----------------------------------------------------------------------
+# SVG Icon Library (Feather Icons subset)
+# -----------------------------------------------------------------------
+
+ICONS = {
+    "globe":       '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
+    "map":         '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>',
+    "layers":      '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>',
+    "bar-chart":   '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg>',
+    "grid":        '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>',
+    "sliders":     '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>',
+    "activity":    '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>',
+    "thermometer": '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>',
+    "cpu":         '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>',
+    "check-circle":'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+    "zap":         '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+    "tool":        '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
+    "github":      '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>',
+    "mail":        '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>',
+    "arrow-right": '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>',
+    "external-link":'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>',
+}
+
+FEATURE_ICONS = {
+    "f1": "globe",
+    "f2": "layers",
+    "f3": "thermometer",
+    "f4": "cpu",
+}
+
+# -----------------------------------------------------------------------
+# HTML Template (Jinja2)
+# -----------------------------------------------------------------------
+
+HTML_TEMPLATE = r"""<!DOCTYPE html>
 <html lang="en" data-lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LCZ4r — Urban Climate Analysis in R</title>
-  <meta name="description" content="The official landing page for the LCZ4r R package, a complete toolkit for Local Climate Zone (LCZ) and Urban Heat Island (UHI) analysis.">
-  <meta property="og:title" content="LCZ4r — Urban Climate Analysis in R">
-  <meta property="og:description" content="The official landing page for the LCZ4r R package, a complete toolkit for Local Climate Zone (LCZ) and Urban Heat Island (UHI) analysis.">
+  <title>{{ meta.title }}</title>
+  <meta name="description" content="{{ meta.description_en }}">
+  <meta property="og:title" content="{{ meta.title }}">
+  <meta property="og:description" content="{{ meta.description_en }}">
   <meta property="og:type" content="website">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1219,7 +1409,7 @@
     <button class="lang-btn"        data-lang="es">ES</button>
     <button class="lang-btn"        data-lang="zh">中文</button>
     <a href="https://github.com/ByMaxAnjos/LCZ4r" target="_blank" class="nav-github">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg> <span data-translate="nav_github">GitHub</span>
+      {{ icons.github }} <span data-translate="nav_github">GitHub</span>
     </a>
   </div>
 </nav>
@@ -1243,10 +1433,10 @@
         </p>
         <div class="hero-actions">
           <a href="https://bymaxanjos.github.io/LCZ4r/en/index.html" target="_blank" class="btn-primary">
-            <span data-translate="hero_cta_primary">Get Started</span> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            <span data-translate="hero_cta_primary">Get Started</span> {{ icons.arrow_right }}
           </a>
           <a href="https://github.com/ByMaxAnjos/LCZ4r" target="_blank" class="btn-secondary">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg> <span data-translate="hero_cta_secondary">View on GitHub</span>
+            {{ icons.github }} <span data-translate="hero_cta_secondary">View on GitHub</span>
           </a>
         </div>
       </div>
@@ -1314,7 +1504,7 @@
             LCZ4r simplifies the entire workflow of urban climate analysis. It provides a suite of tools to download, process, visualize, and interpret LCZ and UHI data, making complex spatial analysis accessible to researchers, urban planners, and climate scientists.
           </p>
           <a href="https://bymaxanjos.github.io/LCZ4r/en/index.html" target="_blank" class="btn-secondary" style="display:inline-flex;">
-            <span data-translate="hero_cta_primary">Get Started</span> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            <span data-translate="hero_cta_primary">Get Started</span> {{ icons.arrow_right }}
           </a>
         </div>
         <div class="about-image reveal reveal-delay-1">
@@ -1335,55 +1525,19 @@
         </p>
       </div>
       <div class="bento-grid">
-        
-        <div class="bento-card reveal reveal-delay-1">
-          <div class="bento-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
-          <div class="bento-number">01</div>
-          <h3 class="bento-title" data-translate="features_f1_title">Global Data Access</h3>
-          <p class="bento-desc" data-translate="features_f1_desc">Download Local Climate Zone maps from global, European, and USA datasets, or bring your own data from the LCZ Generator.</p>
-          
+        {% for f in features %}
+        <div class="bento-card reveal reveal-delay-{{ loop.index }}">
+          <div class="bento-icon">{{ icons[f.icon] }}</div>
+          <div class="bento-number">0{{ loop.index }}</div>
+          <h3 class="bento-title" data-translate="features_f{{ loop.index }}_title">{{ f.title }}</h3>
+          <p class="bento-desc" data-translate="features_f{{ loop.index }}_desc">{{ f.desc }}</p>
+          {% if f.image %}
           <div class="bento-image">
-            <img src="https://github.com/ByMaxAnjos/LCZ4r/raw/main/inst/figures/fig_general_7.png" alt="Global Data Access" loading="lazy">
+            <img src="{{ f.image }}" alt="{{ f.title }}" loading="lazy">
           </div>
-          
+          {% endif %}
         </div>
-        
-        <div class="bento-card reveal reveal-delay-2">
-          <div class="bento-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></div>
-          <div class="bento-number">02</div>
-          <h3 class="bento-title" data-translate="features_f2_title">Advanced Visualization</h3>
-          <p class="bento-desc" data-translate="features_f2_desc">Create publication-quality maps of LCZ classifications, thermal anomalies, and interpolated temperature surfaces.</p>
-          
-          <div class="bento-image">
-            <img src="https://github.com/ByMaxAnjos/LCZ4r/raw/main/inst/figures/fig_local_modeling_4.png" alt="Advanced Visualization" loading="lazy">
-          </div>
-          
-        </div>
-        
-        <div class="bento-card reveal reveal-delay-3">
-          <div class="bento-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg></div>
-          <div class="bento-number">03</div>
-          <h3 class="bento-title" data-translate="features_f3_title">In-depth Analysis</h3>
-          <p class="bento-desc" data-translate="features_f3_desc">Calculate LCZ area distributions, analyze time series data, and quantify Urban Heat Island intensity with specialized functions.</p>
-          
-          <div class="bento-image">
-            <img src="https://github.com/ByMaxAnjos/LCZ4r/raw/main/inst/figures/fig_local_uhi_3.png" alt="In-depth Analysis" loading="lazy">
-          </div>
-          
-        </div>
-        
-        <div class="bento-card reveal reveal-delay-4">
-          <div class="bento-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg></div>
-          <div class="bento-number">04</div>
-          <h3 class="bento-title" data-translate="features_f4_title">QGIS Integration</h3>
-          <p class="bento-desc" data-translate="features_f4_desc">Seamlessly integrate LCZ4r with QGIS for a powerful and user-friendly geospatial analysis experience.</p>
-          
-          <div class="bento-image">
-            <img src="https://github.com/user-attachments/assets/68cdca10-c1d5-4755-8d73-351af809552a" alt="QGIS Integration" loading="lazy">
-          </div>
-          
-        </div>
-        
+        {% endfor %}
       </div>
     </div>
   </section>
@@ -1404,147 +1558,17 @@
             </tr>
           </thead>
           <tbody>
-            
+            {% for fn in functions %}
             <tr>
               <td>
                 <div class="fn-name-cell">
-                  <span class="fn-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
-                  <code>lcz_get_map()</code>
+                  <span class="fn-icon">{{ icons[fn.icon] }}</span>
+                  <code>{{ fn.name }}</code>
                 </div>
               </td>
-              <td class="fn-desc-cell" data-translate="fn_0_desc">Download LCZ maps from the global dataset</td>
+              <td class="fn-desc-cell" data-translate="fn_{{ loop.index0 }}_desc">{{ fn.desc }}</td>
             </tr>
-            
-            <tr>
-              <td>
-                <div class="fn-name-cell">
-                  <span class="fn-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg></span>
-                  <code>lcz_get_map_euro()</code>
-                </div>
-              </td>
-              <td class="fn-desc-cell" data-translate="fn_1_desc">Download LCZ maps from the European dataset</td>
-            </tr>
-            
-            <tr>
-              <td>
-                <div class="fn-name-cell">
-                  <span class="fn-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg></span>
-                  <code>lcz_get_map_usa()</code>
-                </div>
-              </td>
-              <td class="fn-desc-cell" data-translate="fn_2_desc">Download LCZ maps from the USA dataset</td>
-            </tr>
-            
-            <tr>
-              <td>
-                <div class="fn-name-cell">
-                  <span class="fn-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg></span>
-                  <code>lcz_get_map_generator()</code>
-                </div>
-              </td>
-              <td class="fn-desc-cell" data-translate="fn_3_desc">Download LCZ maps from the LCZ Generator Platform</td>
-            </tr>
-            
-            <tr>
-              <td>
-                <div class="fn-name-cell">
-                  <span class="fn-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
-                  <code>lcz_plot_map()</code>
-                </div>
-              </td>
-              <td class="fn-desc-cell" data-translate="fn_4_desc">Visualize LCZ maps</td>
-            </tr>
-            
-            <tr>
-              <td>
-                <div class="fn-name-cell">
-                  <span class="fn-icon"></span>
-                  <code>lcz_plot_parameters()</code>
-                </div>
-              </td>
-              <td class="fn-desc-cell" data-translate="fn_5_desc">Visualize LCZ parameter maps</td>
-            </tr>
-            
-            <tr>
-              <td>
-                <div class="fn-name-cell">
-                  <span class="fn-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg></span>
-                  <code>lcz_cal_area()</code>
-                </div>
-              </td>
-              <td class="fn-desc-cell" data-translate="fn_6_desc">Calculate the area of LCZ classes</td>
-            </tr>
-            
-            <tr>
-              <td>
-                <div class="fn-name-cell">
-                  <span class="fn-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg></span>
-                  <code>lcz_get_parameters()</code>
-                </div>
-              </td>
-              <td class="fn-desc-cell" data-translate="fn_7_desc">Retrieve LCZ parameters</td>
-            </tr>
-            
-            <tr>
-              <td>
-                <div class="fn-name-cell">
-                  <span class="fn-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
-                  <code>lcz_ts()</code>
-                </div>
-              </td>
-              <td class="fn-desc-cell" data-translate="fn_8_desc">Analyze LCZ time series</td>
-            </tr>
-            
-            <tr>
-              <td>
-                <div class="fn-name-cell">
-                  <span class="fn-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg></span>
-                  <code>lcz_anomaly()</code>
-                </div>
-              </td>
-              <td class="fn-desc-cell" data-translate="fn_9_desc">Calculate LCZ thermal anomalies</td>
-            </tr>
-            
-            <tr>
-              <td>
-                <div class="fn-name-cell">
-                  <span class="fn-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg></span>
-                  <code>lcz_anomaly_map()</code>
-                </div>
-              </td>
-              <td class="fn-desc-cell" data-translate="fn_10_desc">Map LCZ thermal anomalies</td>
-            </tr>
-            
-            <tr>
-              <td>
-                <div class="fn-name-cell">
-                  <span class="fn-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg></span>
-                  <code>lcz_interp_map()</code>
-                </div>
-              </td>
-              <td class="fn-desc-cell" data-translate="fn_11_desc">Map LCZ interpolation results</td>
-            </tr>
-            
-            <tr>
-              <td>
-                <div class="fn-name-cell">
-                  <span class="fn-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
-                  <code>lcz_interp_eval()</code>
-                </div>
-              </td>
-              <td class="fn-desc-cell" data-translate="fn_12_desc">Evaluate LCZ interpolation accuracy</td>
-            </tr>
-            
-            <tr>
-              <td>
-                <div class="fn-name-cell">
-                  <span class="fn-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span>
-                  <code>lcz_uhi_intensity()</code>
-                </div>
-              </td>
-              <td class="fn-desc-cell" data-translate="fn_13_desc">Assess Urban Heat Island intensity</td>
-            </tr>
-            
+            {% endfor %}
           </tbody>
         </table>
       </div>
@@ -1562,31 +1586,13 @@
             The LCZ4r-QGIS plugin brings the power of LCZ4r directly into your QGIS environment.
           </p>
           <div class="qgis-langs">
-            
-            <span class="qgis-lang-badge">English</span>
-            
-            <span class="qgis-lang-badge">Português</span>
-            
-            <span class="qgis-lang-badge">Español</span>
-            
-            <span class="qgis-lang-badge">Deutsch</span>
-            
-            <span class="qgis-lang-badge">Français</span>
-            
-            <span class="qgis-lang-badge">Italiano</span>
-            
-            <span class="qgis-lang-badge">中文</span>
-            
-            <span class="qgis-lang-badge">日本語</span>
-            
-            <span class="qgis-lang-badge">한국어</span>
-            
-            <span class="qgis-lang-badge">Русский</span>
-            
+            {% for lang in qgis_languages %}
+            <span class="qgis-lang-badge">{{ lang }}</span>
+            {% endfor %}
           </div>
           <p class="qgis-compat">Compatible with QGIS 3.x and above. Integrates directly with the LCZ4r R package.</p>
           <a href="https://bymaxanjos.github.io/LCZ4r/en/articles/examples.html" target="_blank" class="btn-secondary" style="display:inline-flex;margin-top:24px;">
-            <span data-translate="qgis_cta">Learn more about the Plugin</span> <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            <span data-translate="qgis_cta">Learn more about the Plugin</span> {{ icons.external_link }}
           </a>
         </div>
         <div class="video-wrapper">
@@ -1632,7 +1638,7 @@
             </div>
           </div>
           <a href="https://clima-urbano.streamlit.app/" target="_blank" class="btn-secondary" style="display:inline-flex;margin-top:8px;">
-            <span data-translate="platform_cta">Access Platform</span> <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            <span data-translate="platform_cta">Access Platform</span> {{ icons.external_link }}
           </a>
         </div>
         <div class="platform-preview reveal">
@@ -1660,7 +1666,7 @@
       </div>
       <div class="pub-card reveal">
         <div>
-          <div class="pub-badge"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg> Nature Scientific Reports</div>
+          <div class="pub-badge">{{ icons.external_link }} Nature Scientific Reports</div>
           <h3 class="pub-title" data-translate="publication_paper_title">
             LCZ4r package R for local climate zones and urban heat islands
           </h3>
@@ -1671,7 +1677,7 @@
             The methodologies and applications of the LCZ4r package are detailed in our peer-reviewed publication in Nature Scientific Reports.
           </p>
           <a href="https://www.nature.com/articles/s41598-025-92000-0" target="_blank" class="btn-primary">
-            <span data-translate="publication_cta">Read the Paper</span> <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+            <span data-translate="publication_cta">Read the Paper</span> {{ icons.external_link }}
           </a>
         </div>
         <div class="pub-image">
@@ -1692,145 +1698,28 @@
         </p>
       </div>
       <div class="team-grid">
-        
-        <div class="team-card reveal reveal-delay-1">
+        {% for m in team %}
+        <div class="team-card reveal reveal-delay-{{ loop.index }}">
           <div class="team-avatar">
-            
-            <img src="https://github.com/ByMaxAnjos.png" alt="Dr. Max Anjos" onerror="this.parentElement.innerHTML='MA'">
-            
+            {% if m.avatar %}
+            <img src="{{ m.avatar }}" alt="{{ m.name }}" onerror="this.parentElement.innerHTML='{{ m.initials }}'">
+            {% else %}
+            {{ m.initials }}
+            {% endif %}
           </div>
-          <div class="team-name">Dr. Max Anjos</div>
-          <div class="team-role" data-translate="team_0_role">Lead Developer & Maintainer</div>
-          <div class="team-org">Fundação Oswaldo Cruz Rondônia (FIOCRUZ-RO), Brasil</div>
+          <div class="team-name">{{ m.name }}</div>
+          <div class="team-role" data-translate="team_{{ loop.index0 }}_role">{{ m.role_en }}</div>
+          <div class="team-org">{{ m.org }}</div>
           <div class="team-links">
-            
-            <a href="https://github.com/ByMaxAnjos" target="_blank" class="team-link" title="GitHub"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg></a>
-            
-            
-            <a href="mailto:maxanjos@campus.ul.pt" class="team-link" title="Email"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></a>
-            
+            {% if m.github %}
+            <a href="{{ m.github }}" target="_blank" class="team-link" title="GitHub">{{ icons.github }}</a>
+            {% endif %}
+            {% if m.email %}
+            <a href="mailto:{{ m.email }}" class="team-link" title="Email">{{ icons.mail }}</a>
+            {% endif %}
           </div>
         </div>
-        
-        <div class="team-card reveal reveal-delay-2">
-          <div class="team-avatar">
-            
-            <img src="https://i1.rgstatic.net/ii/profile.image/11431281800865835-1766133374907_Q128/Fred-Meier.jpg" alt="Dr. Fred Meier" onerror="this.parentElement.innerHTML='FM'">
-            
-          </div>
-          <div class="team-name">Dr. Fred Meier</div>
-          <div class="team-role" data-translate="team_1_role">Contributor & LCZ Expert</div>
-          <div class="team-org">Technische Universität Berlin, German</div>
-          <div class="team-links">
-            
-            
-            <a href="mailto:fred.meier@tu-berlin.de" class="team-link" title="Email"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></a>
-            
-          </div>
-        </div>
-        
-        <div class="team-card reveal reveal-delay-3">
-          <div class="team-avatar">
-            
-            <img src="https://i1.rgstatic.net/ii/profile.image/279797101023232-1443720235054_Q128/Francisco-Castelhano.jpg" alt="Dr. Francisco Castelhano" onerror="this.parentElement.innerHTML='FC'">
-            
-          </div>
-          <div class="team-name">Dr. Francisco Castelhano</div>
-          <div class="team-role" data-translate="team_2_role">Contributor & LCZ Expert</div>
-          <div class="team-org">Universidade Federal do Rio Grande do Norte, Brasil</div>
-          <div class="team-links">
-            
-            
-            <a href="mailto:francisco.castelhano@ufrn.br" class="team-link" title="Email"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></a>
-            
-          </div>
-        </div>
-        
-        <div class="team-card reveal reveal-delay-4">
-          <div class="team-avatar">
-            
-            <img src="https://i1.rgstatic.net/ii/profile.image/983488543068164-1611493349847_Q128/Antonio-Lopes-28.jpg" alt="Dr. António Lopes" onerror="this.parentElement.innerHTML='AL'">
-            
-          </div>
-          <div class="team-name">Dr. António Lopes</div>
-          <div class="team-role" data-translate="team_3_role">Contributor & LCZ Expert</div>
-          <div class="team-org">University of Lisbon, Portugal</div>
-          <div class="team-links">
-            
-            
-            <a href="mailto:antonio.lopes@edu.ulisboa.pt" class="team-link" title="Email"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></a>
-            
-          </div>
-        </div>
-        
-        <div class="team-card reveal reveal-delay-5">
-          <div class="team-avatar">
-            
-            <img src="https://i1.rgstatic.net/ii/profile.image/11431281123980602-1677837423007_Q128/Dayvid-Medeiros.jpg" alt="Dayvid Carlos de Medeiros" onerror="this.parentElement.innerHTML='DM'">
-            
-          </div>
-          <div class="team-name">Dayvid Carlos de Medeiros</div>
-          <div class="team-role" data-translate="team_4_role">Contributor R</div>
-          <div class="team-org">Universidade Federal do Rio Grande do Norte, Brasil</div>
-          <div class="team-links">
-            
-            
-            <a href="mailto:dayvid.medeiros@ufrn.br" class="team-link" title="Email"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></a>
-            
-          </div>
-        </div>
-        
-        <div class="team-card reveal reveal-delay-6">
-          <div class="team-avatar">
-            
-            <img src="https://i1.rgstatic.net/ii/profile.image/11431281799214433-1766064515532_Q128/Tiago-Silva-114.jpg" alt="Dr.Tiago Silva" onerror="this.parentElement.innerHTML='AL'">
-            
-          </div>
-          <div class="team-name">Dr.Tiago Silva</div>
-          <div class="team-role" data-translate="team_5_role">Contributor R</div>
-          <div class="team-org">University of Lisbon, Portugal</div>
-          <div class="team-links">
-            
-            
-            <a href="mailto:silvatiago@edu.ulisboa.pt" class="team-link" title="Email"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></a>
-            
-          </div>
-        </div>
-        
-        <div class="team-card reveal reveal-delay-7">
-          <div class="team-avatar">
-            
-            <img src="https://i1.rgstatic.net/ii/profile.image/11431281289464224-1731204092950_Q128/Antonio-Neto-76.jpg" alt="Antônio Campos Neto" onerror="this.parentElement.innerHTML='AN'">
-            
-          </div>
-          <div class="team-name">Antônio Campos Neto</div>
-          <div class="team-role" data-translate="team_6_role">Contributor R</div>
-          <div class="team-org">Universidade Federal do Rio Grande do Norte, Brasil</div>
-          <div class="team-links">
-            
-            
-            <a href="mailto:antonio.neto@ufrn.br" class="team-link" title="Email"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></a>
-            
-          </div>
-        </div>
-        
-        <div class="team-card reveal reveal-delay-8">
-          <div class="team-avatar">
-            
-            <img src="https://arquivos.info.ufrn.br/get?k=k42ZsWT2r8rbXtDE0Nn4qblBaW8RxeS9Ep2BZ3x2IQRgr16feSOe1cGA%2Bwg7AnkBIjMk8%2BefBkvGVqf0H2GbXLE%2B%2BChSCeTFBgrelTR8mLuB3ktXRpOl%2FTWiDt5Xzp2prWeG1keW2W3XdzyRZtuoHiK8JOVQI2pm4xOCqCOpleQPWC%2BOTXfJqsrqe810QUyPAImRtKxNzlbqUO0I9IRZBNeP3PS%2FtYagZHnyyDEDsSx0Bc4fundnsZqtG%2BKWqtgfFXs0D810YUwTj%2Bythv6gqsrQQmrd2eNi4dlIhhagU6ruY9f%2Fyy2sakz6yrhEfNjBODe%2BpR%2BMI37r%2BTYJ1ATk1yoK0iz5xNYPIbtxaKHm5wCdeaIptX%2BdZ%2FiUmyCca%2Fhu7whFNuy%2FIeNW3rNYHNRSAOQJMLZWkDXrVGxiw9kE1f6byht2882ocCdz8LgVfPxwMSCWMVZGMhLX15n9idNf8UUC1YsP2iF5Y%2BhKiuY%2F58QRPHUSTT0d4hq3OTHWe7I0OL6hQqzdN%2BGEw4bVJazwBKj2jmO6tjqp3BHIasPd4YatGXh6ICt7m3KFD5Jh0ayWkJwJukETO53vUFqj1f0EFKXHGb%2BCWcLuXXoiQE5%2FItnW%2FXcMzM3v7Jt1YmtHCP9U" alt="José Felipe da Costa Neto" onerror="this.parentElement.innerHTML='JF'">
-            
-          </div>
-          <div class="team-name">José Felipe da Costa Neto</div>
-          <div class="team-role" data-translate="team_7_role">Contributor R</div>
-          <div class="team-org">Universidade Federal do Rio Grande do Norte, Brasil</div>
-          <div class="team-links">
-            
-            
-            <a href="mailto:jose.neto@ufrn.br" class="team-link" title="Email"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></a>
-            
-          </div>
-        </div>
-        
+        {% endfor %}
       </div>
     </div>
   </section>
@@ -1846,17 +1735,12 @@
         </p>
       </div>
       <div class="funding-grid">
-        
-        <div class="funding-item reveal reveal-delay-1">
+        {% for f in funding %}
+        <div class="funding-item reveal reveal-delay-{{ loop.index }}">
           <div class="funding-dot"></div>
-          <div class="funding-text">CAPES — Coordenação de Aperfeiçoamento de Pessoal de Nível Superior (Finance Code 001)</div>
+          <div class="funding-text">{{ f }}</div>
         </div>
-        
-        <div class="funding-item reveal reveal-delay-2">
-          <div class="funding-dot"></div>
-          <div class="funding-text">Alexander von Humboldt Foundation</div>
-        </div>
-        
+        {% endfor %}
       </div>
     </div>
   </section>
@@ -1870,10 +1754,10 @@
       </p>
       <div class="cta-actions reveal reveal-delay-2">
         <a href="https://bymaxanjos.github.io/LCZ4r/en/index.html" target="_blank" class="btn-primary">
-          <span data-translate="hero_cta_primary">Get Started</span> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          <span data-translate="hero_cta_primary">Get Started</span> {{ icons.arrow_right }}
         </a>
         <a href="https://github.com/ByMaxAnjos/LCZ4r" target="_blank" class="btn-secondary">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg> <span data-translate="nav_github">GitHub</span>
+          {{ icons.github }} <span data-translate="nav_github">GitHub</span>
         </a>
       </div>
     </div>
@@ -1899,312 +1783,7 @@
 // ================================================================
 // TRANSLATIONS (injected from YAML)
 // ================================================================
-const TRANSLATIONS = {
-  "en": {
-    "nav_about": "About",
-    "nav_features": "Features",
-    "nav_qgis": "QGIS Plugin",
-    "nav_team": "Team",
-    "nav_publication": "Publication",
-    "nav_github": "GitHub",
-    "hero_line1": "Urban Climate",
-    "hero_line2": "Analysis in R",
-    "hero_subtitle": "LCZ4r is a comprehensive R package for analyzing and visualizing Local Climate Zones (LCZ) and Urban Heat Islands (UHI).",
-    "hero_cta_primary": "Get Started",
-    "hero_cta_secondary": "View on GitHub",
-    "stats_s1": "Functions",
-    "stats_s2": "Languages",
-    "stats_s3": "Contributors",
-    "stats_s4": "Published in",
-    "about_title": "From Data to Insight",
-    "about_text": "LCZ4r simplifies the entire workflow of urban climate analysis. It provides a suite of tools to download, process, visualize, and interpret LCZ and UHI data, making complex spatial analysis accessible to researchers, urban planners, and climate scientists.",
-    "features_title": "A Complete Toolkit for Urban Climate Research",
-    "features_subtitle": "Explore the key functionalities that make LCZ4r a powerful tool for urban climate studies.",
-    "features_f1_title": "Global Data Access",
-    "features_f1_desc": "Download Local Climate Zone maps from global, European, and USA datasets, or bring your own data from the LCZ Generator.",
-    "features_f2_title": "Advanced Visualization",
-    "features_f2_desc": "Create publication-quality maps of LCZ classifications, thermal anomalies, and interpolated temperature surfaces.",
-    "features_f3_title": "In-depth Analysis",
-    "features_f3_desc": "Calculate LCZ area distributions, analyze time series data, and quantify Urban Heat Island intensity with specialized functions.",
-    "features_f4_title": "QGIS Integration",
-    "features_f4_desc": "Seamlessly integrate LCZ4r with QGIS for a powerful and user-friendly geospatial analysis experience.",
-    "functions_title": "All Functions",
-    "fn_0_desc": "Download LCZ maps from the global dataset",
-    "fn_1_desc": "Download LCZ maps from the European dataset",
-    "fn_2_desc": "Download LCZ maps from the USA dataset",
-    "fn_3_desc": "Download LCZ maps from the LCZ Generator Platform",
-    "fn_4_desc": "Visualize LCZ maps",
-    "fn_5_desc": "Visualize LCZ parameter maps",
-    "fn_6_desc": "Calculate the area of LCZ classes",
-    "fn_7_desc": "Retrieve LCZ parameters",
-    "fn_8_desc": "Analyze LCZ time series",
-    "fn_9_desc": "Calculate LCZ thermal anomalies",
-    "fn_10_desc": "Map LCZ thermal anomalies",
-    "fn_11_desc": "Map LCZ interpolation results",
-    "fn_12_desc": "Evaluate LCZ interpolation accuracy",
-    "fn_13_desc": "Assess Urban Heat Island intensity",
-    "qgis_title": "Geospatial Analysis, Simplified",
-    "qgis_text": "The LCZ4r-QGIS plugin brings the power of LCZ4r directly into your QGIS environment. This multilingual plugin allows for interactive analysis and visualization of Local Climate Zones and urban heat islands, combining the statistical power of R with the mapping capabilities of QGIS.",
-    "qgis_cta": "Learn more about the Plugin",
-    "nav_platform": "Platform",
-    "platform_title": "Interactive Urban Climate Platform",
-    "platform_text": "This platform was developed specifically for Geography students and researchers interested in understanding urban climate phenomena. Our main focuses are:",
-    "platform_item1_title": "🏙️ Urban Heat Islands (UHI):",
-    "platform_item1_desc": "Phenomenon where urban areas present higher temperatures than surrounding rural areas.",
-    "platform_item2_title": "🗺️ Local Climate Zones (LCZ):",
-    "platform_item2_desc": "Classification system that categorizes different types of urban land cover and land use.",
-    "platform_cta": "Access Platform",
-    "publication_title": "Published in Nature",
-    "publication_journal": "Nature Scientific Reports",
-    "publication_paper_title": "LCZ4r package R for local climate zones and urban heat islands",
-    "publication_text": "The methodologies and applications of the LCZ4r package are detailed in our peer-reviewed publication in Nature Scientific Reports.",
-    "publication_cta": "Read the Paper",
-    "team_title": "Meet the Developers",
-    "team_text": "LCZ4r is developed and maintained by a dedicated team of researchers and scientists.",
-    "team_0_role": "Lead Developer & Maintainer",
-    "team_1_role": "Contributor & LCZ Expert",
-    "team_2_role": "Contributor & LCZ Expert",
-    "team_3_role": "Contributor & LCZ Expert",
-    "team_4_role": "Contributor R",
-    "team_5_role": "Contributor R",
-    "team_6_role": "Contributor R",
-    "team_7_role": "Contributor R",
-    "funding_title": "Supported By",
-    "funding_text": "The development of LCZ4r is made possible through the generous support of the following organizations:",
-    "cta_title": "Ready to get started?",
-    "cta_text": "Explore the package, contribute on GitHub, or get in touch with the team.",
-    "footer_docs": "Documentation",
-    "footer_issues": "Issues"
-  },
-  "pt": {
-    "nav_about": "Sobre",
-    "nav_features": "Funcionalidades",
-    "nav_qgis": "Plugin QGIS",
-    "nav_team": "Equipe",
-    "nav_publication": "Publicação",
-    "nav_github": "GitHub",
-    "hero_line1": "Análise Climática",
-    "hero_line2": "Urbana em R",
-    "hero_subtitle": "O LCZ4r é um pacote R abrangente para analisar e visualizar Zonas Climáticas Locais (LCZ) e Ilhas de Calor Urbanas (UHI).",
-    "hero_cta_primary": "Comece Agora",
-    "hero_cta_secondary": "Ver no GitHub",
-    "stats_s1": "Funções",
-    "stats_s2": "Idiomas",
-    "stats_s3": "Contribuidores",
-    "stats_s4": "Publicado na",
-    "about_title": "Dos Dados ao Insight",
-    "about_text": "O LCZ4r simplifica todo o fluxo de trabalho da análise climática urbana. Ele fornece um conjunto de ferramentas para baixar, processar, visualizar e interpretar dados de LCZ e UHI, tornando a análise espacial complexa acessível a pesquisadores, planejadores urbanos e cientistas climáticos.",
-    "features_title": "Um Kit de Ferramentas Completo para Pesquisa Climática Urbana",
-    "features_subtitle": "Explore as principais funcionalidades que tornam o LCZ4r uma ferramenta poderosa para estudos climáticos urbanos.",
-    "features_f1_title": "Acesso Global a Dados",
-    "features_f1_desc": "Baixe mapas de Zonas Climáticas Locais de conjuntos de dados globais, europeus e dos EUA, ou use seus próprios dados do Gerador LCZ.",
-    "features_f2_title": "Visualização Avançada",
-    "features_f2_desc": "Crie mapas de alta qualidade para publicação de classificações LCZ, anomalias térmicas e superfícies de temperatura interpoladas.",
-    "features_f3_title": "Análise Aprofundada",
-    "features_f3_desc": "Calcule distribuições de área LCZ, analise dados de séries temporais e quantifique a intensidade da Ilha de Calor Urbana com funções especializadas.",
-    "features_f4_title": "Integração com QGIS",
-    "features_f4_desc": "Integre perfeitamente o LCZ4r com o QGIS para uma experiência de análise geoespacial poderosa e amigável.",
-    "functions_title": "Todas as Funções",
-    "fn_0_desc": "Baixar mapas LCZ do conjunto de dados global",
-    "fn_1_desc": "Baixar mapas LCZ do conjunto de dados europeu",
-    "fn_2_desc": "Baixar mapas LCZ do conjunto de dados dos EUA",
-    "fn_3_desc": "Baixar mapas LCZ da Plataforma Geradora LCZ",
-    "fn_4_desc": "Visualizar mapas LCZ",
-    "fn_5_desc": "Visualizar mapas de parâmetros LCZ",
-    "fn_6_desc": "Calcular a área das classes LCZ",
-    "fn_7_desc": "Recuperar parâmetros LCZ",
-    "fn_8_desc": "Analisar séries temporais LCZ",
-    "fn_9_desc": "Calcular anomalias térmicas LCZ",
-    "fn_10_desc": "Mapear anomalias térmicas LCZ",
-    "fn_11_desc": "Mapear resultados de interpolação LCZ",
-    "fn_12_desc": "Avaliar a precisão da interpolação LCZ",
-    "fn_13_desc": "Avaliar a intensidade da Ilha de Calor Urbana",
-    "qgis_title": "Análise Geoespacial, Simplificada",
-    "qgis_text": "O plugin LCZ4r-QGIS traz o poder do LCZ4r diretamente para o seu ambiente QGIS. Este plugin multilíngue permite a análise e visualização interativa de Zonas Climáticas Locais e ilhas de calor urbanas, combinando o poder estatístico do R com as capacidades de mapeamento do QGIS.",
-    "qgis_cta": "Saiba mais sobre o Plugin",
-    "nav_platform": "Platform",
-    "platform_title": "Plataforma Interativa de Clima Urbano",
-    "platform_text": "Esta plataforma foi desenvolvida especificamente para estudantes e pesquisadores de Geografia interessados em compreender os fenômenos do clima urbano. Nosso foco principal são:",
-    "platform_item1_title": "🏙️ Ilhas de Calor Urbanas (ICU):",
-    "platform_item1_desc": "Fenômeno onde áreas urbanas apresentam temperaturas mais elevadas que as áreas rurais circundantes.",
-    "platform_item2_title": "🗺️ Zonas Climáticas Locais (ZCL):",
-    "platform_item2_desc": "Sistema de classificação que categoriza diferentes tipos de cobertura e uso do solo urbano.",
-    "platform_cta": "Acessar Plataforma",
-    "publication_title": "Publicado na Nature",
-    "publication_journal": "Nature Scientific Reports",
-    "publication_paper_title": "Pacote R LCZ4r para zonas climáticas locais e ilhas de calor urbanas",
-    "publication_text": "As metodologias e aplicações do pacote LCZ4r são detalhadas em nossa publicação revisada por pares na Nature Scientific Reports.",
-    "publication_cta": "Leia o Artigo",
-    "team_title": "Conheça os Desenvolvedores",
-    "team_text": "O LCZ4r é desenvolvido e mantido por uma equipe dedicada de pesquisadores e cientistas.",
-    "team_0_role": "Desenvolvedor Principal & Mantenedor",
-    "team_1_role": "Contribuidor & LCZ Expert",
-    "team_2_role": "Contribuidor & LCZ Expert",
-    "team_3_role": "Contribuidor & LCZ Expert",
-    "team_4_role": "Contribuidor R",
-    "team_5_role": "Contribuidor R",
-    "team_6_role": "Contribuidor R",
-    "team_7_role": "Contribuidor R",
-    "funding_title": "Apoiado Por",
-    "funding_text": "O desenvolvimento do LCZ4r é possível graças ao generoso apoio das seguintes organizações:",
-    "cta_title": "Pronto para começar?",
-    "cta_text": "Explore o pacote, contribua no GitHub ou entre em contato com a equipe.",
-    "footer_docs": "Documentação",
-    "footer_issues": "Problemas"
-  },
-  "es": {
-    "nav_about": "Acerca de",
-    "nav_features": "Características",
-    "nav_qgis": "Plugin QGIS",
-    "nav_team": "Equipo",
-    "nav_publication": "Publicación",
-    "nav_github": "GitHub",
-    "hero_line1": "Análisis Climático",
-    "hero_line2": "Urbano en R",
-    "hero_subtitle": "LCZ4r es un paquete R completo para analizar y visualizar Zonas Climáticas Locales (LCZ) e Islas de Calor Urbanas (UHI).",
-    "hero_cta_primary": "Empezar",
-    "hero_cta_secondary": "Ver en GitHub",
-    "stats_s1": "Funciones",
-    "stats_s2": "Idiomas",
-    "stats_s3": "Contribuidores",
-    "stats_s4": "Publicado en",
-    "about_title": "De Datos a Conocimiento",
-    "about_text": "LCZ4r simplifica todo el flujo de trabajo del análisis climático urbano. Proporciona un conjunto de herramientas para descargar, procesar, visualizar e interpretar datos de LCZ y UHI, haciendo que el análisis espacial complejo sea accesible para investigadores, planificadores urbanos y científicos del clima.",
-    "features_title": "Un Conjunto de Herramientas Completo para la Investigación del Clima Urbano",
-    "features_subtitle": "Explore las funcionalidades clave que hacen de LCZ4r una herramienta poderosa para los estudios del clima urbano.",
-    "features_f1_title": "Acceso a Datos Globales",
-    "features_f1_desc": "Descargue mapas de Zonas Climáticas Locales de conjuntos de datos globales, europeos y de EE. UU., o utilice sus propios datos del Generador LCZ.",
-    "features_f2_title": "Visualización Avanzada",
-    "features_f2_desc": "Cree mapas de alta calidad para publicación de clasificaciones LCZ, anomalías térmicas y superficies de temperatura interpoladas.",
-    "features_f3_title": "Análisis en Profundidad",
-    "features_f3_desc": "Calcule distribuciones de área LCZ, analice datos de series temporales y cuantifique la intensidad de la Isla de Calor Urbana con funciones especializadas.",
-    "features_f4_title": "Integración con QGIS",
-    "features_f4_desc": "Integre sin problemas LCZ4r con QGIS para una experiencia de análisis geoespacial potente y fácil de usar.",
-    "functions_title": "Todas las Funciones",
-    "fn_0_desc": "Descargar mapas LCZ del conjunto de datos global",
-    "fn_1_desc": "Descargar mapas LCZ del conjunto de datos europeo",
-    "fn_2_desc": "Descargar mapas LCZ del conjunto de datos de EE. UU.",
-    "fn_3_desc": "Descargar mapas LCZ de la Plataforma Generadora LCZ",
-    "fn_4_desc": "Visualizar mapas LCZ",
-    "fn_5_desc": "Visualizar mapas de parámetros LCZ",
-    "fn_6_desc": "Calcular el área de las clases LCZ",
-    "fn_7_desc": "Recuperar parámetros LCZ",
-    "fn_8_desc": "Analizar series temporales LCZ",
-    "fn_9_desc": "Calcular anomalías térmicas LCZ",
-    "fn_10_desc": "Mapear anomalías térmicas LCZ",
-    "fn_11_desc": "Mapear resultados de interpolación LCZ",
-    "fn_12_desc": "Evaluar la precisión de la interpolación LCZ",
-    "fn_13_desc": "Evaluar la intensidad de la Isla de Calor Urbana",
-    "qgis_title": "Análisis Geoespacial, Simplificado",
-    "qgis_text": "El plugin LCZ4r-QGIS lleva el poder de LCZ4r directamente a su entorno QGIS. Este plugin multilingüe permite el análisis y la visualización interactivos de Zonas Climáticas Locales e islas de calor urbanas, combinando el poder estadístico de R con las capacidades de mapeo de QGIS.",
-    "qgis_cta": "Aprenda más sobre el Plugin",
-    "nav_platform": "Platform",
-    "platform_title": "Plataforma Interactiva de Clima Urbano",
-    "platform_text": "Esta plataforma fue desarrollada específicamente para estudiantes e investigadores de Geografía interesados en comprender los fenómenos del clima urbano. Nuestro enfoque principal son:",
-    "platform_item1_title": "🏙️ Islas de Calor Urbanas (ICU):",
-    "platform_item1_desc": "Fenómeno donde las áreas urbanas presentan temperaturas más altas que las áreas rurales circundantes.",
-    "platform_item2_title": "🗺️ Zonas Climáticas Locales (ZCL):",
-    "platform_item2_desc": "Sistema de clasificación que categoriza diferentes tipos de cobertura y uso del suelo urbano.",
-    "platform_cta": "Acceder a la Plataforma",
-    "publication_title": "Publicado en Nature",
-    "publication_journal": "Nature Scientific Reports",
-    "publication_paper_title": "Paquete R LCZ4r para zonas climáticas locales e islas de calor urbanas",
-    "publication_text": "Las metodologías y aplicaciones del paquete LCZ4r se detallan en nuestra publicación revisada por pares en Nature Scientific Reports.",
-    "publication_cta": "Leer el Artículo",
-    "team_title": "Conozca a los Desarrolladores",
-    "team_text": "LCZ4r es desarrollado y mantenido por un equipo dedicado de investigadores y científicos.",
-    "team_0_role": "Desarrollador Principal & Mantenedor",
-    "team_1_role": "Contribuidor & LCZ Expert",
-    "team_2_role": "Contribuido & LCZ Expert",
-    "team_3_role": "Contribuido & LCZ Expert",
-    "team_4_role": "Contribuidor R",
-    "team_5_role": "Contribuido R",
-    "team_6_role": "Contribuidor R",
-    "team_7_role": "Contribuidor R",
-    "funding_title": "Apoyado Por",
-    "funding_text": "El desarrollo de LCZ4r es posible gracias al generoso apoyo de las siguientes organizaciones:",
-    "cta_title": "¿Listo para empezar?",
-    "cta_text": "Explore el paquete, contribuya en GitHub o póngase en contacto con el equipo.",
-    "footer_docs": "Documentación",
-    "footer_issues": "Problemas"
-  },
-  "zh": {
-    "nav_about": "关于",
-    "nav_features": "功能特性",
-    "nav_qgis": "QGIS 插件",
-    "nav_team": "团队",
-    "nav_publication": "出版物",
-    "nav_github": "GitHub",
-    "hero_line1": "城市气候",
-    "hero_line2": "R 语言分析",
-    "hero_subtitle": "LCZ4r 是一个用于分析和可视化局地气候区 (LCZ) 和城市热岛 (UHI) 的综合性 R 包。",
-    "hero_cta_primary": "开始使用",
-    "hero_cta_secondary": "在 GitHub 上查看",
-    "stats_s1": "函数",
-    "stats_s2": "语言",
-    "stats_s3": "贡献者",
-    "stats_s4": "发表于",
-    "about_title": "从数据到洞察",
-    "about_text": "LCZ4r 简化了城市气候分析的整个工作流程。它提供了一套工具来下载、处理、可视化和解读 LCZ 及 UHI 数据，使复杂空间分析对研究人员、城市规划者和气候科学家来说触手可及。",
-    "features_title": "一个完整的城市气候研究工具包",
-    "features_subtitle": "探索使 LCZ4r 成为城市气候研究强大工具的关键功能。",
-    "features_f1_title": "全球数据接入",
-    "features_f1_desc": "从全球、欧洲和美国数据集中下载局地气候区地图，或从 LCZ 生成器中导入您自己的数据。",
-    "features_f2_title": "高级可视化",
-    "features_f2_desc": "创建出版物质量的 LCZ 分类、热异常和插值温度表面图。",
-    "features_f3_title": "深度分析",
-    "features_f3_desc": "使用专门函数计算 LCZ 区域分布、分析时间序列数据并量化城市热岛强度。",
-    "features_f4_title": "QGIS 集成",
-    "features_f4_desc": "将 LCZ4r 与 QGIS 无缝集成，以获得强大且用户友好的地理空间分析体验。",
-    "functions_title": "所有函数",
-    "fn_0_desc": "从全球数据集下载局地气候区地图",
-    "fn_1_desc": "从欧洲数据集下载局地气候区地图",
-    "fn_2_desc": "从美国数据集下载局地气候区地图",
-    "fn_3_desc": "从局地气候区生成器平台下载地图",
-    "fn_4_desc": "可视化局地气候区地图",
-    "fn_5_desc": "可视化局地气候区参数地图",
-    "fn_6_desc": "计算局地气候区类别面积",
-    "fn_7_desc": "获取局地气候区参数",
-    "fn_8_desc": "分析局地气候区时间序列",
-    "fn_9_desc": "计算局地气候区热异常",
-    "fn_10_desc": "绘制局地气候区热异常地图",
-    "fn_11_desc": "绘制局地气候区插值结果地图",
-    "fn_12_desc": "评估局地气候区插值精度",
-    "fn_13_desc": "评估城市热岛强度",
-    "qgis_title": "地理空间分析，简化",
-    "qgis_text": "LCZ4r-QGIS 插件将 LCZ4r 的强大功能直接带入您的 QGIS 环境。这个多语言插件允许对局地气候区和城市热岛进行交互式分析和可视化，将 R 的统计能力与 QGIS 的地图绘制功能相结合。",
-    "qgis_cta": "了解更多关于插件的信息",
-    "nav_platform": "平台",
-    "platform_title": "交互式城市气候平台",
-    "platform_text": "该平台专为对理解城市气候现象感兴趣的地理学学生和研究人员开发。我们的主要关注点是：",
-    "platform_item1_title": "🏙️ 城市热岛 (UHI)：",
-    "platform_item1_desc": "城市地区温度高于周围乡村地区的现象。",
-    "platform_item2_title": "🗺️ 局地气候区 (LCZ)：",
-    "platform_item2_desc": "对不同类型的城市土地覆盖和土地利用进行分类的系统。",
-    "platform_cta": "访问平台",
-    "publication_title": "发表于《自然》",
-    "publication_journal": "《自然·科学报告》",
-    "publication_paper_title": "用于局地气候区和城市热岛的 LCZ4r R 包",
-    "publication_text": "LCZ4r 包的方法和应用在我们于《自然·科学报告》上发表的同行评审出版物中有详细介绍。",
-    "publication_cta": "阅读论文",
-    "team_title": "认识开发者",
-    "team_text": "LCZ4r 由一个专注的研究人员和科学家团队开发和维护。",
-    "team_0_role": "首席开发者和维护者",
-    "team_1_role": "贡献者和局地气候区专家",
-    "team_2_role": "贡献者和局地气候区专家",
-    "team_3_role": "贡献者和局地气候区专家",
-    "team_4_role": "R 语言贡献者",
-    "team_5_role": "R 语言贡献者",
-    "team_6_role": "R 语言贡献者",
-    "team_7_role": "R 语言贡献者",
-    "funding_title": "由...支持",
-    "funding_text": "LCZ4r 的开发得益于以下组织的慷慨支持：",
-    "cta_title": "准备好开始了吗？",
-    "cta_text": "探索该软件包，在 GitHub 上做出贡献，或与团队联系。",
-    "footer_docs": "文档",
-    "footer_issues": "问题"
-  }
-};
+const TRANSLATIONS = {{ translations_json }};
 
 // ================================================================
 // LANGUAGE SWITCHER
@@ -2318,3 +1897,230 @@ document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 </script>
 </body>
 </html>
+"""
+
+# -----------------------------------------------------------------------
+# Load Config
+# -----------------------------------------------------------------------
+
+def load_config(path="landing_page_config.yml"):
+    with open(path, encoding="utf-8") as f:
+        return yaml.safe_load(f)
+
+# -----------------------------------------------------------------------
+# Build Translations Dict for JS injection
+# -----------------------------------------------------------------------
+
+def build_translations(cfg):
+    """
+    Flatten the YAML config into a key→value dict per language
+    for injection into the JS TRANSLATIONS object.
+    """
+    translations = {}
+    for lang in ("en", "pt", "es", "zh"):
+        t = {}
+        lc = cfg.get(lang, {})
+
+        # Nav
+        nav = lc.get("nav", {})
+        t["nav_about"]       = nav.get("about", "")
+        t["nav_features"]    = nav.get("features", "")
+        t["nav_qgis"]        = nav.get("qgis", "")
+        t["nav_team"]        = nav.get("team", "")
+        t["nav_publication"] = nav.get("publication", "")
+        t["nav_github"]      = nav.get("github", "GitHub")
+
+        # Hero
+        hero = lc.get("hero", {})
+        t["hero_line1"]         = hero.get("line1", "")
+        t["hero_line2"]         = hero.get("line2", "")
+        t["hero_subtitle"]      = hero.get("subtitle", "")
+        t["hero_cta_primary"]   = hero.get("cta_primary", "")
+        t["hero_cta_secondary"] = hero.get("cta_secondary", "")
+
+        # Stats
+        stats = lc.get("stats", {})
+        t["stats_s1"] = stats.get("s1", "")
+        t["stats_s2"] = stats.get("s2", "")
+        t["stats_s3"] = stats.get("s3", "")
+        t["stats_s4"] = stats.get("s4", "")
+
+        # About
+        about = lc.get("about", {})
+        t["about_title"] = about.get("title", "")
+        t["about_text"]  = about.get("text", "")
+
+        # Features
+        feats = lc.get("features", {})
+        t["features_title"]    = feats.get("title", "")
+        t["features_subtitle"] = feats.get("subtitle", "")
+        for i in range(1, 5):
+            t[f"features_f{i}_title"] = feats.get(f"f{i}_title", "")
+            t[f"features_f{i}_desc"]  = feats.get(f"f{i}_desc", "")
+
+        # Functions
+        t["functions_title"] = lc.get("functions", {}).get("title", "All Functions")
+        for i, fn in enumerate(FUNCTIONS):
+            t[f"fn_{i}_desc"] = fn["desc"].get(lang, fn["desc"]["en"])
+
+        # QGIS
+        qgis = lc.get("qgis", {})
+        t["qgis_title"] = qgis.get("title", "")
+        t["qgis_text"]  = qgis.get("text", "")
+        t["qgis_cta"]   = qgis.get("cta", "")
+
+        # Platform
+        platform = lc.get("platform", {})
+        t["nav_platform"]       = nav.get("platform", "Platform")
+        t["platform_title"]     = platform.get("title", "")
+        t["platform_text"]      = platform.get("text", "")
+        t["platform_item1_title"] = platform.get("item1_title", "")
+        t["platform_item1_desc"]  = platform.get("item1_desc", "")
+        t["platform_item2_title"] = platform.get("item2_title", "")
+        t["platform_item2_desc"]  = platform.get("item2_desc", "")
+        t["platform_cta"]       = platform.get("cta", "")
+
+        # Publication
+        pub = lc.get("publication", {})
+        t["publication_title"]       = pub.get("title", "")
+        t["publication_journal"]     = pub.get("journal", "")
+        t["publication_paper_title"] = pub.get("paper_title", "")
+        t["publication_text"]        = pub.get("text", "")
+        t["publication_cta"]         = pub.get("cta", "")
+
+        # Team
+        team = lc.get("team", {})
+        t["team_title"] = team.get("title", "")
+        t["team_text"]  = team.get("text", "")
+        for i, m in enumerate(TEAM_MEMBERS):
+            t[f"team_{i}_role"] = m["role"].get(lang, m["role"]["en"])
+
+        # Funding
+        funding = lc.get("funding", {})
+        t["funding_title"] = funding.get("title", "")
+        t["funding_text"]  = funding.get("text", "")
+
+        # CTA
+        cta = lc.get("cta_final", {})
+        t["cta_title"] = cta.get("title", "")
+        t["cta_text"]  = cta.get("text", "")
+
+        # Footer
+        footer = lc.get("footer", {})
+        t["footer_docs"]   = footer.get("docs", "")
+        t["footer_issues"] = footer.get("issues", "")
+
+        translations[lang] = t
+    return translations
+
+# -----------------------------------------------------------------------
+# Build Feature Cards Data
+# -----------------------------------------------------------------------
+
+def build_features_data(cfg):
+    en = cfg.get("en", {}).get("features", {})
+    images = {
+        "f1": "https://github.com/ByMaxAnjos/LCZ4r/raw/main/inst/figures/fig_general_7.png",
+        "f2": "https://github.com/ByMaxAnjos/LCZ4r/raw/main/inst/figures/fig_local_modeling_4.png",
+        "f3": "https://github.com/ByMaxAnjos/LCZ4r/raw/main/inst/figures/fig_local_uhi_3.png",
+        "f4": "https://github.com/user-attachments/assets/68cdca10-c1d5-4755-8d73-351af809552a",
+    }
+    features = []
+    for i in range(1, 5):
+        key = f"f{i}"
+        features.append({
+            "icon":  FEATURE_ICONS[key],
+            "title": en.get(f"{key}_title", ""),
+            "desc":  en.get(f"{key}_desc", ""),
+            "image": images.get(key, ""),
+        })
+    return features
+
+# -----------------------------------------------------------------------
+# Build Team Data
+# -----------------------------------------------------------------------
+
+def build_team_data():
+    team = []
+    for m in TEAM_MEMBERS:
+        team.append({
+            "name":     m["name"],
+            "initials": m["initials"],
+            "role_en":  m["role"]["en"],
+            "org":      m["org"],
+            "github":   m.get("github", ""),
+            "email":    m.get("email", ""),
+            "avatar":   m.get("avatar", ""),
+        })
+    return team
+
+# -----------------------------------------------------------------------
+# Build Functions Data
+# -----------------------------------------------------------------------
+
+def build_functions_data():
+    fns = []
+    for fn in FUNCTIONS:
+        fns.append({
+            "name": fn["name"],
+            "icon": fn["icon"],
+            "desc": fn["desc"]["en"],
+        })
+    return fns
+
+# -----------------------------------------------------------------------
+# Render HTML via Jinja2
+# -----------------------------------------------------------------------
+
+def render_html(cfg):
+    translations = build_translations(cfg)
+
+    # Prepare icon dict for template (replace hyphens with underscores for Jinja)
+    icons_for_template = {
+        k.replace("-", "_"): v for k, v in ICONS.items()
+    }
+
+    env = Environment(loader=BaseLoader())
+    template = env.from_string(HTML_TEMPLATE)
+
+    html = template.render(
+        meta=cfg.get("site_meta", {}),
+        icons=type("Icons", (), icons_for_template)(),
+        features=build_features_data(cfg),
+        functions=build_functions_data(),
+        team=build_team_data(),
+        funding=FUNDING,
+        qgis_languages=QGIS_LANGUAGES,
+        translations_json=json.dumps(translations, ensure_ascii=False, indent=2),
+    )
+    return html
+
+# -----------------------------------------------------------------------
+# Entry Point
+# -----------------------------------------------------------------------
+
+if __name__ == "__main__":
+    print("LCZ4r — Landing Page Builder (Urban Night Edition)")
+    print("=" * 52)
+
+    cfg = load_config()
+    print("Config loaded: landing_page_config.yml")
+
+    html = render_html(cfg)
+
+    output_path = "index.html"
+    with open(output_path, "w", encoding="utf-8") as f:
+        f.write(html)
+
+    size_kb = len(html.encode("utf-8")) / 1024
+    print(f"index.html generated successfully! ({size_kb:.1f} KB)")
+    print()
+    print("Design: Forest Canopy + Nature Gradients + Glassmorphism Bento Box")
+    print("Languages: EN / PT / ES / ZH  (click buttons in navbar to switch)")
+    print("Background: Animated topographic contour lines")
+    print()
+    print("Open index.html in your browser to preview.")
+    print("To update content, edit landing_page_config.yml and run:")
+    print("   python3 build_landing_page.py")
+    print()
+    print("pkgdown site: https://bymaxanjos.github.io/LCZ4r/")
