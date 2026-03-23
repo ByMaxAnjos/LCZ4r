@@ -132,7 +132,7 @@ lcz_plot_map(lcz_map)
 ```
 
 ```{r echo=F, out.width = '100%', fig.align='center'}
-knitr::include_graphics("https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_1.png")
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_1.png" width="100%">
 ```
 
 ### Paris
@@ -144,7 +144,7 @@ lcz_plot_map(euro_map)
 ```
 
 ```{r echo=F, out.width = '100%', fig.align='center'}
-knitr::include_graphics("https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_2.png")
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_2.png" width="100%">
 ```
 
 ### London
@@ -156,7 +156,7 @@ lcz_plot_map(euro_map)
 ```
 
 ```{r echo=F, out.width = '100%', fig.align='center'}
-knitr::include_graphics("https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_3.png")
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_3.png" width="100%">
 ```
 
 ### Sydney
@@ -168,7 +168,7 @@ lcz_plot_map(lcz_map)
 ```
 
 ```{r echo=F, out.width = '100%', fig.align='center'}
-knitr::include_graphics("https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_4.png")
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_4.png" width="100%">
 ```
 
 ### Beijing
@@ -180,7 +180,7 @@ lcz_plot_map(lcz_map)
 ```
 
 ```{r echo=F, out.width = '100%', fig.align='center'}
-knitr::include_graphics("https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_5.png")
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_5.png" width="100%">
 ```
 
 ### New York
@@ -192,7 +192,7 @@ lcz_plot_map(usa_map)
 ```
 
 ```{r echo=F, out.width = '100%', fig.align='center'}
-knitr::include_graphics("https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_6.png")
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_6.png" width="100%">
 ```
 
 ### Nairobi
@@ -204,7 +204,7 @@ lcz_plot_map(my_map)
 ```
 
 ```{r echo=F, out.width = '100%', fig.align='center'}
-knitr::include_graphics("https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_7.png")
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_7.png" width="100%">
 ```
 
 ##  {.unnumbered}
@@ -226,7 +226,7 @@ lcz_plot_map(lcz_map)
 ```
 
 ```{r echo=F, out.width = '100%', fig.align='center'}
-knitr::include_graphics("https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_generator.png")
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_generator.png" width="100%">
 ```
 
 ## 💡**Tip 1**: LCZ map for Region Of Interest (ROI)
@@ -275,7 +275,7 @@ lcz_plot_map(lcz_map)
 ```
 
 ```{r echo=F, out.width = '100%', fig.align='center'}
-knitr::include_graphics("https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_7.png")
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_7.png" width="100%">
 ```
 
 
@@ -290,7 +290,7 @@ lcz_cal_area(lcz_map)
 ```
 
 ```{r echo=F, out.width = '100%', fig.align='center'}
-knitr::include_graphics("https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_2.png")
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_2.png" width="100%">
 ```
 
 Tips: this function provides a table.csv of the calculated LCZ areas, coding like this: *lcz_cal_area(lcz_map, iplot = FALSE)*
@@ -348,7 +348,7 @@ LCZpar
 ```
 
 ```{r echo=F, out.width = '100%', fig.align='center'}
-knitr::include_graphics("https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_3.png")
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_3.png" width="100%">
 ```
 
 ## Maps {.tabset .tabset-fade .tabset-pills}
@@ -360,7 +360,7 @@ lcz_plot_parameters(LCZpar, iselect = "SVFmean")
 ```
 
 ```{r echo=F, out.width = '100%', fig.align='center'}
-knitr::include_graphics("https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_4.png")
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_4.png" width="100%">
 ```
 
 ### Building Surface Fraction
@@ -370,7 +370,7 @@ lcz_plot_parameters(LCZpar, iselect = "BSFmax")
 ```
 
 ```{r echo=F, out.width = '100%', fig.align='center'}
-knitr::include_graphics(".https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_5.png")
+<img src=".https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_5.png" width="100%">
 ```
 
 ### Roughness Lenght
@@ -380,7 +380,7 @@ lcz_plot_parameters(LCZpar, iselect = "z0")
 ```
 
 ```{r echo=F, out.width = '100%', fig.align='center'}
-knitr::include_graphics("https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_6.png")
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_6.png" width="100%">
 ```
 
 ---

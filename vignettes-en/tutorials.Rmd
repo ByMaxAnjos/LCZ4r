@@ -312,7 +312,7 @@ title: "Tutoriais"
       <h3 class="card-title">Download LCZ map from LCZ Generator Platform.</h3>
       <p class="card-description">The LCZ Generator is a web application for creating Local Climate Zone (LCZ) maps. This guide provides step-by-step instructions to generate an LCZ map for your city using the LCZ4r package.</p>
       <a href="https://bymaxanjos.github.io/LCZ4r/en/articles/Introd_genera_LCZ4r.html#download-lcz-map-from-lcz-generator-platform"" class="card-cta-button">
-        See Tutorial
+        Open Tutorial
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16">
           <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
         </svg>
@@ -326,9 +326,8 @@ title: "Tutoriais"
 
 ---
 
-## 🌲 Tem feedback ou sugestões?
-
-Você tem alguma ideia de melhoria ou encontrou algum erro? Adoraríamos ouvir você! Clique no botão abaixo para abrir uma nova *issue* no GitHub e compartilhar suas sugestões diretamente conosco.
+## Have feedback or suggestions?
+Do you have an idea for improvement or did you spot a mistake? We'd love to hear from you! Click the button below to create a new issue (Github) and share your feedback or suggestions directly with us.
 
 ```{=html}
 <a href='https://github.com/ByMaxAnjos/climasus4r/issues/new' class="github-feedback-btn">
