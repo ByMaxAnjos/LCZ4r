@@ -1217,6 +1217,7 @@
     <button class="lang-btn active" data-lang="en">EN</button>
     <button class="lang-btn"        data-lang="pt">PT</button>
     <button class="lang-btn"        data-lang="es">ES</button>
+    <button class="lang-btn"        data-lang="zh">中文</button>
     <a href="https://github.com/ByMaxAnjos/LCZ4r" target="_blank" class="nav-github">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg> <span data-translate="nav_github">GitHub</span>
     </a>
@@ -1447,7 +1448,7 @@
             <tr>
               <td>
                 <div class="fn-name-cell">
-                  <span class="fn-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></span>
+                  <span class="fn-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></span>
                   <code>lcz_plot_map()</code>
                 </div>
               </td>
@@ -1527,7 +1528,7 @@
             <tr>
               <td>
                 <div class="fn-name-cell">
-                  <span class="fn-icon"></span>
+                  <span class="fn-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></span>
                   <code>lcz_interp_eval()</code>
                 </div>
               </td>
@@ -2126,6 +2127,82 @@ const TRANSLATIONS = {
     "cta_text": "Explore el paquete, contribuya en GitHub o póngase en contacto con el equipo.",
     "footer_docs": "Documentación",
     "footer_issues": "Problemas"
+  },
+  "zh": {
+    "nav_about": "关于",
+    "nav_features": "功能特性",
+    "nav_qgis": "QGIS 插件",
+    "nav_team": "团队",
+    "nav_publication": "出版物",
+    "nav_github": "GitHub",
+    "hero_line1": "城市气候",
+    "hero_line2": "R 语言分析",
+    "hero_subtitle": "LCZ4r 是一个用于分析和可视化局地气候区 (LCZ) 和城市热岛 (UHI) 的综合性 R 包。",
+    "hero_cta_primary": "开始使用",
+    "hero_cta_secondary": "在 GitHub 上查看",
+    "stats_s1": "函数",
+    "stats_s2": "语言",
+    "stats_s3": "贡献者",
+    "stats_s4": "发表于",
+    "about_title": "从数据到洞察",
+    "about_text": "LCZ4r 简化了城市气候分析的整个工作流程。它提供了一套工具来下载、处理、可视化和解读 LCZ 及 UHI 数据，使复杂空间分析对研究人员、城市规划者和气候科学家来说触手可及。",
+    "features_title": "一个完整的城市气候研究工具包",
+    "features_subtitle": "探索使 LCZ4r 成为城市气候研究强大工具的关键功能。",
+    "features_f1_title": "全球数据接入",
+    "features_f1_desc": "从全球、欧洲和美国数据集中下载局地气候区地图，或从 LCZ 生成器中导入您自己的数据。",
+    "features_f2_title": "高级可视化",
+    "features_f2_desc": "创建出版物质量的 LCZ 分类、热异常和插值温度表面图。",
+    "features_f3_title": "深度分析",
+    "features_f3_desc": "使用专门函数计算 LCZ 区域分布、分析时间序列数据并量化城市热岛强度。",
+    "features_f4_title": "QGIS 集成",
+    "features_f4_desc": "将 LCZ4r 与 QGIS 无缝集成，以获得强大且用户友好的地理空间分析体验。",
+    "functions_title": "所有函数",
+    "fn_0_desc": "从全球数据集下载局地气候区地图",
+    "fn_1_desc": "从欧洲数据集下载局地气候区地图",
+    "fn_2_desc": "从美国数据集下载局地气候区地图",
+    "fn_3_desc": "从局地气候区生成器平台下载地图",
+    "fn_4_desc": "可视化局地气候区地图",
+    "fn_5_desc": "可视化局地气候区参数地图",
+    "fn_6_desc": "计算局地气候区类别面积",
+    "fn_7_desc": "获取局地气候区参数",
+    "fn_8_desc": "分析局地气候区时间序列",
+    "fn_9_desc": "计算局地气候区热异常",
+    "fn_10_desc": "绘制局地气候区热异常地图",
+    "fn_11_desc": "绘制局地气候区插值结果地图",
+    "fn_12_desc": "评估局地气候区插值精度",
+    "fn_13_desc": "评估城市热岛强度",
+    "qgis_title": "地理空间分析，简化",
+    "qgis_text": "LCZ4r-QGIS 插件将 LCZ4r 的强大功能直接带入您的 QGIS 环境。这个多语言插件允许对局地气候区和城市热岛进行交互式分析和可视化，将 R 的统计能力与 QGIS 的地图绘制功能相结合。",
+    "qgis_cta": "了解更多关于插件的信息",
+    "nav_platform": "平台",
+    "platform_title": "交互式城市气候平台",
+    "platform_text": "该平台专为对理解城市气候现象感兴趣的地理学学生和研究人员开发。我们的主要关注点是：",
+    "platform_item1_title": "🏙️ 城市热岛 (UHI)：",
+    "platform_item1_desc": "城市地区温度高于周围乡村地区的现象。",
+    "platform_item2_title": "🗺️ 局地气候区 (LCZ)：",
+    "platform_item2_desc": "对不同类型的城市土地覆盖和土地利用进行分类的系统。",
+    "platform_cta": "访问平台",
+    "publication_title": "发表于《自然》",
+    "publication_journal": "《自然·科学报告》",
+    "publication_paper_title": "用于局地气候区和城市热岛的 LCZ4r R 包",
+    "publication_text": "LCZ4r 包的方法和应用在我们于《自然·科学报告》上发表的同行评审出版物中有详细介绍。",
+    "publication_cta": "阅读论文",
+    "team_title": "认识开发者",
+    "team_text": "LCZ4r 由一个专注的研究人员和科学家团队开发和维护。",
+    "team_0_role": "首席开发者和维护者",
+    "team_1_role": "贡献者和局地气候区专家",
+    "team_2_role": "贡献者和局地气候区专家",
+    "team_3_role": "贡献者和局地气候区专家",
+    "team_4_role": "R 语言贡献者",
+    "team_5_role": "R 语言贡献者",
+    "team_6_role": "R 语言贡献者",
+    "team_7_role": "R 语言贡献者",
+    "funding_title": "由...支持",
+    "funding_text": "LCZ4r 的开发得益于以下组织的慷慨支持：",
+    "cta_title": "准备好开始了吗？",
+    "cta_text": "探索该软件包，在 GitHub 上做出贡献，或与团队联系。",
+    "footer_docs": "文档",
+    "footer_issues": "问题"
   }
 };
 
