@@ -1,5 +1,5 @@
 ---
-title: "Map, Area and Paramerters"
+title: "Map, Area and Parameters"
 author: "Max Anjos"
 date: "`r format(Sys.Date(), '%B %d, %Y')`"
 output:
@@ -13,8 +13,8 @@ output:
     theme: flatly
     highlight: tango
     code_folding: show
-    code_download: true      # Permite ao usuário baixar o código Rmd original
-    self_contained: false     # Garante que tudo funcione offline
+    code_download: true
+    self_contained: false
     df_print: paged
 ---
 
@@ -34,7 +34,7 @@ html {
 
 body {
   font-family: 'Source Serif 4', Georgia, serif;
-  font-size: 18px; /* Aumentado para melhor legibilidade */
+  font-size: 18px;
   color: var(--text-main);
   background-color: #fff;
 }
@@ -80,276 +80,291 @@ pre.r {
   border-color: var(--primary-color);
 }
 
+/* ── Estilo para imagens ───────────────────────── */
+.figure img {
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+}
+
+.figure img:hover {
+  transform: scale(1.02);
+}
+```
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
   echo    = TRUE,
-  eval    = FALSE,      # set TRUE in a live session with climasus4r installed
+  eval    = FALSE,
   warning = FALSE,
   message = FALSE,
   comment = "#>",
   fig.align = "center",
-  out.width = "100%"
+  out.width = "80%",
+  fig.retina = 2
 )
 ```
 
 ---
 
-The **`LCZ4r` general functions** are designed to facilitate the retrieval, analysis, and visualization of LCZs, when data is not readily available. These functions enable users to download quickly LCZ maps, compute LCZ classes, and extract specific urban canopy parameters (UCPs) of interest, such as Sky View Factor, impervious surface fraction, and roughness element height and so on.
+The **`LCZ4r` general functions** are designed to facilitate the retrieval, analysis, and visualization of LCZs, when data is not readily available. These functions enable users to quickly download LCZ maps, compute LCZ classes, and extract specific urban canopy parameters (UCPs) of interest, such as Sky View Factor, impervious surface fraction, and roughness element height and so on.
 
 ## Getting Started
 
 The general functions, each serving a unique purpose:
 
 | Function                | Description                                                | Data Required | Internet Access Required |
-|------------------|------------------|-------------------|------------------|
-| `lcz_get_map()`         | Download your LCZ map from Global dataset                    | Not needed    | Yes                      |
-| `lcz_get_map_euro()`    | Download your LCZ map from European dataset                  | Not needed    | Yes                      |
+|-------------------------|------------------------------------------------------------|---------------|--------------------------|
+| `lcz_get_map()`         | Download your LCZ map from Global dataset                  | Not needed    | Yes                      |
+| `lcz_get_map_euro()`    | Download your LCZ map from European dataset                | Not needed    | Yes                      |
 | `lcz_get_map_usa()`     | Download your LCZ map from Continental United States dataset | Not needed    | Yes                      |
-| `lcz_get_map_generator()`     | Download your LCZ map from LCZ Generator Platform | Not needed    | Yes                      |
-| `lcz_get_map2()`        | Clip the LCZ map for your city or ROI                                        | Both    | Both              |
+| `lcz_get_map_generator()` | Download your LCZ map from LCZ Generator Platform        | Not needed    | Yes                      |
+| `lcz_get_map2()`        | Clip the LCZ map for your city or ROI                      | Both          | Both                     |
 | `lcz_plot_map()`        | Visualize the LCZ map                                      | Not needed    | Not needed               |
 | `lcz_cal_area()`        | Calculate LCZ areas                                        | Not needed    | Not needed               |
 | `lcz_get_parameters()`  | Retrieve LCZ parameters                                    | Not needed    | Not needed               |
-| `lcz_plot_parameters()` | Visualize LCZ parameters map                                  | Not needed    | Not needed               |
+| `lcz_plot_parameters()` | Visualize LCZ parameters map                               | Not needed    | Not needed               |
 
-Tips: Utilize the help(lcz\_\*) function to access comprehensive documentation for each LCZ function. For instance, you can explore details about the lcz_get_map function by typing help("lcz_get_map").
+::: {.callout .callout-note}
+**Tip**: Utilize the `help(lcz_*)` function to access comprehensive documentation for each LCZ function. For instance, you can explore details about the `lcz_get_map` function by typing `help("lcz_get_map")`.
+:::
 
 ## Download and visualize the LCZ map {.tabset .tabset-fade .tabset-pills}
 
-The lcz_get_map() function facilitates obtaining the LCZ map for your chosen city or a specific Region of Interest (ROI). In our demonstration, we utilized a couple of cities around the world.
+The `lcz_get_map()` function facilitates obtaining the LCZ map for your chosen city or a specific Region of Interest (ROI). Here are examples for cities around the world:
 
 ### São Paulo
 
 ```{r eval=FALSE, message=FALSE, warning=FALSE}
 library(LCZ4r)
+
 # Get the LCZ map for your city
-lcz_map <- lcz_get_map(city="São Paulo")
+lcz_map <- lcz_get_map(city = "São Paulo")
 
 # Visualize the obtained LCZ map
 lcz_plot_map(lcz_map)
-
 ```
 
-```{r echo=F, out.width = '100%', fig.align='center'}
-<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_1.png" width="100%">
-```
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_1.png" alt="LCZ map for São Paulo" width="80%" />
+<p class="caption">LCZ map for São Paulo</p>
+</div>
 
 ### Paris
 
 ```{r eval=FALSE, message=FALSE, warning=FALSE}
-euro_map <- lcz_get_map_euro(city="Paris")
+euro_map <- lcz_get_map_euro(city = "Paris")
 lcz_plot_map(euro_map)
-
 ```
 
-```{r echo=F, out.width = '100%', fig.align='center'}
-<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_2.png" width="100%">
-```
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_2.png" alt="LCZ map for Paris" width="80%" />
+<p class="caption">LCZ map for Paris</p>
+</div>
 
 ### London
 
 ```{r eval=FALSE, message=FALSE, warning=FALSE}
-euro_map <- lcz_get_map_euro(city="London")
+euro_map <- lcz_get_map_euro(city = "London")
 lcz_plot_map(euro_map)
-
 ```
 
-```{r echo=F, out.width = '100%', fig.align='center'}
-<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_3.png" width="100%">
-```
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_3.png" alt="LCZ map for London" width="80%" />
+<p class="caption">LCZ map for London</p>
+</div>
 
 ### Sydney
 
 ```{r eval=FALSE, message=FALSE, warning=FALSE}
-lcz_map <- lcz_get_map(city="Sydney")
+lcz_map <- lcz_get_map(city = "Sydney")
 lcz_plot_map(lcz_map)
-
 ```
 
-```{r echo=F, out.width = '100%', fig.align='center'}
-<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_4.png" width="100%">
-```
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_4.png" alt="LCZ map for Sydney" width="80%" />
+<p class="caption">LCZ map for Sydney</p>
+</div>
 
 ### Beijing
 
 ```{r eval=FALSE, message=FALSE, warning=FALSE}
-lcz_map <- lcz_get_map(city="京")
+lcz_map <- lcz_get_map(city = "Beijing")
 lcz_plot_map(lcz_map)
-
 ```
 
-```{r echo=F, out.width = '100%', fig.align='center'}
-<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_5.png" width="100%">
-```
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_5.png" alt="LCZ map for Beijing" width="80%" />
+<p class="caption">LCZ map for Beijing</p>
+</div>
 
 ### New York
 
 ```{r eval=FALSE, message=FALSE, warning=FALSE}
 usa_map <- lcz_get_map_usa(city = "New York")
 lcz_plot_map(usa_map)
-
 ```
 
-```{r echo=F, out.width = '100%', fig.align='center'}
-<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_6.png" width="100%">
-```
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_6.png" alt="LCZ map for New York" width="80%" />
+<p class="caption">LCZ map for New York</p>
+</div>
 
 ### Nairobi
 
 ```{r eval=FALSE, message=FALSE, warning=FALSE}
 my_map <- lcz_get_map(city = "Nairobi")
 lcz_plot_map(my_map)
-
 ```
 
-```{r echo=F, out.width = '100%', fig.align='center'}
-<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_7.png" width="100%">
-```
-
-##  {.unnumbered}
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_7.png" alt="LCZ map for Nairobi" width="80%" />
+<p class="caption">LCZ map for Nairobi</p>
+</div>
 
 ## Download LCZ map from LCZ Generator Platform
 
 To seamlessly integrate LCZ maps into the LCZ4r package, follow these steps to obtain the ID code for your desired city:
 
-* 1. **Access the LCZ Generator**: Visit the [LCZ Generator page](https://lcz-generator.rub.de/).
-* 2. **Locate your city**: navigate to the [Submissions](https://lcz-generator.rub.de/submissions) section and search for your city using the search bar.
-* 3. **Obtain the ID from Factsheet**: click **Show Factsheet** next to your city's submission and copy the **ID** from *Submission Information* section (e.g., **3110e623fbe4e73b1cde55f0e9832c4f5640ac21**) 
-
-* 4. Example for Reference: View this sample [LCZ Factsheet](https://lcz-generator.rub.de/factsheets/3110e623fbe4e73b1cde55f0e9832c4f5640ac21/3110e623fbe4e73b1cde55f0e9832c4f5640ac21_factsheet.html) to understand the format and details.
+1. **Access the LCZ Generator**: Visit the [LCZ Generator page](https://lcz-generator.rub.de/).
+2. **Locate your city**: Navigate to the [Submissions](https://lcz-generator.rub.de/submissions) section and search for your city using the search bar.
+3. **Obtain the ID from Factsheet**: Click **Show Factsheet** next to your city's submission and copy the **ID** from *Submission Information* section (e.g., **3110e623fbe4e73b1cde55f0e9832c4f5640ac21**)
+4. **Example for Reference**: View this sample [LCZ Factsheet](https://lcz-generator.rub.de/factsheets/3110e623fbe4e73b1cde55f0e9832c4f5640ac21/3110e623fbe4e73b1cde55f0e9832c4f5640ac21_factsheet.html) to understand the format and details.
 
 ```{r eval=FALSE, message=FALSE, warning=FALSE}
-lcz_map <- lcz_get_map_generator(ID="3110e623fbe4e73b1cde55f0e9832c4f5640ac21")
+lcz_map <- lcz_get_map_generator(ID = "3110e623fbe4e73b1cde55f0e9832c4f5640ac21")
 lcz_plot_map(lcz_map)
-
 ```
 
-```{r echo=F, out.width = '100%', fig.align='center'}
-<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_generator.png" width="100%">
-```
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_generator.png" alt="LCZ map from Generator Platform" width="80%" />
+<p class="caption">LCZ map from Generator Platform</p>
+</div>
 
-## 💡**Tip 1**: LCZ map for Region Of Interest (ROI)
+::: {.callout .callout-note}
+**💡 Tip 1**: LCZ map for Region Of Interest (ROI)
 
-This example demonstrates how to use the **roi** argument into lcz_get_map* functions to clip the LCZ map for your ROI.You must import shapefile into R.
+This example demonstrates how to use the **roi** argument in `lcz_get_map*` functions to clip the LCZ map for your ROI. You must import shapefile into R.
 
 ```{r eval=FALSE, message=FALSE, warning=FALSE}
-#Load package
+# Load package
 library(sf)
 
-#Import Shapefile int0 R
-my_shp <- sf::st_read("path/shp_name.shp") #You also can use shapefile in .gpkg format
+# Import Shapefile into R
+my_shp <- sf::st_read("path/shp_name.shp") # You can also use shapefile in .gpkg format
 
-#Get LCZ map for your ROI
+# Get LCZ map for your ROI
 lcz_map <- lcz_get_map(roi = my_shp)
 
-#Visualize LCZ map
+# Visualize LCZ map
 lcz_plot_map(lcz_map)
-
 ```
+:::
 
+::: {.callout .callout-note}
+**💡 Tip 2**: Clip LCZ map generator for your city or Region Of Interest (ROI) using `lcz_get_map2()`
 
-## 💡**Tip 2**: Clip LCZ map generator for your city or Region Of Interest (ROI) using lcz_get_map2( )
-
-This example demonstrates how to use the lcz_get_map2() function to clip the LCZ map for your specific city or ROI. For cities, the clipped map is derived from the OpenStreetMap database, while for ROIs, it uses your imported shapefile.
+This example demonstrates how to use the `lcz_get_map2()` function to clip the LCZ map for your specific city or ROI. For cities, the clipped map is derived from the OpenStreetMap database, while for ROIs, it uses your imported shapefile.
 
 ```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Get LCZ map generator (e.g., Rio de Janeiro)
+lcz_map_generator <- lcz_get_map_generator(ID = "3110e623fbe4e73b1cde55f0e9832c4f5640ac21")
 
-#Get lcz map generator (e.g., Rio de Janeiro)
-lcz_map_generator <- lcz_get_map_generator(ID="3110e623fbe4e73b1cde55f0e9832c4f5640ac21")
-
-#Clip lcz map generator to your city 
+# Clip LCZ map generator to your city 
 lcz_map <- lcz_get_map2(lcz_map_generator, city = "Rio de Janeiro")
 
-#Visualize LCZ map
+# Visualize LCZ map
 lcz_plot_map(lcz_map)
 
-#Clip lcz map generator to ROI
+# Clip LCZ map generator to ROI
 library(sf)
-my_shp <- sf::st_read("path/shp_name.shp") #You also can use shapefile in .gpkg format
+my_shp <- sf::st_read("path/shp_name.shp") # You can also use shapefile in .gpkg format
 lcz_map <- lcz_get_map2(lcz_map_generator, roi = my_shp)
 
-#Visualize LCZ map
+# Visualize LCZ map
 lcz_plot_map(lcz_map)
-
 ```
 
-```{r echo=F, out.width = '100%', fig.align='center'}
-<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_7.png" width="100%">
-```
-
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_7.png" alt="Clipped LCZ map for Rio de Janeiro" width="80%" />
+<p class="caption">Clipped LCZ map for Rio de Janeiro</p>
+</div>
+:::
 
 ## Calculate LCZ areas
 
-This `lcz_cal_area()` function calculates the area for each LCZ classes, as follows:
+The `lcz_cal_area()` function calculates the area for each LCZ class:
 
 ```{r eval=FALSE, message=FALSE, warning=FALSE}
-lcz_map <- lcz_get_map(city="Rio de Janeiro")
+lcz_map <- lcz_get_map(city = "Rio de Janeiro")
 lcz_cal_area(lcz_map)
-
 ```
 
-```{r echo=F, out.width = '100%', fig.align='center'}
-<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_2.png" width="100%">
-```
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_2.png" alt="LCZ areas calculation for Rio de Janeiro" width="80%" />
+<p class="caption">LCZ areas calculation for Rio de Janeiro</p>
+</div>
 
-Tips: this function provides a table.csv of the calculated LCZ areas, coding like this: *lcz_cal_area(lcz_map, iplot = FALSE)*
+::: {.callout .callout-note}
+**Tip**: This function provides a table.csv of the calculated LCZ areas. To save as CSV, use: `lcz_cal_area(lcz_map, iplot = FALSE)`
+:::
 
 ## Retrieve and visualize LCZ parameters
 
-This `lcz_get_parameters()`function gives you to retrieve diverse LCZ parameters, encompassing minimum, maximum, and mean values, drawn from Stewart and Oke (2012). These parameters are convertible into either shapefiles or a raster stack, where multiple rasters are aggregated into a single file.
+The `lcz_get_parameters()` function gives you access to diverse LCZ parameters, encompassing minimum, maximum, and mean values, drawn from Stewart and Oke (2012). These parameters are convertible into either shapefiles or a raster stack, where multiple rasters are aggregated into a single file.
 
 Here's a glimpse of the available LCZ parameters:
 
-| Code | Parameter                   | Description                         | Unit             |
-|-----------------|-----------------|---------------------|-----------------|
-| SVFmin | Sky View Factor             | Minimum Sky View Factor             | [0-1]            |
-| SVFmax | Sky View Factor             | Maximum Sky View Factor             | [0-1]            |
-| SVFmean | Sky View Factor             | Mean Sky View Factor                | [0-1]            |
-| ARmin  | Aspect ratio                | Minimum Aspect Ratio                | [0-3]            |
-| ARmax  | Aspect ratio                | Maximum Aspect Ratio                | [0-3]            |
-| ARmean  | Aspect ratio                | Mean Aspect Ratio                   | [0-3]            |
-| BSFmin | Building Surface Fraction   | Minimum Building Surface Fraction   | [%]              |
-| BSFmax | Building Surface Fraction   | Maximum Building Surface Fraction   | [%]              |
-| BSFmean | Building Surface Fraction   | Mean Building Surface Fraction      | [%]              |
-| ISFmin | Impervious Surface Fraction | Minimum Impervious Surface Fraction | [%]              |
-| ISFmax | Impervious Surface Fraction | Maximum Impervious Surface Fraction | [%]              |
-| ISFmean | Impervious Surface Fraction | Mean Impervious Surface Fraction | [%]              |
-| PSFmin | Vegetation Surface Fraction | Minimum Vegetation Surface Fraction | [%]              |
-| PSFmax | Vegetation Surface Fraction | Maximum Vegetation Surface Fraction | [%]              |
-| PSFmean | Vegetation Surface Fraction | Mean Vegetation Surface Fraction    | [%]              |
-| TSFmin | Tree Surface Fraction       | Minimum Tree Surface Fraction       | [%]              |
-| TSFmax | Tree Surface Fraction       | Maximum Tree Surface Fraction       | [%]              |
-| TSFmean | Tree Surface Fraction       | Mean Tree Surface Fraction          | [%]              |
-| HREmin | Height Roughness Elements   | Minimum Height Roughness Elements   | [meters]         |
-| HREmax | Height Roughness Elements   | Maximum Height Roughness Elements   | [meters]         |
-| HREmean | Height Roughness Elements   | Mean Height Roughness Elements      | [meters]         |
-| TRCmin | Terrain Roughness class     | Minimum Terrain Roughness class     | [meters]         |
-| TRCmax | Terrain Roughness class     | Maximum Terrain Roughness class     | [meters]         |
-| TRCmean | Terrain Roughness class     | Mean Terrain Roughness class        | [meters]         |
-| SADmin | Surface Admittance          | Minimum Surface Admittance          | [J m-2 s1/2 K-1] |
-| SADmax | Surface Admittance          | Maximum Surface Admittance          | [J m-2 s1/2 K-1] |
-| SADmean | Surface Admittance          | Mean Surface Admittance             | [J m-2 s1/2 K-1] |
-| SALmin | Surface Albedo              | Minimum Surface Albedo              | [0-0.5]          |
-| SALmax | Surface Albedo              | Maximum Surface Albedo              | [0-0.5]          |
-| SALmean | Surface Albedo              | Mean Surface Albedo                 | [0-0.5]          |
-| AHmin  | Anthropogenic Heat Outupt   | Minimum Anthropogenic Heat Outupt   | [W m-2]          |
-| AHmax  | Anthropogenic Heat Outupt   | Maximum Anthropogenic Heat Outupt   | [W m-2]          |
-| AHmean  | Anthropogenic Heat Outupt   | Mean Anthropogenic Heat Outupt      | [W m-2]          |
-| z0   | Roughness Lenght            | Roughness Lenght class              | [meters]         |
+| Code | Parameter | Description | Unit |
+|------|-----------|-------------|------|
+| SVFmin | Sky View Factor | Minimum Sky View Factor | [0-1] |
+| SVFmax | Sky View Factor | Maximum Sky View Factor | [0-1] |
+| SVFmean | Sky View Factor | Mean Sky View Factor | [0-1] |
+| ARmin | Aspect ratio | Minimum Aspect Ratio | [0-3] |
+| ARmax | Aspect ratio | Maximum Aspect Ratio | [0-3] |
+| ARmean | Aspect ratio | Mean Aspect Ratio | [0-3] |
+| BSFmin | Building Surface Fraction | Minimum Building Surface Fraction | [%] |
+| BSFmax | Building Surface Fraction | Maximum Building Surface Fraction | [%] |
+| BSFmean | Building Surface Fraction | Mean Building Surface Fraction | [%] |
+| ISFmin | Impervious Surface Fraction | Minimum Impervious Surface Fraction | [%] |
+| ISFmax | Impervious Surface Fraction | Maximum Impervious Surface Fraction | [%] |
+| ISFmean | Impervious Surface Fraction | Mean Impervious Surface Fraction | [%] |
+| PSFmin | Vegetation Surface Fraction | Minimum Vegetation Surface Fraction | [%] |
+| PSFmax | Vegetation Surface Fraction | Maximum Vegetation Surface Fraction | [%] |
+| PSFmean | Vegetation Surface Fraction | Mean Vegetation Surface Fraction | [%] |
+| TSFmin | Tree Surface Fraction | Minimum Tree Surface Fraction | [%] |
+| TSFmax | Tree Surface Fraction | Maximum Tree Surface Fraction | [%] |
+| TSFmean | Tree Surface Fraction | Mean Tree Surface Fraction | [%] |
+| HREmin | Height Roughness Elements | Minimum Height Roughness Elements | [meters] |
+| HREmax | Height Roughness Elements | Maximum Height Roughness Elements | [meters] |
+| HREmean | Height Roughness Elements | Mean Height Roughness Elements | [meters] |
+| TRCmin | Terrain Roughness class | Minimum Terrain Roughness class | [meters] |
+| TRCmax | Terrain Roughness class | Maximum Terrain Roughness class | [meters] |
+| TRCmean | Terrain Roughness class | Mean Terrain Roughness class | [meters] |
+| SADmin | Surface Admittance | Minimum Surface Admittance | [J m⁻² s¹⁄² K⁻¹] |
+| SADmax | Surface Admittance | Maximum Surface Admittance | [J m⁻² s¹⁄² K⁻¹] |
+| SADmean | Surface Admittance | Mean Surface Admittance | [J m⁻² s¹⁄² K⁻¹] |
+| SALmin | Surface Albedo | Minimum Surface Albedo | [0-0.5] |
+| SALmax | Surface Albedo | Maximum Surface Albedo | [0-0.5] |
+| SALmean | Surface Albedo | Mean Surface Albedo | [0-0.5] |
+| AHmin | Anthropogenic Heat Output | Minimum Anthropogenic Heat Output | [W m⁻²] |
+| AHmax | Anthropogenic Heat Output | Maximum Anthropogenic Heat Output | [W m⁻²] |
+| AHmean | Anthropogenic Heat Output | Mean Anthropogenic Heat Output | [W m⁻²] |
+| z0 | Roughness Length | Roughness Length class | [meters] |
 
-## Rio de Janeiro LCZ parameters
+### Rio de Janeiro LCZ parameters
 
 ```{r eval=FALSE, fig.height=7, fig.width=11, message=FALSE, warning=FALSE}
 # Extract the LCZ parameters for raster stack format
-lcz_map <- lcz_get_map(city="Rio de Janeiro")
+lcz_map <- lcz_get_map(city = "Rio de Janeiro")
 LCZpar <- lcz_get_parameters(lcz_map, istack = TRUE)
 LCZpar
 ```
 
-```{r echo=F, out.width = '100%', fig.align='center'}
-<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_3.png" width="100%">
-```
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_3.png" alt="LCZ parameters raster stack for Rio de Janeiro" width="80%" />
+<p class="caption">LCZ parameters raster stack for Rio de Janeiro</p>
+</div>
 
 ## Maps {.tabset .tabset-fade .tabset-pills}
 
@@ -359,9 +374,10 @@ LCZpar
 lcz_plot_parameters(LCZpar, iselect = "SVFmean")
 ```
 
-```{r echo=F, out.width = '100%', fig.align='center'}
-<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_4.png" width="100%">
-```
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_4.png" alt="Sky View Factor map for Rio de Janeiro" width="80%" />
+<p class="caption">Sky View Factor map for Rio de Janeiro</p>
+</div>
 
 ### Building Surface Fraction
 
@@ -369,30 +385,34 @@ lcz_plot_parameters(LCZpar, iselect = "SVFmean")
 lcz_plot_parameters(LCZpar, iselect = "BSFmax")
 ```
 
-```{r echo=F, out.width = '100%', fig.align='center'}
-<img src=".https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_5.png" width="100%">
-```
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_5.png" alt="Building Surface Fraction map for Rio de Janeiro" width="80%" />
+<p class="caption">Building Surface Fraction map for Rio de Janeiro</p>
+</div>
 
-### Roughness Lenght
+### Roughness Length
 
 ```{r eval=FALSE, fig.height=5, fig.width=9, message=FALSE, warning=FALSE}
 lcz_plot_parameters(LCZpar, iselect = "z0")
 ```
 
-```{r echo=F, out.width = '100%', fig.align='center'}
-<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_6.png" width="100%">
-```
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_6.png" alt="Roughness Length map for Rio de Janeiro" width="80%" />
+<p class="caption">Roughness Length map for Rio de Janeiro</p>
+</div>
 
 ---
 
 ## Have feedback or suggestions?
-Do you have an idea for improvement or did you spot a mistake? We'd love to hear from you! Click the button below to create a new issue (Github) and share your feedback or suggestions directly with us.
+
+Do you have an idea for improvement or did you spot a mistake? We'd love to hear from you! Click the button below to create a new issue (GitHub) and share your feedback or suggestions directly with us.
 
 ```{=html}
-<a href='https://github.com/ByMaxAnjos/climasus4r/issues/new' class="github-feedback-btn">
+<a href='https://github.com/ByMaxAnjos/LCZ4r/issues/new' class="github-feedback-btn" style="display: inline-flex; align-items: center; gap: 8px; background-color: #24292e; color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-family: sans-serif; transition: background-color 0.2s;">
   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
     <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
   </svg>
   Open GitHub issue
 </a>
+```
 ```
