@@ -139,16 +139,46 @@ jobs:
           # Clean up
           rm -rf docs vignettes README.md _pkgdown.yml
       
+      - name: Build Chinese site
+        run: |
+          # Use English README as base (no Chinese README yet)
+          cp README-en.md README.md
+          
+          # Copy vignettes
+          mkdir -p vignettes
+          cp -r vignettes-zh/* vignettes/
+          
+          # Copy pkgdown config
+          cp _pkgdown-zh.yml _pkgdown.yml
+          
+          # Build site WITHOUT running examples
+          Rscript -e '
+            pkg <- pkgdown::as_pkgdown(".")
+            pkgdown::init_site(pkg)
+            pkgdown::build_home(pkg)
+            pkgdown::build_reference(pkg, examples = FALSE, run_dont_run = FALSE)
+            pkgdown::build_articles(pkg)
+            pkgdown::build_news(pkg)
+          '
+          
+          # Move to deployment folder
+          mkdir -p deploy/zh
+          cp -r docs/* deploy/zh/
+          
+          # Clean up
+          rm -rf docs vignettes README.md _pkgdown.yml
+      
       - name: Copy landing page and assets
         run: |
           # Copy the main landing page (language selector)
           cp index.html deploy/
           
           # Copy pkgdown assets to all language directories
-          mkdir -p deploy/pt/pkgdown deploy/en/pkgdown deploy/es/pkgdown
+          mkdir -p deploy/pt/pkgdown deploy/en/pkgdown deploy/es/pkgdown deploy/zh/pkgdown
           cp -r pkgdown/* deploy/pt/pkgdown/ 2>/dev/null || true
           cp -r pkgdown/* deploy/en/pkgdown/ 2>/dev/null || true
           cp -r pkgdown/* deploy/es/pkgdown/ 2>/dev/null || true
+          cp -r pkgdown/* deploy/zh/pkgdown/ 2>/dev/null || true
       
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
