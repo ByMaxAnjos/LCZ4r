@@ -1,4 +1,4 @@
-url: https://bymaxanjos.github.io/climasus4r/es
+url: https://bymaxanjos.github.io/LCZ4r/es
 lang: es
 
 template:
@@ -43,8 +43,8 @@ navbar:
       href: https://github.com/ByMaxAnjos/LCZ4r/
     - text: "English"
       href: ../en/index.html
-    - text: "Español"
-      href: ../es/index.html
+    - text: "Português"
+      href: ../pt/index.html
 
 logo:
   src: inst/figures/logo.png
@@ -95,4 +95,7 @@ articles:
   - title: "Tutoriales"
     contents:
       - tutorials
+  - title: "Plugin QGIS"
+    contents:
+      - examples
 
