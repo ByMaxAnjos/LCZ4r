@@ -267,7 +267,7 @@ title: "Tutoriais"
     <div class="card-image-wrapper">
       <span class="card-image-badge">Essencial</span>
       <img
-        src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/inst/figures/fig_general_1_1.png"
+        src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_1.png"
         alt="Mapa LCZ de São Paulo gerado com LCZ4r"
         loading="lazy"
         onerror="this.parentElement.style.display='none'">
@@ -296,7 +296,7 @@ title: "Tutoriais"
     <div class="card-image-wrapper">
       <span class="card-image-badge">LCZ map</span>
       <img
-        src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/inst/figures/fig_local_uhi_2.png"
+        src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_uhi_2.png"
         alt="Análise de Ilha de Calor Urbana por estação do ano"
         loading="lazy"
         onerror="this.parentElement.style.display='none'">
