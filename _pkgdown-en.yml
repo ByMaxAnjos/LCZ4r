@@ -41,8 +41,8 @@ navbar:
       target: "_blank"
     - icon: fa-github
       href: https://github.com/ByMaxAnjos/LCZ4r/
-    - text: "English"
-      href: ../en/index.html
+    - text: "Português"
+      href: ../pt/index.html
     - text: "Español"
       href: ../es/index.html
 
@@ -95,7 +95,6 @@ articles:
   - title: "Tutorials"
     contents:
       - tutorials
-
-
-
- 
+  - title: "QGIS Plugin"
+    contents:
+      - examples
