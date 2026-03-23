@@ -14,7 +14,7 @@ output:
     highlight: tango
     code_folding: show
     code_download: true      # Permite ao usuário baixar o código Rmd original
-    self_contained: true     # Garante que tudo funcione offline
+    self_contained: false     # Garante que tudo funcione offline
     df_print: paged
 ---
 
@@ -132,7 +132,7 @@ lcz_plot_map(lcz_map)
 ```
 
 ```{r echo=F, out.width = '100%', fig.align='center'}
-knitr::include_graphics("../inst/figures/fig_general_1_1.png")
+knitr::include_graphics("https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_1.png")
 ```
 
 ### Paris
@@ -144,7 +144,7 @@ lcz_plot_map(euro_map)
 ```
 
 ```{r echo=F, out.width = '100%', fig.align='center'}
-knitr::include_graphics("../inst/figures/fig_general_1_2.png")
+knitr::include_graphics("https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_2.png")
 ```
 
 ### London
@@ -156,7 +156,7 @@ lcz_plot_map(euro_map)
 ```
 
 ```{r echo=F, out.width = '100%', fig.align='center'}
-knitr::include_graphics("../inst/figures/fig_general_1_3.png")
+knitr::include_graphics("https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_3.png")
 ```
 
 ### Sydney
@@ -168,7 +168,7 @@ lcz_plot_map(lcz_map)
 ```
 
 ```{r echo=F, out.width = '100%', fig.align='center'}
-knitr::include_graphics("../inst/figures/fig_general_1_4.png")
+knitr::include_graphics("https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_4.png")
 ```
 
 ### Beijing
@@ -180,7 +180,7 @@ lcz_plot_map(lcz_map)
 ```
 
 ```{r echo=F, out.width = '100%', fig.align='center'}
-knitr::include_graphics("../inst/figures/fig_general_1_5.png")
+knitr::include_graphics("https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_5.png")
 ```
 
 ### New York
@@ -192,7 +192,7 @@ lcz_plot_map(usa_map)
 ```
 
 ```{r echo=F, out.width = '100%', fig.align='center'}
-knitr::include_graphics("../inst/figures/fig_general_1_6.png")
+knitr::include_graphics("https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_6.png")
 ```
 
 ### Nairobi
@@ -204,7 +204,7 @@ lcz_plot_map(my_map)
 ```
 
 ```{r echo=F, out.width = '100%', fig.align='center'}
-knitr::include_graphics("../inst/figures/fig_general_1_7.png")
+knitr::include_graphics("https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_7.png")
 ```
 
 ##  {.unnumbered}
@@ -226,7 +226,7 @@ lcz_plot_map(lcz_map)
 ```
 
 ```{r echo=F, out.width = '100%', fig.align='center'}
-knitr::include_graphics("../inst/figures/fig_generator.png")
+knitr::include_graphics("https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_generator.png")
 ```
 
 ## 💡**Tip 1**: LCZ map for Region Of Interest (ROI)
@@ -275,7 +275,7 @@ lcz_plot_map(lcz_map)
 ```
 
 ```{r echo=F, out.width = '100%', fig.align='center'}
-knitr::include_graphics("../inst/figures/fig_general_7.png")
+knitr::include_graphics("https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_7.png")
 ```
 
 
@@ -290,7 +290,7 @@ lcz_cal_area(lcz_map)
 ```
 
 ```{r echo=F, out.width = '100%', fig.align='center'}
-knitr::include_graphics("../inst/figures/fig_general_2.png")
+knitr::include_graphics("https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_2.png")
 ```
 
 Tips: this function provides a table.csv of the calculated LCZ areas, coding like this: *lcz_cal_area(lcz_map, iplot = FALSE)*
@@ -348,7 +348,7 @@ LCZpar
 ```
 
 ```{r echo=F, out.width = '100%', fig.align='center'}
-knitr::include_graphics("../inst/figures/fig_general_3.png")
+knitr::include_graphics("https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_3.png")
 ```
 
 ## Maps {.tabset .tabset-fade .tabset-pills}
@@ -360,7 +360,7 @@ lcz_plot_parameters(LCZpar, iselect = "SVFmean")
 ```
 
 ```{r echo=F, out.width = '100%', fig.align='center'}
-knitr::include_graphics("../inst/figures/fig_general_4.png")
+knitr::include_graphics("https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_4.png")
 ```
 
 ### Building Surface Fraction
@@ -370,7 +370,7 @@ lcz_plot_parameters(LCZpar, iselect = "BSFmax")
 ```
 
 ```{r echo=F, out.width = '100%', fig.align='center'}
-knitr::include_graphics("../inst/figures/fig_general_5.png")
+knitr::include_graphics(".https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_5.png")
 ```
 
 ### Roughness Lenght
@@ -380,9 +380,10 @@ lcz_plot_parameters(LCZpar, iselect = "z0")
 ```
 
 ```{r echo=F, out.width = '100%', fig.align='center'}
-knitr::include_graphics("../inst/figures/fig_general_6.png")
+knitr::include_graphics("https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_6.png")
 ```
 
+---
 
 ## Have feedback or suggestions?
 Do you have an idea for improvement or did you spot a mistake? We'd love to hear from you! Click the button below to create a new issue (Github) and share your feedback or suggestions directly with us.
@@ -392,6 +393,6 @@ Do you have an idea for improvement or did you spot a mistake? We'd love to hear
   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
     <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
   </svg>
-  Abrir uma issue no GitHub
+  Open GitHub issue
 </a>
 ```
