@@ -1,0 +1,103 @@
+---
+title: "LCZ4r-QGIS Plugin"
+---
+
+```{=html}
+<style>
+  :root {
+    --fc-bg: #f8faf7; --fc-surface: #f0f4ef; --fc-elevated: #e6ede4;
+    --fc-primary: #10b981; --fc-deep: #059669; --fc-sky: #0ea5e9;
+    --fc-text: #1a2e1a; --fc-muted: #4a6741;
+    --fc-border: rgba(16,185,129,0.18); --fc-radius: 14px;
+    --fc-transition: 0.28s cubic-bezier(.4,0,.2,1);
+  }
+  .qgis-hero { background: linear-gradient(135deg,#1a2e1a 0%,#10b981 60%,#0ea5e9 100%); border-radius: var(--fc-radius); padding: 2.8rem 2.4rem 2.2rem; margin-bottom: 2.4rem; color:#fff; position:relative; overflow:hidden; }
+  .qgis-hero::before { content:''; position:absolute; top:-40px; right:-40px; width:200px; height:200px; background:rgba(255,255,255,0.06); border-radius:50%; }
+  .qgis-hero-eyebrow { font-size:.72rem; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:rgba(255,255,255,0.7); margin-bottom:.6rem; }
+  .qgis-hero h1 { font-size:clamp(1.7rem,4vw,2.4rem); font-weight:700; margin:0 0 .8rem; line-height:1.2; }
+  .qgis-hero p { font-size:1.05rem; color:rgba(255,255,255,0.85); max-width:600px; margin:0 0 1.4rem; line-height:1.6; }
+  .qgis-hero-badges { display:flex; flex-wrap:wrap; gap:.5rem; }
+  .qgis-badge { background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.25); border-radius:100px; padding:.28rem .9rem; font-size:.78rem; font-weight:500; color:#fff; }
+  .qgis-section-title { font-size:1.5rem; font-weight:700; color:var(--fc-text); margin:2rem 0 .5rem; padding-bottom:.5rem; border-bottom:2px solid var(--fc-elevated); }
+  .qgis-section-sub { color:var(--fc-muted); font-size:.95rem; margin-bottom:1.4rem; }
+  .qgis-features { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:1.2rem; margin-bottom:2.4rem; }
+  .qgis-feature-card { background:rgba(255,255,255,0.80); backdrop-filter:blur(10px); border:1px solid var(--fc-border); border-radius:var(--fc-radius); padding:1.4rem 1.5rem; transition:transform var(--fc-transition),box-shadow var(--fc-transition); }
+  .qgis-feature-card:hover { transform:translateY(-3px); box-shadow:0 8px 28px rgba(16,185,129,0.18); }
+  .qgis-feature-icon { width:42px; height:42px; background:linear-gradient(135deg,#e8f5e9,#d1fae5); border-radius:10px; display:flex; align-items:center; justify-content:center; margin-bottom:.9rem; font-size:1.3rem; }
+  .qgis-feature-card h3 { font-size:1rem; font-weight:600; color:var(--fc-text); margin:0 0 .4rem; }
+  .qgis-feature-card p { font-size:.88rem; color:var(--fc-muted); margin:0; line-height:1.55; }
+  .lang-grid { display:flex; flex-wrap:wrap; gap:.5rem; margin-bottom:2rem; }
+  .lang-tag { background:var(--fc-surface); border:1px solid var(--fc-border); border-radius:100px; padding:.3rem .9rem; font-size:.82rem; font-weight:500; color:var(--fc-text); display:flex; align-items:center; gap:.4rem; }
+  .lang-tag::before { content:'🌐'; font-size:.75rem; }
+  .install-steps { display:flex; flex-direction:column; gap:1rem; margin-bottom:2rem; }
+  .install-step { display:flex; gap:1rem; align-items:flex-start; background:var(--fc-surface); border-radius:var(--fc-radius); padding:1.1rem 1.3rem; border-left:3px solid var(--fc-primary); }
+  .step-number { min-width:32px; height:32px; background:var(--fc-primary); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:.85rem; font-weight:700; flex-shrink:0; }
+  .step-content h4 { font-size:.95rem; font-weight:600; color:var(--fc-text); margin:0 0 .25rem; }
+  .step-content p { font-size:.87rem; color:var(--fc-muted); margin:0; line-height:1.5; }
+  .step-content code { background:var(--fc-elevated); padding:.15rem .45rem; border-radius:4px; font-size:.82rem; color:var(--fc-deep); }
+  .qgis-cta-btn { display:inline-flex; align-items:center; gap:.5rem; background:linear-gradient(135deg,var(--fc-primary),var(--fc-deep)); color:#fff !important; text-decoration:none !important; padding:.75rem 1.6rem; border-radius:100px; font-size:.92rem; font-weight:600; box-shadow:0 4px 14px rgba(16,185,129,0.35); transition:filter var(--fc-transition),transform var(--fc-transition); margin-top:.5rem; }
+  .qgis-cta-btn:hover { filter:brightness(1.08); transform:translateY(-2px); }
+  .github-feedback-btn { display:inline-flex; align-items:center; gap:.5rem; background:linear-gradient(135deg,#1a2e1a,#10b981); color:#fff !important; text-decoration:none !important; padding:.7rem 1.5rem; border-radius:100px; font-size:.88rem; font-weight:600; box-shadow:0 4px 14px rgba(26,46,26,0.25); transition:filter var(--fc-transition),transform var(--fc-transition); margin-top:.5rem; }
+  .github-feedback-btn:hover { filter:brightness(1.1); transform:translateY(-2px); }
+  @media(max-width:640px){.qgis-hero{padding:1.8rem 1.4rem;}.qgis-features{grid-template-columns:1fr;}}
+  @media(prefers-reduced-motion:reduce){.qgis-feature-card,.qgis-cta-btn,.github-feedback-btn{transition:none;}}
+</style>
+
+<div class="qgis-hero">
+  <div class="qgis-hero-eyebrow">LCZ4r · QGIS Integration</div>
+  <h1>LCZ4r-QGIS Plugin<br>Geospatial Analysis, Simplified</h1>
+  <p>The LCZ4r-QGIS plugin brings the full power of the LCZ4r R package directly into your QGIS environment. Analyze Local Climate Zones and Urban Heat Islands interactively — no R console required.</p>
+  <div class="qgis-hero-badges">
+    <span class="qgis-badge">QGIS 3.x</span>
+    <span class="qgis-badge">10 Languages</span>
+    <span class="qgis-badge">Open Source</span>
+    <span class="qgis-badge">R Integration</span>
+  </div>
+</div>
+
+<h2 class="qgis-section-title">Key Features</h2>
+<p class="qgis-section-sub">Everything you need for LCZ and UHI analysis, directly in QGIS.</p>
+<div class="qgis-features">
+  <div class="qgis-feature-card"><div class="qgis-feature-icon">🗺️</div><h3>Interactive LCZ Mapping</h3><p>Download and visualize Local Climate Zone maps for any city in the world directly within QGIS.</p></div>
+  <div class="qgis-feature-card"><div class="qgis-feature-icon">🌡️</div><h3>UHI Analysis</h3><p>Calculate and map Urban Heat Island intensity using station data and LCZ classifications.</p></div>
+  <div class="qgis-feature-card"><div class="qgis-feature-icon">📊</div><h3>Time Series & Anomalies</h3><p>Analyze air temperature time series and detect thermal anomalies across LCZ types.</p></div>
+  <div class="qgis-feature-card"><div class="qgis-feature-icon">🌍</div><h3>Multilingual Interface</h3><p>Full interface available in 10 languages, making LCZ analysis accessible to a global audience.</p></div>
+</div>
+
+<h2 class="qgis-section-title">Supported Languages</h2>
+<p class="qgis-section-sub">The plugin interface is fully translated into the following languages:</p>
+<div class="lang-grid">
+  <span class="lang-tag">English</span><span class="lang-tag">Português</span>
+  <span class="lang-tag">Español</span><span class="lang-tag">Deutsch</span>
+  <span class="lang-tag">Français</span><span class="lang-tag">Italiano</span>
+  <span class="lang-tag">中文</span><span class="lang-tag">日本語</span>
+  <span class="lang-tag">한국어</span><span class="lang-tag">Русский</span>
+</div>
+
+<h2 class="qgis-section-title">Installation</h2>
+<p class="qgis-section-sub">Follow these steps to install the LCZ4r-QGIS plugin:</p>
+<div class="install-steps">
+  <div class="install-step"><div class="step-number">1</div><div class="step-content"><h4>Install R and LCZ4r</h4><p>Make sure R is installed and install the package: <code>remotes::install_github("ByMaxAnjos/LCZ4r")</code></p></div></div>
+  <div class="install-step"><div class="step-number">2</div><div class="step-content"><h4>Open QGIS Plugin Manager</h4><p>In QGIS, go to <code>Plugins → Manage and Install Plugins…</code> and search for <strong>LCZ4r</strong>.</p></div></div>
+  <div class="install-step"><div class="step-number">3</div><div class="step-content"><h4>Install and Activate</h4><p>Click <strong>Install Plugin</strong> and activate it. The LCZ4r panel will appear in your QGIS toolbar.</p></div></div>
+  <div class="install-step"><div class="step-number">4</div><div class="step-content"><h4>Configure R Path</h4><p>On first launch, set the R executable path in <code>Settings → R Configuration</code>.</p></div></div>
+</div>
+
+<a href="https://github.com/ByMaxAnjos/LCZ4r-QGIS-Plugin" class="qgis-cta-btn" target="_blank">
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+  View Plugin on GitHub
+</a>
+```
+
+---
+
+## Have Feedback or Suggestions?
+
+If you have ideas for improvement or found a bug, we'd love to hear from you!
+
+```{=html}
+<a href='https://github.com/ByMaxAnjos/LCZ4r/issues/new' class="github-feedback-btn">
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+  Open an Issue on GitHub
+</a>
+```
