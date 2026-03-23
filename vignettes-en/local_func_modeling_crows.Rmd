@@ -152,7 +152,6 @@ Urban Heat Islands (UHIs) are a critical environmental issue in cities, where ur
 if (!require("pacman")) install.packages("pacman")
 pacman::p_load(remotes, dplyr, sf, tmap, ggplot2, devtools, data.table)
 
-library(LCZ4r)   # For LCZ and UHI analysis
 library(dplyr)   # For data manipulation
 library(sf)      # For vector data manipulation
 library(tmap)    # For interactive map visualization
@@ -184,6 +183,7 @@ However, careful quality control is essential to ensure data reliability.
 
 ```{r eval=FALSE, message=FALSE, warning=FALSE}
 # Retrieve the LCZ map for Berlin using the LCZ Generator Platform
+library(LCZ4r)   # For LCZ and UHI analysis
 lcz_map <- lcz_get_map_generator(ID = "8576bde60bfe774e335190f2e8fdd125dd9f4299")
 
 # Visualize the LCZ map
