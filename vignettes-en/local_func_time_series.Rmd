@@ -1,0 +1,412 @@
+---
+title: "Time Series Analysis"
+author: "Max Anjos"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 4
+    toc_float:
+      collapsed: true
+      smooth_scroll: true
+    number_sections: true
+    theme: flatly
+    highlight: tango
+    code_folding: show
+    code_download: true
+    self_contained: false
+    df_print: paged
+---
+
+```{css, echo=FALSE}
+/* ── Variáveis de Cores Modernas ────────────────── */
+:root {
+  --primary-color: #1D9E75;
+  --dark-green: #0f3d2e;
+  --bg-light: #f8faf9;
+  --text-main: #1a1a1a;
+  --code-bg: #fdfdfd;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 18px;
+  color: var(--text-main);
+  background-color: #fff;
+}
+
+/* ── Títulos com Inter-spacing ─────────────────── */
+h1, h2, h3 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  color: var(--dark-green);
+}
+
+h1.title {
+  font-size: 2.8em;
+  border-bottom: 4px solid var(--primary-color);
+  padding-bottom: 10px;
+}
+
+/* ── Code Blocks Estilizados ────────────────────── */
+pre.r {
+  background-color: var(--code-bg);
+  border: 1px solid #e1e1e1;
+  border-left: 5px solid var(--primary-color) !important;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* ── Custom Callouts (Estilo Quarto) ────────────── */
+.callout {
+  padding: 1.2em;
+  margin: 1.5em 0;
+  border-radius: 0 8px 8px 0;
+  border-left: 6px solid;
+}
+
+.callout-note {
+  background-color: #f0f7ff;
+  border-color: #007bff;
+}
+
+.callout-tip {
+  background-color: #e8f5e9;
+  border-color: #1D9E75;
+}
+
+/* ── Transições suaves no menu lateral ──────────── */
+.list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+/* ── Estilo para imagens ───────────────────────── */
+.figure img {
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+  margin-bottom: 10px;
+}
+
+.figure img:hover {
+  transform: scale(1.02);
+}
+
+.figure .caption {
+  font-size: 0.9em;
+  color: #666;
+  margin-top: 5px;
+  font-style: italic;
+}
+
+/* ── Botão GitHub aprimorado ───────────────────── */
+.github-feedback-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #24292e;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-family: sans-serif;
+  transition: background-color 0.2s;
+}
+
+.github-feedback-btn:hover {
+  background-color: #2c3e50;
+  color: white;
+  text-decoration: none;
+}
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo    = TRUE,
+  eval    = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  comment = "#>",
+  fig.align = "center",
+  out.width = "80%",
+  fig.retina = 2
+)
+```
+
+## Getting Started
+
+The `lcz_ts()` function allows you to analyze air temperature data associated with Local Climate Zones (LCZ) over time. In this tutorial, we'll perform an hourly frequency analysis of air temperature in Berlin for the years 2019-2020 using `lcz_data` from the LCZ4r package.
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+library(LCZ4r)
+
+# Get the LCZ map for your city
+lcz_map <- lcz_get_map_euro(city = "Berlin")
+
+# Load sample data from LCZ4r
+data("lcz_data")
+```
+
+## Basic Time Series Analysis
+
+Let's start with a basic analysis using `lcz_ts()` to observe hourly temperature fluctuations.
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Get monthly LCZ-air temperature time series
+lcz_ts(lcz_map, 
+       data_frame = lcz_data, 
+       var = "airT", 
+       station_id = "station",
+       time.freq = "month",
+       ylab = "Air temperature [°C]",
+       xlab = "Date",
+       title = "LCZ - Time Series",
+       caption = "Source: LCZ4r, 2024.")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_ts_1.png" alt="Monthly LCZ-air temperature time series for Berlin" width="80%" />
+<p class="caption">Monthly LCZ-air temperature time series for Berlin showing seasonal temperature variations across different LCZ classes</p>
+</div>
+
+## Plotting Options with plot_type
+
+The `plot_type` argument in `lcz_ts()` offers several visualizations:
+
+* **"basic_line"**: Simple line plot
+* **"faceted_line"**: Line plot with facets by LCZ or station
+* **"heatmap"**: Heatmap to visualize temporal patterns
+* **"warming_stripes"**: Stripes representing temperature variations over time
+
+Below are examples using each plot type.
+
+### 1. Basic Line Plot
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Daily air temperature for September 2019
+lcz_ts(lcz_map, 
+       data_frame = lcz_data, 
+       var = "airT", 
+       station_id = "station",
+       time.freq = "day",
+       year = 2019, month = 9,
+       plot_type = "basic_line")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_ts_2.png" alt="Basic line plot showing daily temperature variations in September 2019" width="80%" />
+<p class="caption">Basic line plot showing daily temperature variations in Berlin during September 2019</p>
+</div>
+
+### 2. Faceted Line Plot by Station
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Daily air temperature from January to March 2019, faceted by station
+lcz_ts(lcz_map, 
+       data_frame = lcz_data, 
+       var = "airT", 
+       station_id = "station", 
+       time.freq = "hour",
+       year = 2019, month = 1:3,
+       plot_type = "facet_line", 
+       facet = "station")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_ts_3.png" alt="Faceted line plot showing temperature patterns across different meteorological stations" width="80%" />
+<p class="caption">Faceted line plot showing temperature patterns across different meteorological stations in Berlin (January-March 2019)</p>
+</div>
+
+### 3. Heatmap of Temperature Over Time
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Hourly air temperature on January 15, 2020, with LCZ facets
+lcz_ts(lcz_map, 
+       data_frame = lcz_data, 
+       var = "airT", 
+       station_id = "station", 
+       time.freq = "hour",
+       year = 2020, month = 1, day = 15,
+       plot_type = "heatmap", 
+       facet = "LCZ")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_ts_4.png" alt="Heatmap showing hourly temperature variations across LCZ classes" width="80%" />
+<p class="caption">Heatmap showing hourly temperature variations across different LCZ classes on January 15, 2020</p>
+</div>
+
+### 4. Warming Stripes
+
+```{r eval=FALSE, fig.height=7, fig.width=11, message=FALSE, warning=FALSE}
+# Hourly air temperature for 2020, visualized as warming stripes
+lcz_ts(lcz_map, 
+       data_frame = lcz_data, 
+       var = "airT", 
+       station_id = "station", 
+       time.freq = "hour", 
+       year = 2020, month = 1:12,
+       plot_type = "warming_stripes",
+       facet = "LCZ")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_ts_5.png" alt="Warming stripes visualization showing temperature trends across LCZ classes" width="80%" />
+<p class="caption">Warming stripes visualization showing temperature trends across different LCZ classes throughout 2020</p>
+</div>
+
+## Splitting Data with the "by" Argument
+
+You can split data by temporal or spatial categories such as "year", "month", "season", "weekday", "weekend", "yearseason", and more.
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Daily air temperature by seasons of 2020
+lcz_ts(lcz_map, 
+       data_frame = lcz_data, 
+       var = "airT", 
+       station_id = "station", 
+       time.freq = "day",
+       year = 2020,
+       plot_type = "basic_line", 
+       by = "season")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_ts_6.png" alt="Temperature variations across different seasons in 2020" width="80%" />
+<p class="caption">Temperature variations across different seasons in Berlin during 2020</p>
+</div>
+
+## Dividing Nighttime and Daytime with "by" Argument
+
+You can also split data by nighttime and daytime periods with `by = "daylight"`.
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Diurnal cycle of air temperature on January 15, 2020
+lcz_ts(lcz_map, 
+       data_frame = lcz_data, 
+       var = "airT", 
+       station_id = "station", 
+       time.freq = "hour",
+       year = 2020, month = 1, day = 15,
+       plot_type = "heatmap", 
+       by = "daylight")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_ts_7.png" alt="Comparison of daytime and nighttime temperature patterns" width="80%" />
+<p class="caption">Comparison of daytime and nighttime temperature patterns on January 15, 2020</p>
+</div>
+
+### Combining Daylight with Months
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Diurnal cycle of air temperature on January 15 and July 15, 2020
+lcz_ts(lcz_map, 
+       data_frame = lcz_data, 
+       var = "airT", 
+       station_id = "station", 
+       time.freq = "hour",
+       year = 2020, month = c(1, 7), day = 15,
+       plot_type = "basic_line", 
+       by = c("daylight", "monthyear"))
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_ts_8.png" alt="Comparison of diurnal temperature cycles in winter and summer" width="80%" />
+<p class="caption">Comparison of diurnal temperature cycles in winter (January) and summer (July) 2020</p>
+</div>
+
+## Smoothing Temperature Trends
+
+Enable smoothing by setting `smooth = TRUE`, which adds a generalized additive model (GAM) line to show the temperature trend.
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Trends of daily air temperature for 2019-2020 by station
+lcz_ts(lcz_map, 
+       data_frame = lcz_data, 
+       var = "airT", 
+       station_id = "station", 
+       time.freq = "hour",
+       year = 2019:2020,
+       plot_type = "basic_line", 
+       smooth = TRUE)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_ts_9.png" alt="Temperature trends with GAM smoothing for 2019-2020" width="80%" />
+<p class="caption">Temperature trends with GAM smoothing across stations for 2019-2020</p>
+</div>
+
+## Save Plots
+
+To save a plot and dataframe, set `isave = TRUE` and specify the file type with `save_extension` (e.g., "png", "jpeg", "svg", "pdf"). A folder `LCZ4r_output` is created on your PC.
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Save daylight plot and dataframe to PC
+lcz_ts(lcz_map, 
+       data_frame = lcz_data, 
+       var = "airT", 
+       station_id = "station", 
+       time.freq = "hour",
+       year = 2020, month = 1, day = 15,
+       plot_type = "basic_line", 
+       by = "daylight", 
+       isave = TRUE)
+```
+
+::: {.callout .callout-tip}
+**Tip**: The saved files will be automatically organized in the `LCZ4r_output` folder with timestamped filenames for easy reference.
+:::
+
+## Return a Dataframe as Result
+
+To save the result in R, set `iplot = FALSE` and create an object.
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Return daylight dataframe for January 15, 2020
+my_output <- lcz_ts(lcz_map, 
+                    data_frame = lcz_data, 
+                    var = "airT", 
+                    station_id = "station", 
+                    time.freq = "hour",
+                    year = 2020, month = 1, day = 15,
+                    plot_type = "basic_line", 
+                    by = "daylight", 
+                    iplot = FALSE)
+
+# View the structure of the returned dataframe
+str(my_output)
+```
+
+## Summary of Parameters
+
+Here's a quick reference for the main parameters used in `lcz_ts()`:
+
+| Parameter | Description | Options |
+|-----------|-------------|---------|
+| `time.freq` | Temporal aggregation frequency | "hour", "day", "month", "year" |
+| `plot_type` | Visualization type | "basic_line", "facet_line", "heatmap", "warming_stripes" |
+| `by` | Data splitting method | "season", "month", "weekday", "daylight", "yearseason" |
+| `smooth` | Add GAM trend line | TRUE/FALSE |
+| `isave` | Save output to PC | TRUE/FALSE |
+| `iplot` | Display plot | TRUE/FALSE |
+
+---
+
+## Have feedback or suggestions?
+
+Do you have an idea for improvement or did you spot a mistake? We'd love to hear from you! Click the button below to create a new issue (GitHub) and share your feedback or suggestions directly with us.
+
+```{=html}
+<a href='https://github.com/ByMaxAnjos/LCZ4r/issues/new' class="github-feedback-btn">
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+  </svg>
+  Open GitHub issue
+</a>
+```

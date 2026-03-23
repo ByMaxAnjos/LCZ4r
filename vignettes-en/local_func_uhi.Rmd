@@ -1,0 +1,423 @@
+---
+title: "Urban Heat Island (UHI) Analysis"
+author: "Max Anjos"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 4
+    toc_float:
+      collapsed: true
+      smooth_scroll: true
+    number_sections: true
+    theme: flatly
+    highlight: tango
+    code_folding: show
+    code_download: true
+    self_contained: false
+    df_print: paged
+---
+
+```{css, echo=FALSE}
+/* ── Variáveis de Cores Modernas ────────────────── */
+:root {
+  --primary-color: #1D9E75;
+  --dark-green: #0f3d2e;
+  --bg-light: #f8faf9;
+  --text-main: #1a1a1a;
+  --code-bg: #fdfdfd;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 18px;
+  color: var(--text-main);
+  background-color: #fff;
+}
+
+/* ── Títulos com Inter-spacing ─────────────────── */
+h1, h2, h3 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  color: var(--dark-green);
+}
+
+h1.title {
+  font-size: 2.8em;
+  border-bottom: 4px solid var(--primary-color);
+  padding-bottom: 10px;
+}
+
+/* ── Code Blocks Estilizados ────────────────────── */
+pre.r {
+  background-color: var(--code-bg);
+  border: 1px solid #e1e1e1;
+  border-left: 5px solid var(--primary-color) !important;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* ── Custom Callouts (Estilo Quarto) ────────────── */
+.callout {
+  padding: 1.2em;
+  margin: 1.5em 0;
+  border-radius: 0 8px 8px 0;
+  border-left: 6px solid;
+}
+
+.callout-note {
+  background-color: #f0f7ff;
+  border-color: #007bff;
+}
+
+.callout-tip {
+  background-color: #e8f5e9;
+  border-color: #1D9E75;
+}
+
+.callout-warning {
+  background-color: #fff3e0;
+  border-color: #ff9800;
+}
+
+/* ── Transições suaves no menu lateral ──────────── */
+.list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+/* ── Estilo para imagens ───────────────────────── */
+.figure img {
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+  margin-bottom: 10px;
+}
+
+.figure img:hover {
+  transform: scale(1.02);
+}
+
+.figure .caption {
+  font-size: 0.9em;
+  color: #666;
+  margin-top: 5px;
+  font-style: italic;
+}
+
+/* ── Botão GitHub aprimorado ───────────────────── */
+.github-feedback-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #24292e;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-family: sans-serif;
+  transition: background-color 0.2s;
+}
+
+.github-feedback-btn:hover {
+  background-color: #2c3e50;
+  color: white;
+  text-decoration: none;
+}
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo    = TRUE,
+  eval    = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  comment = "#>",
+  fig.align = "center",
+  out.width = "80%",
+  fig.retina = 2
+)
+```
+
+## Introduction
+
+The `lcz_uhi_intensity()` function is designed to calculate the Urban Heat Island (UHI) intensity based on air temperature measurements and Local Climate Zones (LCZ). UHI intensity is defined as the temperature difference between urban and rural areas, providing a quantitative measure of how much warmer urban areas are compared to their surrounding rural environments.
+
+This guide demonstrates how to use the `lcz_uhi_intensity()` function to calculate and analyze UHI intensity using LCZ classes. The function supports two calculation methods:
+
+### Method 1: LCZ-Based Method
+Automatically identifies LCZ built types (LCZ 1-10) to represent urban temperature, while LCZ natural types (LCZ A-G / 11-17) represent rural temperature. This method is ideal when you have comprehensive LCZ classification across your study area.
+
+### Method 2: Manual Method
+Allows users to manually select specific stations as references for urban and rural areas. This method is useful when you have pre-defined reference stations or when LCZ classification is incomplete.
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+library(LCZ4r)
+
+# Get the LCZ map for your city
+lcz_map <- lcz_get_map_euro(city = "Berlin")
+
+# Load sample data from LCZ4r
+data("lcz_data")
+```
+
+::: {.callout .callout-note}
+**Understanding UHI Intensity**:
+
+- **Positive UHI intensity** (red): Urban areas are warmer than rural areas (typical urban heat island)
+- **Negative UHI intensity** (blue): Urban areas are cooler than rural areas (urban cool island)
+- **Zero UHI intensity**: No temperature difference between urban and rural areas
+
+UHI intensity typically peaks during nighttime and can vary significantly by season and weather conditions.
+:::
+
+## UHI Time Series
+
+This example calculates hourly UHI intensity aggregated by month for the year 2019, providing insights into seasonal patterns of urban heating.
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Calculate hourly UHI intensity by month for 2019
+lcz_uhi_intensity(lcz_map, 
+                  data_frame = lcz_data, 
+                  var = "airT", 
+                  station_id = "station",
+                  time.freq = "hour", 
+                  method = "LCZ",
+                  year = 2019,
+                  by = "month")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_uhi_1.png" alt="Monthly UHI intensity time series for Berlin" width="80%" />
+<p class="caption">Monthly UHI intensity time series for Berlin in 2019. Positive values indicate urban areas are warmer than rural areas, with peak intensity typically observed during summer months.</p>
+</div>
+
+## UHI Seasonality
+
+This analysis splits the data by season, providing a more detailed view of how UHI intensity varies throughout the year. The `group = TRUE` parameter also displays the urban and rural temperature components separately.
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Calculate hourly UHI intensity by season for 2019, including urban and rural temperatures
+lcz_uhi_intensity(lcz_map, 
+                  data_frame = lcz_data, 
+                  var = "airT", 
+                  station_id = "station",
+                  time.freq = "hour", 
+                  method = "LCZ",
+                  year = 2019,
+                  by = "season",
+                  group = TRUE)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_uhi_2.png" alt="Seasonal UHI intensity patterns with urban and rural temperature components" width="80%" />
+<p class="caption">Seasonal UHI intensity patterns showing urban and rural temperature components. This visualization helps identify seasonal variations in UHI magnitude and the contributing temperature differences.</p>
+</div>
+
+## UHI Diurnal Cycle
+
+Understanding the diurnal (day-night) cycle of UHI intensity is crucial for urban climate studies. This example calculates the diurnal pattern for a specific date.
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Calculate diurnal cycle of UHI intensity for February 6, 2019
+lcz_uhi_intensity(lcz_map, 
+                  data_frame = lcz_data, 
+                  var = "airT", 
+                  station_id = "station",
+                  time.freq = "hour", 
+                  method = "LCZ",
+                  year = 2019, month = 2, day = 6,
+                  by = "daylight",
+                  group = TRUE)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_uhi_3.png" alt="Diurnal cycle of UHI intensity showing daytime and nighttime patterns" width="80%" />
+<p class="caption">Diurnal cycle of UHI intensity on February 6, 2019, showing distinct patterns between daytime and nighttime periods. UHI intensity typically strengthens after sunset.</p>
+</div>
+
+## Manual Method: Custom Reference Selection
+
+The manual method allows you to specify custom stations as urban and rural references. This is particularly useful when you have specific monitoring stations that serve as representative references for your study area.
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Calculate diurnal cycle of UHI intensity for February and July 2019 using manual method
+lcz_uhi_intensity(lcz_map, 
+                  data_frame = lcz_data, 
+                  var = "airT", 
+                  station_id = "station",
+                  time.freq = "hour", 
+                  year = 2019, month = c(2, 7), day = 6,
+                  method = "manual",
+                  Turban = "bamberger",      # Urban reference station
+                  Trural = "airporttxl",     # Rural reference station
+                  by = c("daylight", "month"),
+                  group = TRUE)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_uhi_4.png" alt="UHI intensity comparison between winter and summer using custom reference stations" width="80%" />
+<p class="caption">UHI intensity comparison between winter (February) and summer (July) 2019 using custom reference stations. This demonstrates the flexibility of the manual method for targeted analysis.</p>
+</div>
+
+## Advanced Analysis Options
+
+### Multiple Time Frequencies
+
+You can analyze UHI intensity at different temporal aggregations:
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Daily UHI intensity for summer 2019
+daily_uhi <- lcz_uhi_intensity(lcz_map, 
+                               data_frame = lcz_data, 
+                               var = "airT", 
+                               station_id = "station",
+                               time.freq = "day", 
+                               method = "LCZ",
+                               year = 2019, month = 6:8,
+                               iplot = FALSE)
+
+# Monthly UHI intensity for 2019
+monthly_uhi <- lcz_uhi_intensity(lcz_map, 
+                                 data_frame = lcz_data, 
+                                 var = "airT", 
+                                 station_id = "station",
+                                 time.freq = "month", 
+                                 method = "LCZ",
+                                 year = 2019,
+                                 iplot = FALSE)
+```
+
+### Combining Multiple Splitting Options
+
+You can combine multiple splitting criteria for more detailed analysis:
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# UHI intensity by weekday and season
+lcz_uhi_intensity(lcz_map, 
+                  data_frame = lcz_data, 
+                  var = "airT", 
+                  station_id = "station",
+                  time.freq = "hour", 
+                  method = "LCZ",
+                  year = 2019,
+                  by = c("weekday", "season"),
+                  group = TRUE)
+```
+
+### Statistical Summary
+
+You can return the data frame for further statistical analysis:
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Return UHI intensity data frame for statistical analysis
+uhi_data <- lcz_uhi_intensity(lcz_map, 
+                              data_frame = lcz_data, 
+                              var = "airT", 
+                              station_id = "station",
+                              time.freq = "hour", 
+                              method = "LCZ",
+                              year = 2019,
+                              iplot = FALSE)
+
+# Calculate summary statistics
+summary(uhi_data)
+
+# Calculate seasonal means
+aggregate(uhi_value ~ season, data = uhi_data, FUN = mean)
+```
+
+## Save Plots
+
+To save plots to your computer, set `isave = TRUE` and specify the file type:
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Save UHI intensity plot to PC
+lcz_uhi_intensity(lcz_map, 
+                  data_frame = lcz_data, 
+                  var = "airT", 
+                  station_id = "station",
+                  time.freq = "hour", 
+                  method = "LCZ",
+                  year = 2019,
+                  by = "season",
+                  group = TRUE,
+                  isave = TRUE,
+                  save_extension = "png")
+```
+
+::: {.callout .callout-tip}
+**Tip**: Saved plots are automatically organized in the `LCZ4r_output` folder with descriptive filenames including the analysis parameters and timestamp.
+:::
+
+## Practical Applications of UHI Analysis
+
+Understanding UHI intensity patterns can inform various urban planning and climate adaptation strategies:
+
+### 1. Heatwave Preparedness
+Identify periods and areas with highest UHI intensity to target heatwave interventions and early warning systems.
+
+### 2. Urban Planning
+Use seasonal and diurnal patterns to guide urban design decisions, such as:
+- Placement of green infrastructure
+- Building height and density regulations
+- Cool material implementation strategies
+
+### 3. Climate Change Adaptation
+Establish baseline UHI patterns to monitor changes over time and evaluate the effectiveness of mitigation measures.
+
+### 4. Public Health Planning
+Identify vulnerable populations in areas with persistent high UHI intensity for targeted health interventions.
+
+::: {.callout .callout-warning}
+**Important Considerations**:
+
+- UHI intensity calculations require adequate spatial coverage of monitoring stations across both urban and rural areas
+- Weather conditions (wind speed, cloud cover) can significantly influence UHI intensity
+- The LCZ method assumes that built LCZs represent urban conditions and natural LCZs represent rural conditions
+- Consider using the manual method when LCZ classification is incomplete or when specific reference stations are preferred
+:::
+
+## Summary of Parameters
+
+Here's a quick reference for the main parameters used in `lcz_uhi_intensity()`:
+
+| Parameter | Description | Options |
+|-----------|-------------|---------|
+| `time.freq` | Temporal aggregation frequency | "hour", "day", "month", "year" |
+| `method` | Calculation method | "LCZ" (automatic), "manual" (custom) |
+| `Turban` | Urban reference station (manual method) | Station ID for urban reference |
+| `Trural` | Rural reference station (manual method) | Station ID for rural reference |
+| `by` | Data splitting method | "month", "season", "daylight", "weekday", etc. |
+| `group` | Display urban/rural components | TRUE/FALSE |
+| `isave` | Save output to PC | TRUE/FALSE |
+| `iplot` | Display plot | TRUE/FALSE |
+
+## Interpreting Results
+
+When analyzing UHI intensity results, consider:
+
+- **Peak intensity times**: Typically 3-5 hours after sunset
+- **Seasonal patterns**: Often strongest in summer and winter (depending on climate)
+- **Weather influences**: Clear, calm nights produce strongest UHI signals
+- **Urban morphology**: Compact built areas usually show higher intensity than open areas
+- **Vegetation effects**: Green spaces can significantly reduce local UHI intensity
+
+---
+
+## Have feedback or suggestions?
+
+Do you have an idea for improvement or did you spot a mistake? We'd love to hear from you! Click the button below to create a new issue (GitHub) and share your feedback or suggestions directly with us.
+
+```{=html}
+<a href='https://github.com/ByMaxAnjos/LCZ4r/issues/new' class="github-feedback-btn">
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+  </svg>
+  Open GitHub issue
+</a>
+```

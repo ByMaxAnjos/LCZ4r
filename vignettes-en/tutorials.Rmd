@@ -262,13 +262,13 @@ title: "Tutoriais"
 
 <div class="tutorial-grid">
 
-  <!-- Card 1: Tutorial Introdutório -->
+  <!-- Card 1: Introduction -->
   <div class="tutorial-card">
     <div class="card-image-wrapper">
-      <span class="card-image-badge">LCZ map</span>
+      <span class="card-image-badge">General Functions</span>
       <img
         src="https://github.com/ByMaxAnjos/LCZ4r/raw/main/inst/figures/fig_general_1_1.png"
-        alt="Mapa LCZ de São Paulo gerado com LCZ4r"
+        alt="LCZ map SP"
         loading="lazy"
         onerror="this.parentElement.style.display='none'">
     </div>
@@ -291,13 +291,13 @@ title: "Tutoriais"
     </div>
   </div>
 
-  <!-- Card 2: RAPs -->
+  <!-- Card 2: Generator -->
   <div class="tutorial-card">
     <div class="card-image-wrapper">
       <span class="card-image-badge">LCZ Generator</span>
       <img
         src="https://github.com/ByMaxAnjos/LCZ4r/raw/main/inst/figures/generator_card.png"
-        alt="Análise de Ilha de Calor Urbana por estação do ano"
+        alt="Generator Platform"
         loading="lazy"
         onerror="this.parentElement.style.display='none'">
     </div>
@@ -311,7 +311,123 @@ title: "Tutoriais"
       </div>
       <h3 class="card-title">Download LCZ map from LCZ Generator Platform.</h3>
       <p class="card-description">The LCZ Generator is a web application for creating Local Climate Zone (LCZ) maps. This guide provides step-by-step instructions to generate an LCZ map for your city using the LCZ4r package.</p>
-      <a href="https://bymaxanjos.github.io/LCZ4r/en/articles/Introd_genera_LCZ4r.html#download-lcz-map-from-lcz-generator-platform"" class="card-cta-button">
+      <a href="https://bymaxanjos.github.io/LCZ4r/en/articles/Introd_genera_LCZ4r.html#download-lcz-map-from-lcz-generator-platform" class="card-cta-button">
+        Open Tutorial
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+      </a>
+    </div>
+  </div>
+
+<!-- Card 3: Introduction to Local Functions -->
+  <div class="tutorial-card">
+    <div class="card-image-wrapper">
+      <span class="card-image-badge">Local Functions</span>
+      <img
+        src="https://github.com/ByMaxAnjos/LCZ4r/raw/main/inst/figures/introd_local_card.png"
+        alt="Introduction to Local Functions"
+        loading="lazy"
+        onerror="this.parentElement.style.display='none'">
+    </div>
+    <div class="card-body">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.58 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.58 4 8 4s8-1.79 8-4M4 7c0-2.21 3.58-4 8-4s8 1.79 8 4m0 5c0 2.21-3.58 4-8 4s-8-1.79-8-4" />
+          </svg>
+        </div>
+      </div>
+      <h3 class="card-title">Introduction to Local Functions.</h3>
+      <p class="card-description">The Local functions in LCZ4r, offer powerful tools to handle and analyze urban climate data.They enable time-series analysis, mapping of thermal anomalies, spatial interpolation, and more.</p>
+      <a href="https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html" class="card-cta-button">
+        Open Tutorial
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+      </a>
+    </div>
+  </div>
+
+<!-- Card 4: Time Series Analysis -->
+  <div class="tutorial-card">
+    <div class="card-image-wrapper">
+      <span class="card-image-badge">Local Functions</span>
+      <img
+        src="https://github.com/ByMaxAnjos/LCZ4r/raw/main/inst/figures/fig_local_ts_5.png"
+        alt="Time Series Analysis"
+        loading="lazy"
+        onerror="this.parentElement.style.display='none'">
+    </div>
+    <div class="card-body">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.58 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.58 4 8 4s8-1.79 8-4M4 7c0-2.21 3.58-4 8-4s8 1.79 8 4m0 5c0 2.21-3.58 4-8 4s-8-1.79-8-4" />
+          </svg>
+        </div>
+      </div>
+      <h3 class="card-title">Time Series Analysis.</h3>
+      <p class="card-description">The lcz_ts() function allows you to analyze air temperature data associated with Local Climate Zones (LCZ) over time.</p>
+      <a href="https://bymaxanjos.github.io/LCZ4r/articles/local_func_time_series.html" class="card-cta-button">
+        Open Tutorial
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+      </a>
+    </div>
+  </div>
+
+<!-- Card 5: Thermal Anomalies -->
+  <div class="tutorial-card">
+    <div class="card-image-wrapper">
+      <span class="card-image-badge">Local Functions</span>
+      <img
+        src="https://github.com/ByMaxAnjos/LCZ4r/raw/main/inst/figures/fig_local_anomaly_1.png"
+        alt="Thermal Anomalies"
+        loading="lazy"
+        onerror="this.parentElement.style.display='none'">
+    </div>
+    <div class="card-body">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.58 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.58 4 8 4s8-1.79 8-4M4 7c0-2.21 3.58-4 8-4s8 1.79 8 4m0 5c0 2.21-3.58 4-8 4s-8-1.79-8-4" />
+          </svg>
+        </div>
+      </div>
+      <h3 class="card-title">Thermal Anomalies.</h3>
+      <p class="card-description">The thermal anomaly is a great way to evaluate the intra-urban air temperatures differences.</p>
+      <a href="https://bymaxanjos.github.io/LCZ4r/articles/local_func_anomaly.html" class="card-cta-button">
+        Open Tutorial
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+      </a>
+    </div>
+  </div>
+
+<!-- Card 6: Urban Heat Island (UHI) Analysis -->
+  <div class="tutorial-card">
+    <div class="card-image-wrapper">
+      <span class="card-image-badge">Local Functions</span>
+      <img
+        src="https://github.com/ByMaxAnjos/LCZ4r/raw/main/inst/figures/fig_local_uhi_4.png"
+        alt="Urban Heat Island (UHI) Analysis"
+        loading="lazy"
+        onerror="this.parentElement.style.display='none'">
+    </div>
+    <div class="card-body">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.58 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.58 4 8 4s8-1.79 8-4M4 7c0-2.21 3.58-4 8-4s8 1.79 8 4m0 5c0 2.21-3.58 4-8 4s-8-1.79-8-4" />
+          </svg>
+        </div>
+      </div>
+      <h3 class="card-title">Urban Heat Island (UHI) Analysis.</h3>
+      <p class="card-description">This guide demonstrates how to use the lcz_uhi_intensity() function to calculate and analyze UHI intensity using LCZ classes.</p>
+      <a href="https://bymaxanjos.github.io/LCZ4r/articles/local_func_uhi.html" class="card-cta-button">
         Open Tutorial
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16">
           <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />

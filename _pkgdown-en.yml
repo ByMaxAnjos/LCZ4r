@@ -96,6 +96,10 @@ articles:
     contents:
       - tutorials
       - Introd_genera_LCZ4r
+      - Introd_local_LCZ4r
+      - local_func_time_series
+      - local_func_anomaly
+      - local_func_uhi
   - title: "QGIS Plugin"
     contents:
       - examples
