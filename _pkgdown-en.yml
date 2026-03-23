@@ -95,6 +95,7 @@ articles:
   - title: "Tutorials"
     contents:
       - tutorials
+      - Introd_genera_LCZ4r
   - title: "QGIS Plugin"
     contents:
       - examples

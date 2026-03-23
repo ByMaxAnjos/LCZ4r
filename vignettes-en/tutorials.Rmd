@@ -265,9 +265,9 @@ title: "Tutoriais"
   <!-- Card 1: Tutorial Introdutório -->
   <div class="tutorial-card">
     <div class="card-image-wrapper">
-      <span class="card-image-badge">Essencial</span>
+      <span class="card-image-badge">LCZ map</span>
       <img
-        src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_1.png"
+        src="https://github.com/ByMaxAnjos/LCZ4r/raw/main/inst/figures/fig_general_1_1.png"
         alt="Mapa LCZ de São Paulo gerado com LCZ4r"
         loading="lazy"
         onerror="this.parentElement.style.display='none'">
@@ -282,7 +282,7 @@ title: "Tutoriais"
       </div>
       <h3 class="card-title">Getting started with General Functions</h3>
       <p class="card-description">General Functions facilitate the retrieval, analysis, and visualization of LCZs.</p>
-      <a href="https://bymaxanjos.github.io/LCZ4r/en/articles/about.html" class="card-cta-button">
+      <a href="https://bymaxanjos.github.io/LCZ4r/en/articles/Introd_genera_LCZ4r.html" class="card-cta-button">
         Começar Agora
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16">
           <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
@@ -294,9 +294,9 @@ title: "Tutoriais"
   <!-- Card 2: RAPs -->
   <div class="tutorial-card">
     <div class="card-image-wrapper">
-      <span class="card-image-badge">LCZ map</span>
+      <span class="card-image-badge">LCZ Generator</span>
       <img
-        src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_uhi_2.png"
+        src="https://github.com/ByMaxAnjos/LCZ4r/raw/main/inst/figures/generator_card.png"
         alt="Análise de Ilha de Calor Urbana por estação do ano"
         loading="lazy"
         onerror="this.parentElement.style.display='none'">
@@ -311,7 +311,7 @@ title: "Tutoriais"
       </div>
       <h3 class="card-title">Download LCZ map from LCZ Generator Platform.</h3>
       <p class="card-description">The LCZ Generator is a web application for creating Local Climate Zone (LCZ) maps. This guide provides step-by-step instructions to generate an LCZ map for your city using the LCZ4r package.</p>
-      <a href="https://bymaxanjos.github.io/LCZ4r/en/articles/about.html" class="card-cta-button">
+      <a href="https://bymaxanjos.github.io/LCZ4r/en/articles/Introd_genera_LCZ4r.html#download-lcz-map-from-lcz-generator-platform"" class="card-cta-button">
         Ver Tutorial
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16">
           <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
