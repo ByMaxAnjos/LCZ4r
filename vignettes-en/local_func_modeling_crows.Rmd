@@ -147,11 +147,13 @@ knitr::opts_chunk$set(
 
 Urban Heat Islands (UHIs) are a critical environmental issue in cities, where urban areas experience higher temperatures than their rural surroundings. This case study demonstrates how to analyze UHIs using crowdsourced air temperature (Tair) data from Citizen Weather Stations (CWS) and the LCZ4r package in R. We focus on hourly Tair data from May 2023, collected by Netatmo CWS in Berlin, Germany, and available through the [CrowdQCplus package in R](https://github.com/dafenner/CrowdQCplus).
 
-```{r eval=TRUE, message=FALSE, warning=FALSE}
+```{r eval=FALSE, message=FALSE, warning=FALSE}
 # Install and load necessary packages
 if (!require("pacman")) install.packages("pacman")
-pacman::p_load(remotes, dplyr, sf, tmap, ggplot2, devtools, data.table)
+install.packages("sf", type = "binary")
+pacman::p_load(remotes, dplyr, tmap, ggplot2, devtools, data.table)
 
+library(LCZ4r)   # For LCZ and UHI analysis
 library(dplyr)   # For data manipulation
 library(sf)      # For vector data manipulation
 library(tmap)    # For interactive map visualization
@@ -183,7 +185,7 @@ However, careful quality control is essential to ensure data reliability.
 
 ```{r eval=FALSE, message=FALSE, warning=FALSE}
 # Retrieve the LCZ map for Berlin using the LCZ Generator Platform
-library(LCZ4r)   # For LCZ and UHI analysis
+
 lcz_map <- lcz_get_map_generator(ID = "8576bde60bfe774e335190f2e8fdd125dd9f4299")
 
 # Visualize the LCZ map
