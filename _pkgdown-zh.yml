@@ -1,0 +1,94 @@
+url: https://bymaxanjos.github.io/LCZ4r/zh
+lang: zh
+template:
+  bootstrap: 5
+  bslib:
+    bg: "#f8fafc"
+    fg: "#1e293b"
+    primary: "#10b981"
+    secondary: "#3b82f6"
+    base_font:
+      google: "Inter"
+    code_font:
+      google: "Fira Code"
+  includes:
+    in_header: |
+      <link rel="stylesheet" href="pkgdown/assets/custom-modern.css">
+      <link rel="icon" type="image/png" href="pkgdown/assets/favicon.png">
+navbar:
+  title: "LCZ4r"
+  left:
+    - text: "首页"
+      href: index.html
+    - text: "教程"
+      href: articles/tutorials.html
+    - text: "LCZ4r-QGIS 插件"
+      href: articles/examples.html
+    - text: "社区"
+      menu:
+        - text: "GitHub Issues"
+          href: https://github.com/ByMaxAnjos/LCZ4r/issues
+    - text: "函数"
+      href: reference/index.html
+    - text: "更新日志"
+      href: news/index.html
+  right:
+    - icon: fa-robot
+      text: "LCZ4r 平台"
+      href: https://clima-urbano.streamlit.app/
+      target: "_blank"
+    - icon: fa-github
+      href: https://github.com/ByMaxAnjos/LCZ4r/
+    - text: "English"
+      href: ../en/index.html
+    - text: "Português"
+      href: ../pt/index.html
+    - text: "Español"
+      href: ../es/index.html
+logo:
+  src: inst/figures/logo.png
+  alt: "LCZ4r logo"
+home:
+  title: "LCZ4r"
+  description: "用于局地气候区 (LCZ) 和城市热岛 (UHI) 分析的 R 软件包"
+reference:
+- title: "通用函数"
+  desc: >
+    这些函数允许您提取 LCZ 地图并计算相关参数，用于空间和环境分析。
+  contents:
+  - lcz_get_map
+  - lcz_get_map_euro
+  - lcz_get_map_usa
+  - lcz_get_map_generator
+  - lcz_get_map2
+  - lcz_plot_map
+  - lcz_cal_area
+  - lcz_get_parameters
+  - lcz_plot_parameters
+- title: "局地函数"
+  desc: >
+    这些函数支持气温建模、异常检测和城市热岛 (UHI) 强度计算。
+  contents:
+  - lcz_ts
+  - lcz_anomaly
+  - lcz_interp_map
+  - lcz_anomaly_map
+  - lcz_plot_interp
+  - lcz_interp_eval
+  - lcz_uhi_intensity
+- title: "LCZ 教程与数据访问"
+  desc: >
+    访问详细的教程和示例数据集，以增强您对 LCZ4r 软件包的理解和应用。
+  contents:
+  - lcz_tutorial
+  - lcz_data
+articles:
+  - title: "简介"
+    contents:
+      - about
+  - title: "教程"
+    contents:
+      - tutorials
+  - title: "QGIS 插件"
+    contents:
+      - examples
