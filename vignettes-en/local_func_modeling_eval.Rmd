@@ -1,0 +1,569 @@
+---
+title: "Evaluating LCZ-based Interpolation in Berlin"
+author: "Max Anjos"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 4
+    toc_float:
+      collapsed: true
+      smooth_scroll: true
+    number_sections: true
+    theme: flatly
+    highlight: tango
+    code_folding: show
+    code_download: true
+    self_contained: false
+    df_print: paged
+---
+
+```{css, echo=FALSE}
+/* ── Variáveis de Cores Modernas ────────────────── */
+:root {
+  --primary-color: #1D9E75;
+  --dark-green: #0f3d2e;
+  --bg-light: #f8faf9;
+  --text-main: #1a1a1a;
+  --code-bg: #fdfdfd;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 18px;
+  color: var(--text-main);
+  background-color: #fff;
+}
+
+/* ── Títulos com Inter-spacing ─────────────────── */
+h1, h2, h3 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  color: var(--dark-green);
+}
+
+h1.title {
+  font-size: 2.8em;
+  border-bottom: 4px solid var(--primary-color);
+  padding-bottom: 10px;
+}
+
+/* ── Code Blocks Estilizados ────────────────────── */
+pre.r {
+  background-color: var(--code-bg);
+  border: 1px solid #e1e1e1;
+  border-left: 5px solid var(--primary-color) !important;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* ── Custom Callouts (Estilo Quarto) ────────────── */
+.callout {
+  padding: 1.2em;
+  margin: 1.5em 0;
+  border-radius: 0 8px 8px 0;
+  border-left: 6px solid;
+}
+
+.callout-note {
+  background-color: #f0f7ff;
+  border-color: #007bff;
+}
+
+.callout-tip {
+  background-color: #e8f5e9;
+  border-color: #1D9E75;
+}
+
+.callout-warning {
+  background-color: #fff3e0;
+  border-color: #ff9800;
+}
+
+/* ── Transições suaves no menu lateral ──────────── */
+.list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+/* ── Estilo para imagens ───────────────────────── */
+.figure img {
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+  margin-bottom: 10px;
+}
+
+.figure img:hover {
+  transform: scale(1.02);
+}
+
+.figure .caption {
+  font-size: 0.9em;
+  color: #666;
+  margin-top: 5px;
+  font-style: italic;
+}
+
+/* ── Botão GitHub aprimorado ───────────────────── */
+.github-feedback-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #24292e;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-family: sans-serif;
+  transition: background-color 0.2s;
+}
+
+.github-feedback-btn:hover {
+  background-color: #2c3e50;
+  color: white;
+  text-decoration: none;
+}
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo    = TRUE,
+  eval    = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  comment = "#>",
+  fig.align = "center",
+  out.width = "80%",
+  fig.retina = 2
+)
+```
+
+## Introduction
+
+Quantifying interpolated air temperature is crucial for climate research, especially when the results are used for various applications such as urban planning, heatwave early warning systems, and public health assessments. The LCZ4r package provides the `lcz_interp_eval()` function to assess LCZ-based interpolation accuracy and reliability.
+
+In this tutorial, we'll demonstrate how to use this function to evaluate air temperature interpolation across Berlin, Germany. We'll cover:
+
+- **LCZ map preparation** for Berlin
+- **Spatial interpolation** of air temperature
+- **Cross-validation** using leave-one-out methods
+- **Evaluation metrics** calculation (RMSE, MAE, sMAPE)
+- **Visualization** of model performance by LCZ class
+
+```{r eval=TRUE, message=FALSE, warning=FALSE}
+# Load required packages
+if (!require("pacman")) install.packages("pacman")
+pacman::p_load(dplyr, sf, tmap, ggplot2, ggExtra, ggpmisc)
+
+library(LCZ4r)   # For LCZ and UHI analysis
+library(dplyr)   # For data manipulation
+library(sf)      # For vector data manipulation
+library(tmap)    # For interactive map visualization
+library(ggplot2) # For data visualization
+library(ggExtra) # For marginal histograms
+library(ggpmisc) # For regression equation and R²
+```
+
+::: {.callout .callout-note}
+**Why Evaluate Interpolation?**
+
+Spatial interpolation of air temperature is subject to various uncertainties:
+- Station network density and distribution
+- Spatial variability of temperature
+- Model assumptions and parameters
+- Temporal dynamics of urban climate
+
+The `lcz_interp_eval()` function helps quantify these uncertainties, providing confidence metrics for your spatial temperature estimates.
+:::
+
+## Dataset Preparation
+
+### Load LCZ Map for Berlin
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Get the LCZ map for Berlin using the LCZ Generator Platform
+lcz_map <- lcz_get_map_generator(ID = "8576bde60bfe774e335190f2e8fdd125dd9f4299")
+
+# Optional: Clip the LCZ map to the Berlin area for better focus
+lcz_map <- lcz_get_map2(lcz_map, city = "Berlin")
+
+# Visualize the LCZ map
+lcz_plot_map(lcz_map)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_modeling_eval_1.png" alt="LCZ map of Berlin showing the spatial distribution of Local Climate Zones" width="80%" />
+<p class="caption">LCZ map of Berlin showing the spatial distribution of Local Climate Zones across the city. This map serves as the spatial framework for temperature interpolation.</p>
+</div>
+
+### Load Sample Berlin Data
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Load sample Berlin meteorological data from the LCZ4r package
+data("lcz_data")
+
+# View the structure of the dataset
+head(lcz_data)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_modeling_eval_3.png" alt="Structure of the Berlin meteorological dataset" width="80%" />
+<p class="caption">Structure of the Berlin meteorological dataset showing date, temperature, station ID, and geographic coordinates.</p>
+</div>
+
+### Visualize Monitoring Stations
+
+```{r eval=TRUE, message=FALSE, warning=FALSE, out.width = '100%', fig.align='center'}
+# Convert the data to an sf object for spatial visualization
+shp_stations <- lcz_data %>%
+  distinct(Longitude, Latitude, .keep_all = TRUE) %>%
+  st_as_sf(coords = c("Longitude", "Latitude"), crs = 4326)
+
+# Visualize the stations on an interactive map
+tmap_mode("view")
+qtm(shp_stations, text = "station", 
+    dots.col = "LCZ", 
+    dots.size = 0.5,
+    title = "Berlin Meteorological Stations by LCZ Class")
+```
+
+## Interpolation Demonstration
+
+### Generate a Temperature Map
+
+Let's first create a temperature map for a specific time to understand what we're evaluating.
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Map air temperatures for January 2, 2020, at 04:00
+my_interp_map <- lcz_interp_map(
+  lcz_map,
+  data_frame = lcz_data,
+  var = "airT",
+  station_id = "station",
+  sp.res = 100,
+  tp.res = "hour",
+  year = 2020, month = 1, day = 2, hour = 4
+)
+
+# Customize the plot with titles and labels
+lcz_plot_interp(
+  my_interp_map,
+  title = "Thermal Field - Berlin",
+  subtitle = "January 2, 2020, at 04:00",
+  caption = "Source: LCZ4r, 2024",
+  fill = "Temperature [°C]"
+)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_modeling_eval_2.png" alt="Interpolated temperature map for Berlin showing a well-defined urban heat island" width="80%" />
+<p class="caption">Interpolated temperature map for Berlin at 04:00 on January 2, 2020. The map reveals a well-defined urban heat island in central areas, with cooler temperatures in peripheral and vegetated zones.</p>
+</div>
+
+## Evaluation of Spatial and Temporal Interpolation
+
+The key question is: **How confident can we be in the interpolated map?** To address this, we use the `lcz_interp_eval()` function to quantify the associated errors, which is crucial for understanding how well the LCZ-based interpolation predicts air temperatures.
+
+### Key Features of `lcz_interp_eval()`
+
+This function evaluates the variability of spatial and temporal interpolation using LCZ as a background. It supports both LCZ-based and conventional interpolation methods with flexible options:
+
+| Parameter | Description | Options |
+|-----------|-------------|---------|
+| `extract.method` | Method to extract LCZ values | "simple", "bilinear" |
+| `LOOCV` | Leave-one-out cross-validation | TRUE/FALSE |
+| `vg.model` | Variogram model for kriging | "Sph", "Exp", "Gau", "Mat" |
+| `LCZinterp` | Activate LCZ-based interpolation | TRUE/FALSE |
+| `sp.res` | Spatial resolution in meters | Numeric (e.g., 100, 500) |
+| `tp.res` | Temporal resolution | "hour", "day", "month" |
+
+### Running the Evaluation
+
+In this demo, we evaluate hourly air temperature data for January 2020 at 500-meter spatial resolution using:
+
+- **extract.method**: "simple" (assigns LCZ class based on raster cell value)
+- **LOOCV**: TRUE (leave-one-out cross-validation for robust evaluation)
+- **vg.model**: "Sph" (spherical variogram model for kriging)
+- **LCZinterp**: TRUE (activates interpolation with LCZ)
+
+::: {.callout .callout-warning}
+**Note**: This process may take several minutes depending on your system. For January 2020, there are 744 hours (31 days × 24 hours), and each hour runs a cross-validation across all stations. Grab a coffee while it runs!
+:::
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Evaluate the interpolation with cross-validation
+df_eval <- lcz_interp_eval(
+  lcz_map,
+  data_frame = lcz_data,
+  var = "airT",
+  station_id = "station",
+  year = 2020,
+  month = 1,
+  LOOCV = TRUE,
+  extract.method = "simple",
+  sp.res = 500,
+  tp.res = "hour",
+  vg.model = "Sph",
+  LCZinterp = TRUE
+)
+```
+
+### Examine the Results
+
+Let's examine the structure of the output data frame. The function returns a data frame with:
+
+- **date**: Timestamp of the observation
+- **station**: Station identifier
+- **lcz**: Local Climate Zone classification
+- **observed**: Measured temperature values
+- **predicted**: Interpolated temperature values
+- **residual**: Difference (observed - predicted)
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Check the structure of the evaluation results
+str(df_eval)
+
+# View the first few rows
+head(df_eval)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_modeling_eval_3.png" alt="Structure of the evaluation output data frame" width="80%" />
+<p class="caption">Structure of the evaluation output showing observed values, predicted values, residuals, and associated metadata for each observation.</p>
+</div>
+
+## Calculate Evaluation Metrics
+
+Based on the evaluation results, we calculate key metrics to quantify interpolation uncertainties:
+
+- **RMSE (Root Mean Square Error)**: Measures the average magnitude of error, giving higher weight to large errors
+- **MAE (Mean Absolute Error)**: Average absolute difference between observed and predicted values
+- **sMAPE (Symmetric Mean Absolute Percent Error)**: Percentage error measure robust to near-zero values
+
+We aggregate these metrics by LCZ class to understand how interpolation performance varies across different urban forms.
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Calculate evaluation metrics by LCZ class
+df_eval_metrics <- df_eval %>%
+  group_by(lcz) %>%
+  summarise(
+    n_obs = n(),                                      # Number of observations
+    rmse = sqrt(mean((observed - predicted)^2)),      # RMSE
+    mae = mean(abs(observed - predicted)),            # MAE
+    smape = mean(2 * abs(observed - predicted) / 
+                (abs(observed) + abs(predicted)) * 100) # sMAPE
+  ) %>%
+  arrange(rmse)  # Sort by RMSE for easy comparison
+
+# Display the metrics
+df_eval_metrics
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_modeling_eval_4.png" alt="Evaluation metrics by LCZ class" width="80%" />
+<p class="caption">Evaluation metrics (RMSE, MAE, sMAPE) aggregated by LCZ class. Lower values indicate better interpolation performance. Notice how different LCZ types show varying levels of prediction accuracy.</p>
+</div>
+
+## Visualizing Model Performance
+
+### Correlation between Observed and Predicted Values
+
+This plot shows the relationship between observed and predicted temperatures, including:
+- Scatter points with transparency
+- Regression line (red)
+- Density contours
+- Regression equation and R² value
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Correlation plot with regression equation and R²
+p1 <- ggplot(df_eval, aes(x = observed, y = predicted)) +
+  geom_point(alpha = 0.3, color = "#1D9E75", size = 1) +
+  geom_smooth(method = "lm", color = "red", se = FALSE, size = 1) +
+  stat_density2d(aes(fill = after_stat(level)), geom = "polygon", alpha = 0.3) +
+  scale_fill_viridis_c(option = "viridis", name = "Density") +
+  stat_poly_eq(
+    aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")),
+    formula = y ~ x,
+    parse = TRUE,
+    label.x.npc = "left",
+    label.y.npc = "top",
+    size = 4
+  ) +
+  labs(
+    title = "Observed vs. Predicted Temperatures",
+    x = "Observed Temperature [°C]",
+    y = "Predicted Temperature [°C]"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+    axis.title = element_text(face = "bold")
+  )
+
+# Add marginal histograms
+p1_with_marginals <- ggMarginal(p1, 
+                                 type = "histogram", 
+                                 fill = "#1D9E75", 
+                                 bins = 30,
+                                 alpha = 0.6)
+
+# Print the plot
+p1_with_marginals
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_modeling_eval_5.png" alt="Correlation between observed and predicted temperatures" width="80%" />
+<p class="caption">Correlation between observed and predicted temperatures. The regression equation and R² value indicate model performance. Marginal histograms show the distribution of both observed and predicted values.</p>
+</div>
+
+### Residual Analysis by LCZ Class
+
+This plot examines residuals (observed - predicted) by LCZ class, helping identify systematic biases in different urban forms:
+
+- **Scatter points** showing individual residuals
+- **Horizontal red line** at zero (perfect prediction)
+- **Loess smoothing line** (blue) showing trend
+- **Density contours** indicating point concentration
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Residuals plot by LCZ class
+p2 <- ggplot(df_eval, aes(x = observed, y = residual)) +
+  geom_point(alpha = 0.3, color = "darkgreen", size = 1) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red", linewidth = 0.8) +
+  geom_smooth(method = "loess", color = "blue", se = FALSE, linewidth = 1) +
+  stat_density2d(aes(fill = after_stat(level)), geom = "polygon", alpha = 0.3) +
+  scale_fill_viridis_c(option = "plasma", direction = -1, name = "Density") +
+  facet_wrap(~ lcz, scales = "free", ncol = 3) +
+  labs(
+    title = "Residuals by LCZ Class",
+    x = "Observed Temperature [°C]",
+    y = "Residuals [°C]"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+    axis.title = element_text(face = "bold"),
+    strip.text = element_text(size = 12, face = "bold"),
+    legend.position = "right",
+    panel.grid.major = element_line(color = "gray90", linetype = "dotted"),
+    panel.grid.minor = element_blank()
+  )
+
+# Print the plot
+p2
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_modeling_eval_6.png" alt="Residual analysis by LCZ class" width="80%" />
+<p class="caption">Residuals by LCZ class. A random scatter around zero (red line) indicates good model performance. Systematic patterns may reveal biases in specific LCZ types.</p>
+</div>
+
+## Interpreting the Results
+
+### What Good Performance Looks Like
+
+- **High R² value** (> 0.8) indicates strong predictive power
+- **Low RMSE** (< 1.5°C) suggests accurate temperature estimation
+- **Random residual pattern** around zero (no systematic bias)
+- **Consistent performance** across LCZ classes
+
+### Potential Issues and Solutions
+
+| Issue | Possible Cause | Solution |
+|-------|---------------|----------|
+| High RMSE in specific LCZs | Sparse station coverage in that LCZ type | Add more monitoring stations |
+| Systematic bias in residuals | Model assumptions not met | Try different variogram models |
+| Poor performance in certain hours | Temporal variability not captured | Adjust temporal resolution |
+| High uncertainty in peripheral areas | Edge effects in interpolation | Expand study area or use different boundaries |
+
+## Advanced Evaluation Options
+
+### Comparing Different Interpolation Methods
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Compare LCZ-based vs. conventional kriging
+eval_lcz <- lcz_interp_eval(
+  lcz_map, lcz_data, var = "airT", station_id = "station",
+  year = 2020, month = 1, LOOCV = TRUE,
+  sp.res = 500, tp.res = "hour",
+  LCZinterp = TRUE   # LCZ-based interpolation
+)
+
+eval_conventional <- lcz_interp_eval(
+  lcz_map, lcz_data, var = "airT", station_id = "station",
+  year = 2020, month = 1, LOOCV = TRUE,
+  sp.res = 500, tp.res = "hour",
+  LCZinterp = FALSE  # Conventional kriging
+)
+
+# Compare RMSE between methods
+rmse_comparison <- data.frame(
+  Method = c("LCZ-based", "Conventional"),
+  RMSE = c(sqrt(mean((eval_lcz$observed - eval_lcz$predicted)^2)),
+           sqrt(mean((eval_conventional$observed - eval_conventional$predicted)^2)))
+)
+```
+
+### Temporal Patterns in Model Performance
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Calculate daily RMSE to see temporal patterns
+daily_performance <- df_eval %>%
+  mutate(date = as.Date(date)) %>%
+  group_by(date, lcz) %>%
+  summarise(
+    daily_rmse = sqrt(mean((observed - predicted)^2)),
+    .groups = "drop"
+  )
+
+# Visualize temporal variation
+ggplot(daily_performance, aes(x = date, y = daily_rmse, color = lcz)) +
+  geom_line(alpha = 0.7) +
+  geom_smooth(method = "loess", se = FALSE, size = 1) +
+  labs(
+    title = "Daily RMSE Variation by LCZ Class",
+    x = "Date (January 2020)",
+    y = "RMSE [°C]",
+    color = "LCZ Class"
+  ) +
+  theme_minimal()
+```
+
+## Save Results
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Save the evaluation metrics to CSV
+write.csv(df_eval_metrics, 
+          file = "berlin_interpolation_metrics_jan2020.csv", 
+          row.names = FALSE)
+
+# Save the full evaluation data frame
+write.csv(df_eval, 
+          file = "berlin_interpolation_evaluation_jan2020.csv", 
+          row.names = FALSE)
+
+# Save plots
+ggsave("correlation_plot.png", p1_with_marginals, width = 10, height = 8, dpi = 300)
+ggsave("residuals_by_lcz.png", p2, width = 12, height = 10, dpi = 300)
+```
+
+---
+
+## Have feedback or suggestions?
+
+Do you have an idea for improvement or did you spot a mistake? We'd love to hear from you! Click the button below to create a new issue (GitHub) and share your feedback or suggestions directly with us.
+
+```{=html}
+<a href='https://github.com/ByMaxAnjos/LCZ4r/issues/new' class="github-feedback-btn">
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+  </svg>
+  Open GitHub issue
+</a>
+```
+

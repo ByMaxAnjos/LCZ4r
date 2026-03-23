@@ -1,0 +1,477 @@
+---
+title: "Temperature Modeling with LCZ"
+author: "Max Anjos"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 4
+    toc_float:
+      collapsed: true
+      smooth_scroll: true
+    number_sections: true
+    theme: flatly
+    highlight: tango
+    code_folding: show
+    code_download: true
+    self_contained: false
+    df_print: paged
+---
+
+```{css, echo=FALSE}
+/* ── Variáveis de Cores Modernas ────────────────── */
+:root {
+  --primary-color: #1D9E75;
+  --dark-green: #0f3d2e;
+  --bg-light: #f8faf9;
+  --text-main: #1a1a1a;
+  --code-bg: #fdfdfd;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 18px;
+  color: var(--text-main);
+  background-color: #fff;
+}
+
+/* ── Títulos com Inter-spacing ─────────────────── */
+h1, h2, h3 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  color: var(--dark-green);
+}
+
+h1.title {
+  font-size: 2.8em;
+  border-bottom: 4px solid var(--primary-color);
+  padding-bottom: 10px;
+}
+
+/* ── Code Blocks Estilizados ────────────────────── */
+pre.r {
+  background-color: var(--code-bg);
+  border: 1px solid #e1e1e1;
+  border-left: 5px solid var(--primary-color) !important;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* ── Custom Callouts (Estilo Quarto) ────────────── */
+.callout {
+  padding: 1.2em;
+  margin: 1.5em 0;
+  border-radius: 0 8px 8px 0;
+  border-left: 6px solid;
+}
+
+.callout-note {
+  background-color: #f0f7ff;
+  border-color: #007bff;
+}
+
+.callout-tip {
+  background-color: #e8f5e9;
+  border-color: #1D9E75;
+}
+
+.callout-warning {
+  background-color: #fff3e0;
+  border-color: #ff9800;
+}
+
+/* ── Transições suaves no menu lateral ──────────── */
+.list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+/* ── Estilo para imagens ───────────────────────── */
+.figure img {
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+  margin-bottom: 10px;
+}
+
+.figure img:hover {
+  transform: scale(1.02);
+}
+
+.figure .caption {
+  font-size: 0.9em;
+  color: #666;
+  margin-top: 5px;
+  font-style: italic;
+}
+
+/* ── Botão GitHub aprimorado ───────────────────── */
+.github-feedback-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #24292e;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-family: sans-serif;
+  transition: background-color 0.2s;
+}
+
+.github-feedback-btn:hover {
+  background-color: #2c3e50;
+  color: white;
+  text-decoration: none;
+}
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo    = TRUE,
+  eval    = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  comment = "#>",
+  fig.align = "center",
+  out.width = "80%",
+  fig.retina = 2
+)
+```
+
+## Introduction
+
+Understanding temperature variations within urban environments is crucial for climate research, particularly when examining Urban Heat Islands (UHI). The LCZ4r package offers powerful functions for creating interpolated maps and thermal anomaly analyses within Local Climate Zones (LCZs). The `lcz_interp_map()` and `lcz_anomaly_map()` functions can be applied to generate detailed spatial representations of air temperature, allowing researchers to analyze the influence of urban structures and land use on local climates.
+
+In this guide, we'll demonstrate how to use these functions to model temperature data across Berlin's LCZ, covering:
+
+- **Spatial interpolation** of air temperature using LCZ classes
+- **Thermal anomaly mapping** to identify hot and cool spots
+- **Temporal analysis** across different time scales
+- **Customization options** for spatial resolution and visualization
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+library(LCZ4r)
+
+# Get the LCZ map for your city
+lcz_map <- lcz_get_map_euro(city = "Berlin")
+
+# Load sample data from LCZ4r
+data("lcz_data")
+```
+
+::: {.callout .callout-note}
+**Understanding Spatial Interpolation with LCZ**:
+
+The interpolation functions in LCZ4r use Kriging, a geostatistical technique that considers spatial autocorrelation to estimate temperatures at unmeasured locations. By integrating LCZ classes, the interpolation accounts for the thermal characteristics of different urban forms, resulting in more realistic temperature distributions.
+
+Key parameters:
+- **sp.res**: Spatial resolution in meters (default: 100 m)
+- **tp.res**: Temporal aggregation frequency (hour, day, month)
+- **by**: Splits the analysis by temporal or categorical variables
+:::
+
+## Interpolating Air Temperature
+
+The `lcz_interp_map()` function generates interpolated air temperature maps based on LCZ classes. These functions apply interpolation techniques to estimate temperatures across the study area.
+
+### Single Hour Map Interpolation
+
+The following example demonstrates how to generate a temperature map for a specific date and time.
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Mapping air temperatures for February 6, 2019 at 05:00h
+my_interp_map <- lcz_interp_map(lcz_map,
+                                data_frame = lcz_data, 
+                                var = "airT", 
+                                station_id = "station",
+                                sp.res = 100, 
+                                tp.res = "hour",
+                                year = 2019, month = 2, day = 6, hour = 5)
+
+# Customize the plot with titles and labels
+lcz_plot_interp(my_interp_map, 
+                title = "LCZ Air Temperature Distribution", 
+                subtitle = "Berlin - February 6, 2019 at 05:00",
+                caption = "Source: LCZ4r, 2024",
+                fill = "Temperature [°C]")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_modeling_1.png" alt="Single-hour temperature interpolation map for Berlin" width="80%" />
+<p class="caption">Spatial interpolation of air temperature for Berlin at 05:00 on February 6, 2019. The map reveals temperature variations across different LCZ classes, with warmer areas typically corresponding to compact built zones.</p>
+</div>
+
+### Hourly Interpolation Over a Day
+
+The `by = "hour"` argument allows you to generate a sequence of hourly temperature maps for a specific day, with each hour represented as an individual raster layer.
+
+```{r eval=FALSE, warning=FALSE}
+# Generate hourly temperature maps for the entire day
+my_interp_map <- lcz_interp_map(lcz_map,
+                                data_frame = lcz_data, 
+                                var = "airT", 
+                                station_id = "station",
+                                sp.res = 100, 
+                                tp.res = "hour",
+                                year = 2019, month = 2, day = 6,
+                                by = "hour")
+
+# Rename raster layers with hour numbers
+names(my_interp_map) <- paste0("Hour ", 1:24)
+
+# Visualize all hourly maps
+lcz_plot_interp(my_interp_map, 
+                title = "Hourly LCZ Air Temperature Patterns", 
+                subtitle = "Berlin - February 6, 2019",
+                caption = "Source: LCZ4r, 2024",
+                fill = "Temperature [°C]")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_modeling_2.png" alt="Hourly temperature interpolation sequence showing diurnal patterns" width="80%" />
+<p class="caption">Hourly temperature interpolation sequence for February 6, 2019, showing the diurnal evolution of temperature patterns across Berlin's LCZ classes.</p>
+</div>
+
+## Interpolating Thermal Anomalies
+
+The `lcz_anomaly_map()` function highlights temperature anomalies relative to average conditions across LCZs. Anomaly maps are particularly useful for identifying areas where temperatures significantly differ from typical values, such as heat hotspots within urban areas.
+
+### Single Day Map Interpolation
+
+```{r eval=FALSE, warning=FALSE}
+# Generate a thermal anomaly map for a specific day
+my_anomaly_map <- lcz_anomaly_map(lcz_map,
+                                  data_frame = lcz_data,
+                                  var = "airT", 
+                                  station_id = "station",
+                                  sp.res = 100, 
+                                  tp.res = "day",
+                                  year = 2019, month = 2, day = 6)
+
+# Plot the thermal anomaly map
+lcz_plot_interp(my_anomaly_map,
+                title = "LCZ Temperature Anomalies",
+                subtitle = "Berlin - Daily Anomalies on February 6, 2019",
+                caption = "Source: LCZ4r, 2024",
+                fill = "Temperature Anomaly [°C]",
+                palette = "bl_yl_rd")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_modeling_3.png" alt="Daily thermal anomaly map for Berlin" width="80%" />
+<p class="caption">Thermal anomaly map for Berlin on February 6, 2019. Red areas indicate temperatures above the urban average (hot spots), while blue areas indicate below-average temperatures (cool spots).</p>
+</div>
+
+### Daytime and Nighttime Anomalies
+
+Using the `by = "daylight"` argument splits the analysis into daytime and nighttime periods, revealing how thermal patterns change between diurnal cycles.
+
+```{r eval=FALSE, warning=FALSE}
+# Separate anomalies into daytime and nighttime
+my_anomaly_map <- lcz_anomaly_map(lcz_map,
+                                  data_frame = lcz_data,
+                                  var = "airT", 
+                                  station_id = "station",
+                                  sp.res = 100, 
+                                  tp.res = "hour",
+                                  year = 2019, month = 2, day = 6,
+                                  by = "daylight")
+
+# Rename raster layers for clarity
+names(my_anomaly_map) <- c("Daytime", "Nighttime")
+
+# Plot the thermal anomaly maps for day and night
+lcz_plot_interp(my_anomaly_map,
+                title = "LCZ Temperature Anomalies",
+                subtitle = "Berlin - Diurnal Cycle on February 6, 2019",
+                caption = "Source: LCZ4r, 2024",
+                fill = "Temperature Anomaly [°C]",
+                palette = "bl_yl_rd")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_modeling_4.png" alt="Comparison of daytime and nighttime thermal anomalies" width="80%" />
+<p class="caption">Comparison of daytime and nighttime thermal anomalies on February 6, 2019. This reveals how urban thermal patterns differ between day and night, with UHI typically strengthening after sunset.</p>
+</div>
+
+## Advanced Modeling Options
+
+### Seasonal Temperature Patterns
+
+You can generate temperature maps for different seasons to understand seasonal variations:
+
+```{r eval=FALSE, warning=FALSE}
+# Generate seasonal temperature maps for 2019
+seasonal_maps <- lcz_interp_map(lcz_map,
+                                data_frame = lcz_data, 
+                                var = "airT", 
+                                station_id = "station",
+                                sp.res = 100, 
+                                tp.res = "day",
+                                year = 2019,
+                                by = "season")
+
+# Visualize seasonal patterns
+lcz_plot_interp(seasonal_maps,
+                title = "Seasonal LCZ Air Temperature Patterns",
+                subtitle = "Berlin - 2019",
+                caption = "Source: LCZ4r, 2024",
+                fill = "Temperature [°C]")
+```
+
+### Custom Spatial Resolution
+
+Adjust the spatial resolution to match your analysis needs:
+
+```{r eval=FALSE, warning=FALSE}
+# High resolution (50 m) for detailed analysis
+high_res_map <- lcz_interp_map(lcz_map,
+                               data_frame = lcz_data, 
+                               var = "airT", 
+                               station_id = "station",
+                               sp.res = 50,  # Higher resolution
+                               tp.res = "hour",
+                               year = 2019, month = 7, day = 15, hour = 14)
+
+# Lower resolution (500 m) for regional overview
+low_res_map <- lcz_interp_map(lcz_map,
+                              data_frame = lcz_data, 
+                              var = "airT", 
+                              station_id = "station",
+                              sp.res = 500,  # Lower resolution
+                              tp.res = "hour",
+                              year = 2019, month = 7, day = 15, hour = 14)
+```
+
+::: {.callout .callout-tip}
+**Tip**: Higher spatial resolution (lower sp.res values) produces more detailed maps but requires more computational resources. Start with the default 100 m resolution and adjust based on your specific needs and available computing power.
+:::
+
+### Multiple Time Steps
+
+Generate maps for multiple dates to analyze temporal changes:
+
+```{r eval=FALSE, warning=FALSE}
+# Generate maps for specific dates across the year
+selected_dates <- lcz_interp_map(lcz_map,
+                                 data_frame = lcz_data, 
+                                 var = "airT", 
+                                 station_id = "station",
+                                 sp.res = 100, 
+                                 tp.res = "day",
+                                 year = 2019, 
+                                 month = c(1, 4, 7, 10), 
+                                 day = 15)
+
+# Visualize the seasonal progression
+lcz_plot_interp(selected_dates,
+                title = "Seasonal Temperature Progression",
+                subtitle = "Berlin - 2019 (15th of Jan, Apr, Jul, Oct)",
+                caption = "Source: LCZ4r, 2024",
+                fill = "Temperature [°C]")
+```
+
+## Working with Raster Outputs
+
+The interpolation functions return raster objects that can be further analyzed:
+
+### Accessing Raster Values
+
+```{r eval=FALSE, warning=FALSE}
+# Extract raster data for statistical analysis
+library(raster)
+
+# Get temperature values for a specific location
+temperature_at_point <- extract(my_interp_map, 
+                                cbind(longitude, latitude))
+
+# Calculate summary statistics for the study area
+mean_temperature <- cellStats(my_interp_map, stat = "mean")
+max_temperature <- cellStats(my_interp_map, stat = "max")
+min_temperature <- cellStats(my_interp_map, stat = "min")
+
+# Calculate temperature by LCZ class
+lcz_values <- extract(my_interp_map, lcz_map)
+```
+
+### Exporting Rasters
+
+```{r eval=FALSE, warning=FALSE}
+# Save raster as GeoTIFF for use in other software
+writeRaster(my_interp_map, 
+            filename = "berlin_temperature_20190206_05h.tif", 
+            format = "GTiff",
+            overwrite = TRUE)
+
+# Save multiple rasters in a stack
+writeRaster(my_interp_map, 
+            filename = "berlin_hourly_temperatures.tif", 
+            bylayer = TRUE,
+            suffix = "names",
+            format = "GTiff")
+```
+
+## Practical Applications
+
+Temperature modeling with LCZ has numerous practical applications:
+
+### 1. Urban Heat Island Assessment
+Identify areas with persistent high temperatures to prioritize urban cooling interventions.
+
+### 2. Heatwave Early Warning
+Use interpolated temperature maps to predict areas at highest risk during extreme heat events.
+
+### 3. Urban Planning Support
+Inform decisions about green infrastructure placement, building density, and urban design.
+
+### 4. Climate Adaptation Planning
+Model future scenarios to evaluate the effectiveness of proposed mitigation strategies.
+
+### 5. Public Health Analysis
+Identify vulnerable populations in temperature hotspots for targeted health interventions.
+
+## Summary of Parameters
+
+Here's a quick reference for the main parameters used in interpolation functions:
+
+| Parameter | Description | Options |
+|-----------|-------------|---------|
+| `sp.res` | Spatial resolution in meters | Numeric (e.g., 100, 250, 500) |
+| `tp.res` | Temporal aggregation frequency | "hour", "day", "month", "year" |
+| `by` | Data splitting method | "hour", "season", "month", "daylight", etc. |
+| `palette` | Color palette for visualization | "bl_yl_rd", "viridis", "magma", etc. |
+| `fill` | Color bar label | Text description |
+| `title` | Plot title | Text |
+| `subtitle` | Plot subtitle | Text |
+| `caption` | Plot caption | Text |
+
+## Performance Considerations
+
+::: {.callout .callout-warning}
+**Important Notes**:
+
+- **Computational Resources**: High-resolution maps (sp.res < 50 m) require significant memory and processing time
+- **Data Density**: Interpolation accuracy depends on the number and distribution of monitoring stations
+- **Temporal Resolution**: Hourly maps for extended periods can generate large file sizes
+- **LCZ Representation**: Ensure your study area has adequate representation of all LCZ classes for accurate interpolation
+:::
+
+---
+
+## Have feedback or suggestions?
+
+Do you have an idea for improvement or did you spot a mistake? We'd love to hear from you! Click the button below to create a new issue (GitHub) and share your feedback or suggestions directly with us.
+
+```{=html}
+<a href='https://github.com/ByMaxAnjos/LCZ4r/issues/new' class="github-feedback-btn">
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+  </svg>
+  Open GitHub issue
+</a>
+```
