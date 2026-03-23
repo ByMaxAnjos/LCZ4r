@@ -1,8 +1,8 @@
 ---
-title: "Sobre ClimaSus4R"
+title: "Sobre LCZ4r"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Sobre ClimaSus4R}
+  %\VignetteIndexEntry{Sobre LCZ4r}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -16,13 +16,22 @@ knitr::opts_chunk$set(
 
 ## El Proyecto
 
-**climasus4r** es un paquete en R desarrollado para integrar, estandarizar y automatizar análisis espacio-temporales que involucran datos de salud pública, clima y medio ambiente en Brasil. El paquete fue concebido en el marco del proyecto INCT Conexão – Amazônia, con el objetivo de apoyar investigaciones epidemiológicas y ambientales que requieren la integración de grandes bases de datos procedentes de sistemas oficiales de salud, información climática y variables ambientales. climasus4r busca reducir significativamente el esfuerzo técnico asociado a las etapas de adquisición, limpieza, armonización e integración de los datos, ofreciendo un flujo de trabajo estructurado, reproducible y escalable. De esta manera, el paquete permite a los investigadores concentrar sus esfuerzos en el análisis científico y la interpretación de los resultados, en lugar de en los procesos operativos de preparación de los datos.
+**LCZ4r** es un paquete R de codigo abierto disenado para facilitar la obtencion, el analisis y la visualizacion de datos de Zonas Climaticas Locales (Local Climate Zones - LCZ) en investigaciones de clima urbano. El paquete se integra con el [Mapa Global de LCZ (WUDAPT)](https://www.wudapt.org/) y ofrece funciones para el mapeo de la morfologia urbana, el analisis de la intensidad de la Isla de Calor Urbana (ICU) y la modelizacion espaciotemporal de la temperatura del aire.
+
+El paquete tambien se integra con **QGIS** a traves del [Plugin LCZ4r-QGIS](https://bymaxanjos.github.io/LCZ4r/articles/Introd_QGIS_LCZ4r.html).
+
+## Principales Funcionalidades
+
+- **Obtencion de Mapas LCZ**: Descargue mapas de LCZ para cualquier ciudad del mundo desde WUDAPT.
+- **Analisis de Isla de Calor Urbana**: Cuantifique la intensidad de la ICU por clase de LCZ.
+- **Modelizacion de la Temperatura del Aire**: Interpole y mapee la temperatura del aire en areas urbanas.
+- **Deteccion de Anomalias**: Identifique anomalias de temperatura respecto a las lineas de base de las LCZ.
+- **Integracion con QGIS**: Ejecute todos los analisis directamente en QGIS.
 
 ## El Equipo
 
-El desarrollo de **climasus4r** está a cargo de un equipo multidisciplinario compuesto por investigadores y estudiantes de las áreas de salud, climatología, geografía, estadística y ciencia de datos, vinculados a instituciones de enseñanza e investigación en Brasil. El equipo trabaja de forma colaborativa en el desarrollo, la validación metodológica y la aplicación del paquete en estudios científicos, con énfasis en la reproducibilidad, la transparencia metodológica y el rigor científico.
+**LCZ4r** fue creado y es mantenido por [Max Anjos](https://github.com/ByMaxAnjos) y colaboradores de climatologia urbana, geografia y ciencia de datos.
 
-## Socios
+## Citacion
 
-El desarrollo de **climasus4r** está a cargo de un equipo multidisciplinario compuesto por investigadores y estudiantes de las áreas de salud, climatología, geografía, estadística y ciencia de datos, vinculados a instituciones de enseñanza e investigación en Brasil. El equipo trabaja de forma colaborativa en el desarrollo, la validación metodológica y la aplicación del paquete en estudios científicos, con énfasis en la reproducibilidad, la transparencia metodológica y el rigor científico.
-
+> Anjos, M., & Meier, F. (2024). **LCZ4r: An R package for Local Climate Zone analysis and Urban Heat Island research**. *Nature Cities*. https://doi.org/10.1038/s44284-024-00135-4
