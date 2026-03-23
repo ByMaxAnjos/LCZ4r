@@ -1,0 +1,2126 @@
+#!/usr/bin/env python3
+"""
+build_landing_page.py — LCZ4r "Forest Canopy" Edition
+=====================================================
+Generates index.html from landing_page_config.yml using Jinja2.
+
+Design: Forest Canopy + Nature Gradients + Glassmorphism Bento Box
+        + Scroll Animations + Interactive Canvas Background
+
+Usage:
+    python3 build_landing_page.py
+
+Requirements:
+    pip install pyyaml jinja2
+"""
+
+import json
+import yaml
+from jinja2 import Environment, BaseLoader
+
+# -----------------------------------------------------------------------
+# Static Data: Team, Functions, Funding
+# -----------------------------------------------------------------------
+
+TEAM_MEMBERS = [
+    {
+        "name": "Dr. Max Anjos",
+        "initials": "MA",
+        "role": {
+            "en": "Lead Developer & Maintainer",
+            "pt": "Desenvolvedor Principal & Mantenedor",
+            "es": "Desarrollador Principal & Mantenedor",
+            "zh": "首席开发者和维护者"
+        },
+        "org": "Fundação Oswaldo Cruz Rondônia (FIOCRUZ-RO), Brasil",
+        "github": "https://github.com/ByMaxAnjos",
+        "email": "maxanjos@campus.ul.pt",
+        "avatar": "https://github.com/ByMaxAnjos.png"
+    },
+    {
+        "name": "Dr. Fred Meier",
+        "initials": "FM",
+        "role": {
+            "en": "Contributor & LCZ Expert",
+            "pt": "Contribuidor & LCZ Expert",
+            "es": "Contribuidor & LCZ Expert",
+            "zh": "贡献者和局地气候区专家"
+        },
+        "org": "Technische Universität Berlin, German",
+        "email": "fred.meier@tu-berlin.de",
+        "avatar": "https://i1.rgstatic.net/ii/profile.image/11431281800865835-1766133374907_Q128/Fred-Meier.jpg"
+    },
+    {
+        "name": "Dr. Francisco Castelhano",
+        "initials": "FC",
+        "role": {
+            "en": "Contributor & LCZ Expert",
+            "pt": "Contribuidor & LCZ Expert",
+            "es": "Contribuido & LCZ Expert",
+            "zh": "贡献者和局地气候区专家"
+        },
+        "org": "Universidade Federal do Rio Grande do Norte, Brasil",
+        "email": "francisco.castelhano@ufrn.br",
+        "avatar": "https://i1.rgstatic.net/ii/profile.image/279797101023232-1443720235054_Q128/Francisco-Castelhano.jpg"
+    },
+    {
+        "name": "Dr. António Lopes",
+        "initials": "AL",
+        "role": {
+            "en": "Contributor & LCZ Expert",
+            "pt": "Contribuidor & LCZ Expert",
+            "es": "Contribuido & LCZ Expert",
+            "zh": "贡献者和局地气候区专家"
+        },
+        "org": "University of Lisbon, Portugal",
+        "email": "antonio.lopes@edu.ulisboa.pt",
+        "avatar": "https://i1.rgstatic.net/ii/profile.image/983488543068164-1611493349847_Q128/Antonio-Lopes-28.jpg"
+    },
+    {
+        "name": "Dayvid Carlos de Medeiros",
+        "initials": "DM",
+        "role": {
+            "en": "Contributor R",
+            "pt": "Contribuidor R",
+            "es": "Contribuidor R",
+            "zh": "R 语言贡献者"
+        },
+        "org": "Universidade Federal do Rio Grande do Norte, Brasil",
+        "email": "dayvid.medeiros@ufrn.br",
+        "avatar": "https://i1.rgstatic.net/ii/profile.image/11431281123980602-1677837423007_Q128/Dayvid-Medeiros.jpg"
+    },
+    {
+        "name": "Dr.Tiago Silva",
+        "initials": "AL",
+        "role": {
+            "en": "Contributor R",
+            "pt": "Contribuidor R",
+            "es": "Contribuido R",
+            "zh": "R 语言贡献者"
+        },
+        "org": "University of Lisbon, Portugal",
+        "email": "silvatiago@edu.ulisboa.pt",
+        "avatar": "https://i1.rgstatic.net/ii/profile.image/11431281799214433-1766064515532_Q128/Tiago-Silva-114.jpg"
+    },
+    {
+        "name": "Antônio Campos Neto",
+        "initials": "AN",
+        "role": {
+            "en": "Contributor R",
+            "pt": "Contribuidor R",
+            "es": "Contribuidor R",
+            "zh": "R 语言贡献者"
+        },
+        "org": "Universidade Federal do Rio Grande do Norte, Brasil",
+        "email": "antonio.neto@ufrn.br",
+        "avatar": "https://i1.rgstatic.net/ii/profile.image/11431281289464224-1731204092950_Q128/Antonio-Neto-76.jpg"
+    },
+    {
+        "name": "José Felipe da Costa Neto",
+        "initials": "JF",
+        "role": {
+            "en": "Contributor R",
+            "pt": "Contribuidor R",
+            "es": "Contribuidor R",
+            "zh": "R 语言贡献者"
+        },
+        "org": "Universidade Federal do Rio Grande do Norte, Brasil",
+        "email": "jose.neto@ufrn.br",
+        "avatar": "https://arquivos.info.ufrn.br/get?k=k42ZsWT2r8rbXtDE0Nn4qblBaW8RxeS9Ep2BZ3x2IQRgr16feSOe1cGA%2Bwg7AnkBIjMk8%2BefBkvGVqf0H2GbXLE%2B%2BChSCeTFBgrelTR8mLuB3ktXRpOl%2FTWiDt5Xzp2prWeG1keW2W3XdzyRZtuoHiK8JOVQI2pm4xOCqCOpleQPWC%2BOTXfJqsrqe810QUyPAImRtKxNzlbqUO0I9IRZBNeP3PS%2FtYagZHnyyDEDsSx0Bc4fundnsZqtG%2BKWqtgfFXs0D810YUwTj%2Bythv6gqsrQQmrd2eNi4dlIhhagU6ruY9f%2Fyy2sakz6yrhEfNjBODe%2BpR%2BMI37r%2BTYJ1ATk1yoK0iz5xNYPIbtxaKHm5wCdeaIptX%2BdZ%2FiUmyCca%2Fhu7whFNuy%2FIeNW3rNYHNRSAOQJMLZWkDXrVGxiw9kE1f6byht2882ocCdz8LgVfPxwMSCWMVZGMhLX15n9idNf8UUC1YsP2iF5Y%2BhKiuY%2F58QRPHUSTT0d4hq3OTHWe7I0OL6hQqzdN%2BGEw4bVJazwBKj2jmO6tjqp3BHIasPd4YatGXh6ICt7m3KFD5Jh0ayWkJwJukETO53vUFqj1f0EFKXHGb%2BCWcLuXXoiQE5%2FItnW%2FXcMzM3v7Jt1YmtHCP9U"
+    },
+]
+
+FUNCTIONS = [
+    {"name": "lcz_get_map()",          "icon": "globe",   "desc": {"en": "Download LCZ maps from the global dataset",           "pt": "Baixar mapas LCZ do conjunto de dados global",          "es": "Descargar mapas LCZ del conjunto de datos global",          "zh": "从全球数据集下载局地气候区地图"}},
+    {"name": "lcz_get_map_euro()",     "icon": "map",     "desc": {"en": "Download LCZ maps from the European dataset",         "pt": "Baixar mapas LCZ do conjunto de dados europeu",         "es": "Descargar mapas LCZ del conjunto de datos europeo",         "zh": "从欧洲数据集下载局地气候区地图"}},
+    {"name": "lcz_get_map_usa()",      "icon": "map",     "desc": {"en": "Download LCZ maps from the USA dataset",              "pt": "Baixar mapas LCZ do conjunto de dados dos EUA",         "es": "Descargar mapas LCZ del conjunto de datos de EE. UU.",         "zh": "从美国数据集下载局地气候区地图"}},
+    {"name": "lcz_get_map_generator()","icon": "tool",    "desc": {"en": "Download LCZ maps from the LCZ Generator Platform",  "pt": "Baixar mapas LCZ da Plataforma Geradora LCZ",           "es": "Descargar mapas LCZ de la Plataforma Generadora LCZ",           "zh": "从局地气候区生成器平台下载地图"}},
+    {"name": "lcz_plot_map()",         "icon": "globe",  "desc": {"en": "Visualize LCZ maps",                                  "pt": "Visualizar mapas LCZ",                                  "es": "Visualizar mapas LCZ",                                  "zh": "可视化局地气候区地图"}},
+    {"name": "lcz_plot_parameters()",  "icon": "bar-chart","desc": {"en": "Visualize LCZ parameter maps",                       "pt": "Visualizar mapas de parâmetros LCZ",                    "es": "Visualizar mapas de parámetros LCZ",                    "zh": "可视化局地气候区参数地图"}},
+    {"name": "lcz_cal_area()",         "icon": "grid",    "desc": {"en": "Calculate the area of LCZ classes",                  "pt": "Calcular a área das classes LCZ",                       "es": "Calcular el área de las clases LCZ",                       "zh": "计算局地气候区类别面积"}},
+    {"name": "lcz_get_parameters()",   "icon": "sliders", "desc": {"en": "Retrieve LCZ parameters",                            "pt": "Recuperar parâmetros LCZ",                              "es": "Recuperar parámetros LCZ",                              "zh": "获取局地气候区参数"}},
+    {"name": "lcz_ts()",               "icon": "activity","desc": {"en": "Analyze LCZ time series",                            "pt": "Analisar séries temporais LCZ",                         "es": "Analizar series temporales LCZ",                         "zh": "分析局地气候区时间序列"}},
+    {"name": "lcz_anomaly()",          "icon": "thermometer","desc": {"en": "Calculate LCZ thermal anomalies",                 "pt": "Calcular anomalias térmicas LCZ",                       "es": "Calcular anomalías térmicas LCZ",                       "zh": "计算局地气候区热异常"}},
+    {"name": "lcz_anomaly_map()",      "icon": "thermometer","desc": {"en": "Map LCZ thermal anomalies",                       "pt": "Mapear anomalias térmicas LCZ",                         "es": "Mapear anomalías térmicas LCZ",                         "zh": "绘制局地气候区热异常地图"}},
+    {"name": "lcz_interp_map()",       "icon": "cpu",     "desc": {"en": "Map LCZ interpolation results",                      "pt": "Mapear resultados de interpolação LCZ",                 "es": "Mapear resultados de interpolación LCZ",                 "zh": "绘制局地气候区插值结果地图"}},
+    {"name": "lcz_interp_eval()",      "icon": "activity","desc": {"en": "Evaluate LCZ interpolation accuracy",            "pt": "Avaliar a precisão da interpolação LCZ",                "es": "Evaluar la precisión de la interpolación LCZ",                "zh": "评估局地气候区插值精度"}},
+    {"name": "lcz_uhi_intensity()",    "icon": "zap",     "desc": {"en": "Assess Urban Heat Island intensity",                 "pt": "Avaliar a intensidade da Ilha de Calor Urbana",         "es": "Evaluar la intensidad de la Isla de Calor Urbana",         "zh": "评估城市热岛强度"}},
+]
+
+FUNDING = [
+    "CAPES — Coordenação de Aperfeiçoamento de Pessoal de Nível Superior (Finance Code 001)",
+    "Alexander von Humboldt Foundation",
+]
+
+QGIS_LANGUAGES = ["English", "Português", "Español", "Deutsch", "Français", "Italiano", "中文", "日本語", "한국어", "Русский"]
+
+# -----------------------------------------------------------------------
+# SVG Icon Library (Feather Icons subset)
+# -----------------------------------------------------------------------
+
+ICONS = {
+    "globe":       '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>',
+    "map":         '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>',
+    "layers":      '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>',
+    "bar-chart":   '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/><line x1="2" y1="20" x2="22" y2="20"/></svg>',
+    "grid":        '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>',
+    "sliders":     '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>',
+    "activity":    '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>',
+    "thermometer": '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"/></svg>',
+    "cpu":         '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg>',
+    "check-circle":'<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+    "zap":         '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+    "tool":        '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
+    "github":      '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>',
+    "mail":        '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>',
+    "arrow-right": '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>',
+    "external-link":'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>',
+}
+
+FEATURE_ICONS = {
+    "f1": "globe",
+    "f2": "layers",
+    "f3": "thermometer",
+    "f4": "cpu",
+}
+
+# -----------------------------------------------------------------------
+# HTML Template (Jinja2)
+# -----------------------------------------------------------------------
+
+HTML_TEMPLATE = r"""<!DOCTYPE html>
+<html lang="en" data-lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ meta.title }}</title>
+  <meta name="description" content="{{ meta.description_en }}">
+  <meta property="og:title" content="{{ meta.title }}">
+  <meta property="og:description" content="{{ meta.description_en }}">
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    /* ================================================================
+       DESIGN TOKENS — Forest Canopy + Nature Gradient System
+    ================================================================ */
+    :root {
+      --bg:              #f8faf7;
+      --bg-surface:      #f0f4ef;
+      --bg-elevated:     #e6ede4;
+      --text-primary:    #1a2e1a;
+      --text-secondary:  #4a6741;
+      --text-muted:      #8aaa82;
+      --border:          rgba(16,185,129,0.15);
+      --border-hover:    rgba(5,150,105,0.35);
+
+      /* Nature gradient: sky blue → forest green */
+      --cold:   #0ea5e9;
+      --warm:   #10b981;
+      --hot:    #059669;
+      --thermal: linear-gradient(90deg, var(--cold), var(--warm), var(--hot));
+
+      /* Glassmorphism */
+      --glass-bg:     rgba(255,255,255,0.70);
+      --glass-border: rgba(16,185,129,0.20);
+      --glass-hover:  rgba(255,255,255,0.90);
+      --glass-glow:   rgba(16,185,129,0.30);
+
+      /* Typography */
+      --font-serif:  'Libre Baskerville', Georgia, serif;
+      --font-sans:   'Inter', system-ui, sans-serif;
+      --font-mono:   'JetBrains Mono', 'Fira Code', monospace;
+
+      /* Spacing & Radius */
+      --radius-sm:  8px;
+      --radius-md:  14px;
+      --radius-lg:  20px;
+      --section-py: 100px;
+
+      /* Transitions */
+      --ease:       cubic-bezier(0.4, 0, 0.2, 1);
+      --duration:   0.35s;
+    }
+
+    /* ================================================================
+       RESET & BASE
+    ================================================================ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body {
+      background: var(--bg);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      line-height: 1.65;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+
+    /* ================================================================
+       CANVAS BACKGROUND (Topographic / Particle)
+    ================================================================ */
+    #bg-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.20;
+    }
+
+    /* ================================================================
+       NAVBAR
+    ================================================================ */
+    .navbar {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      height: 64px;
+      background: rgba(248,250,247,0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      transition: background var(--duration) var(--ease);
+    }
+    .navbar.scrolled {
+      background: rgba(248,250,247,0.97);
+    }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+    .nav-logo img {
+      height: 30px;
+      width: auto;
+    }
+    .nav-logo-text {
+      background: var(--thermal);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      transition: color var(--duration) var(--ease);
+    }
+    .nav-links a:hover { color: var(--text-primary); }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .lang-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all var(--duration) var(--ease);
+    }
+    .lang-btn:hover,
+    .lang-btn.active {
+      background: var(--glass-bg);
+      border-color: var(--warm);
+      color: var(--text-primary);
+    }
+    .nav-github {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--glass-bg);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: var(--radius-sm);
+      transition: all var(--duration) var(--ease);
+      margin-left: 8px;
+    }
+    .nav-github:hover {
+      border-color: var(--border-hover);
+      background: var(--glass-hover);
+    }
+
+    /* ================================================================
+       MAIN LAYOUT WRAPPER
+    ================================================================ */
+    main { position: relative; z-index: 1; }
+    section { position: relative; }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+
+    /* ================================================================
+       HERO SECTION
+    ================================================================ */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding-top: 64px;
+      overflow: hidden;
+    }
+    .hero-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+      padding: var(--section-py) 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+    .hero-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .hero-eyebrow-line {
+      width: 40px;
+      height: 1px;
+      background: var(--thermal);
+    }
+    .hero-eyebrow-text {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+    }
+    .hero-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2.8rem, 5vw, 4.5rem);
+      font-weight: 700;
+      line-height: 1.1;
+      margin-bottom: 24px;
+    }
+    .hero-title .line1 { color: var(--text-primary); display: block; }
+    .hero-title .line2 {
+      display: block;
+      background: var(--thermal);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-subtitle {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 40px;
+      max-width: 480px;
+    }
+    .hero-actions {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--thermal);
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 14px 28px;
+      border-radius: var(--radius-sm);
+      transition: opacity var(--duration) var(--ease), transform var(--duration) var(--ease);
+    }
+    .btn-primary:hover { opacity: 0.88; transform: translateY(-2px); }
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--glass-bg);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      font-size: 0.8rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 14px 28px;
+      border-radius: var(--radius-sm);
+      transition: all var(--duration) var(--ease);
+    }
+    .btn-secondary:hover {
+      border-color: var(--border-hover);
+      background: var(--glass-hover);
+      transform: translateY(-2px);
+    }
+    /* Hero visual: code terminal */
+    .hero-visual {
+      position: relative;
+    }
+    .terminal {
+      background: #1a2e1a;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: 0 40px 80px rgba(16,40,16,0.15), 0 0 0 1px rgba(16,185,129,0.10);
+    }
+    .terminal-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 16px;
+      background: #243824;
+      border-bottom: 1px solid var(--border);
+    }
+    .terminal-dot {
+      width: 12px; height: 12px;
+      border-radius: 50%;
+    }
+    .terminal-dot.red    { background: #ff5f57; }
+    .terminal-dot.yellow { background: #febc2e; }
+    .terminal-dot.green  { background: #28c840; }
+    .terminal-filename {
+      margin-left: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-secondary);
+    }
+    .terminal-body {
+      padding: 24px;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      line-height: 1.8;
+    }
+    .code-comment  { color: #6e7681; }
+    .code-keyword  { color: #86efac; }
+    .code-function { color: #6ee7b7; }
+    .code-string   { color: #bfdbfe; }
+    .code-number   { color: #93c5fd; }
+    .code-operator { color: #d1fae5; }
+    .code-package  { color: #fde68a; }
+
+    /* Hero scroll indicator */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 40px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .scroll-line {
+      width: 1px;
+      height: 40px;
+      background: linear-gradient(to bottom, var(--text-muted), transparent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+    @keyframes scrollPulse {
+      0%, 100% { opacity: 0.4; transform: scaleY(1); }
+      50%       { opacity: 1;   transform: scaleY(1.2); }
+    }
+
+    /* ================================================================
+       STATS BAR
+    ================================================================ */
+    .stats-bar {
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 32px 40px;
+    }
+    .stats-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+    }
+    .stat-item {
+      text-align: center;
+      padding: 0 24px;
+      border-right: 1px solid var(--border);
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-number {
+      font-family: var(--font-serif);
+      font-size: 2.4rem;
+      font-weight: 700;
+      background: var(--thermal);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .stat-label {
+      font-size: 0.72rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+    }
+
+    /* ================================================================
+       SECTION HEADERS
+    ================================================================ */
+    .section-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--warm);
+      margin-bottom: 16px;
+    }
+    .section-title {
+      font-family: var(--font-serif);
+      font-size: clamp(1.8rem, 3vw, 2.8rem);
+      font-weight: 700;
+      line-height: 1.2;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+    .section-subtitle {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      max-width: 560px;
+      line-height: 1.7;
+    }
+    .section-header { margin-bottom: 64px; }
+
+    /* ================================================================
+       ABOUT SECTION
+    ================================================================ */
+    .about {
+      padding: var(--section-py) 0;
+    }
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .about-text p {
+      font-size: 1.05rem;
+      color: var(--text-secondary);
+      line-height: 1.8;
+      margin-bottom: 24px;
+    }
+    .about-image {
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 24px 60px rgba(16,40,16,0.10);
+    }
+    .about-image img {
+      width: 100%;
+      height: 340px;
+      object-fit: cover;
+      transition: transform 0.6s var(--ease);
+    }
+    .about-image:hover img { transform: scale(1.03); }
+
+    /* ================================================================
+       FEATURES — Bento Box Glassmorphism Grid
+    ================================================================ */
+    .features {
+      padding: var(--section-py) 0;
+      background: var(--bg-surface);
+    }
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      grid-template-rows: repeat(2, auto);
+      gap: 20px;
+    }
+    .bento-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: transform var(--duration) var(--ease),
+                  border-color var(--duration) var(--ease),
+                  box-shadow var(--duration) var(--ease);
+      position: relative;
+      overflow: hidden;
+    }
+    .bento-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(16,185,129,0.08), transparent 60%);
+      opacity: 0;
+      transition: opacity var(--duration) var(--ease);
+    }
+    .bento-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--glass-glow);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.4), 0 0 0 1px var(--glass-glow);
+    }
+    .bento-card:hover::before { opacity: 1; }
+    .bento-icon {
+      width: 48px; height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: var(--warm);
+      margin-bottom: 20px;
+    }
+    .bento-number {
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+    .bento-title {
+      font-family: var(--font-serif);
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+    .bento-desc {
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+    .bento-image {
+      margin-top: 24px;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+    .bento-image img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      transition: transform 0.5s var(--ease);
+    }
+    .bento-card:hover .bento-image img { transform: scale(1.04); }
+
+    /* ================================================================
+       FUNCTIONS TABLE
+    ================================================================ */
+    .functions-section {
+      padding: var(--section-py) 0;
+    }
+    .fn-table-wrap {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    .fn-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .fn-table thead tr {
+      background: var(--bg-surface);
+    }
+    .fn-table th {
+      padding: 14px 20px;
+      text-align: left;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+    }
+    .fn-table tbody tr {
+      border-bottom: 1px solid var(--border);
+      transition: background var(--duration) var(--ease);
+    }
+    .fn-table tbody tr:last-child { border-bottom: none; }
+    .fn-table tbody tr:hover { background: var(--glass-bg); }
+    .fn-table td {
+      padding: 14px 20px;
+      font-size: 0.9rem;
+      vertical-align: middle;
+    }
+    .fn-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px; height: 28px;
+      border-radius: 6px;
+      background: var(--glass-bg);
+      border: 1px solid var(--border);
+      color: var(--warm);
+      margin-right: 10px;
+      flex-shrink: 0;
+    }
+    .fn-name-cell {
+      display: flex;
+      align-items: center;
+    }
+    .fn-name-cell code {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--cold);
+      background: rgba(16,185,129,0.10);
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+    .fn-desc-cell {
+      color: var(--text-secondary);
+      font-size: 0.88rem;
+    }
+
+    /* ================================================================
+       QGIS SECTION
+    ================================================================ */
+    .qgis-section {
+      padding: var(--section-py) 0;
+      background: var(--bg-surface);
+    }
+    .qgis-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .qgis-langs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 24px 0;
+    }
+    .qgis-lang-badge {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      font-weight: 500;
+      padding: 5px 14px;
+      border-radius: 100px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      color: var(--text-secondary);
+      transition: all var(--duration) var(--ease);
+    }
+    .qgis-lang-badge:hover {
+      border-color: var(--warm);
+      color: var(--text-primary);
+    }
+    .qgis-compat {
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      margin-top: 16px;
+    }
+    .qgis-image {
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 24px 60px rgba(16,40,16,0.10);
+    }
+    .qgis-image img {
+      width: 100%;
+      height: 380px;
+      object-fit: cover;
+    }
+
+    /* ================================================================
+       PLATFORM SECTION
+    ================================================================ */
+    .platform-section {
+      padding: var(--section-py) 0;
+      background: var(--bg);
+    }
+    .platform-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .platform-items {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin: 24px 0;
+    }
+    .platform-item {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      padding: 20px 24px;
+      transition: all var(--duration) var(--ease);
+    }
+    .platform-item:hover {
+      border-color: var(--warm);
+      transform: translateX(4px);
+      box-shadow: 0 4px 20px rgba(16,185,129,0.12);
+    }
+    .platform-item-content strong {
+      display: block;
+      color: var(--text-primary);
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+    .platform-item-content span {
+      color: var(--text-secondary);
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
+    .platform-preview {
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 24px 60px rgba(16,40,16,0.10);
+      background: var(--bg-surface);
+      position: relative;
+    }
+    .platform-preview-inner {
+      width: 100%;
+      padding-bottom: 62%;
+      position: relative;
+      overflow: hidden;
+    }
+    .platform-preview-inner img {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s var(--ease);
+    }
+    .platform-preview:hover .platform-preview-inner img {
+      transform: scale(1.03);
+    }
+    .platform-preview-overlay {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: linear-gradient(to top, rgba(16,40,16,0.75) 0%, transparent 100%);
+      padding: 24px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+    }
+    .platform-preview-label {
+      color: #fff;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .platform-preview-badge {
+      background: var(--warm);
+      color: #fff;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 100px;
+      letter-spacing: 0.05em;
+    }
+    @media (max-width: 768px) {
+      .platform-grid { grid-template-columns: 1fr; gap: 48px; }
+    }
+
+    /* ================================================================
+       PUBLICATION SECTION
+    ================================================================ */
+    .publication-section {
+      padding: var(--section-py) 0;
+    }
+    .pub-card {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-lg);
+      padding: 56px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .pub-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(16,185,129,0.10);
+      border: 1px solid rgba(16,185,129,0.30);
+      color: var(--hot);
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 100px;
+      margin-bottom: 20px;
+    }
+    .pub-title {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      font-weight: 700;
+      line-height: 1.3;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+    .pub-authors {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+    .pub-text {
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 28px;
+    }
+    .pub-image {
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 20px 50px rgba(16,40,16,0.10);
+    }
+    .pub-image img {
+      width: 100%;
+      height: 320px;
+      object-fit: cover;
+      transition: transform 0.6s var(--ease);
+    }
+    .pub-image:hover img { transform: scale(1.03); }
+
+    /* ================================================================
+       TEAM SECTION
+    ================================================================ */
+    .team-section {
+      padding: var(--section-py) 0;
+      background: var(--bg-surface);
+    }
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .team-card {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      padding: 28px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: transform var(--duration) var(--ease),
+                  border-color var(--duration) var(--ease);
+    }
+    .team-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--glass-glow);
+    }
+    .team-avatar {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2px solid var(--border);
+      margin-bottom: 16px;
+      background: var(--bg-elevated);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--warm);
+    }
+    .team-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .team-name {
+      font-family: var(--font-serif);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+    }
+    .team-role {
+      font-size: 0.78rem;
+      color: var(--warm);
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+    .team-org {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+      margin-bottom: 14px;
+    }
+    .team-links {
+      display: flex;
+      gap: 8px;
+    }
+    .team-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px; height: 30px;
+      border-radius: 6px;
+      background: var(--glass-bg);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      transition: all var(--duration) var(--ease);
+    }
+    .team-link:hover {
+      border-color: var(--warm);
+      color: var(--warm);
+    }
+
+    /* ================================================================
+       FUNDING SECTION
+    ================================================================ */
+    .funding-section {
+      padding: var(--section-py) 0;
+    }
+    .funding-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: start;
+    }
+    .funding-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 24px;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: var(--radius-md);
+      border-left: 3px solid var(--warm);
+      transition: border-color var(--duration) var(--ease);
+    }
+    .funding-item:hover { border-left-color: var(--hot); }
+    .funding-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--thermal);
+      flex-shrink: 0;
+      margin-top: 6px;
+    }
+    .funding-text {
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* ================================================================
+       CTA FINAL SECTION
+    ================================================================ */
+    .cta-section {
+      padding: var(--section-py) 0;
+      background: var(--bg-surface);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-section::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at center, rgba(16,185,129,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .cta-title {
+      font-family: var(--font-serif);
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      font-weight: 700;
+      background: var(--thermal);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 16px;
+    }
+    .cta-text {
+      font-size: 1rem;
+      color: var(--text-secondary);
+      margin-bottom: 40px;
+    }
+    .cta-actions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* ================================================================
+       FOOTER
+    ================================================================ */
+    footer {
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      padding: 32px 40px;
+    }
+    .footer-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .footer-logo {
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      font-weight: 500;
+      background: var(--thermal);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .footer-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+    }
+    .footer-links a {
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      transition: color var(--duration) var(--ease);
+    }
+    .footer-links a:hover { color: var(--text-primary); }
+    .footer-copy {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* ================================================================
+       SCROLL ANIMATIONS
+    ================================================================ */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+
+    /* ================================================================
+       RESPONSIVE
+    ================================================================ */
+    @media (max-width: 991px) {
+      .hero-inner     { grid-template-columns: 1fr; gap: 48px; }
+      .about-grid     { grid-template-columns: 1fr; gap: 48px; }
+      .bento-grid     { grid-template-columns: 1fr; }
+      .qgis-grid      { grid-template-columns: 1fr; gap: 48px; }
+      .pub-card       { grid-template-columns: 1fr; gap: 32px; padding: 36px; }
+      .team-grid      { grid-template-columns: repeat(2, 1fr); }
+      .funding-grid   { grid-template-columns: 1fr; }
+      .stats-inner    { grid-template-columns: repeat(2, 1fr); }
+      .stat-item      { border-right: none; border-bottom: 1px solid var(--border); padding: 16px 0; }
+      .stat-item:nth-child(2n) { border-bottom: none; }
+    }
+    @media (max-width: 767px) {
+      .navbar         { padding: 0 20px; }
+      .nav-links      { display: none; }
+      .container      { padding: 0 20px; }
+      .hero-inner     { padding: var(--section-py) 20px; }
+      .team-grid      { grid-template-columns: 1fr; }
+      .stats-bar      { padding: 24px 20px; }
+      footer          { padding: 24px 20px; }
+      .footer-inner   { flex-direction: column; text-align: center; }
+    }
+    /* =========================
+      QGIS SECTION VIDEO STYLES
+      ========================= */
+
+    .qgis-section {
+      padding: 4rem 0;
+      background: var(--bg-surface);
+    }
+
+    .qgis-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    /* Video container */
+    .qgis-video {
+      width: 100%;
+    }
+
+    .video-wrapper {
+      position: relative;
+      width: 100%;
+      padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+      background: #1a2e1a;
+      border-radius: 1rem;
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .video-wrapper:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .video-thumbnail {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .video-thumbnail img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .video-wrapper:hover .video-thumbnail img {
+      transform: scale(1.02);
+    }
+
+    /* Play button - perfeitamente centralizado */
+    .play-button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 68px;
+      height: 48px;
+      transition: transform 0.2s ease;
+      filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+      pointer-events: none;
+    }
+
+    .video-wrapper:hover .play-button {
+      transform: translate(-50%, -50%) scale(1.1);
+    }
+
+    /* Overlay sutil */
+    .video-thumbnail::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.1);
+      transition: background 0.3s ease;
+      pointer-events: none;
+    }
+
+    .video-thumbnail:hover::after {
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .qgis-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+      
+      .play-button {
+        width: 52px;
+        height: 36px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Animated Canvas Background -->
+<canvas id="bg-canvas"></canvas>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="navbar">
+  <a href="#" class="nav-logo">
+    <img src="assets/logo.png" alt="LCZ4r Logo" onerror="this.style.display='none'">
+    <span class="nav-logo-text">LCZ4r</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about"       data-translate="nav_about">About</a></li>
+    <li><a href="#features"    data-translate="nav_features">Features</a></li>
+    <li><a href="#qgis"        data-translate="nav_qgis">QGIS Plugin</a></li>
+    <li><a href="#platform"    data-translate="nav_platform">Platform</a></li>
+    <li><a href="#team"        data-translate="nav_team">Team</a></li>
+    <li><a href="#publication" data-translate="nav_publication">Publication</a></li>
+  </ul>
+  <div class="nav-right">
+    <button class="lang-btn active" data-lang="en">EN</button>
+    <button class="lang-btn"        data-lang="pt">PT</button>
+    <button class="lang-btn"        data-lang="es">ES</button>
+    <button class="lang-btn"        data-lang="zh">中文</button>
+    <a href="https://github.com/ByMaxAnjos/LCZ4r" target="_blank" class="nav-github">
+      {{ icons.github }} <span data-translate="nav_github">GitHub</span>
+    </a>
+  </div>
+</nav>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero" id="home">
+    <div class="hero-inner">
+      <div class="hero-content">
+        <div class="hero-eyebrow">
+          <div class="hero-eyebrow-line"></div>
+          <span class="hero-eyebrow-text">R Package • Urban Climate Analysis</span>
+        </div>
+        <h1 class="hero-title">
+          <span class="line1" data-translate="hero_line1">Urban Climate</span>
+          <span class="line2" data-translate="hero_line2">Analysis in R</span>
+        </h1>
+        <p class="hero-subtitle" data-translate="hero_subtitle">
+          LCZ4r is a comprehensive R package for analyzing and visualizing Local Climate Zones (LCZ) and Urban Heat Islands (UHI).
+        </p>
+        <div class="hero-actions">
+          <a href="https://bymaxanjos.github.io/LCZ4r/en/index.html" target="_blank" class="btn-primary">
+            <span data-translate="hero_cta_primary">Get Started</span> {{ icons.arrow_right }}
+          </a>
+          <a href="https://github.com/ByMaxAnjos/LCZ4r" target="_blank" class="btn-secondary">
+            {{ icons.github }} <span data-translate="hero_cta_secondary">View on GitHub</span>
+          </a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="terminal">
+          <div class="terminal-bar">
+            <div class="terminal-dot red"></div>
+            <div class="terminal-dot yellow"></div>
+            <div class="terminal-dot green"></div>
+            <span class="terminal-filename">code.R</span>
+          </div>
+        <div class="terminal-body">
+            <div><span class="code-keyword">if</span> <span class="code-operator">(!</span><span class="code-function">require</span><span class="code-operator">(</span><span class="code-string">"remotes"</span><span class="code-operator">))</span> { <span class="code-function">install.packages</span><span class="code-operator">(</span><span class="code-string">"remotes"</span><span class="code-operator">)</span>}</div>
+            
+            <div><span class="code-comment"># Install or update directly from GitHub</span></div>
+            <div><span class="code-package">remotes</span><span class="code-operator">::</span><span class="code-function">install_github</span><span class="code-operator">(</span><span class="code-string">"ByMaxAnjos/climasus4r",</span>, <span class="code-operator">upgrade=</span> = <span class="code-string">"never"</span><span class="code-operator">)</span></div>
+            <div><span class="code-function">library</span><span class="code-operator">(</span><span class="code-package">LCZ4r</span><span class="code-operator">)</span></div>
+            <div>&nbsp;</div>
+            <div><span class="code-comment"># Get the LCZ map for your city</span></div>
+            <div><span class="code-operator">lcz_map</span> <span class="code-operator">&lt;-</span> <span class="code-function">lcz_get_map</span><span class="code-operator">(</span><span class="code-operator">city</span><span class="code-operator">=</span><span class="code-string">"São Paulo"</span><span class="code-operator">)</span></div>
+            <div>&nbsp;</div>
+            <div><span class="code-comment"># Visualize the obtained LCZ map</span></div>
+            <div><span class="code-function">lcz_plot_map</span><span class="code-operator">(</span><span class="code-operator">lcz_map</span><span class="code-operator">)</span></div>
+        </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-indicator">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- STATS BAR -->
+  <div class="stats-bar">
+    <div class="stats-inner">
+      <div class="stat-item reveal">
+        <div class="stat-number">17</div>
+        <div class="stat-label" data-translate="stats_s1">Functions</div>
+      </div>
+      <div class="stat-item reveal reveal-delay-1">
+        <div class="stat-number">3</div>
+        <div class="stat-label" data-translate="stats_s2">Languages</div>
+      </div>
+      <div class="stat-item reveal reveal-delay-2">
+        <div class="stat-number">5</div>
+        <div class="stat-label" data-translate="stats_s3">Continents</div>
+      </div>
+      <div class="stat-item reveal reveal-delay-3">
+        <div class="stat-number">Nature</div>
+        <div class="stat-label" data-translate="stats_s4">Published in</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <section class="about" id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-text reveal">
+          <div class="section-eyebrow">The Package</div>
+          <h2 class="section-title" data-translate="about_title">From Data to Insight</h2>
+          <p data-translate="about_text">
+            LCZ4r simplifies the entire workflow of urban climate analysis. It provides a suite of tools to download, process, visualize, and interpret LCZ and UHI data, making complex spatial analysis accessible to researchers, urban planners, and climate scientists.
+          </p>
+          <a href="https://bymaxanjos.github.io/LCZ4r/en/index.html" target="_blank" class="btn-secondary" style="display:inline-flex;">
+            <span data-translate="hero_cta_primary">Get Started</span> {{ icons.arrow_right }}
+          </a>
+        </div>
+        <div class="about-image reveal reveal-delay-1">
+          <img src="https://github.com/ByMaxAnjos/LCZ4r/blob/main/inst/figures/logo.png?raw=true" alt="LCZ Map Preview" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES — Bento Box -->
+  <section class="features" id="features">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="section-eyebrow">Core Features</div>
+        <h2 class="section-title" data-translate="features_title">A Complete Toolkit for Urban Climate Research</h2>
+        <p class="section-subtitle" data-translate="features_subtitle">
+          Explore the key functionalities that make LCZ4r a powerful tool for urban climate studies.
+        </p>
+      </div>
+      <div class="bento-grid">
+        {% for f in features %}
+        <div class="bento-card reveal reveal-delay-{{ loop.index }}">
+          <div class="bento-icon">{{ icons[f.icon] }}</div>
+          <div class="bento-number">0{{ loop.index }}</div>
+          <h3 class="bento-title" data-translate="features_f{{ loop.index }}_title">{{ f.title }}</h3>
+          <p class="bento-desc" data-translate="features_f{{ loop.index }}_desc">{{ f.desc }}</p>
+          {% if f.image %}
+          <div class="bento-image">
+            <img src="{{ f.image }}" alt="{{ f.title }}" loading="lazy">
+          </div>
+          {% endif %}
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- FUNCTIONS TABLE -->
+  <section class="functions-section" id="functions">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="section-eyebrow">Reference</div>
+        <h2 class="section-title" data-translate="functions_title">All Functions</h2>
+      </div>
+      <div class="fn-table-wrap reveal">
+        <table class="fn-table">
+          <thead>
+            <tr>
+              <th>Function</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for fn in functions %}
+            <tr>
+              <td>
+                <div class="fn-name-cell">
+                  <span class="fn-icon">{{ icons[fn.icon] }}</span>
+                  <code>{{ fn.name }}</code>
+                </div>
+              </td>
+              <td class="fn-desc-cell" data-translate="fn_{{ loop.index0 }}_desc">{{ fn.desc }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- QGIS PLUGIN -->
+  <section class="qgis-section" id="qgis">
+    <div class="container">
+      <div class="qgis-grid">
+        <div class="reveal">
+          <div class="section-eyebrow">LCZ4r-QGIS Plugin</div>
+          <h2 class="section-title" data-translate="qgis_title">Geospatial Analysis, Simplified</h2>
+          <p style="color:var(--text-secondary);line-height:1.7;margin-bottom:20px;" data-translate="qgis_text">
+            The LCZ4r-QGIS plugin brings the power of LCZ4r directly into your QGIS environment.
+          </p>
+          <div class="qgis-langs">
+            {% for lang in qgis_languages %}
+            <span class="qgis-lang-badge">{{ lang }}</span>
+            {% endfor %}
+          </div>
+          <p class="qgis-compat">Compatible with QGIS 3.x and above. Integrates directly with the LCZ4r R package.</p>
+          <a href="https://bymaxanjos.github.io/LCZ4r/en/articles/examples.html" target="_blank" class="btn-secondary" style="display:inline-flex;margin-top:24px;">
+            <span data-translate="qgis_cta">Learn more about the Plugin</span> {{ icons.external_link }}
+          </a>
+        </div>
+        <div class="video-wrapper">
+          <a href="https://www.youtube.com/watch?v=WeaP1a2DCyw" target="_blank" rel="noopener noreferrer" class="video-thumbnail">
+            <img src="https://img.youtube.com/vi/WeaP1a2DCyw/maxresdefault.jpg" 
+                alt="Assistir tutorial: LCZ4r QGIS General Functions"
+                loading="lazy">
+            <div class="play-button">
+              <svg viewBox="0 0 68 48" width="68" height="48">
+                <path class="play-icon-bg" d="M66.52,7.74c-0.78-2.93-2.49-5.41-5.42-6.19C55.79,.13,34,0,34,0S12.21,.13,6.9,1.55 C3.97,2.33,2.26,4.81,1.48,7.74C0.06,13.05,0,24,0,24s0.06,10.95,1.48,16.26c0.78,2.93,2.49,5.41,5.42,6.19 C12.21,47.87,34,48,34,48s21.79-0.13,27.1-1.55c2.93-0.78,4.64-3.26,5.42-6.19C67.94,34.95,68,24,68,24S67.94,13.05,66.52,7.74z" fill="#f00" fill-opacity="0.8"/>
+                <path d="M45,24 27,14 27,34" fill="#fff"/>
+              </svg>
+            </div>
+          </a>
+        </div>
+      </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INTERACTIVE PLATFORM -->
+  <section class="platform-section" id="platform">
+    <div class="container">
+      <div class="platform-grid">
+        <div class="reveal">
+          <div class="section-eyebrow">Urban Climate Platform</div>
+          <h2 class="section-title" data-translate="platform_title">Interactive Urban Climate Platform</h2>
+          <p style="color:var(--text-secondary);line-height:1.7;margin-bottom:8px;" data-translate="platform_text">
+            This platform was developed specifically for Geography students and researchers interested in understanding urban climate phenomena.
+          </p>
+          <div class="platform-items">
+            <div class="platform-item">
+              <div class="platform-item-content">
+                <strong data-translate="platform_item1_title">🏙️ Urban Heat Islands (UHI):</strong>
+                <span data-translate="platform_item1_desc">Phenomenon where urban areas present higher temperatures than surrounding rural areas.</span>
+              </div>
+            </div>
+            <div class="platform-item">
+              <div class="platform-item-content">
+                <strong data-translate="platform_item2_title">🗺️ Local Climate Zones (LCZ):</strong>
+                <span data-translate="platform_item2_desc">Classification system that categorizes different types of urban land cover and land use.</span>
+              </div>
+            </div>
+          </div>
+          <a href="https://clima-urbano.streamlit.app/" target="_blank" class="btn-secondary" style="display:inline-flex;margin-top:8px;">
+            <span data-translate="platform_cta">Access Platform</span> {{ icons.external_link }}
+          </a>
+        </div>
+        <div class="platform-preview reveal">
+          <div class="platform-preview-inner">
+            <img src="https://github.com/ByMaxAnjos/LCZ4r/raw/main/inst/figures/lcz_map_plot.png"
+                 alt="Urban Climate Platform Preview"
+                 loading="lazy"
+                 onerror="this.src='https://github.com/ByMaxAnjos/LCZ4r/raw/main/inst/figures/fig_local_modeling_crows_card.png'">
+          </div>
+          <div class="platform-preview-overlay">
+            <span class="platform-preview-label">clima-urbano.streamlit.app</span>
+            <span class="platform-preview-badge">LIVE</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PUBLICATION -->
+  <section class="publication-section" id="publication">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="section-eyebrow">Scientific Publication</div>
+        <h2 class="section-title" data-translate="publication_title">Published in Nature</h2>
+      </div>
+      <div class="pub-card reveal">
+        <div>
+          <div class="pub-badge">{{ icons.external_link }} Nature Scientific Reports</div>
+          <h3 class="pub-title" data-translate="publication_paper_title">
+            LCZ4r package R for local climate zones and urban heat islands
+          </h3>
+          <p class="pub-authors">
+            Max Anjos, Dayvid Medeiros, Francisco Castelhano, Fred Meier, Tiago Silva, Ezequiel Correia &amp; Antônia Lopez
+          </p>
+          <p class="pub-text" data-translate="publication_text">
+            The methodologies and applications of the LCZ4r package are detailed in our peer-reviewed publication in Nature Scientific Reports.
+          </p>
+          <a href="https://www.nature.com/articles/s41598-025-92000-0" target="_blank" class="btn-primary">
+            <span data-translate="publication_cta">Read the Paper</span> {{ icons.external_link }}
+          </a>
+        </div>
+        <div class="pub-image">
+          <img src="https://github.com/ByMaxAnjos/LCZ4r/raw/main/inst/figures/paper_nature.png"  alt="Nature Publication" loading="lazy">
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TEAM -->
+  <section class="team-section" id="team">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="section-eyebrow">The Team</div>
+        <h2 class="section-title" data-translate="team_title">Meet the Developers</h2>
+        <p class="section-subtitle" data-translate="team_text">
+          LCZ4r is developed and maintained by a dedicated team of researchers and scientists.
+        </p>
+      </div>
+      <div class="team-grid">
+        {% for m in team %}
+        <div class="team-card reveal reveal-delay-{{ loop.index }}">
+          <div class="team-avatar">
+            {% if m.avatar %}
+            <img src="{{ m.avatar }}" alt="{{ m.name }}" onerror="this.parentElement.innerHTML='{{ m.initials }}'">
+            {% else %}
+            {{ m.initials }}
+            {% endif %}
+          </div>
+          <div class="team-name">{{ m.name }}</div>
+          <div class="team-role" data-translate="team_{{ loop.index0 }}_role">{{ m.role_en }}</div>
+          <div class="team-org">{{ m.org }}</div>
+          <div class="team-links">
+            {% if m.github %}
+            <a href="{{ m.github }}" target="_blank" class="team-link" title="GitHub">{{ icons.github }}</a>
+            {% endif %}
+            {% if m.email %}
+            <a href="mailto:{{ m.email }}" class="team-link" title="Email">{{ icons.mail }}</a>
+            {% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- FUNDING -->
+  <section class="funding-section" id="funding">
+    <div class="container">
+      <div class="section-header reveal">
+        <div class="section-eyebrow">Funding</div>
+        <h2 class="section-title" data-translate="funding_title">Supported By</h2>
+        <p class="section-subtitle" data-translate="funding_text">
+          The development of LCZ4r is made possible through the generous support of the following organizations:
+        </p>
+      </div>
+      <div class="funding-grid">
+        {% for f in funding %}
+        <div class="funding-item reveal reveal-delay-{{ loop.index }}">
+          <div class="funding-dot"></div>
+          <div class="funding-text">{{ f }}</div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="cta-section">
+    <div class="container">
+      <h2 class="cta-title reveal" data-translate="cta_title">Ready to get started?</h2>
+      <p class="cta-text reveal reveal-delay-1" data-translate="cta_text">
+        Explore the package, contribute on GitHub, or get in touch with the team.
+      </p>
+      <div class="cta-actions reveal reveal-delay-2">
+        <a href="https://bymaxanjos.github.io/LCZ4r/en/index.html" target="_blank" class="btn-primary">
+          <span data-translate="hero_cta_primary">Get Started</span> {{ icons.arrow_right }}
+        </a>
+        <a href="https://github.com/ByMaxAnjos/LCZ4r" target="_blank" class="btn-secondary">
+          {{ icons.github }} <span data-translate="nav_github">GitHub</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">LCZ4r</div>
+    <ul class="footer-links">
+      <li><a href="https://bymaxanjos.github.io/LCZ4r/en/index.html" target="_blank" data-translate="footer_docs">Documentation</a></li>
+      <li><a href="https://github.com/ByMaxAnjos/LCZ4r" target="_blank">GitHub</a></li>
+      <li><a href="https://www.nature.com/articles/s41598-025-92000-0" target="_blank" data-translate="nav_publication">Publication</a></li>
+      <li><a href="https://github.com/ByMaxAnjos/LCZ4r/issues" target="_blank" data-translate="footer_issues">Issues</a></li>
+    </ul>
+    <div class="footer-copy">&copy; 2025 LCZ4r &mdash; MIT License</div>
+  </div>
+</footer>
+
+<script>
+// ================================================================
+// TRANSLATIONS (injected from YAML)
+// ================================================================
+const TRANSLATIONS = {{ translations_json }};
+
+// ================================================================
+// LANGUAGE SWITCHER
+// ================================================================
+function setLanguage(lang) {
+  document.documentElement.setAttribute('data-lang', lang);
+  document.querySelectorAll('[data-lang]').forEach(btn => {
+    btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+  });
+  const t = TRANSLATIONS[lang] || TRANSLATIONS['en'];
+  document.querySelectorAll('[data-translate]').forEach(el => {
+    const key = el.getAttribute('data-translate');
+    if (t[key] !== undefined) el.textContent = t[key];
+  });
+  localStorage.setItem('lcz4r-lang', lang);
+}
+
+document.querySelectorAll('.lang-btn').forEach(btn => {
+  btn.addEventListener('click', () => setLanguage(btn.getAttribute('data-lang')));
+});
+
+// Restore saved language
+const savedLang = localStorage.getItem('lcz4r-lang') || 'en';
+setLanguage(savedLang);
+
+// ================================================================
+// NAVBAR SCROLL EFFECT
+// ================================================================
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 60);
+}, { passive: true });
+
+// ================================================================
+// SCROLL REVEAL (IntersectionObserver)
+// ================================================================
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+// ================================================================
+// ANIMATED CANVAS BACKGROUND (Topographic Contour Lines)
+// ================================================================
+(function() {
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, lines = [], animFrame;
+
+  function resize() {
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    buildLines();
+  }
+
+  function buildLines() {
+    lines = [];
+    const count = 8;
+    for (let i = 0; i < count; i++) {
+      lines.push({
+        y: (H / count) * i + H / (count * 2),
+        amplitude: 30 + Math.random() * 60,
+        frequency: 0.003 + Math.random() * 0.004,
+        speed: 0.0003 + Math.random() * 0.0004,
+        phase: Math.random() * Math.PI * 2,
+        opacity: 0.08 + Math.random() * 0.12,
+      });
+    }
+  }
+
+  let t = 0;
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    t += 1;
+    lines.forEach((line, idx) => {
+      ctx.beginPath();
+      for (let x = 0; x <= W; x += 4) {
+        const y = line.y
+          + Math.sin(x * line.frequency + t * line.speed + line.phase) * line.amplitude
+          + Math.sin(x * line.frequency * 2.3 + t * line.speed * 0.7) * (line.amplitude * 0.3);
+        x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      }
+      // Nature gradient: sky-blue lines at top, forest-green at bottom
+      const ratio = line.y / H;
+      const r = Math.round(14  + (5   - 14)  * ratio);
+      const g = Math.round(165 + (150 - 165) * ratio);
+      const b = Math.round(233 + (105 - 233) * ratio);
+      ctx.strokeStyle = `rgba(${r},${g},${b},${line.opacity})`;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    });
+    animFrame = requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', resize, { passive: true });
+  resize();
+  draw();
+
+  // Pause when tab is hidden (performance)
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) cancelAnimationFrame(animFrame);
+    else draw();
+  });
+})();
+</script>
+</body>
+</html>
+"""
+
+# -----------------------------------------------------------------------
+# Load Config
+# -----------------------------------------------------------------------
+
+def load_config(path="landing_page_config.yml"):
+    with open(path, encoding="utf-8") as f:
+        return yaml.safe_load(f)
+
+# -----------------------------------------------------------------------
+# Build Translations Dict for JS injection
+# -----------------------------------------------------------------------
+
+def build_translations(cfg):
+    """
+    Flatten the YAML config into a key→value dict per language
+    for injection into the JS TRANSLATIONS object.
+    """
+    translations = {}
+    for lang in ("en", "pt", "es", "zh"):
+        t = {}
+        lc = cfg.get(lang, {})
+
+        # Nav
+        nav = lc.get("nav", {})
+        t["nav_about"]       = nav.get("about", "")
+        t["nav_features"]    = nav.get("features", "")
+        t["nav_qgis"]        = nav.get("qgis", "")
+        t["nav_team"]        = nav.get("team", "")
+        t["nav_publication"] = nav.get("publication", "")
+        t["nav_github"]      = nav.get("github", "GitHub")
+
+        # Hero
+        hero = lc.get("hero", {})
+        t["hero_line1"]         = hero.get("line1", "")
+        t["hero_line2"]         = hero.get("line2", "")
+        t["hero_subtitle"]      = hero.get("subtitle", "")
+        t["hero_cta_primary"]   = hero.get("cta_primary", "")
+        t["hero_cta_secondary"] = hero.get("cta_secondary", "")
+
+        # Stats
+        stats = lc.get("stats", {})
+        t["stats_s1"] = stats.get("s1", "")
+        t["stats_s2"] = stats.get("s2", "")
+        t["stats_s3"] = stats.get("s3", "")
+        t["stats_s4"] = stats.get("s4", "")
+
+        # About
+        about = lc.get("about", {})
+        t["about_title"] = about.get("title", "")
+        t["about_text"]  = about.get("text", "")
+
+        # Features
+        feats = lc.get("features", {})
+        t["features_title"]    = feats.get("title", "")
+        t["features_subtitle"] = feats.get("subtitle", "")
+        for i in range(1, 5):
+            t[f"features_f{i}_title"] = feats.get(f"f{i}_title", "")
+            t[f"features_f{i}_desc"]  = feats.get(f"f{i}_desc", "")
+
+        # Functions
+        t["functions_title"] = lc.get("functions", {}).get("title", "All Functions")
+        for i, fn in enumerate(FUNCTIONS):
+            t[f"fn_{i}_desc"] = fn["desc"].get(lang, fn["desc"]["en"])
+
+        # QGIS
+        qgis = lc.get("qgis", {})
+        t["qgis_title"] = qgis.get("title", "")
+        t["qgis_text"]  = qgis.get("text", "")
+        t["qgis_cta"]   = qgis.get("cta", "")
+
+        # Platform
+        platform = lc.get("platform", {})
+        t["nav_platform"]       = nav.get("platform", "Platform")
+        t["platform_title"]     = platform.get("title", "")
+        t["platform_text"]      = platform.get("text", "")
+        t["platform_item1_title"] = platform.get("item1_title", "")
+        t["platform_item1_desc"]  = platform.get("item1_desc", "")
+        t["platform_item2_title"] = platform.get("item2_title", "")
+        t["platform_item2_desc"]  = platform.get("item2_desc", "")
+        t["platform_cta"]       = platform.get("cta", "")
+
+        # Publication
+        pub = lc.get("publication", {})
+        t["publication_title"]       = pub.get("title", "")
+        t["publication_journal"]     = pub.get("journal", "")
+        t["publication_paper_title"] = pub.get("paper_title", "")
+        t["publication_text"]        = pub.get("text", "")
+        t["publication_cta"]         = pub.get("cta", "")
+
+        # Team
+        team = lc.get("team", {})
+        t["team_title"] = team.get("title", "")
+        t["team_text"]  = team.get("text", "")
+        for i, m in enumerate(TEAM_MEMBERS):
+            t[f"team_{i}_role"] = m["role"].get(lang, m["role"]["en"])
+
+        # Funding
+        funding = lc.get("funding", {})
+        t["funding_title"] = funding.get("title", "")
+        t["funding_text"]  = funding.get("text", "")
+
+        # CTA
+        cta = lc.get("cta_final", {})
+        t["cta_title"] = cta.get("title", "")
+        t["cta_text"]  = cta.get("text", "")
+
+        # Footer
+        footer = lc.get("footer", {})
+        t["footer_docs"]   = footer.get("docs", "")
+        t["footer_issues"] = footer.get("issues", "")
+
+        translations[lang] = t
+    return translations
+
+# -----------------------------------------------------------------------
+# Build Feature Cards Data
+# -----------------------------------------------------------------------
+
+def build_features_data(cfg):
+    en = cfg.get("en", {}).get("features", {})
+    images = {
+        "f1": "https://github.com/ByMaxAnjos/LCZ4r/raw/main/inst/figures/fig_general_7.png",
+        "f2": "https://github.com/ByMaxAnjos/LCZ4r/raw/main/inst/figures/fig_local_modeling_4.png",
+        "f3": "https://github.com/ByMaxAnjos/LCZ4r/raw/main/inst/figures/fig_local_uhi_3.png",
+        "f4": "https://github.com/user-attachments/assets/68cdca10-c1d5-4755-8d73-351af809552a",
+    }
+    features = []
+    for i in range(1, 5):
+        key = f"f{i}"
+        features.append({
+            "icon":  FEATURE_ICONS[key],
+            "title": en.get(f"{key}_title", ""),
+            "desc":  en.get(f"{key}_desc", ""),
+            "image": images.get(key, ""),
+        })
+    return features
+
+# -----------------------------------------------------------------------
+# Build Team Data
+# -----------------------------------------------------------------------
+
+def build_team_data():
+    team = []
+    for m in TEAM_MEMBERS:
+        team.append({
+            "name":     m["name"],
+            "initials": m["initials"],
+            "role_en":  m["role"]["en"],
+            "org":      m["org"],
+            "github":   m.get("github", ""),
+            "email":    m.get("email", ""),
+            "avatar":   m.get("avatar", ""),
+        })
+    return team
+
+# -----------------------------------------------------------------------
+# Build Functions Data
+# -----------------------------------------------------------------------
+
+def build_functions_data():
+    fns = []
+    for fn in FUNCTIONS:
+        fns.append({
+            "name": fn["name"],
+            "icon": fn["icon"],
+            "desc": fn["desc"]["en"],
+        })
+    return fns
+
+# -----------------------------------------------------------------------
+# Render HTML via Jinja2
+# -----------------------------------------------------------------------
+
+def render_html(cfg):
+    translations = build_translations(cfg)
+
+    # Prepare icon dict for template (replace hyphens with underscores for Jinja)
+    icons_for_template = {
+        k.replace("-", "_"): v for k, v in ICONS.items()
+    }
+
+    env = Environment(loader=BaseLoader())
+    template = env.from_string(HTML_TEMPLATE)
+
+    html = template.render(
+        meta=cfg.get("site_meta", {}),
+        icons=type("Icons", (), icons_for_template)(),
+        features=build_features_data(cfg),
+        functions=build_functions_data(),
+        team=build_team_data(),
+        funding=FUNDING,
+        qgis_languages=QGIS_LANGUAGES,
+        translations_json=json.dumps(translations, ensure_ascii=False, indent=2),
+    )
+    return html
+
+# -----------------------------------------------------------------------
+# Entry Point
+# -----------------------------------------------------------------------
+
+if __name__ == "__main__":
+    print("LCZ4r — Landing Page Builder (Urban Night Edition)")
+    print("=" * 52)
+
+    cfg = load_config()
+    print("Config loaded: landing_page_config.yml")
+
+    html = render_html(cfg)
+
+    output_path = "index.html"
+    with open(output_path, "w", encoding="utf-8") as f:
+        f.write(html)
+
+    size_kb = len(html.encode("utf-8")) / 1024
+    print(f"index.html generated successfully! ({size_kb:.1f} KB)")
+    print()
+    print("Design: Forest Canopy + Nature Gradients + Glassmorphism Bento Box")
+    print("Languages: EN / PT / ES / ZH  (click buttons in navbar to switch)")
+    print("Background: Animated topographic contour lines")
+    print()
+    print("Open index.html in your browser to preview.")
+    print("To update content, edit landing_page_config.yml and run:")
+    print("   python3 build_landing_page.py")
+    print()
+    print("pkgdown site: https://bymaxanjos.github.io/LCZ4r/")
