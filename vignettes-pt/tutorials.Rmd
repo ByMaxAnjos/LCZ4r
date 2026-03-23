@@ -1,158 +1,80 @@
 ---
-title: "Tutorials"
+title: "Tutoriais"
 ---
 
+```{=html}
 <style>
-  /* Container Principal */
-  .climasus-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 24px;
-    padding: 20px 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  :root {
+    --fc-bg: #f8faf7; --fc-surface: #f0f4ef; --fc-elevated: #e6ede4;
+    --fc-primary: #10b981; --fc-deep: #059669; --fc-sky: #0ea5e9;
+    --fc-text: #1a2e1a; --fc-muted: #4a6741;
+    --fc-border: rgba(16,185,129,0.18); --fc-radius: 14px;
+    --fc-transition: 0.28s cubic-bezier(.4,0,.2,1);
   }
-
-  /* O Card */
-  .climasus-card {
-    position: relative;
-    border-radius: 12px;
-    overflow: hidden;
-    text-decoration: none;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    background-color: #fff;
-    display: flex;
-    flex-direction: column;
-    height: 320px; /* Altura fixa para uniformidade */
-  }
-
-  /* Efeito Hover (Ao passar o mouse) */
-  .climasus-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 12px 20px rgba(46, 125, 50, 0.25); /* Sombra Verde Floresta */
-  }
-
-  /* Imagem de Fundo */
-  .card-image {
-    height: 100%;
-    width: 100%;
-    object-fit: cover;
-    transition: transform 0.5s ease;
-  }
-
-  .climasus-card:hover .card-image {
-    transform: scale(1.05); /* Zoom suave na imagem */
-  }
-
-  /* Gradiente e Texto (Overlay) */
-  .card-overlay {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: linear-gradient(to top, rgba(20, 50, 20, 0.95), rgba(46, 125, 50, 0.6), transparent);
-    padding: 24px;
-    color: white;
-    height: 70%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-  }
-
-  /* Tipografia */
-  .card-category {
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #A5D6A7; /* Verde claro */
-    margin-bottom: 8px;
-    font-weight: bold;
-  }
-
-  .card-title {
-    font-size: 1.25rem;
-    font-weight: 700;
-    margin: 0 0 6px 0;
-    line-height: 1.2;
-    color: #ffffff;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-  }
-
-  .card-subtitle {
-    font-size: 0.9rem;
-    color: #E8F5E9;
-    margin: 0;
-    opacity: 0.9;
-    line-height: 1.4;
-  }
-
-  /* Seta de ação */
-  .card-arrow {
-    margin-top: 15px;
-    font-weight: bold;
-    color: #fff;
-    font-size: 1.1rem;
-    opacity: 0;
-    transform: translateX(-10px);
-    transition: all 0.3s ease;
-  }
-
-  .climasus-card:hover .card-arrow {
-    opacity: 1;
-    transform: translateX(0);
-  }
+  .tut-hero { background: linear-gradient(135deg,#1a2e1a 0%,#10b981 60%,#0ea5e9 100%); border-radius: var(--fc-radius); padding: 2.4rem 2rem 2rem; margin-bottom: 2rem; color:#fff; }
+  .tut-hero-eyebrow { font-size:.72rem; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:rgba(255,255,255,0.7); margin-bottom:.5rem; }
+  .tut-hero h1 { font-size:clamp(1.5rem,4vw,2.2rem); font-weight:700; margin:0 0 .7rem; }
+  .tut-hero p { font-size:1rem; color:rgba(255,255,255,0.85); margin:0; max-width:560px; line-height:1.6; }
+  .tut-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.4rem; margin-bottom:2.4rem; }
+  .tut-card { background:rgba(255,255,255,0.82); backdrop-filter:blur(10px); border:1px solid var(--fc-border); border-radius:var(--fc-radius); overflow:hidden; text-decoration:none !important; color:inherit !important; display:flex; flex-direction:column; transition:transform var(--fc-transition),box-shadow var(--fc-transition); }
+  .tut-card:hover { transform:translateY(-4px); box-shadow:0 10px 32px rgba(16,185,129,0.18); }
+  .tut-card-img { width:100%; height:180px; object-fit:cover; background:var(--fc-elevated); display:block; }
+  .tut-card-img-placeholder { width:100%; height:180px; background:linear-gradient(135deg,#e8f5e9,#d1fae5); display:flex; align-items:center; justify-content:center; font-size:3rem; }
+  .tut-card-badge { position:absolute; top:.8rem; right:.8rem; background:rgba(16,185,129,0.9); color:#fff; border-radius:100px; padding:.2rem .7rem; font-size:.72rem; font-weight:600; }
+  .tut-card-body { padding:1.3rem 1.4rem 1.5rem; flex:1; display:flex; flex-direction:column; position:relative; }
+  .tut-card-icon { width:40px; height:40px; background:linear-gradient(135deg,#e8f5e9,#d1fae5); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.2rem; margin-bottom:.8rem; }
+  .tut-card-title { font-size:1.05rem; font-weight:700; color:var(--fc-text); margin:0 0 .4rem; }
+  .tut-card-desc { font-size:.88rem; color:var(--fc-muted); line-height:1.55; flex:1; margin:0 0 1rem; }
+  .tut-card-btn { display:inline-flex; align-items:center; gap:.4rem; background:linear-gradient(135deg,var(--fc-primary),var(--fc-deep)); color:#fff !important; text-decoration:none !important; padding:.5rem 1.1rem; border-radius:100px; font-size:.82rem; font-weight:600; align-self:flex-start; transition:filter var(--fc-transition); }
+  .tut-card-btn:hover { filter:brightness(1.08); }
+  .github-feedback-btn { display:inline-flex; align-items:center; gap:.5rem; background:linear-gradient(135deg,#1a2e1a,#10b981); color:#fff !important; text-decoration:none !important; padding:.7rem 1.5rem; border-radius:100px; font-size:.88rem; font-weight:600; box-shadow:0 4px 14px rgba(26,46,26,0.25); transition:filter var(--fc-transition),transform var(--fc-transition); margin-top:.5rem; }
+  .github-feedback-btn:hover { filter:brightness(1.1); transform:translateY(-2px); }
+  @media(max-width:640px){.tut-grid{grid-template-columns:1fr;}.tut-hero{padding:1.6rem 1.2rem;}}
+  @media(prefers-reduced-motion:reduce){.tut-card,.tut-card-btn,.github-feedback-btn{transition:none;}}
 </style>
 
-<div class="climasus-grid">
+<div class="tut-hero">
+  <div class="tut-hero-eyebrow">LCZ4r · Tutoriais</div>
+  <h1>Tutoriais LCZ4r</h1>
+  <p>Aprenda a usar o LCZ4r passo a passo — desde a instalação até análises avançadas de Ilhas de Calor Urbanas e Zonas Climáticas Locais.</p>
+</div>
 
-  <a href="/tutoriais/data-engineering" class="climasus-card">
-    <img src="https://github.com/ByMaxAnjos/climasus4r/blob/master/inst/figures/logo.png?raw=true" alt="Data Science" class="card-image">
-    <div class="card-overlay">
-      <span class="card-category">Engenharia de Dados</span>
-      <h3 class="card-title">Fundamentos & Integração SUS</h3>
-      <p class="card-subtitle">Domine a extração do DATASUS, limpeza de dados e unificação com bases meteorológicas.</p>
-      <div class="card-arrow">Começar →</div>
+<div class="tut-grid">
+
+  <a href="https://bymaxanjos.github.io/LCZ4r/pt/articles/about.html" class="tut-card" style="position:relative;">
+    <span class="tut-card-badge">Essencial</span>
+    <img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/vignettes/fig_general_1_1.png" alt="LCZ Map" class="tut-card-img" onerror="this.style.display='none'">
+    <div class="tut-card-body">
+      <div class="tut-card-icon">🗺️</div>
+      <div class="tut-card-title">Tutorial Introdutório</div>
+      <p class="tut-card-desc">Aprenda o fluxo completo: desde a instalação do pacote até a criação de mapas LCZ e séries temporais. Ideal para iniciantes.</p>
+      <span class="tut-card-btn">Começar Agora →</span>
     </div>
   </a>
 
-  <a href="/tutoriais/case-studies" class="climasus-card">
-    <img src="https://github.com/ByMaxAnjos/climasus4r/blob/master/inst/figures/logo.png?raw=true" alt="Epidemiology Map" class="card-image">
-    <div class="card-overlay">
-      <span class="card-category">Epidemiologia Aplicada</span>
-      <h3 class="card-title">Estudos de Caso & Modelagem</h3>
-      <p class="card-subtitle">Pipelines reprodutíveis: de surtos de Dengue a análises de ondas de calor.</p>
-      <div class="card-arrow">Explorar →</div>
-    </div>
-  </a>
-
-  <a href="/tutoriais/education" class="climasus-card">
-    <img src="https://github.com/ByMaxAnjos/climasus4r/blob/master/inst/figures/logo.png?raw=true" alt="Education" class="card-image">
-    <div class="card-overlay">
-      <span class="card-category">Academia</span>
-      <h3 class="card-title">Educação em Saúde Planetária</h3>
-      <p class="card-subtitle">Recursos didáticos para ensinar R, GIS e saúde ambiental na graduação e pós.</p>
-      <div class="card-arrow">Aprender →</div>
-    </div>
-  </a>
-
-  <a href="/tutoriais/public-policy" class="climasus-card">
-    <img src="https://github.com/ByMaxAnjos/climasus4r/blob/master/inst/figures/logo.png?raw=true" alt="Meeting Strategy" class="card-image">
-    <div class="card-overlay">
-      <span class="card-category">Tomada de Decisão</span>
-      <h3 class="card-title">Gestão & Políticas Públicas</h3>
-      <p class="card-subtitle">Transforme dados brutos em evidências estratégicas, relatórios e dashboards.</p>
-      <div class="card-arrow">Visualizar →</div>
+  <a href="https://bymaxanjos.github.io/LCZ4r/pt/reference/index.html" class="tut-card" style="position:relative;">
+    <span class="tut-card-badge">Avançado</span>
+    <img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/vignettes/fig_local_uhi_2.png" alt="UHI Analysis" class="tut-card-img" onerror="this.style.display='none'">
+    <div class="tut-card-body">
+      <div class="tut-card-icon">🌡️</div>
+      <div class="tut-card-title">Análise de Ilha de Calor Urbana</div>
+      <p class="tut-card-desc">Explore fluxos de trabalho avançados para cálculo de intensidade UHI, detecção de anomalias térmicas e interpolação de temperatura do ar.</p>
+      <span class="tut-card-btn">Ver Funções →</span>
     </div>
   </a>
 
 </div>
+```
 
+---
 
-## 🌲 Have feedback or suggestions?
-Do you have an idea for improvement or did you spot a mistake? We'd love to hear from you! Click the button below to create a new issue on GitHub and share your feedback directly with us.
+## Tem feedback ou sugestões?
 
-<a href='https://github.com/ByMaxAnjos/climasus4r/issues/new'>
-  <button type="button" class="btn" style="background-color: #2E7D32; color: white; padding: 8px 16px; font-size: 14px; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; transition: background-color 0.3s;">
-    Open an issue in the Github repository
-  </button>
+Você tem alguma ideia de melhoria ou encontrou algum erro? Adoraríamos ouvir você!
+
+```{=html}
+<a href='https://github.com/ByMaxAnjos/LCZ4r/issues/new' class="github-feedback-btn">
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+  Abrir uma issue no GitHub
 </a>
+```
