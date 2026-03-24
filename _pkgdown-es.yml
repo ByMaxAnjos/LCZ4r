@@ -45,6 +45,8 @@ navbar:
       href: ../en/index.html
     - text: "Português"
       href: ../pt/index.html
+    - text: "简体中文"
+      href: ../zh/index.html
 
 logo:
   src: inst/figures/logo.png

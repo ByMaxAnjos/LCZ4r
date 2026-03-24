@@ -267,7 +267,7 @@ title: "Tutoriais"
     <div class="card-image-wrapper">
       <span class="card-image-badge">Posit Cloud</span>
       <img
-        src="https://github.com/ByMaxAnjos/LCZ4r/raw/main/inst/figures/fig_general_1_1.png"
+        src="https://github.com/ByMaxAnjos/LCZ4r/raw/main/inst/figures/posit_cloud.png"
         alt="LCZ map SP"
         loading="lazy"
         onerror="this.parentElement.style.display='none'">
