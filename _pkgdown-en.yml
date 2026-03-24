@@ -103,6 +103,7 @@ articles:
       - local_func_modeling
       - local_func_modeling_eval
       - local_func_modeling_crows
+      - posit_cloud
   - title: "QGIS Plugin"
     contents:
       - examples
