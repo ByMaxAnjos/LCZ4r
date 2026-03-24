@@ -199,7 +199,7 @@ lcz_plot_map(lcz_map)
 
 ### Load and Explore CWS Data
 
-```{r eval=TRUE, message=FALSE, warning=FALSE}
+```{r eval=FALSE, message=FALSE, warning=FALSE}
 # Load sample CWS data for Berlin from the CrowdQCplus package
 data(cqcp_cws_data)
 
@@ -212,7 +212,7 @@ summary(cqcp_cws_data)
 
 ### Visualize CWS Station Distribution
 
-```{r eval=TRUE, message=FALSE, warning=FALSE, out.width = '100%', fig.align='center'}
+```{r eval=FALSE, message=FALSE, warning=FALSE, out.width = '100%', fig.align='center'}
 # Convert CWS stations to an sf object for spatial analysis
 shp_stations <- cqcp_cws_data %>%
   distinct(lon, lat, .keep_all = TRUE) %>%
@@ -235,7 +235,7 @@ To ensure data reliability, we applied the quality control (QC) method developed
 3. **Quality control**: Applies statistical filters to identify outliers
 4. **Output statistics**: Summarizes QC results
 
-```{r eval=TRUE, message=FALSE, warning=FALSE}
+```{r eval=FALSE, message=FALSE, warning=FALSE}
 # Perform data padding and input checks
 data_crows <- cqcp_padding(cqcp_cws_data)
 data_check <- cqcp_check_input(data_crows)
