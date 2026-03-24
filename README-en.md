@@ -10,27 +10,6 @@ The [**LCZ4r package**](https://github.com/ByMaxAnjos/LCZ4r) provides a comprehe
 
 ---
 
-## Scientific publication
-
-The **LCZ4r** package is supported by the following peer-reviewed publication:
-
-[![Nature Scientific Reports](https://img.shields.io/badge/Published%20in-Nature%20Scientific%20Reports-2A6B92)](https://www.nature.com/scientificreports)
-
-<a href="https://www.nature.com/articles/s41598-025-92000-0" target="_blank">
-  <p style="text-align:center;">
-    <img src="https://github.com/ByMaxAnjos/LCZ4r/raw/main/inst/figures/paper_nature.png" 
-         alt="LCZ4r Publication in Nature Scientific Reports" 
-         width="60%" 
-         style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); transition: transform 0.3s ease;">
-  </p>
-  <p style="text-align:center;">
-    (Click the image to explore the full publication in Nature Scientific Reports.)
-  </p>
-</a>
-
----
-
-
 # 1. Installation
 
 The `LCZ4r` package is available on GitHub and can be installed in two ways.  
@@ -98,33 +77,6 @@ library(LCZ4r)
 
 ---
 
-## Package Overview
-
-The **LCZ4r** package includes the following key functions:
-
-- **Data Download**:
-  - `lcz_get_map()`: Download LCZ maps from the global dataset.
-  - `lcz_get_map_euro()`: Download LCZ maps from the European dataset.
-  - `lcz_get_map_usa()`: Download LCZ maps from the Continental United States dataset.
-  - `lcz_get_map_generator()`: Download LCZ maps from the LCZ Generator Platform.
-
-- **Visualization**:
-  - `lcz_plot_map()`: Visualize LCZ maps.
-  - `lcz_plot_parameters()`: Visualize LCZ parameter maps.
-  - `lcz_plot_interp()`: Visualize LCZ interpolation results.
-
-- **Analysis**:
-  - `lcz_cal_area()`: Calculate the area of LCZ classes.
-  - `lcz_get_parameters()`: Retrieve LCZ parameters.
-  - `lcz_ts()`: Analyze LCZ time series.
-  - `lcz_anomaly()`: Calculate LCZ thermal anomalies.
-  - `lcz_anomaly_map()`: Map LCZ thermal anomalies.
-  - `lcz_interp_map()`: Map LCZ interpolation results.
-  - `lcz_interp_eval()`: Evaluate LCZ interpolation accuracy.
-  - `lcz_uhi_intensity()`: Assess urban heat island intensity using LCZ data.
-
----
-
 ## [Run LCZ4r in Posit Cloud, no RStudio installation required!](https://bymaxanjos.github.io/LCZ4r/articles/posit_cloud.html)
 
 <a href="https://posit.cloud/content/9921467" target="_blank">
@@ -143,37 +95,10 @@ The **LCZ4r** package includes the following key functions:
 
 ## LCZ4r-QGIS Plugin: Multilingual Integration
 
-The [**LCZ4r-QGIS plugin**](https://bymaxanjos.github.io/LCZ4r/articles/Introd_QGIS_LCZ4r.html) integrates the LCZ4r package with **QGIS**, enabling users to analyze Local Climate Zones and urban heat islands directly within the QGIS environment. The plugin supports multiple languages, making it accessible to a global audience.
+The [**LCZ4r-QGIS plugin**](https://bymaxanjos.github.io/LCZ4r/en/articles/examples.html) integrates the LCZ4r package with **QGIS**, enabling users to analyze Local Climate Zones and urban heat islands directly within the QGIS environment. The plugin supports multiple languages, making it accessible to a global audience.
 
 <img width="1217" alt="LCZ4r-QGIS Plugin Screenshot" src="https://github.com/user-attachments/assets/68cdca10-c1d5-4755-8d73-351af809552a">
 
----
-
-## People
-
-The development of the **LCZ4r** package is led by [**Dr. Max Anjos**](https://www.researchgate.net/profile/Max-Anjos/research) and supported by a team of researchers:
-
-With the following contributors:
-
-- **Dr. Fred Meier**, Chair of Climatology, Institute of Ecology, Technische Universität Berlin (fred.meier@tu-berlin.de).
-- **Dr. Francisco Castelhano**, Center for Climate Crisis Studies, Department of Geography, Federal University of Rio Grande do Norte, Brazil (fjcastelhano@gmail.com).
-- **Dayvid Carlos de Medeiros**, Center for Climate Crisis Studies, Department of Geography, Federal University of Rio Grande do Norte, Brazil (Dayvid.medeiros.123@ufrn.edu.br).
-- **Antônio Campos Neto**, Center for Climate Crisis Studies, Department of Geography, Federal University of Rio Grande do Norte, Braziln (antoniocamposneto9@gmail.com).
-- **José Felipe da Costa Neto**, Department of Geography, Federal University of Rio Grande do Norte, Braziln (jose.felipe.124@ufrn.edu.br).
-
----
-
-## Funding
-
-This project was supported by:
-- **Coordenação de Aperfeiçoamento de Pessoal de Nível Superior (CAPES)** – Finance Code 001.
-- **Alexander von Humboldt Foundation**.
-
----
-
-## Contact
-
-For questions, suggestions, or collaboration opportunities, please contact us at [maxanjos@campus.ul.pt](mailto:maxanjos@campus.ul.p). We welcome contributions to the development of this R package!
 
 ---
 

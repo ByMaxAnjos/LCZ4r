@@ -142,7 +142,7 @@ jobs:
       - name: Build Chinese site
         run: |
           # Use English README as base (no Chinese README yet)
-          cp README-en.md README.md
+          cp README-zh.md README.md
           
           # Copy vignettes
           mkdir -p vignettes

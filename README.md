@@ -10,33 +10,11 @@ The [**LCZ4r package**](https://github.com/ByMaxAnjos/LCZ4r) provides a comprehe
 
 ---
 
-## Scientific publication
-
-The **LCZ4r** package is supported by the following peer-reviewed publication:
-
-[![Nature Scientific Reports](https://img.shields.io/badge/Published%20in-Nature%20Scientific%20Reports-2A6B92)](https://www.nature.com/scientificreports)
-
-<a href="https://www.nature.com/articles/s41598-025-92000-0" target="_blank">
-  <p style="text-align:center;">
-    <img src="https://github.com/ByMaxAnjos/LCZ4r/raw/main/inst/figures/paper_nature.png" 
-         alt="LCZ4r Publication in Nature Scientific Reports" 
-         width="60%" 
-         style="border-radius: 10px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); transition: transform 0.3s ease;">
-  </p>
-  <p style="text-align:center;">
-    (Click the image to explore the full publication in Nature Scientific Reports.)
-  </p>
-</a>
-
----
-
-
 # 1. Installation
 
 The `LCZ4r` package is available on GitHub and can be installed in two ways.  
 We recommend **Option 1** for most users.
 
----
 
 ## Option 1: Install from GitHub (Recommended)
 
@@ -98,7 +76,7 @@ library(LCZ4r)
 
 --
 
-## [Run LCZ4r in Posit Cloud, no RStudio installation required!](https://bymaxanjos.github.io/LCZ4r/articles/posit_cloud.html)
+## [Run LCZ4r in Posit Cloud, no RStudio installation required!](https://bymaxanjos.github.io/LCZ4r/en/articles/posit_cloud.html)
 
 <a href="https://posit.cloud/content/9921467" target="_blank">
   <p style="text-align:center;">
@@ -111,12 +89,6 @@ library(LCZ4r)
     (Click the image to explore the LCZ4r in Posit Cloud.)
   </p>
 </a>
-
----
-
-## Contact
-
-For questions, suggestions, or collaboration opportunities, please contact us at [maxanjos@campus.ul.pt](mailto:maxanjos@campus.ul.p). We welcome contributions to the development of this R package!
 
 ---
 
