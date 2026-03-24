@@ -153,7 +153,6 @@ if (!require("pacman")) install.packages("pacman")
 install.packages("sf", type = "binary")
 pacman::p_load(remotes, dplyr, tmap, ggplot2, devtools, data.table)
 
-library(LCZ4r)   # For LCZ and UHI analysis
 library(dplyr)   # For data manipulation
 library(sf)      # For vector data manipulation
 library(tmap)    # For interactive map visualization
@@ -184,8 +183,9 @@ However, careful quality control is essential to ensure data reliability.
 ### Load LCZ Map for Berlin
 
 ```{r eval=FALSE, message=FALSE, warning=FALSE}
-# Retrieve the LCZ map for Berlin using the LCZ Generator Platform
 
+library(LCZ4r)
+# Retrieve the LCZ map for Berlin using the LCZ Generator Platform
 lcz_map <- lcz_get_map_generator(ID = "8576bde60bfe774e335190f2e8fdd125dd9f4299")
 
 # Visualize the LCZ map
