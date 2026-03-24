@@ -155,7 +155,7 @@ In this tutorial, we'll demonstrate how to use this function to evaluate air tem
 - **Evaluation metrics** calculation (RMSE, MAE, sMAPE)
 - **Visualization** of model performance by LCZ class
 
-```{r eval=TRUE, message=FALSE, warning=FALSE}
+```{r eval=FALSE, message=FALSE, warning=FALSE}
 # Load required packages
 if (!require("pacman")) install.packages("pacman")
 pacman::p_load(dplyr, sf, tmap, ggplot2, ggExtra, ggpmisc)
@@ -218,7 +218,7 @@ head(lcz_data)
 
 ### Visualize Monitoring Stations
 
-```{r eval=TRUE, message=FALSE, warning=FALSE, out.width = '100%', fig.align='center'}
+```{r eval=FALSE, message=FALSE, warning=FALSE, out.width = '100%', fig.align='center'}
 # Convert the data to an sf object for spatial visualization
 shp_stations <- lcz_data %>%
   distinct(Longitude, Latitude, .keep_all = TRUE) %>%
