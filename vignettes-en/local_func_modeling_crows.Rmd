@@ -136,6 +136,7 @@ knitr::opts_chunk$set(
   eval    = FALSE,
   warning = FALSE,
   message = FALSE,
+  cache = FALSE,
   comment = "#>",
   fig.align = "center",
   out.width = "80%",
@@ -184,12 +185,11 @@ However, careful quality control is essential to ensure data reliability.
 
 ```{r eval=FALSE, message=FALSE, warning=FALSE}
 
-library(LCZ4r)
 # Retrieve the LCZ map for Berlin using the LCZ Generator Platform
-lcz_map <- lcz_get_map_generator(ID = "8576bde60bfe774e335190f2e8fdd125dd9f4299")
+lcz_map <- LCZ4r::lcz_get_map_generator(ID = "8576bde60bfe774e335190f2e8fdd125dd9f4299")
 
 # Visualize the LCZ map
-lcz_plot_map(lcz_map)
+LCZ4r::lcz_plot_map(lcz_map)
 ```
 
 <div class="figure" style="text-align: center">
