@@ -1,0 +1,538 @@
+---
+title: "Introduction to LCZ4r-QGIS plugin"
+author: "Max Anjos"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 4
+    toc_float:
+      collapsed: true
+      smooth_scroll: true
+    number_sections: true
+    theme: flatly
+    highlight: tango
+    code_folding: show
+    code_download: true
+    self_contained: false
+    df_print: paged
+---
+
+```{css, echo=FALSE}
+/* ── Variáveis de Cores Modernas ────────────────── */
+:root {
+  --primary-color: #1D9E75;
+  --dark-green: #0f3d2e;
+  --bg-light: #f8faf9;
+  --text-main: #1a1a1a;
+  --code-bg: #fdfdfd;
+  --qgis-blue: #5890be;
+  --r-blue: #276dc3;
+  --ai-purple: #9b59b6;
+  --human-green: #27ae60;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 18px;
+  color: var(--text-main);
+  background-color: #fff;
+  line-height: 1.6;
+}
+
+/* ── Títulos com Inter-spacing ─────────────────── */
+h1, h2, h3, h4 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  color: var(--dark-green);
+}
+
+h1.title {
+  font-size: 2.8em;
+  border-bottom: 4px solid var(--primary-color);
+  padding-bottom: 10px;
+  margin-bottom: 1.5rem;
+}
+
+h2 {
+  margin-top: 2rem;
+  border-left: 4px solid var(--primary-color);
+  padding-left: 1rem;
+}
+
+/* ── Code Blocks Estilizados ────────────────────── */
+pre.r, pre.sourceCode {
+  background-color: var(--code-bg);
+  border: 1px solid #e1e1e1;
+  border-left: 5px solid var(--primary-color) !important;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  padding: 1rem;
+}
+
+/* ── Custom Callouts (Estilo Quarto) ────────────── */
+.callout {
+  padding: 1.2em 1.5em;
+  margin: 1.5em 0;
+  border-radius: 8px;
+  border-left: 6px solid;
+  background-color: var(--bg-light);
+}
+
+.callout-note {
+  background-color: #f0f7ff;
+  border-color: #007bff;
+}
+
+.callout-tip {
+  background-color: #e8f5e9;
+  border-color: #1D9E75;
+}
+
+.callout-warning {
+  background-color: #fff3e0;
+  border-color: #ff9800;
+}
+
+.callout-info {
+  background-color: #e3f2fd;
+  border-color: #2196f3;
+}
+
+/* ── Feature cards ──────────────────────────────── */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.feature-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid #e1e1e1;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-align: center;
+}
+
+.feature-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+
+.feature-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.feature-card h3 {
+  margin-top: 0;
+  color: var(--primary-color);
+  font-size: 1.2rem;
+}
+
+.feature-card p {
+  font-size: 0.9rem;
+  color: var(--text-main);
+  margin-bottom: 0;
+}
+
+/* ── Translation level cards ────────────────────── */
+.translation-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.translation-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e1e1e1;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.translation-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+
+.translation-header {
+  padding: 1rem;
+  text-align: center;
+  color: white;
+}
+
+.translation-header.human {
+  background: linear-gradient(135deg, var(--human-green) 0%, #2ecc71 100%);
+}
+
+.translation-header.ai-human {
+  background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+}
+
+.translation-header.ai-only {
+  background: linear-gradient(135deg, var(--ai-purple) 0%, #8e44ad 100%);
+}
+
+.translation-header h3 {
+  margin: 0;
+  color: white;
+  font-size: 1.2rem;
+}
+
+.translation-body {
+  padding: 1.25rem;
+  text-align: center;
+}
+
+.translation-body p {
+  font-size: 0.9rem;
+  color: var(--text-main);
+  margin-bottom: 1rem;
+}
+
+.translation-image {
+  margin: 1rem 0;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.translation-image img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ── Step container styling ─────────────────────── */
+.step-container {
+  background-color: var(--bg-light);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  border-left: 4px solid var(--primary-color);
+}
+
+/* ── Figure styling ─────────────────────────────── */
+.figure {
+  margin: 1.5rem 0;
+  text-align: center;
+}
+
+.figure img {
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  max-width: 100%;
+  height: auto;
+}
+
+.figure .caption {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 8px;
+  font-style: italic;
+}
+
+/* ── Badge styling ───────────────────────────────── */
+.badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+.badge-primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.badge-info {
+  background-color: #2196f3;
+  color: white;
+}
+
+/* ── Botão GitHub aprimorado ───────────────────── */
+.github-feedback-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #24292e;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-family: sans-serif;
+  transition: background-color 0.2s;
+  margin-top: 1rem;
+}
+
+.github-feedback-btn:hover {
+  background-color: #2c3e50;
+  color: white;
+  text-decoration: none;
+}
+
+/* ── Contact info ───────────────────────────────── */
+.contact-card {
+  background: linear-gradient(135deg, #e8f5e9 0%, #d1fae5 100%);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  text-align: center;
+  border: 1px solid var(--primary-color);
+}
+
+.contact-email {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.contact-email:hover {
+  text-decoration: underline;
+}
+
+/* ── Stats section ───────────────────────────────── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+  text-align: center;
+}
+
+.stat-card {
+  background: var(--bg-light);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid #e1e1e1;
+}
+
+.stat-number {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: var(--text-main);
+}
+
+/* ── Responsive ─────────────────────────────────── */
+@media (max-width: 768px) {
+  body {
+    font-size: 16px;
+  }
+  
+  h1.title {
+    font-size: 2rem;
+  }
+  
+  .feature-grid,
+  .translation-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .stat-card {
+    padding: 1rem;
+  }
+  
+  .stat-number {
+    font-size: 1.8rem;
+  }
+}
+```
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Introduction to LCZ4r-QGIS Plugin
+
+## 🌍 A Multilingual Integration
+
+The **LCZ4r-QGIS plugin** repository integrates the **LCZ4r package** with [QGIS](https://qgis.org/) in multiple languages. It facilitates the integration of the [General Functions](https://bymaxanjos.github.io/LCZ4r/en/articles/Introd_genera_LCZ4r.html) and [Local Functions](https://bymaxanjos.github.io/LCZ4r/en/articles/Introd_local_LCZ4r.html) from the LCZ4r package into QGIS, allowing users to analyze Local Climate Zones (LCZ) and urban heat islands directly within the QGIS environment.
+
+<!-- badges: start -->
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+<!-- badges: end -->
+
+::: {.callout .callout-note}
+**What is LCZ4r-QGIS?**
+
+LCZ4r-QGIS is a bridge between the powerful statistical capabilities of R (through the LCZ4r package) and the intuitive GIS interface of QGIS. It brings advanced urban climate analysis tools to your fingertips without requiring deep programming knowledge.
+:::
+
+## 📊 Plugin Overview
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/install_QGIS.png" alt="LCZ4r functions in QGIS Processing Toolbox" width="80%" />
+<p class="caption">LCZ4r functions integrated into the QGIS Processing Toolbox</p>
+</div>
+
+## ✨ Key Features
+
+<div class="feature-grid">
+
+<div class="feature-card">
+<div class="feature-icon">🔗</div>
+<h3>Seamless Integration</h3>
+<p>Smooth interaction between QGIS and the LCZ4r package, enabling users to leverage R's statistical and graphical capabilities within the QGIS interface.</p>
+</div>
+
+<div class="feature-card">
+<div class="feature-icon">🎨</div>
+<h3>User-Friendly Interface</h3>
+<p>Accessible for users familiar with QGIS, making complex analyses simpler to execute without requiring extensive programming knowledge.</p>
+</div>
+
+<div class="feature-card">
+<div class="feature-icon">🌡️</div>
+<h3>Urban Climate Analysis</h3>
+<p>Tools for analyzing and visualizing Local Climate Zones (LCZ) and Urban Heat Islands (UHI) with professional-grade outputs.</p>
+</div>
+
+<div class="feature-card">
+<div class="feature-icon">🌐</div>
+<h3>Multilingual Support</h3>
+<p>Available in 12+ languages, making urban climate analysis accessible to researchers and practitioners worldwide.</p>
+</div>
+
+</div>
+
+## 🗃️ Installation
+
+For detailed installation instructions, please visit the [LCZ4r Installation Guide](https://bymaxanjos.github.io/LCZ4r/en/articles/instalation_lcz4r_qgis.html).
+
+::: {.callout .callout-tip}
+**Quick Installation Steps:**
+
+1. Install R (version 4.0-4.3) and Rtools (Windows)
+2. Install the "Processing R Provider" plugin in QGIS
+3. Download the LCZ4r scripts for your preferred language
+4. Configure the R scripts folder in QGIS settings
+5. Run "Install LCZ4r" from the Setup Functions
+
+*First-time installation may take 5-10 minutes to install all dependencies.*
+:::
+
+## 🌐 Translation Process
+
+The translation process evolves through three levels of quality assurance, ensuring accessibility while maintaining technical accuracy:
+
+<div class="translation-grid">
+
+<div class="translation-card">
+<div class="translation-header human">
+<h3>✅ Human Translation</h3>
+</div>
+<div class="translation-body">
+<div class="translation-image">
+<img src="https://github.com/user-attachments/assets/b30e9a14-0730-403d-8cd5-19ab70baa3ec" alt="Human Translation">
+</div>
+<p>The functions and documentation of LCZ4r were translated manually by experts familiar with Climatology, LCZ, and GIS.</p>
+<p><strong>Quality:</strong> Highest accuracy, culturally nuanced</p>
+<p><strong>Languages:</strong> English, Portuguese</p>
+</div>
+</div>
+
+<div class="translation-card">
+<div class="translation-header ai-human">
+<h3>🔄 AI-Assisted, Human-Reviewed</h3>
+</div>
+<div class="translation-body">
+<div class="translation-image">
+<img src="https://github.com/user-attachments/assets/ed21bd61-b2c5-4dbb-9601-6485292d7b4c" alt="AI-Assisted Translation">
+</div>
+<p>Translations initially performed by AI and then reviewed and refined by human experts familiar with Climatology, LCZ, and GIS.</p>
+<p><strong>Quality:</strong> High accuracy with expert validation</p>
+<p><strong>Languages:</strong> German, Chinese, Spanish, French</p>
+</div>
+</div>
+
+<div class="translation-card">
+<div class="translation-header ai-only">
+<h3>🤖 AI-Only Translation</h3>
+</div>
+<div class="translation-body">
+<div class="translation-image">
+<img src="https://github.com/user-attachments/assets/2b2312d0-bb71-4c80-b6db-4048e315fbee" alt="AI-Only Translation">
+</div>
+<p>All functions and corresponding documentation were fully translated using AI, without human review.</p>
+<p><strong>Quality:</strong> Good accuracy, rapid deployment</p>
+<p><strong>Languages:</strong> Japanese, Italian, Hindi, Arabic, Bengali, Russian</p>
+</div>
+</div>
+
+</div>
+
+## 🚀 What You Can Do with LCZ4r-QGIS
+
+### General Functions
+
+| Function | Description |
+|----------|-------------|
+| **Download LCZ Map** | Get LCZ maps from global, European, or USA datasets |
+| **Clip LCZ Map** | Extract LCZ data for specific cities or regions |
+| **Calculate LCZ Area** | Compute area statistics for each LCZ class |
+| **Get LCZ Parameters** | Extract urban canopy parameters (SVF, ISF, HRE, etc.) |
+
+### Local Functions
+
+| Function | Description |
+|----------|-------------|
+| **Time Series Analysis** | Analyze temperature trends across LCZ classes |
+| **Thermal Anomalies** | Calculate and map temperature anomalies |
+| **UHI Intensity** | Assess Urban Heat Island intensity by LCZ |
+| **Spatial Interpolation** | Create temperature maps using kriging with LCZ |
+
+## 📚 Learning Resources
+
+- 📖 [General Functions Tutorial](https://bymaxanjos.github.io/LCZ4r/en/articles/Introd_genera_LCZ4r.html)
+- 📖 [Local Functions Tutorial](https://bymaxanjos.github.io/LCZ4r/en/articles/Introd_local_LCZ4r.html)
+- 🎥 [Video Tutorials on YouTube](https://www.youtube.com/watch?v=WeaP1a2DCyw&t=1s&pp=ygUGbGN6NHIg)
+- 💻 [GitHub Repository](https://github.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual)
+
+## 🤝 Contributing
+
+We welcome contributions to the LCZ4r-QGIS plugin! Here's how you can help:
+
+- **Translate** the plugin to new languages
+- **Report bugs** and suggest features
+- **Improve documentation**
+- **Share** your workflows and case studies
+
+## 📧 Contact
+
+<div class="contact-card">
+<p>Have questions, suggestions, or want to contribute?</p>
+<p>📧 <a href="mailto:maxanjos@campus.ul.pt" class="contact-email">maxanjos@campus.ul.pt</a></p>
+<p>🤝 We're always looking for collaborators to help improve LCZ4r for everyone!</p>
+</div>
+
+## 📬 Have feedback or suggestions?
+
+Do you have an idea for improvement or did you spot a mistake? We'd love to hear from you! Click the button below to create a new issue (GitHub) and share your feedback or suggestions directly with us.
+
+```{=html}
+<a href='https://github.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/issues/new' class="github-feedback-btn">
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+  </svg>
+  Open GitHub issue
+</a>
+```
