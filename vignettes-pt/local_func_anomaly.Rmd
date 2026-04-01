@@ -1,0 +1,426 @@
+---
+title: "Anomalias Térmicas"
+author: "Max Anjos"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 4
+    toc_float:
+      collapsed: true
+      smooth_scroll: true
+    number_sections: true
+    theme: flatly
+    highlight: tango
+    code_folding: show
+    code_download: true
+    self_contained: false
+    df_print: paged
+---
+
+```{css, echo=FALSE}
+/* ── Variáveis de Cores Modernas ────────────────── */
+:root {
+  --primary-color: #1D9E75;
+  --dark-green: #0f3d2e;
+  --bg-light: #f8faf9;
+  --text-main: #1a1a1a;
+  --code-bg: #fdfdfd;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 18px;
+  color: var(--text-main);
+  background-color: #fff;
+}
+
+/* ── Títulos com Inter-spacing ─────────────────── */
+h1, h2, h3 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  color: var(--dark-green);
+}
+
+h1.title {
+  font-size: 2.8em;
+  border-bottom: 4px solid var(--primary-color);
+  padding-bottom: 10px;
+}
+
+/* ── Code Blocks Estilizados ────────────────────── */
+pre.r {
+  background-color: var(--code-bg);
+  border: 1px solid #e1e1e1;
+  border-left: 5px solid var(--primary-color) !important;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* ── Custom Callouts (Estilo Quarto) ────────────── */
+.callout {
+  padding: 1.2em;
+  margin: 1.5em 0;
+  border-radius: 0 8px 8px 0;
+  border-left: 6px solid;
+}
+
+.callout-note {
+  background-color: #f0f7ff;
+  border-color: #007bff;
+}
+
+.callout-tip {
+  background-color: #e8f5e9;
+  border-color: #1D9E75;
+}
+
+/* ── Transições suaves no menu lateral ──────────── */
+.list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+/* ── Estilo para imagens ───────────────────────── */
+.figure img {
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+  margin-bottom: 10px;
+}
+
+.figure img:hover {
+  transform: scale(1.02);
+}
+
+.figure .caption {
+  font-size: 0.9em;
+  color: #666;
+  margin-top: 5px;
+  font-style: italic;
+}
+
+/* ── Botão GitHub aprimorado ───────────────────── */
+.github-feedback-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #24292e;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-family: sans-serif;
+  transition: background-color 0.2s;
+}
+
+.github-feedback-btn:hover {
+  background-color: #2c3e50;
+  color: white;
+  text-decoration: none;
+}
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo    = TRUE,
+  eval    = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  comment = "#>",
+  fig.align = "center",
+  out.width = "80%",
+  fig.retina = 2
+)
+```
+
+## Primeiros Passos
+
+A anomalia térmica é uma ótima maneira de avaliar as diferenças intraurbanas de temperatura do ar. Em cada estação LCZ, a anomalia térmica é definida como a diferença entre sua temperatura e a temperatura média geral de todas as estações LCZ. Por exemplo, uma anomalia térmica positiva indica que uma determinada LCZ está mais quente em comparação com todas as outras LCZs.
+
+A função `lcz_anomaly()` tem as mesmas utilidades que a `lcz_ts()` em relação à **flexibilidade de seleção de tempo** e **divisão da série temporal LCZ por janela temporal ou local**.
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+library(LCZ4r)
+
+# Get the LCZ map for your city
+lcz_map <- lcz_get_map_euro(city = "Berlin")
+
+# Load sample data from LCZ4r
+data("lcz_data")
+```
+
+::: {.callout .callout-note}
+::: {.callout .callout-note}
+**Entendendo Anomalias Térmicas**: 
+
+- **Anomalia positiva** (cores vermelhas/quentes): Estação está mais quente que a média urbana
+- **Anomalia negativa** (cores azuis/frias): Estação está mais fria que a média urbana
+- **Anomalia zero**: Temperatura da estação igual à média urbana
+
+Esta métrica ajuda a identificar ilhas de calor urbanas e pontos frios dentro da cidade.
+:::
+
+## Opções de Visualização com plot_type
+
+O argumento `plot_type` na função `lcz_anomaly()` oferece várias visualizações:
+
+* **"diverging_bar"**: Um gráfico de barras horizontais que diverge do centro (zero), com anomalias positivas se estendendo para a direita e anomalias negativas para a esquerda
+* **"bar"**: Um gráfico de barras mostrando a magnitude da anomalia para cada estação, colorido conforme a anomalia seja positiva ou negativa
+* **"dot"**: Um gráfico de pontos que exibe tanto os valores médios de temperatura quanto os valores de referência, com linhas conectando-os
+* **"lollipop"**: Um gráfico de pirulito onde cada "haste" representa um valor de anomalia e os pontos no topo representam o tamanho da anomalia
+
+Abaixo estão exemplos usando cada tipo de visualização.
+
+### 1. Gráfico de Barras Divergentes
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Thermal anomalies for February 6, 2019 at 05:00h
+lcz_anomaly(lcz_map, 
+            data_frame = lcz_data, 
+            var = "airT", 
+            station_id = "station", 
+            time.freq = "hour", 
+            year = 2019, month = 2, day = 6, hour = 5,
+            plot_type = "diverging_bar",
+            ylab = "Air temperature [°C]",
+            xlab = "Stations",
+            title = "LCZ Thermal Anomalies",
+            caption = "Source: LCZ4r, 2024")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_anomaly_1.png" alt="Diverging bar plot showing thermal anomalies across LCZ stations" width="80%" />
+<p class="caption">Gráfico de barras divergentes mostrando anomalias térmicas nas estações LCZ em Berlim (6 de fevereiro de 2019, 05:00h). Anomalias positivas (vermelho) indicam estações mais quentes, anomalias negativas (azul) indicam estações mais frias.</p>
+</div>
+
+### 2. Bar Plot
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Bar plot for February 6, 2019 at 05:00h
+lcz_anomaly(lcz_map, 
+            data_frame = lcz_data, 
+            var = "airT", 
+            station_id = "station", 
+            time.freq = "hour", 
+            year = 2019, month = 2, day = 6, hour = 5,
+            plot_type = "bar")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_anomaly_2.png" alt="Bar plot showing magnitude of thermal anomalies" width="80%" />
+<p class="caption">Gráfico de barras mostrando a magnitude das anomalias térmicas para cada estação. Barras acima de zero indicam anomalias positivas (mais quentes), abaixo de zero indicam anomalias negativas (mais frias).</p>
+</div>
+
+### 3. Dot Plot
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Dot plot for February 6, 2019 at 05:00h
+lcz_anomaly(lcz_map, 
+            data_frame = lcz_data, 
+            var = "airT", 
+            station_id = "station", 
+            time.freq = "hour", 
+            year = 2019, month = 2, day = 6, hour = 5,
+            plot_type = "dot")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_anomaly_3.png" alt="Dot plot comparing station temperatures to urban average" width="80%" />
+<p class="caption">Gráfico de pontos mostrando as temperaturas individuais das estações (pontos coloridos) em comparação com a média urbana (linha vertical tracejada). A distância da linha representa a magnitude da anomalia térmica.</p>
+</div>
+
+### 4. Lollipop Plot
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Lollipop plot for February 6, 2019 at 05:00h
+lcz_anomaly(lcz_map, 
+            data_frame = lcz_data, 
+            var = "airT", 
+            station_id = "station", 
+            time.freq = "hour", 
+            year = 2019, month = 2, day = 6, hour = 5,
+            plot_type = "lollipop")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_anomaly_4.png" alt="Lollipop plot emphasizing anomaly magnitude" width="80%" />
+<p class="caption">Gráfico de pirulito enfatizando a magnitude e a direção das anomalias térmicas. O comprimento de cada 'haste' representa o valor da anomalia, com o tamanho do ponto indicando a magnitude.</p>
+</div>
+
+## Dividindo Anomalias com o Argumento "by"
+
+### Comparação Diurno vs. Noturno
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Calculate anomalies for nighttime and daytime on February 6, 2019
+lcz_anomaly(lcz_map, 
+            data_frame = lcz_data, 
+            var = "airT", 
+            station_id = "station", 
+            time.freq = "hour", 
+            year = 2019, month = 2, day = 6, 
+            plot_type = "diverging_bar",
+            by = "daylight")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_anomaly_5.png" alt="Comparação de anomalias térmicas entre diurno e noturno" width="80%" />
+<p class="caption">Comparação de anomalias térmicas entre diurno e noturno em 6 de fevereiro de 2019. Isso revela como os padrões térmicos urbanos variam entre os períodos diurnos.</p>
+</div>
+
+### Combinando Diurno com Meses
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Calculate monthly mean anomalies for February and August 2019
+lcz_anomaly(lcz_map, 
+            data_frame = lcz_data, 
+            var = "airT", 
+            station_id = "station", 
+            time.freq = "hour", 
+            year = 2019, month = c(2, 8), 
+            plot_type = "bar",
+            by = c("daylight", "month"))
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_anomaly_6.png" alt="Padrões sazonais e diurnos de anomalias térmicas" width="80%" />
+<p class="caption">Padrões sazonais e diurnos de anomalias térmicas: comparando inverno (fevereiro) e verão (agosto) entre períodos diurnos e noturnos.</p>
+</div>
+
+## Opções Avançadas de Análise
+
+### Agregação Temporal
+
+Você pode agregar anomalias em diferentes frequências temporais:
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Calculate daily mean anomalies for February 2019
+daily_anomalies <- lcz_anomaly(lcz_map, 
+                               data_frame = lcz_data, 
+                               var = "airT", 
+                               station_id = "station", 
+                               time.freq = "day", 
+                               year = 2019, month = 2,
+                               plot_type = "bar",
+                               iplot = FALSE)
+
+# Calculate monthly mean anomalies for 2019
+monthly_anomalies <- lcz_anomaly(lcz_map, 
+                                 data_frame = lcz_data, 
+                                 var = "airT", 
+                                 station_id = "station", 
+                                 time.freq = "month", 
+                                 year = 2019,
+                                 plot_type = "bar",
+                                 iplot = FALSE)
+```
+
+### Personalizando a Aparência Visual
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Customized diverging bar plot with specific colors and labels
+lcz_anomaly(lcz_map, 
+            data_frame = lcz_data, 
+            var = "airT", 
+            station_id = "station", 
+            time.freq = "hour", 
+            year = 2019, month = 7, day = 15, hour = 14,  # Summer afternoon
+            plot_type = "diverging_bar",
+            ylab = "Temperature Anomaly [°C]",
+            xlab = "LCZ Classes",
+            title = "Summer Afternoon Thermal Anomalies",
+            subtitle = "July 15, 2019 - 14:00h",
+            caption = "Source: LCZ4r, 2024")
+```
+
+## Retornar um Dataframe como Resultado
+
+Para salvar o resultado no R, defina `iplot = FALSE` e crie um objeto.
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Return dataframe with thermal anomalies for February and August 2019
+my_output <- lcz_anomaly(lcz_map, 
+                         data_frame = lcz_data, 
+                         var = "airT", 
+                         station_id = "station", 
+                         time.freq = "hour", 
+                         year = 2019, month = c(2, 8), 
+                         plot_type = "bar",
+                         by = c("daylight", "month"),
+                         iplot = FALSE)
+
+# View the structure of the returned dataframe
+str(my_output)
+
+# View first few rows
+head(my_output)
+```
+
+## Salvar Gráficos
+
+Para salvar um gráfico em seu computador, defina `isave = TRUE` e especifique o tipo de arquivo com `save_extension` (por exemplo, "png", "jpeg", "svg", "pdf").
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Save thermal anomalies plot to PC
+lcz_anomaly(lcz_map, 
+            data_frame = lcz_data, 
+            var = "airT", 
+            station_id = "station", 
+            time.freq = "hour", 
+            year = 2019, month = 7, day = 15, hour = 14,
+            plot_type = "diverging_bar",
+            by = "daylight",
+            isave = TRUE,
+            save_extension = "png")
+```
+
+::: {.callout .callout-tip}
+**Dica**: Os gráficos salvos serão automaticamente organizados na pasta `LCZ4r_output` com nomes de arquivo timestampados para fácil referência. A pasta é criada no seu diretório de trabalho atual.
+:::
+
+## Resumo dos Parâmetros
+
+Aqui está uma referência rápida para os principais parâmetros usados em `lcz_anomaly()`:
+
+| Parâmetro | Descrição | Opções |
+|-----------|-------------|---------|
+| `time.freq` | Frequência de agregação temporal | "hour", "day", "month", "year" |
+| `plot_type` | Tipo de visualização | "diverging_bar", "bar", "dot", "lollipop" |
+| `by` | Método de divisão dos dados | "daylight", "month", "season", "weekday", etc. |
+| `isave` | Salvar saída no PC | TRUE/FALSE |
+| `iplot` | Exibir gráfico | TRUE/FALSE |
+| `var` | Variável a analisar | Nome da coluna com dados de temperatura |
+| `station_id` | Coluna identificadora da estação | Nome da coluna com IDs das estações |
+
+## Interpretando Anomalias Térmicas
+
+Compreender os padrões nas anomalias térmicas pode fornecer insights valiosos:
+
+- **LCZs compactas construídas** tipicamente mostram anomalias positivas durante o dia
+- **LCZs abertas de baixa elevação** frequentemente exibem anomalias negativas devido à melhor ventilação
+- **Áreas industriais** frequentemente apresentam fortes anomalias positivas
+- **LCZs vegetadas** geralmente mostram anomalias negativas, especialmente durante o dia
+- **Corpos d'água** podem criar ilhas frias com anomalias negativas persistentes
+
+::: {.callout .callout-note}
+**Exemplo de Aplicação**: Planejadores urbanos podem usar mapas de anomalia térmica para identificar áreas vulneráveis ao calor e priorizar intervenções como infraestrutura verde ou materiais frios em locais com anomalias positivas persistentes.
+:::
+
+---
+
+## Tem sugestões ou feedback?
+
+Você tem uma ideia para melhoria ou encontrou um erro? Adoraríamos saber! Clique no botão abaixo para criar uma nova issue (GitHub) e compartilhar seu feedback ou sugestões diretamente conosco.
+```{=html}
+<a href='https://github.com/ByMaxAnjos/LCZ4r/issues/new' class="github-feedback-btn">
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+  </svg>
+  Open GitHub issue
+</a>
+```

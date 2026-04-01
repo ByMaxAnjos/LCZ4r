@@ -256,8 +256,7 @@ Before proceeding, ensure you have the following software installed:
 | Software | Version | Purpose | Download |
 |----------|---------|---------|----------|
 | **QGIS** | 3.16 or higher | Geographic Information System | [qgis.org](https://qgis.org/) |
-| **R** | 4.0 - 4.3 | Statistical computing environment | [cran.r-project.org](https://www.r-project.org/) |
-| **Rtools** | Matching R version | R build tools (Windows only) | [CRAN](https://cran.r-project.org/bin/windows/Rtools/) |
+| **R** | 4.0 or higher | Statistical computing environment | [cran.r-project.org](https://www.r-project.org/) |
 
 </div>
 
@@ -274,17 +273,10 @@ Before proceeding, ensure you have the following software installed:
 
 R is an open-source software environment for statistical computing and graphics, required to run LCZ4r scripts.
 
-1. Download R (version 4.0 to 4.3) from CRAN for your operating system:
+Download R from CRAN for your operating system:
    - **Windows**: [R for Windows](https://cran.r-project.org/bin/windows/base/old/4.3.3/)
    - **macOS**: [R for macOS](https://cran.r-project.org/bin/macosx/)
    - **Linux**: [R for Linux](https://www.r-project.org/)
-
-2. **Windows users only**: Install the corresponding version of [Rtools](https://cran.r-project.org/bin/windows/Rtools/) (must match your R version)
-
-3. Verify installation by opening a terminal/command prompt and typing:
-   ```bash
-   R --version
-   ```
 
 </div>
 
@@ -295,7 +287,7 @@ R is an open-source software environment for statistical computing and graphics,
 
 The Processing R Provider plugin allows you to run R scripts directly in QGIS.
 
-1. Open **QGIS**
+1. Open **QGIS** and **Run as administrator**
 2. Go to **Plugins** → **Manage and Install Plugins...**
 3. Search for "**Processing R Provider**"
 4. Click **Install Plugin**

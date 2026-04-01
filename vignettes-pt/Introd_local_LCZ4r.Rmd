@@ -1,0 +1,357 @@
+---
+title: "Introdução às Funções Locais"
+author: "Max Anjos"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 4
+    toc_float:
+      collapsed: true
+      smooth_scroll: true
+    number_sections: true
+    theme: flatly
+    highlight: tango
+    code_folding: show
+    code_download: true
+    self_contained: false
+    df_print: paged
+---
+
+```{css, echo=FALSE}
+/* ── Variáveis de Cores Modernas ────────────────── */
+:root {
+  --primary-color: #1D9E75;
+  --dark-green: #0f3d2e;
+  --bg-light: #f8faf9;
+  --text-main: #1a1a1a;
+  --code-bg: #fdfdfd;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 18px;
+  color: var(--text-main);
+  background-color: #fff;
+}
+
+/* ── Títulos com Inter-spacing ─────────────────── */
+h1, h2, h3 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  color: var(--dark-green);
+}
+
+h1.title {
+  font-size: 2.8em;
+  border-bottom: 4px solid var(--primary-color);
+  padding-bottom: 10px;
+}
+
+/* ── Code Blocks Estilizados ────────────────────── */
+pre.r {
+  background-color: var(--code-bg);
+  border: 1px solid #e1e1e1;
+  border-left: 5px solid var(--primary-color) !important;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* ── Custom Callouts (Estilo Quarto) ────────────── */
+.callout {
+  padding: 1.2em;
+  margin: 1.5em 0;
+  border-radius: 0 8px 8px 0;
+  border-left: 6px solid;
+}
+
+.callout-note {
+  background-color: #f0f7ff;
+  border-color: #007bff;
+}
+
+.callout-tip {
+  background-color: #e8f5e9;
+  border-color: #1D9E75;
+}
+
+/* ── Transições suaves no menu lateral ──────────── */
+.list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+/* ── Estilo para imagens ───────────────────────── */
+.figure img {
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+  margin-bottom: 10px;
+}
+
+.figure img:hover {
+  transform: scale(1.02);
+}
+
+.figure .caption {
+  font-size: 0.9em;
+  color: #666;
+  margin-top: 5px;
+  font-style: italic;
+}
+
+/* ── Botão GitHub aprimorado ───────────────────── */
+.github-feedback-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #24292e;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-family: sans-serif;
+  transition: background-color 0.2s;
+}
+
+.github-feedback-btn:hover {
+  background-color: #2c3e50;
+  color: white;
+  text-decoration: none;
+}
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo    = TRUE,
+  eval    = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  comment = "#>",
+  fig.align = "center",
+  out.width = "80%",
+  fig.retina = 2
+)
+```
+
+As **funções locais do LCZ4r** são ferramentas especializadas projetadas para analisar grandes conjuntos de dados, como leituras horárias de temperatura do ar. Este tutorial foca no uso de dados de Berlim, coletados em 23 estações meteorológicas como parte do [Observatório de Clima Urbano (UCO)](https://www.tu.berlin/en/klima/institutions-and-services/urban-climate-observatory).
+
+## Visão Geral
+
+As **funções locais no `LCZ4r`** oferecem ferramentas poderosas para manipular e analisar dados de clima urbano. Elas permitem análise de séries temporais, mapeamento de anomalias térmicas, interpolação espacial e muito mais. Abaixo está um resumo dessas funções:
+
+| Função | Descrição | Dados Necessários | Acesso à Internet Necessário |
+|--------|-----------|-------------------|------------------------------|
+| `lcz_ts()` | Analisar Séries Temporais LCZ | Sim | Não necessário |
+| `lcz_anomaly()` | Calcular Anomalias Térmicas LCZ | Sim | Não necessário |
+| `lcz_anomaly_map()` | Mapear Anomalias Térmicas LCZ | Sim | Não necessário |
+| `lcz_interp_map()` | Realizar Interpolação LCZ | Sim | Não necessário |
+| `lcz_plot_interp()` | Visualizar Interpolação LCZ | Sim | Não necessário |
+| `lcz_interp_eval()` | Avaliar Interpolação LCZ | Sim | Não necessário |
+| `lcz_uhi_intensity()` | Avaliar Intensidade da Ilha de Calor Urbana para LCZ | Sim | Não necessário |
+
+::: {.callout .callout-tip}
+**💡 Dicas**: 
+
+1. Utilize a função `help(lcz_*)` para acessar a documentação detalhada de cada função do LCZ4r. Por exemplo, para aprender sobre a função `lcz_ts`, digite `help("lcz_ts")` no console.
+
+2. Cada função do LCZ4r suporta imputação para tratar valores ausentes nos data frames. Para mais informações sobre métodos de imputação, consulte o argumento "impute" na documentação de cada função.
+:::
+
+## Requisitos de entrada de dados
+
+Para garantir o funcionamento adequado das funções locais, os dados de entrada devem ser estruturados como um data frame com as seguintes colunas:
+
+1. **date**: Esta coluna deve conter informações de data e hora. Esta coluna deve ser rotulada como **"date", "time", "timestamp" ou "datetime"**. Certifique-se de que o formato de data e hora esteja alinhado com as convenções do R (por exemplo, AAAA-MM-DD HH:MM:SS). Formatos aceitáveis incluem "1999-02-01". Para mais detalhes, consulte formatação de datas e horas no [pacote openair](https://openair-project.github.io/book/sections/intro/openair-package.html#reading-and-formatting-dates-and-times).
+
+2. **Identificador da Estação**: Uma coluna para identificar as estações meteorológicas.
+
+3. **Temperatura do Ar ou outra variável**: Pelo menos uma coluna representando a temperatura do ar ou qualquer outra variável alvo.
+
+4. **Latitude** e **Longitude**: Duas colunas para as coordenadas geográficas de cada estação. Certifique-se de que a coluna seja nomeada como **"lat" ou "latitude"** e **"lon", "long" ou "longitude"**.
+
+Para simplificar esta configuração, o LCZ4r fornece um data frame de exemplo, que você pode carregar com o seguinte comando:
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+library(LCZ4r)
+
+# Carregue os dados do pacote LCZ4r
+data("lcz_data")
+
+# Verifique a estrutura dos dados
+str(lcz_data)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_1.png" alt="Structure of the LCZ sample dataset" width="80%" />
+<p class="caption">Estrutura do conjunto de dados de exemplo LCZ mostrando colunas de data, estação, temperatura e coordenadas</p>
+</div>
+
+## Importar seus dados
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+if(!require(data.table)) install.packages("data.table")
+
+# Substitua o caminho pelo caminho real do seu arquivo CSV
+my_data <- data.table::fread("PC/caminho/arquivo.csv")
+
+head(my_data)
+```
+
+## Personalizando as Funções Locais no LCZ4r
+
+Você pode personalizar ainda mais as Funções Locais para atender às necessidades específicas de análise:
+
+### 1. Seleção flexível de tempo
+
+As Funções Locais possuem um argumento `...` que oferece opções para filtrar dados por anos, meses, dias e horas específicos para restringir seu período de análise. Exemplos de como usar esses argumentos incluem:
+
+* **Ano(s)**: Valor(es) numérico(s) especificando o(s) ano(s) a serem selecionados. Por exemplo, `year = 1998:2004` seleciona todos os anos entre 1998 e 2004 (inclusive), enquanto `year = c(1998, 2004)` seleciona apenas os anos 1998 e 2004.
+
+* **Mês(es)**: Valor(es) numérico(s) ou de caractere(s) especificando o(s) mês(es) a serem selecionados. Exemplos numéricos: `month = 1:6` (janeiro a junho), ou exemplos com caracteres: `month = c("January", "December")`.
+
+* **Dia(s)**: Valor(es) numérico(s) especificando o(s) dia(s) a serem selecionados. Por exemplo, `day = 1:30` seleciona os dias de 1 a 30, ou `day = 15` seleciona apenas o dia 15 do mês.
+
+* **Hora(s)**: Valor(es) numérico(s) especificando a(s) hora(s) a serem selecionadas. Por exemplo, `hour = 0:23` seleciona todas as horas do dia, enquanto `hour = 9` seleciona apenas a nona hora.
+
+* **Data inicial**: Uma string especificando a data de início nos formatos `start = "DD/MM/AAAA"` (por exemplo, "1/2/1999") ou "AAAA-mm-dd" (por exemplo, "1999-02-01").
+
+* **Data final**: Uma string especificando a data de término nos formatos `end = "DD/MM/AAAA"` (por exemplo, "1/2/1999") ou "AAAA-mm-dd" (por exemplo, "1999-02-01").
+
+#### Exemplos
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Selecione um intervalo de anos (por exemplo, 1998:2004) ou anos específicos (por exemplo, c(1998, 2004))
+lcz_ts(
+  lcz_map,
+  year = 1998:2004
+)
+
+# Filtre por mês, seja por valores numéricos (por exemplo, 1:6 para janeiro a junho) ou por nomes
+lcz_anomaly(
+  lcz_map,
+  year = 2012, month = 9
+)
+
+# Selecione uma data específica, como 1º de setembro de 2019
+lcz_interp_map(
+  lcz_map,
+  year = 2012, month = 9, day = 1 
+)
+
+# Para uma hora específica
+lcz_anomaly_map(
+  lcz_map,
+  year = 2012, month = 9, day = 1, hour = 5
+)
+
+# Selecione um período específico usando datas de início e fim
+lcz_uhi_intensity(
+  lcz_map,
+  var = "airT", 
+  station_id = "station",
+  start = "1/9/2019", end = "30/10/2019"
+)
+
+::: {.callout .callout-note}
+Para mais informações, consulte as [funções utilitárias do pacote openair](https://bookdown.org/david_carslaw/openair/sections/utilities/utility-functions.html#sec-selectByDate).
+:::
+
+### 2. Divisão da série temporal LCZ por janela temporal ou local
+
+Você pode segmentar os dados da série temporal LCZ usando o argumento `by`, permitindo a análise em diferentes janelas temporais ou locais. As opções de divisão disponíveis incluem:
+
+1. **Segmentos temporais**: "year", "season", "seasonyear", "month", "monthyear", "weekday", "weekend".
+
+2. **Divisão por luz do dia**: "daylight", que divide os dados em períodos diurnos e noturnos. Observe que a **opção Daylight pode resultar em horas diurnas e noturnas representadas em UTC**. Consulte [NOAA](https://gml.noaa.gov/grad/solcalc/) e o argumento `type` no [pacote openair](https://openair-project.github.io/book/sections/intro/openair-package.html#the-type-option).
+
+3. **Combinações**: Você também pode usar combinações como `c("daylight", "month")` ou `c("daylight", "season")`.
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Divisão por mês
+lcz_ts(lcz_map, by = "month")
+
+# Divisão por estação
+lcz_ts(lcz_map, by = "season")
+
+# Divisão por horas de luz do dia
+lcz_anomaly(lcz_map, by = "daylight")
+
+# Combine múltiplas divisões
+lcz_anomaly(lcz_map, by = c("daylight", "season"))
+
+::: {.callout .callout-note}
+ara mais detalhes, consulte o [tipo (type) no pacote openair](https://bookdown.org/david_carslaw/openair/sections/intro/openair-package.html#the-type-option).
+:::
+
+## Exemplos de fluxos de trabalho
+
+Aqui estão alguns exemplos práticos de como usar as funções locais:
+
+### Análise de série temporal
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Série temporal básica para um ano específico
+lcz_ts(
+  lcz_map,
+  var = "airT",
+  station_id = "station",
+  year = 2020
+)
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_ts.png" alt="LCZ time series analysis showing temperature variations across different LCZ classes" width="80%" />
+<p class="caption">Análise de série temporal LCZ mostrando variações de temperatura em diferentes classes LCZ</p>
+</div>
+
+### Mapeamento de anomalias térmicas
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Mapeie anomalias térmicas para os meses de verão
+lcz_anomaly_map(
+  lcz_map,
+  var = "airT",
+  station_id = "station",
+  month = 6:8,
+  year = 2020
+)
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_anomaly.png" alt="Thermal anomaly map showing temperature differences across urban zones" width="80%" />
+<p class="caption">Mapa de anomalia térmica mostrando diferenças de temperatura entre zonas urbanas</p>
+</div>
+
+### Interpolação espacial
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Interpole a temperatura para uma data específica
+lcz_interp_map(
+  lcz_map,
+  var = "airT",
+  station_id = "station",
+  year = 2020, month = 7, day = 15, hour = 12
+)
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_interp.png" alt="Spatial interpolation of air temperature across the study area" width="80%" />
+<p class="caption">Interpolação espacial da temperatura do ar em toda a área de estudo</p>
+</div>
+
+---
+
+## Tem sugestões ou feedback?
+
+Você tem uma ideia para melhoria ou encontrou um erro? Adoraríamos saber! Clique no botão abaixo para criar uma nova issue (GitHub) e compartilhar seu feedback ou sugestões diretamente conosco.
+
+```{=html}
+<a href='https://github.com/ByMaxAnjos/LCZ4r/issues/new' class="github-feedback-btn">
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+  </svg>
+  Open GitHub issue
+</a>
+```

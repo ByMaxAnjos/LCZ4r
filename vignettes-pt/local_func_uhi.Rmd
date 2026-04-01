@@ -1,0 +1,420 @@
+---
+title: "Análises da Ilha de Calor Urbana (ICU)"
+author: "Max Anjos"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 4
+    toc_float:
+      collapsed: true
+      smooth_scroll: true
+    number_sections: true
+    theme: flatly
+    highlight: tango
+    code_folding: show
+    code_download: true
+    self_contained: false
+    df_print: paged
+---
+
+```{css, echo=FALSE}
+/* ── Variáveis de Cores Modernas ────────────────── */
+:root {
+  --primary-color: #1D9E75;
+  --dark-green: #0f3d2e;
+  --bg-light: #f8faf9;
+  --text-main: #1a1a1a;
+  --code-bg: #fdfdfd;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 18px;
+  color: var(--text-main);
+  background-color: #fff;
+}
+
+/* ── Títulos com Inter-spacing ─────────────────── */
+h1, h2, h3 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  color: var(--dark-green);
+}
+
+h1.title {
+  font-size: 2.8em;
+  border-bottom: 4px solid var(--primary-color);
+  padding-bottom: 10px;
+}
+
+/* ── Code Blocks Estilizados ────────────────────── */
+pre.r {
+  background-color: var(--code-bg);
+  border: 1px solid #e1e1e1;
+  border-left: 5px solid var(--primary-color) !important;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* ── Custom Callouts (Estilo Quarto) ────────────── */
+.callout {
+  padding: 1.2em;
+  margin: 1.5em 0;
+  border-radius: 0 8px 8px 0;
+  border-left: 6px solid;
+}
+
+.callout-note {
+  background-color: #f0f7ff;
+  border-color: #007bff;
+}
+
+.callout-tip {
+  background-color: #e8f5e9;
+  border-color: #1D9E75;
+}
+
+.callout-warning {
+  background-color: #fff3e0;
+  border-color: #ff9800;
+}
+
+/* ── Transições suaves no menu lateral ──────────── */
+.list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+/* ── Estilo para imagens ───────────────────────── */
+.figure img {
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+  margin-bottom: 10px;
+}
+
+.figure img:hover {
+  transform: scale(1.02);
+}
+
+.figure .caption {
+  font-size: 0.9em;
+  color: #666;
+  margin-top: 5px;
+  font-style: italic;
+}
+
+/* ── Botão GitHub aprimorado ───────────────────── */
+.github-feedback-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #24292e;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-family: sans-serif;
+  transition: background-color 0.2s;
+}
+
+.github-feedback-btn:hover {
+  background-color: #2c3e50;
+  color: white;
+  text-decoration: none;
+}
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo    = TRUE,
+  eval    = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  comment = "#>",
+  fig.align = "center",
+  out.width = "80%",
+  fig.retina = 2
+)
+```
+
+## Introdução
+
+A função `lcz_uhi_intensity()` é projetada para calcular a intensidade da Ilha de Calor Urbana (ICU) com base em medições de temperatura do ar e Zonas Climáticas Locais (LCZ). A intensidade da ICU é definida como a diferença de temperatura entre áreas urbanas e rurais, fornecendo uma medida quantitativa de quanto as áreas urbanas são mais quentes em comparação com seus ambientes rurais circundantes.
+
+Este guia demonstra como usar a função `lcz_uhi_intensity()` para calcular e analisar a intensidade da ICU usando classes LCZ. A função suporta dois métodos de cálculo:
+
+### Método 1: Método Baseado em LCZ
+Identifica automaticamente os tipos construídos de LCZ (LCZ 1-10) para representar a temperatura urbana, enquanto os tipos naturais de LCZ (LCZ A-G / 11-17) representam a temperatura rural. Este método é ideal quando você tem uma classificação LCZ abrangente em toda a sua área de estudo.
+
+### Método 2: Método Manual
+Permite que os usuários selecionem manualmente estações específicas como referência para áreas urbanas e rurais. Este método é útil quando você tem estações de referência pré-definidas ou quando a classificação LCZ está incompleta.
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+library(LCZ4r)
+
+# Get the LCZ map for your city
+lcz_map <- lcz_get_map_euro(city = "Berlin")
+
+# Load sample data from LCZ4r
+data("lcz_data")
+```
+
+::: {.callout .callout-note}
+**Entendendo a Intensidade da ICU**:
+
+- **Intensidade positiva da ICU** (vermelho): Áreas urbanas são mais quentes que áreas rurais (ilha de calor urbana típica)
+- **Intensidade negativa da ICU** (azul): Áreas urbanas são mais frias que áreas rurais (ilha de frio urbana)
+- **Intensidade zero da ICU**: Nenhuma diferença de temperatura entre áreas urbanas e rurais
+
+A intensidade da ICU tipicamente atinge pico durante a noite e pode variar significativamente conforme a estação e as condições meteorológicas.
+:::
+
+## Série Temporal da ICU
+
+Este exemplo calcula a intensidade horária da ICU agregada por mês para o ano de 2019, fornecendo insights sobre padrões sazonais de aquecimento urbano.
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Calculate hourly UHI intensity by month for 2019
+lcz_uhi_intensity(lcz_map, 
+                  data_frame = lcz_data, 
+                  var = "airT", 
+                  station_id = "station",
+                  time.freq = "hour", 
+                  method = "LCZ",
+                  year = 2019,
+                  by = "month")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_uhi_1.png" alt="Série temporal mensal da intensidade da ICU para Berlim" width="80%" />
+<p class="caption">Série temporal mensal da intensidade da ICU para Berlim em 2019. Valores positivos indicam que áreas urbanas são mais quentes que áreas rurais, com intensidade máxima tipicamente observada durante os meses de verão.</p>
+</div>
+
+## Sazonalidade da ICU
+
+Esta análise divide os dados por estação, fornecendo uma visão mais detalhada de como a intensidade da ICU varia ao longo do ano. O parâmetro `group = TRUE` também exibe os componentes de temperatura urbana e rural separadamente.
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Calculate hourly UHI intensity by season for 2019, including urban and rural temperatures
+lcz_uhi_intensity(lcz_map, 
+                  data_frame = lcz_data, 
+                  var = "airT", 
+                  station_id = "station",
+                  time.freq = "hour", 
+                  method = "LCZ",
+                  year = 2019,
+                  by = "season",
+                  group = TRUE)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_uhi_2.png" alt="Padrões sazonais da intensidade da ICU com componentes de temperatura urbana e rural" width="80%" />
+<p class="caption">Padrões sazonais da intensidade da ICU mostrando componentes de temperatura urbana e rural. Esta visualização ajuda a identificar variações sazonais na magnitude da ICU e nas diferenças de temperatura contribuintes.</p>
+</div>
+
+## Ciclo Diurno da ICU
+
+Compreender o ciclo diurno (dia-noite) da intensidade da ICU é crucial para estudos de clima urbano. Este exemplo calcula o padrão diurno para uma data específica.
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Calculate diurnal cycle of UHI intensity for February 6, 2019
+lcz_uhi_intensity(lcz_map, 
+                  data_frame = lcz_data, 
+                  var = "airT", 
+                  station_id = "station",
+                  time.freq = "hour", 
+                  method = "LCZ",
+                  year = 2019, month = 2, day = 6,
+                  by = "daylight",
+                  group = TRUE)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_uhi_3.png" alt="Ciclo diurno da intensidade da ICU mostrando padrões diurnos e noturnos" width="80%" />
+<p class="caption">Ciclo diurno da intensidade da ICU em 6 de fevereiro de 2019, mostrando padrões distintos entre períodos diurnos e noturnos. A intensidade da ICU tipicamente se intensifica após o pôr do sol.</p>
+</div>
+
+## Método Manual: Seleção Personalizada de Referência
+
+O método manual permite que você especifique estações personalizadas como referências urbanas e rurais. Isso é particularmente útil quando você tem estações de monitoramento específicas que servem como referências representativas para sua área de estudo.
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Calculate diurnal cycle of UHI intensity for February and July 2019 using manual method
+lcz_uhi_intensity(lcz_map, 
+                  data_frame = lcz_data, 
+                  var = "airT", 
+                  station_id = "station",
+                  time.freq = "hour", 
+                  year = 2019, month = c(2, 7), day = 6,
+                  method = "manual",
+                  Turban = "bamberger",      # Urban reference station
+                  Trural = "airporttxl",     # Rural reference station
+                  by = c("daylight", "month"),
+                  group = TRUE)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_uhi_4.png" alt="Comparação da intensidade da ICU entre inverno e verão usando estações de referência personalizadas" width="80%" />
+<p class="caption">Comparação da intensidade da ICU entre inverno (fevereiro) e verão (julho) de 2019 usando estações de referência personalizadas. Isso demonstra a flexibilidade do método manual para análises direcionadas.</p>
+</div>
+
+## Opções Avançadas de Análise
+
+### Múltiplas Frequências Temporais
+
+Você pode analisar a intensidade da ICU em diferentes agregações temporais:
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Daily UHI intensity for summer 2019
+daily_uhi <- lcz_uhi_intensity(lcz_map, 
+                               data_frame = lcz_data, 
+                               var = "airT", 
+                               station_id = "station",
+                               time.freq = "day", 
+                               method = "LCZ",
+                               year = 2019, month = 6:8,
+                               iplot = FALSE)
+
+# Monthly UHI intensity for 2019
+monthly_uhi <- lcz_uhi_intensity(lcz_map, 
+                                 data_frame = lcz_data, 
+                                 var = "airT", 
+                                 station_id = "station",
+                                 time.freq = "month", 
+                                 method = "LCZ",
+                                 year = 2019,
+                                 iplot = FALSE)
+```
+### Combinando Múltiplas Opções de Divisão
+
+Você pode combinar múltiplos critérios de divisão para análises mais detalhadas:
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# UHI intensity by weekday and season
+lcz_uhi_intensity(lcz_map, 
+                  data_frame = lcz_data, 
+                  var = "airT", 
+                  station_id = "station",
+                  time.freq = "hour", 
+                  method = "LCZ",
+                  year = 2019,
+                  by = c("weekday", "season"),
+                  group = TRUE)
+```
+
+### Resumo Estatístico
+
+Você pode retornar o data frame para análises estatísticas adicionais:
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Return UHI intensity data frame for statistical analysis
+uhi_data <- lcz_uhi_intensity(lcz_map, 
+                              data_frame = lcz_data, 
+                              var = "airT", 
+                              station_id = "station",
+                              time.freq = "hour", 
+                              method = "LCZ",
+                              year = 2019,
+                              iplot = FALSE)
+
+# Calculate summary statistics
+summary(uhi_data)
+
+# Calculate seasonal means
+aggregate(uhi_value ~ season, data = uhi_data, FUN = mean)
+```
+
+## Salvar Gráficos
+
+Para salvar gráficos em seu computador, defina `isave = TRUE` e especifique o tipo de arquivo:
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Save UHI intensity plot to PC
+lcz_uhi_intensity(lcz_map, 
+                  data_frame = lcz_data, 
+                  var = "airT", 
+                  station_id = "station",
+                  time.freq = "hour", 
+                  method = "LCZ",
+                  year = 2019,
+                  by = "season",
+                  group = TRUE,
+                  isave = TRUE,
+                  save_extension = "png")
+```
+
+::: {.callout .callout-tip}
+**Dica**: Os gráficos salvos são automaticamente organizados na pasta `LCZ4r_output` com nomes de arquivo descritivos incluindo os parâmetros de análise e timestamp.
+:::
+
+## Aplicações Práticas da Análise de ICU
+
+Compreender os padrões de intensidade da ICU pode informar várias estratégias de planejamento urbano e adaptação climática:
+
+### 1. Preparação para Ondas de Calor
+Identifique períodos e áreas com maior intensidade de ICU para direcionar intervenções durante ondas de calor e sistemas de alerta precoce.
+
+### 2. Planejamento Urbano
+Use padrões sazonais e diurnos para orientar decisões de desenho urbano, como:
+- Localização de infraestrutura verde
+- Regulamentações de altura e densidade de edifícios
+- Estratégias de implementação de materiais frios
+
+### 3. Adaptação às Mudanças Climáticas
+Estabeleça padrões de base da ICU para monitorar mudanças ao longo do tempo e avaliar a eficácia das medidas de mitigação.
+
+### 4. Planejamento em Saúde Pública
+Identifique populações vulneráveis em áreas com alta intensidade persistente de ICU para intervenções de saúde direcionadas.
+
+::: {.callout .callout-warning}
+**Considerações Importantes**:
+
+- Os cálculos de intensidade da ICU requerem cobertura espacial adequada de estações de monitoramento em áreas urbanas e rurais
+- As condições meteorológicas (velocidade do vento, cobertura de nuvens) podem influenciar significativamente a intensidade da ICU
+- O método LCZ assume que LCZs construídas representam condições urbanas e LCZs naturais representam condições rurais
+- Considere usar o método manual quando a classificação LCZ estiver incompleta ou quando estações de referência específicas forem preferidas
+:::
+
+## Resumo dos Parâmetros
+
+Aqui está uma referência rápida para os principais parâmetros usados em `lcz_uhi_intensity()`:
+
+| Parâmetro | Descrição | Opções |
+|-----------|-------------|---------|
+| `time.freq` | Frequência de agregação temporal | "hour", "day", "month", "year" |
+| `method` | Método de cálculo | "LCZ" (automático), "manual" (personalizado) |
+| `Turban` | Estação de referência urbana (método manual) | ID da estação para referência urbana |
+| `Trural` | Estação de referência rural (método manual) | ID da estação para referência rural |
+| `by` | Método de divisão dos dados | "month", "season", "daylight", "weekday", etc. |
+| `group` | Exibir componentes urbano/rural | TRUE/FALSE |
+| `isave` | Salvar saída no PC | TRUE/FALSE |
+| `iplot` | Exibir gráfico | TRUE/FALSE |
+
+## Interpretando os Resultados
+
+Ao analisar os resultados da intensidade da ICU, considere:
+
+- **Horários de pico de intensidade**: Tipicamente 3-5 horas após o pôr do sol
+- **Padrões sazonais**: Frequentemente mais fortes no verão e inverno (dependendo do clima)
+- **Influências meteorológicas**: Noites claras e calmas produzem os sinais mais fortes de ICU
+- **Morfologia urbana**: Áreas compactas construídas geralmente mostram maior intensidade do que áreas abertas
+- **Efeitos da vegetação**: Espaços verdes podem reduzir significativamente a intensidade local da ICU
+
+---
+
+## Tem sugestões ou feedback?
+
+Você tem uma ideia para melhoria ou encontrou um erro? Adoraríamos saber! Clique no botão abaixo para criar uma nova issue (GitHub) e compartilhar seu feedback ou sugestões diretamente conosco.
+
+```{=html}
+<a href='https://github.com/ByMaxAnjos/LCZ4r/issues/new' class="github-feedback-btn">
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+  </svg>
+  Open GitHub issue
+</a>
+```

@@ -1,0 +1,566 @@
+---
+title: "# Analisando Ilhas de Calor Urbanas Usando Dados de Temperatura do Ar Colaborativos (Crowdsourced) e LCZ4r"
+author: "Max Anjos"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 4
+    toc_float:
+      collapsed: true
+      smooth_scroll: true
+    number_sections: true
+    theme: flatly
+    highlight: tango
+    code_folding: show
+    code_download: true
+    self_contained: false
+    df_print: paged
+---
+
+```{css, echo=FALSE}
+/* ── Variáveis de Cores Modernas ────────────────── */
+:root {
+  --primary-color: #1D9E75;
+  --dark-green: #0f3d2e;
+  --bg-light: #f8faf9;
+  --text-main: #1a1a1a;
+  --code-bg: #fdfdfd;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 18px;
+  color: var(--text-main);
+  background-color: #fff;
+}
+
+/* ── Títulos com Inter-spacing ─────────────────── */
+h1, h2, h3 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  color: var(--dark-green);
+}
+
+h1.title {
+  font-size: 2.8em;
+  border-bottom: 4px solid var(--primary-color);
+  padding-bottom: 10px;
+}
+
+/* ── Code Blocks Estilizados ────────────────────── */
+pre.r {
+  background-color: var(--code-bg);
+  border: 1px solid #e1e1e1;
+  border-left: 5px solid var(--primary-color) !important;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* ── Custom Callouts (Estilo Quarto) ────────────── */
+.callout {
+  padding: 1.2em;
+  margin: 1.5em 0;
+  border-radius: 0 8px 8px 0;
+  border-left: 6px solid;
+}
+
+.callout-note {
+  background-color: #f0f7ff;
+  border-color: #007bff;
+}
+
+.callout-tip {
+  background-color: #e8f5e9;
+  border-color: #1D9E75;
+}
+
+.callout-warning {
+  background-color: #fff3e0;
+  border-color: #ff9800;
+}
+
+/* ── Transições suaves no menu lateral ──────────── */
+.list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+/* ── Estilo para imagens ───────────────────────── */
+.figure img {
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+  margin-bottom: 10px;
+}
+
+.figure img:hover {
+  transform: scale(1.02);
+}
+
+.figure .caption {
+  font-size: 0.9em;
+  color: #666;
+  margin-top: 5px;
+  font-style: italic;
+}
+
+/* ── Botão GitHub aprimorado ───────────────────── */
+.github-feedback-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #24292e;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-family: sans-serif;
+  transition: background-color 0.2s;
+}
+
+.github-feedback-btn:hover {
+  background-color: #2c3e50;
+  color: white;
+  text-decoration: none;
+}
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo    = TRUE,
+  eval    = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  cache = FALSE,
+  comment = "#>",
+  fig.align = "center",
+  out.width = "80%",
+  fig.retina = 2
+)
+```
+
+## Introdução
+
+Ilhas de Calor Urbanas (ICU) são um problema ambiental crítico nas cidades, onde áreas urbanas experimentam temperaturas mais altas do que suas áreas rurais circundantes. Este estudo de caso demonstra como analisar ICUs usando dados colaborativos de temperatura do ar (Tair) de Estações Meteorológicas Cidadãs (CWS) e o pacote LCZ4r no R. Focamos em dados horários de Tair de maio de 2023, coletados por estações Netatmo CWS em Berlim, Alemanha, e disponíveis através do [pacote CrowdQCplus no R](https://github.com/dafenner/CrowdQCplus).
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Install and load necessary packages
+if (!require("pacman")) install.packages("pacman")
+install.packages("sf", type = "binary")
+pacman::p_load(remotes, dplyr, tmap, ggplot2, devtools, data.table)
+
+library(dplyr)   # For data manipulation
+library(sf)      # For vector data manipulation
+library(tmap)    # For interactive map visualization
+library(ggplot2) # For data visualization
+library(data.table)
+
+# Install CrowdQCplus for quality control of CWS data
+if (!require("CrowdQCplus")) {
+  remotes::install_github("dafenner/CrowdQCplus")
+}
+library(CrowdQCplus)
+```
+
+::: {.callout .callout-note}
+::: {.callout .callout-note}
+**Por que Dados Colaborativos?**
+
+Estações meteorológicas colaborativas oferecem cobertura espacial sem precedentes de dados de temperatura urbana:
+- **Alta densidade**: Centenas ou milhares de estações em toda a cidade
+- **Dados em tempo real**: Medições horárias ou sub-horárias
+- **Custo-efetivo**: Utiliza infraestrutura cidadã existente
+- **Complementar**: Preenche lacunas em redes oficiais de monitoramento
+
+No entanto, um controle de qualidade cuidadoso é essencial para garantir a confiabilidade dos dados.
+:::
+
+## Preparação do Conjunto de Dados
+
+### Carregar Mapa LCZ para Berlim
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+
+# Retrieve the LCZ map for Berlin using the LCZ Generator Platform
+lcz_map <- LCZ4r::lcz_get_map_generator(ID = "8576bde60bfe774e335190f2e8fdd125dd9f4299")
+
+# Visualize the LCZ map
+LCZ4r::lcz_plot_map(lcz_map)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_modeling_crows_1.png" alt="Mapa LCZ de Berlim mostrando a distribuição espacial das Zonas Climáticas Locais" width="80%" />
+<p class="caption">Mapa LCZ de Berlim mostrando a distribuição espacial das Zonas Climáticas Locais. Este mapa serve como estrutura espacial para analisar dados de temperatura colaborativos.</p>
+</div>
+
+### Carregar e Explorar Dados CWS
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Load sample CWS data for Berlin from the CrowdQCplus package
+data(cqcp_cws_data)
+
+# View the structure of the dataset
+head(cqcp_cws_data)
+
+# Summary statistics
+summary(cqcp_cws_data)
+```
+
+### Visualizar Distribuição das Estações CWS
+
+```{r eval=FALSE, message=FALSE, warning=FALSE, out.width = '100%', fig.align='center'}
+# Convert CWS stations to an sf object for spatial analysis
+shp_stations <- cqcp_cws_data %>%
+  distinct(lon, lat, .keep_all = TRUE) %>%
+  st_as_sf(coords = c("lon", "lat"), crs = 4326)
+
+# Visualize CWS stations on an interactive map
+tmap_mode("view")
+qtm(shp_stations, dots.col = "blue", dots.size = 0.3,
+    title = "Citizen Weather Stations in Berlin")
+```
+
+## Controle de Qualidade dos Dados CWS
+
+Para garantir a confiabilidade dos dados, aplicamos o método de controle de qualidade (QC) desenvolvido por [Fenner et al. (2021)](https://www.frontiersin.org/journals/environmental-science/articles/10.3389/fenvs.2021.720747/full) usando o pacote CrowdQCplus. Este processo filtra leituras estatisticamente implausíveis, melhorando a precisão dos dados.
+
+### Etapas do Processo de QC:
+
+1. **Padding dos dados**: Garante séries temporais consistentes
+2. **Validação de entrada**: Verifica a estrutura dos dados
+3. **Controle de qualidade**: Aplica filtros estatísticos para identificar outliers
+4. **Estatísticas de saída**: Resume os resultados do QC
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Perform data padding and input checks
+data_crows <- cqcp_padding(cqcp_cws_data)
+data_check <- cqcp_check_input(data_crows)
+
+# Apply quality control
+if (data_check) {
+  data_qc <- cqcp_qcCWS(data_crows)  # QC process
+}
+
+# View QC output
+head(data_qc)
+
+# Display QC output statistics
+n_data_qc <- cqcp_output_statistics(data_qc)
+print(n_data_qc)
+```
+
+::: {.callout .callout-tip}
+::: {.callout .callout-note}
+**Entendendo a Saída do QC**:
+
+Após aplicar o QC, múltiplas colunas são geradas:
+- **ta_int**: Valores de temperatura que passaram por todas as etapas de controle de qualidade
+- **qc_flag**: Flags de controle de qualidade indicando o status dos dados
+- **qa_flag**: Flags de garantia de qualidade para validação adicional
+
+Para a interpolação da temperatura do ar, usamos a coluna `ta_int`, que representa as estimativas de temperatura mais confiáveis.
+:::
+
+## Análise do Ciclo Diurno por LCZ
+
+Examinamos o ciclo diurno da temperatura do ar para um dia específico (1º de maio de 2023) em diferentes LCZs para entender como a forma urbana afeta os padrões diários de temperatura.
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Analyze diurnal temperature cycle across LCZ classes
+cws_ts <- lcz_ts(lcz_map, 
+                 data_frame = data_qc,
+                 var = "ta_int", 
+                 station_id = "p_id",
+                 time.freq = "hour",
+                 extract.method = "two.step",
+                 year = 2023, month = 5, day = 1,
+                 by = "daylight")
+
+# Display the time series plot
+cws_ts
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_modeling_crows_2.png" alt="Ciclo diurno de temperatura em diferentes classes LCZ em Berlim" width="80%" />
+<p class="caption">Ciclo diurno de temperatura em diferentes classes LCZ em Berlim em 1º de maio de 2023. Observe como as áreas compactas construídas mantêm temperaturas mais altas ao longo do dia em comparação com áreas vegetadas e abertas.</p>
+</div>
+
+## Análise da Ilha de Calor Urbana
+
+### Série Temporal da Intensidade da ICU
+
+Calculamos as intensidades horárias da ICU para maio de 2023 usando o método LCZ, que seleciona automaticamente temperaturas urbanas e rurais com base nas classes LCZ.
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Calculate UHI intensity for May 2023
+cws_uhi <- lcz_uhi_intensity(lcz_map, 
+                             data_frame = data_qc,
+                             var = "ta_int", 
+                             station_id = "p_id",
+                             time.freq = "hour",
+                             extract.method = "two.step",
+                             year = 2023, month = 5,
+                             method = "LCZ")
+
+# Display UHI intensity time series
+cws_uhi
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_modeling_crows_5.png" alt="Série temporal da intensidade da ICU para Berlim em maio de 2023" width="80%" />
+<p class="caption">Série temporal da intensidade da ICU para Berlim em maio de 2023. A maior intensidade da ICU observada foi de 3,7°C em 13 de maio às 16:00, demonstrando o significativo efeito de aquecimento urbano.</p>
+</div>
+
+### Mapeamento Espacial da ICU
+
+Modelamos a ICU para 13 de maio de 2023, às 16:00 (horário de máxima intensidade), usando interpolação espacial baseada em LCZ.
+
+#### Mapa de Temperatura
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Map air temperatures for the peak UHI event
+my_interp_map <- lcz_interp_map(
+  lcz_map,
+  data_frame = data_qc,
+  var = "ta_int",
+  station_id = "p_id",
+  sp.res = 100,
+  tp.res = "hour",
+  year = 2023, month = 5, day = 13, hour = 16
+)
+
+# Customize the plot with titles and labels
+lcz_plot_interp(
+  my_interp_map,
+  title = "Thermal Field - CWS Data",
+  subtitle = "Berlin - May 13, 2023 at 16:00",
+  caption = "Source: LCZ4r, 2024",
+  fill = "Temperature [°C]"
+)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_modeling_crows_6.png" alt="Distribuição espacial da temperatura do ar durante o evento de pico da ICU" width="80%" />
+<p class="caption">Distribuição espacial da temperatura do ar durante o evento de pico da ICU em 13 de maio de 2023 às 16:00. O mapa revela padrões térmicos distintos com temperaturas mais quentes em áreas urbanas compactas e temperaturas mais frias em zonas vegetadas e periféricas.</p>
+</div>
+
+#### Mapa de Anomalia Térmica
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Generate thermal anomaly map for the same event
+my_anomaly_map <- lcz_anomaly_map(
+  lcz_map,
+  data_frame = data_qc,
+  var = "ta_int",
+  station_id = "p_id",
+  sp.res = 100,
+  tp.res = "hour",
+  year = 2023, month = 5, day = 13, hour = 16
+)
+
+# Customize the anomaly plot
+lcz_plot_interp(
+  my_anomaly_map,
+  title = "Thermal Anomaly Field - CWS Data",
+  subtitle = "Berlin - May 13, 2023 at 16:00",
+  caption = "Source: LCZ4r, 2024",
+  fill = "Temperature Anomaly [°C]", 
+  palette = "bl_yl_rd"
+)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_modeling_crows_7.png" alt="Mapa de anomalia térmica mostrando desvios da média urbana" width="80%" />
+<p class="caption">Mapa de anomalia térmica mostrando desvios da média urbana. Áreas vermelhas indicam temperaturas acima da média (hotspots de calor), enquanto áreas azuis indicam temperaturas abaixo da média (pontos frios).</p>
+</div>
+
+## Avaliação da Precisão do Mapa de ICU
+
+Avaliamos a precisão da interpolação usando validação cruzada de deixar-um-fora (LOOCV) e calculamos métricas como RMSE, MAE e sMAPE.
+
+### Validação Cruzada
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Evaluate the interpolation accuracy
+df_eval <- lcz_interp_eval(
+  lcz_map,
+  data_frame = data_qc,
+  var = "ta_int",
+  station_id = "p_id",
+  year = 2023, month = 5, day = 13, 
+  LOOCV = TRUE,
+  extract.method = "two.step",
+  sp.res = 500,
+  tp.res = "hour",
+  vg.model = "Sph",
+  LCZinterp = TRUE
+)
+```
+
+### Métricas de Avaliação por Classe LCZ
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Calculate evaluation metrics by LCZ class
+df_eval_metrics <- df_eval %>%
+  group_by(lcz) %>%
+  summarise(
+    n_obs = n(),                                      # Number of observations
+    rmse = sqrt(mean((observed - predicted)^2)),      # RMSE
+    mae = mean(abs(observed - predicted)),            # MAE
+    smape = mean(2 * abs(observed - predicted) / 
+                (abs(observed) + abs(predicted)) * 100) # sMAPE
+  ) %>%
+  arrange(rmse)
+
+# Display the metrics
+df_eval_metrics
+```
+
+### Análise de Correlação
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Correlation plot with regression equation and R²
+p1 <- ggplot(df_eval, aes(x = observed, y = predicted)) +
+  geom_point(alpha = 0.3, color = "#1D9E75", size = 1) +
+  geom_smooth(method = "lm", color = "red", se = FALSE, linewidth = 1) +
+  stat_density2d(aes(fill = after_stat(level)), geom = "polygon", alpha = 0.3) +
+  scale_fill_viridis_c(option = "viridis", name = "Density") +
+  stat_poly_eq(
+    aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")),
+    formula = y ~ x,
+    parse = TRUE,
+    label.x.npc = "left",
+    label.y.npc = "top",
+    size = 4
+  ) +
+  labs(
+    title = "Observed vs. Predicted Temperatures",
+    x = "Observed Temperature [°C]",
+    y = "Predicted Temperature [°C]"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+    axis.title = element_text(face = "bold")
+  )
+
+# Add marginal histograms
+p1_with_marginals <- ggMarginal(p1, 
+                                 type = "histogram", 
+                                 fill = "#1D9E75", 
+                                 bins = 30,
+                                 alpha = 0.6)
+
+# Print the plot
+p1_with_marginals
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_modeling_crows_8.png" alt="Correlação entre temperaturas observadas e previstas a partir de dados CWS" width="80%" />
+<p class="caption">Correlação entre temperaturas observadas e previstas a partir de dados colaborativos. O alto valor de R² indica bom desempenho do modelo, demonstrando a confiabilidade dos dados colaborativos após o QC.</p>
+</div>
+
+### Análise de Resíduos por Classe LCZ
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Residuals plot by LCZ class
+p2 <- ggplot(df_eval, aes(x = observed, y = residual)) +
+  geom_point(alpha = 0.3, color = "darkgreen", size = 1) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red", linewidth = 0.8) +
+  geom_smooth(method = "loess", color = "blue", se = FALSE, linewidth = 1) +
+  stat_density2d(aes(fill = after_stat(level)), geom = "polygon", alpha = 0.3) +
+  scale_fill_viridis_c(option = "plasma", direction = -1, name = "Density") +
+  facet_wrap(~ lcz, scales = "free", ncol = 3) +
+  labs(
+    title = "Residuals by LCZ Class",
+    x = "Observed Temperature [°C]",
+    y = "Residuals [°C]"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+    axis.title = element_text(face = "bold"),
+    strip.text = element_text(size = 12, face = "bold"),
+    legend.position = "right",
+    panel.grid.major = element_line(color = "gray90", linetype = "dotted"),
+    panel.grid.minor = element_blank()
+  )
+
+# Print the plot
+p2
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_modeling_crows_9.png" alt="Análise de resíduos por classe LCZ para dados colaborativos" width="80%" />
+<p class="caption">Resíduos por classe LCZ para a avaliação dos dados colaborativos. A dispersão aleatória em torno de zero indica bom desempenho do modelo em diferentes formas urbanas.</p>
+</div>
+
+## Principais Descobertas e Discussão
+
+### Resumo dos Resultados
+
+| Métrica | Valor | Interpretação |
+|--------|-------|----------------|
+| Intensidade Máxima da ICU | 3,7°C | Efeito significativo de aquecimento urbano |
+| RMSE Geral | ~0,8-1,2°C | Boa precisão de predição |
+| LCZ de Melhor Desempenho | Open low-rise | Bem representada nos dados de treinamento |
+| LCZ Desafiadora | Compact mid-rise | Maior variabilidade espacial |
+
+### Vantagens dos Dados Colaborativos
+
+1. **Alta Resolução Espacial**: Centenas de estações fornecem padrões térmicos urbanos detalhados
+2. **Monitoramento em Tempo Real**: Captura mudanças rápidas de temperatura
+3. **Custo-Efetivo**: Utiliza infraestrutura cidadã existente
+4. **Complementar**: Preenche lacunas em redes oficiais de monitoramento
+
+### Benefícios do Controle de Qualidade
+
+O processo de QC do CrowdQCplus:
+- Identificou e removeu leituras estatisticamente implausíveis
+- Reduziu ruído no sinal de temperatura
+- Melhorou a correlação entre valores observados e previstos
+- Aumentou a detecção de padrões espaciais
+
+### Aplicações Práticas
+
+1. **Alerta Precoce de Ondas de Calor**: Identifique áreas de maior risco durante eventos de calor extremo
+2. **Planejamento Urbano**: Informe a localização de infraestrutura verde com base em padrões térmicos
+3. **Adaptação Climática**: Avalie a eficácia das estratégias de mitigação
+4. **Saúde Pública**: Direcione intervenções em áreas vulneráveis ao calor
+
+## Salvar Resultados
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Save evaluation metrics to CSV
+write.csv(df_eval_metrics, 
+          file = "cws_uhi_metrics_may2023.csv", 
+          row.names = FALSE)
+
+# Save full evaluation data frame
+write.csv(df_eval, 
+          file = "cws_uhi_evaluation_may2023.csv", 
+          row.names = FALSE)
+
+# Save plots
+ggsave("cws_correlation_plot.png", p1_with_marginals, width = 10, height = 8, dpi = 300)
+ggsave("cws_residuals_by_lcz.png", p2, width = 12, height = 10, dpi = 300)
+```
+
+---
+
+## Tem sugestões ou feedback?
+
+Você tem uma ideia para melhoria ou encontrou um erro? Adoraríamos saber! Clique no botão abaixo para criar uma nova issue (GitHub) e compartilhar seu feedback ou sugestões diretamente conosco.
+
+```{=html}
+<a href='https://github.com/ByMaxAnjos/LCZ4r/issues/new' class="github-feedback-btn">
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+  </svg>
+  Open GitHub issue
+</a>
+```

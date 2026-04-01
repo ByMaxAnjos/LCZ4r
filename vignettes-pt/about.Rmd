@@ -2,7 +2,7 @@
 title: "Sobre o LCZ4r"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Sobre o LCZ4r}
+  %\VignetteIndexEntry{About LCZ4r}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -16,31 +16,30 @@ knitr::opts_chunk$set(
 
 ## O Projeto
 
-**LCZ4r** é um pacote R de código aberto desenvolvido para facilitar a obtenção, análise e visualização de dados de Zonas Climáticas Locais (Local Climate Zones — LCZ) em pesquisas de clima urbano. O pacote integra-se ao [Mapa Global de LCZ (WUDAPT)](https://www.wudapt.org/) e oferece um conjunto abrangente de funções para mapeamento da morfologia urbana, análise da intensidade da Ilha de Calor Urbana (ICU) e modelagem espaçotemporal da temperatura do ar.
+**LCZ4r** é um pacote R de código aberto projetado para facilitar a recuperação, análise e visualização de dados de Zonas Climáticas Locais (*Local Climate Zone* - LCZ) para pesquisas em clima urbano. O pacote se integra ao [Mapa Global de LCZ](https://www.wudapt.org/) e fornece um conjunto abrangente de funções para mapear morfologia urbana, analisar a intensidade da Ilha de Calor Urbana (ICU) e modelar padrões espaço-temporais de temperatura do ar.
 
-O LCZ4r foi desenvolvido para reduzir as barreiras técnicas para pesquisadores, estudantes e profissionais que trabalham em climatologia urbana, planejamento urbano e ciências ambientais. Ao oferecer um fluxo de trabalho reprodutível e bem documentado em R, o pacote permite que os usuários passem de dados brutos de LCZ a mapas e análises prontos para publicação com poucas linhas de código.
+O LCZ4r foi desenvolvido para reduzir as barreiras técnicas para pesquisadores, estudantes e profissionais que atuam em climatologia urbana, planejamento urbano e ciências ambientais. Ao fornecer um fluxo de trabalho reproduzível e bem documentado em R, o pacote permite que os usuários passem dos dados brutos de LCZ para mapas e análises prontos para publicação em poucas linhas de código.
 
-O pacote também se integra ao **QGIS** por meio do [Plugin LCZ4r-QGIS](https://bymaxanjos.github.io/LCZ4r/articles/Introd_QGIS_LCZ4r.html), tornando suas funcionalidades acessíveis a usuários que preferem uma interface gráfica.
+O pacote também se integra ao **QGIS** por meio do [Plugin LCZ4r-QGIS](https://bymaxanjos.github.io/LCZ4r/articles/Introd_QGIS_LCZ4r.html), tornando suas funcionalidades acessíveis para usuários que preferem uma interface gráfica.
 
 ## Principais Funcionalidades
 
-- **Obtenção de Mapas LCZ**: Baixe mapas de LCZ para qualquer cidade do mundo diretamente do banco de dados global WUDAPT.
-- **Análise de Ilha de Calor Urbana**: Quantifique a intensidade da ICU por classe de LCZ usando dados de estações meteorológicas.
-- **Modelagem da Temperatura do Ar**: Interpole e mapeie a temperatura do ar em áreas urbanas com modelagem espacial baseada em LCZ.
-- **Detecção de Anomalias**: Identifique e visualize anomalias de temperatura em relação às linhas de base das LCZ.
+- **Recuperação de Mapas LCZ**: Baixe mapas LCZ para qualquer cidade do mundo diretamente do banco de dados global da WUDAPT.
+- **Análise de Ilha de Calor Urbana**: Quantifique a intensidade da ICU por classe LCZ usando dados de estações meteorológicas.
+- **Modelagem de Temperatura do Ar**: Interpole e mapeie a temperatura do ar em áreas urbanas usando modelagem espacial baseada em LCZ.
+- **Detecção de Anomalias**: Identifique e visualize anomalias de temperatura em relação às linhas de base das LCZs.
 - **Integração com QGIS**: Execute todas as análises diretamente no QGIS por meio do Plugin LCZ4r-QGIS multilíngue.
 
 ## A Equipe
 
-O **LCZ4r** foi criado e é mantido por [Max Anjos](https://github.com/ByMaxAnjos) e colaboradores das áreas de climatologia urbana, geografia e ciência de dados. O projeto está aberto a contribuições da comunidade — se você deseja contribuir, abra uma *issue* ou *pull request* no [GitHub](https://github.com/ByMaxAnjos/LCZ4r).
+**LCZ4r** foi criado e é mantido por [Max Anjos](https://github.com/ByMaxAnjos) e colaboradores das áreas de climatologia urbana, geografia e ciência de dados. O projeto está aberto a contribuições da comunidade — se você deseja contribuir, por favor, abra uma *issue* ou *pull request* no [GitHub](https://github.com/ByMaxAnjos/LCZ4r).
 
 ## Citação
 
-Se você utilizar o LCZ4r em sua pesquisa, por favor cite:
+Se você utilizar o LCZ4r em sua pesquisa, por favor, cite:
 
 > Anjos, M., & Meier, F. (2024). **LCZ4r: An R package for Local Climate Zone analysis and Urban Heat Island research**. *Nature Cities*. https://doi.org/10.1038/s44284-024-00135-4
 
 ## Financiamento e Apoio
 
-O desenvolvimento do LCZ4r contou com o apoio de instituições de pesquisa e agências de fomento comprometidas com o avanço da ciência do clima urbano. Agradecemos a todos os colaboradores e usuários que ajudaram a aprimorar o pacote por meio de *feedback*, relatórios de erros e sugestões de funcionalidades.
-
+O desenvolvimento do LCZ4r foi apoiado por instituições de pesquisa e agências de fomento comprometidas com o avanço da ciência do clima urbano. Somos gratos a todos os colaboradores e usuários que ajudaram a melhorar o pacote por meio de feedback, relatórios de erros e solicitações de funcionalidades.

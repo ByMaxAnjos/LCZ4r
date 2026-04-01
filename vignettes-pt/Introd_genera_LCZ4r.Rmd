@@ -1,0 +1,417 @@
+---
+title: "Mapa, Áreas e Parâmetros"
+author: "Max Anjos"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 4
+    toc_float:
+      collapsed: true
+      smooth_scroll: true
+    number_sections: true
+    theme: flatly
+    highlight: tango
+    code_folding: show
+    code_download: true
+    self_contained: false
+    df_print: paged
+---
+
+```{css, echo=FALSE}
+/* ── Variáveis de Cores Modernas ────────────────── */
+:root {
+  --primary-color: #1D9E75;
+  --dark-green: #0f3d2e;
+  --bg-light: #f8faf9;
+  --text-main: #1a1a1a;
+  --code-bg: #fdfdfd;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 18px;
+  color: var(--text-main);
+  background-color: #fff;
+}
+
+/* ── Títulos com Inter-spacing ─────────────────── */
+h1, h2, h3 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  color: var(--dark-green);
+}
+
+h1.title {
+  font-size: 2.8em;
+  border-bottom: 4px solid var(--primary-color);
+  padding-bottom: 10px;
+}
+
+/* ── Code Blocks Estilizados ────────────────────── */
+pre.r {
+  background-color: var(--code-bg);
+  border: 1px solid #e1e1e1;
+  border-left: 5px solid var(--primary-color) !important;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* ── Custom Callouts (Estilo Quarto) ────────────── */
+.callout {
+  padding: 1.2em;
+  margin: 1.5em 0;
+  border-radius: 0 8px 8px 0;
+  border-left: 6px solid;
+}
+
+.callout-note {
+  background-color: #f0f7ff;
+  border-color: #007bff;
+}
+
+/* ── Transições suaves no menu lateral ──────────── */
+.list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+/* ── Estilo para imagens ───────────────────────── */
+.figure img {
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+}
+
+.figure img:hover {
+  transform: scale(1.02);
+}
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo    = TRUE,
+  eval    = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  comment = "#>",
+  fig.align = "center",
+  out.width = "80%",
+  fig.retina = 2
+)
+```
+
+
+As **funções gerais do LCZ4r** são projetadas para facilitar a obtenção, análise e visualização de Zonas Climáticas Locais (LCZ), quando os dados não estão prontamente disponíveis. Essas funções permitem que os usuários baixem rapidamente mapas LCZ, calculem classes LCZ e extraiam parâmetros específicos do dossel urbano (*Urban Canopy Parameters* - UCPs) de interesse, como Fator de Visão do Céu, fração de superfície impermeável, altura dos elementos de rugosidade, entre outros.
+
+## Primeiros Passos
+
+As funções gerais, cada uma com um propósito único:
+
+| Função                      | Descrição                                                              | Dados Necessários | Acesso à Internet Necessário |
+|-----------------------------|------------------------------------------------------------------------|-------------------|------------------------------|
+| `lcz_get_map()`             | Baixe seu mapa LCZ do conjunto de dados global                         | Não necessário    | Sim                          |
+| `lcz_get_map_euro()`        | Baixe seu mapa LCZ do conjunto de dados europeu                        | Não necessário    | Sim                          |
+| `lcz_get_map_usa()`         | Baixe seu mapa LCZ do conjunto de dados dos Estados Unidos Continentais | Não necessário    | Sim                          |
+| `lcz_get_map_generator()`   | Baixe seu mapa LCZ da Plataforma LCZ Generator                         | Não necessário    | Sim                          |
+| `lcz_get_map2()`            | Recorte o mapa LCZ para sua cidade ou região de interesse (ROI)        | Ambos             | Ambos                        |
+| `lcz_plot_map()`            | Visualize o mapa LCZ                                                   | Não necessário    | Não necessário               |
+| `lcz_cal_area()`            | Calcule as áreas das LCZs                                              | Não necessário    | Não necessário               |
+| `lcz_get_parameters()`      | Obtenha os parâmetros LCZ                                              | Não necessário    | Não necessário               |
+| `lcz_plot_parameters()`     | Visualize o mapa dos parâmetros LCZ                                    | Não necessário    | Não necessário               |
+
+::: {.callout .callout-note}
+**Dica**: Utilize a função `help(lcz_*)` para acessar a documentação completa de cada função LCZ. Por exemplo, você pode explorar os detalhes sobre a função `lcz_get_map` digitando `help("lcz_get_map")`.
+:::
+
+## Baixar e visualizar o mapa LCZ {.tabset .tabset-fade .tabset-pills}
+
+A função `lcz_get_map()` facilita a obtenção do mapa LCZ para a cidade escolhida ou para uma Região de Interesse (ROI) específica. Aqui estão exemplos para cidades ao redor do mundo:
+
+### São Paulo
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+library(LCZ4r)
+
+# Obtenha o mapa LCZ para sua cidade
+lcz_map <- lcz_get_map(city = "São Paulo")
+
+# Visualize o mapa LCZ obtido
+lcz_plot_map(lcz_map)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_1.png" alt="LCZ map for São Paulo" width="80%" />
+<p class="caption">Mapa LCZ para São Paulo</p>
+</div>
+
+### Paris
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+euro_map <- lcz_get_map_euro(city = "Paris")
+lcz_plot_map(euro_map)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_2.png" alt="LCZ map for Paris" width="80%" />
+<p class="caption">Mapa LCZ para Paris</p>
+</div>
+
+### London
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+euro_map <- lcz_get_map_euro(city = "London")
+lcz_plot_map(euro_map)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_3.png" alt="LCZ map for London" width="80%" />
+<p class="caption">Mapa LCZ para Londres</p>
+</div>
+
+### Sydney
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+lcz_map <- lcz_get_map(city = "Sydney")
+lcz_plot_map(lcz_map)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_4.png" alt="LCZ map for Sydney" width="80%" />
+<p class="caption">Mapa LCZ para Sydney</p>
+</div>
+
+### Beijing
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+lcz_map <- lcz_get_map(city = "Beijing")
+lcz_plot_map(lcz_map)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_5.png" alt="LCZ map for Beijing" width="80%" />
+<p class="caption">Mapa LCZ para Beijing</p>
+</div>
+
+### New York
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+usa_map <- lcz_get_map_usa(city = "New York")
+lcz_plot_map(usa_map)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_6.png" alt="LCZ map for New York" width="80%" />
+<p class="caption">Mapa LCZ para Nova York</p>
+</div>
+
+### Nairobi
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+my_map <- lcz_get_map(city = "Nairobi")
+lcz_plot_map(my_map)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_7.png" alt="LCZ map for Nairobi" width="80%" />
+<p class="caption">Mapa LCZ para Nairobi</p>
+</div>
+
+## Baixar mapa LCZ da Plataforma LCZ Generator
+
+Para integrar perfeitamente os mapas LCZ ao pacote LCZ4r, siga estas etapas para obter o código ID da cidade desejada:
+
+1. **Acesse o LCZ Generator**: Visite a [página do LCZ Generator](https://lcz-generator.rub.de/).
+2. **Localize sua cidade**: Navegue até a seção [Submissões](https://lcz-generator.rub.de/submissions) e procure sua cidade usando a barra de pesquisa.
+3. **Obtenha o ID a partir da Ficha Técnica (Factsheet)**: Clique em **Mostrar Ficha Técnica (Show Factsheet)** ao lado da submissão da sua cidade e copie o **ID** na seção *Informações da Submissão* (por exemplo, **3110e623fbe4e73b1cde55f0e9832c4f5640ac21**).
+4. **Exemplo de Referência**: Veja esta [Ficha Técnica de LCZ de exemplo](https://lcz-generator.rub.de/factsheets/3110e623fbe4e73b1cde55f0e9832c4f5640ac21/3110e623fbe4e73b1cde55f0e9832c4f5640ac21_factsheet.html) para entender o formato e os detalhes.
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+lcz_map <- lcz_get_map_generator(ID = "3110e623fbe4e73b1cde55f0e9832c4f5640ac21")
+lcz_plot_map(lcz_map)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_generator.png" alt="LCZ map from Generator Platform" width="80%" />
+<p class="caption">Mapa LCZ da plataforma LCZ Generator</p>
+</div>
+
+::: {.callout .callout-note}
+**💡 Dica 1**: Mapa LCZ para Região de Interesse (ROI)
+
+Este exemplo demonstra como usar o argumento **roi** nas funções `lcz_get_map*` para recortar o mapa LCZ para sua ROI. Você deve importar o shapefile para o R.
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Carregar Pacote
+library(sf)
+
+# Importar Shapefile para o R
+my_shp <- sf::st_read("path/shp_name.shp") # You can also use shapefile in .gpkg format
+
+# Obter mapa LCZ para sua ROI
+lcz_map <- lcz_get_map(roi = my_shp)
+
+# Visualizar Mapa LCZ
+lcz_plot_map(lcz_map)
+```
+:::
+
+::: {.callout .callout-note}
+**💡 Dica 2**: Recorte o mapa LCZ generator para sua cidade ou Região de Interesse (ROI) usando `lcz_get_map2()`
+
+Este exemplo demonstra como usar a função `lcz_get_map2()` para recortar o mapa LCZ para sua cidade ou ROI específica. Para cidades, o mapa recortado é derivado do banco de dados OpenStreetMap, enquanto para ROIs, ele usa seu shapefile importado.
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# Obtenha o mapa LCZ generator (ex.: Rio de Janeiro)
+lcz_map_generator <- lcz_get_map_generator(ID = "3110e623fbe4e73b1cde55f0e9832c4f5640ac21")
+
+# Recorte o mapa LCZ generator para sua cidade
+lcz_map <- lcz_get_map2(lcz_map_generator, city = "Rio de Janeiro")
+
+# Visualize o mapa LCZ
+lcz_plot_map(lcz_map)
+
+# Recorte o mapa LCZ generator para ROI
+library(sf)
+my_shp <- sf::st_read("caminho/shp_name.shp") # Você também pode usar shapefile no formato .gpkg
+lcz_map <- lcz_get_map2(lcz_map_generator, roi = my_shp)
+
+# Visualize o mapa LCZ
+lcz_plot_map(lcz_map)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_7.png" alt="Clipped LCZ map for Rio de Janeiro" width="80%" />
+<p class="caption">Mapa LCZ recortado para o Rio de Janeiro</p>
+</div>
+:::
+
+## Calcular áreas das LCZs
+
+A função `lcz_cal_area()` calcula a área para cada classe LCZ:
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+lcz_map <- lcz_get_map(city = "Rio de Janeiro")
+lcz_cal_area(lcz_map)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_2.png" alt="LCZ areas calculation for Rio de Janeiro" width="80%" />
+<p class="caption">Cálculo das áreas LCZ para o Rio de Janeiro</p>
+</div>
+
+::: {.callout .callout-note}
+**Dica**: Esta função fornece uma tabela .csv das áreas LCZ calculadas. Para salvar como CSV, utilize: `lcz_cal_area(lcz_map, iplot = FALSE)`
+:::
+
+## Obter e visualizar parâmetros LCZ
+
+A função `lcz_get_parameters()` fornece acesso a diversos parâmetros LCZ, abrangendo valores mínimos, máximos e médios, extraídos de Stewart e Oke (2012). Esses parâmetros são conversíveis em shapefiles ou em uma pilha de rasters (*raster stack*), onde múltiplos rasters são agregados em um único arquivo.
+
+Aqui está uma amostra dos parâmetros LCZ disponíveis:
+
+| Código | Parâmetro | Descrição | Unidade |
+|--------|-----------|-----------|--------|
+| SVFmin | Fator de Visão do Céu | Fator de Visão do Céu mínimo | [0-1] |
+| SVFmax | Fator de Visão do Céu | Fator de Visão do Céu máximo | [0-1] |
+| SVFmean | Fator de Visão do Céu | Fator de Visão do Céu médio | [0-1] |
+| ARmin | Proporção de aspecto | Proporção de aspecto mínima | [0-3] |
+| ARmax | Proporção de aspecto | Proporção de aspecto máxima | [0-3] |
+| ARmean | Proporção de aspecto | Proporção de aspecto média | [0-3] |
+| BSFmin | Fração de Superfície Edificada | Fração de Superfície Edificada mínima | [%] |
+| BSFmax | Fração de Superfície Edificada | Fração de Superfície Edificada máxima | [%] |
+| BSFmean | Fração de Superfície Edificada | Fração de Superfície Edificada média | [%] |
+| ISFmin | Fração de Superfície Impermeável | Fração de Superfície Impermeável mínima | [%] |
+| ISFmax | Fração de Superfície Impermeável | Fração de Superfície Impermeável máxima | [%] |
+| ISFmean | Fração de Superfície Impermeável | Fração de Superfície Impermeável média | [%] |
+| PSFmin | Fração de Superfície Vegetada | Fração de Superfície Vegetada mínima | [%] |
+| PSFmax | Fração de Superfície Vegetada | Fração de Superfície Vegetada máxima | [%] |
+| PSFmean | Fração de Superfície Vegetada | Fração de Superfície Vegetada média | [%] |
+| TSFmin | Fração de Superfície Arbórea | Fração de Superfície Arbórea mínima | [%] |
+| TSFmax | Fração de Superfície Arbórea | Fração de Superfície Arbórea máxima | [%] |
+| TSFmean | Fração de Superfície Arbórea | Fração de Superfície Arbórea média | [%] |
+| HREmin | Altura dos Elementos de Rugosidade | Altura mínima dos Elementos de Rugosidade | [metros] |
+| HREmax | Altura dos Elementos de Rugosidade | Altura máxima dos Elementos de Rugosidade | [metros] |
+| HREmean | Altura dos Elementos de Rugosidade | Altura média dos Elementos de Rugosidade | [metros] |
+| TRCmin | Classe de Rugosidade do Terreno | Classe de Rugosidade do Terreno mínima | [metros] |
+| TRCmax | Classe de Rugosidade do Terreno | Classe de Rugosidade do Terreno máxima | [metros] |
+| TRCmean | Classe de Rugosidade do Terreno | Classe de Rugosidade do Terreno média | [metros] |
+| SADmin | Admitância Superficial | Admitância Superficial mínima | [J m⁻² s¹⁄² K⁻¹] |
+| SADmax | Admitância Superficial | Admitância Superficial máxima | [J m⁻² s¹⁄² K⁻¹] |
+| SADmean | Admitância Superficial | Admitância Superficial média | [J m⁻² s¹⁄² K⁻¹] |
+| SALmin | Albedo Superficial | Albedo Superficial mínimo | [0-0.5] |
+| SALmax | Albedo Superficial | Albedo Superficial máximo | [0-0.5] |
+| SALmean | Albedo Superficial | Albedo Superficial médio | [0-0.5] |
+| AHmin | Calor Antropogênico | Calor Antropogênico mínimo | [W m⁻²] |
+| AHmax | Calor Antropogênico | Calor Antropogênico máximo | [W m⁻²] |
+| AHmean | Calor Antropogênico | Calor Antropogênico médio | [W m⁻²] |
+| z0 | Comprimento de Rugosidade | Classe de Comprimento de Rugosidade | [metros] |
+
+### Parâmetros LCZ para o Rio de Janeiro
+
+```{r eval=FALSE, fig.height=7, fig.width=11, message=FALSE, warning=FALSE}
+# Extraia os parâmetros LCZ para o formato de pilha de rasters
+lcz_map <- lcz_get_map(city = "Rio de Janeiro")
+LCZpar <- lcz_get_parameters(lcz_map, istack = TRUE)
+LCZpar
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_3.png" alt="LCZ parameters raster stack for Rio de Janeiro" width="80%" />
+<p class="caption">Pilha de rasters de parâmetros LCZ para o Rio de Janeiro</p>
+</div>
+
+## Mapas {.tabset .tabset-fade .tabset-pills}
+
+### Fator de Vsião do Céu
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+lcz_plot_parameters(LCZpar, iselect = "SVFmean")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_4.png" alt="Sky View Factor map for Rio de Janeiro" width="80%" />
+<p class="caption">Mapa de Fator de Vsião do Céu para o Rio de Janeiro</p>
+</div>
+
+### Fração de Superfície Edificada
+
+```{r eval=FALSE}
+lcz_plot_parameters(LCZpar, iselect = "BSFmax")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_5.png" alt="Building Surface Fraction map for Rio de Janeiro" width="80%" />
+<p class="caption">Mapa de Fração de Superfície Edificada para o Rio de Janeiro</p>
+</div>
+
+### Rugosidade da Superfície 
+
+```{r eval=FALSE, fig.height=5, fig.width=9, message=FALSE, warning=FALSE}
+lcz_plot_parameters(LCZpar, iselect = "z0")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_6.png" alt="Roughness Length map for Rio de Janeiro" width="80%" />
+<p class="caption">Mapa do Comprimento de Rugosidade para o Rio de Janeiro</p>
+</div>
+
+---
+
+## Tem sugestões ou feedback?
+
+Você tem uma ideia para melhoria ou encontrou um erro? Adoraríamos saber! Clique no botão abaixo para criar uma nova issue (GitHub) e compartilhar seu feedback ou sugestões diretamente conosco.
+
+```{=html}
+<a href='https://github.com/ByMaxAnjos/LCZ4r/issues/new' class="github-feedback-btn" style="display: inline-flex; align-items: center; gap: 8px; background-color: #24292e; color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-family: sans-serif; transition: background-color 0.2s;">
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+  </svg>
+  Open GitHub issue
+</a>
+```
+```

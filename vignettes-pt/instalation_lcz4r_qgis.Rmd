@@ -1,0 +1,435 @@
+---
+title: "Instalando o LCZ4r No QGIS"
+author: "Max Anjos"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 4
+    toc_float:
+      collapsed: true
+      smooth_scroll: true
+    number_sections: true
+    theme: flatly
+    highlight: tango
+    code_folding: show
+    code_download: true
+    self_contained: false
+    df_print: paged
+---
+
+```{css, echo=FALSE}
+/* ── Variáveis de Cores Modernas ────────────────── */
+:root {
+  --primary-color: #1D9E75;
+  --dark-green: #0f3d2e;
+  --bg-light: #f8faf9;
+  --text-main: #1a1a1a;
+  --code-bg: #fdfdfd;
+  --qgis-blue: #5890be;
+  --r-blue: #276dc3;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 18px;
+  color: var(--text-main);
+  background-color: #fff;
+}
+
+/* ── Títulos com Inter-spacing ─────────────────── */
+h1, h2, h3 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  color: var(--dark-green);
+}
+
+h1.title {
+  font-size: 2.8em;
+  border-bottom: 4px solid var(--primary-color);
+  padding-bottom: 10px;
+}
+
+/* ── Code Blocks Estilizados ────────────────────── */
+pre.r {
+  background-color: var(--code-bg);
+  border: 1px solid #e1e1e1;
+  border-left: 5px solid var(--primary-color) !important;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* ── Custom Callouts (Estilo Quarto) ────────────── */
+.callout {
+  padding: 1.2em;
+  margin: 1.5em 0;
+  border-radius: 0 8px 8px 0;
+  border-left: 6px solid;
+}
+
+.callout-note {
+  background-color: #f0f7ff;
+  border-color: #007bff;
+}
+
+.callout-tip {
+  background-color: #e8f5e9;
+  border-color: #1D9E75;
+}
+
+.callout-warning {
+  background-color: #fff3e0;
+  border-color: #ff9800;
+}
+
+.callout-success {
+  background-color: #e0f2e9;
+  border-color: #1D9E75;
+}
+
+/* ── Transições suaves no menu lateral ──────────── */
+.list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+/* ── Estilo para imagens ───────────────────────── */
+.figure img {
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+  margin-bottom: 10px;
+}
+
+.figure img:hover {
+  transform: scale(1.02);
+}
+
+.figure .caption {
+  font-size: 0.9em;
+  color: #666;
+  margin-top: 5px;
+  font-style: italic;
+}
+
+/* ── Step container styling ─────────────────────── */
+.step-container {
+  background-color: var(--bg-light);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  border-left: 4px solid var(--primary-color);
+}
+
+.step-number {
+  display: inline-block;
+  background-color: var(--primary-color);
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 32px;
+  font-weight: bold;
+  margin-right: 12px;
+  font-size: 1rem;
+}
+
+.step-title {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 1.3rem;
+  color: var(--dark-green);
+  margin-bottom: 1rem;
+}
+
+/* ── Video container ────────────────────────────── */
+.video-container {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  margin: 1.5rem 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+}
+
+/* ── Badge styling ──────────────────────────────── */
+.badge-version {
+  background-color: #e9ecef;
+  color: #495057;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-family: monospace;
+  display: inline-block;
+  margin-left: 8px;
+}
+
+/* ── Botão GitHub aprimorado ───────────────────── */
+.github-feedback-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #24292e;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-family: sans-serif;
+  transition: background-color 0.2s;
+}
+
+.github-feedback-btn:hover {
+  background-color: #2c3e50;
+  color: white;
+  text-decoration: none;
+}
+
+/* ── Icon styling ───────────────────────────────── */
+.icon-soft {
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo    = TRUE,
+  eval    = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  comment = "#>",
+  fig.align = "center",
+  out.width = "80%",
+  fig.retina = 2
+)
+```
+
+## 🚀 Primeiros Passos: Instalando o LCZ4r no QGIS
+
+Bem-vindo ao **guia de instalação do plugin LCZ4r-QGIS!** Este documento orientará você no processo de configuração para habilitar a análise de Zonas Climáticas Locais (LCZ) dentro do QGIS. Com o LCZ4r, você pode aprimorar a análise climática urbana integrando funcionalidades avançadas do R diretamente ao seu ambiente GIS.
+
+::: {.callout .callout-note}
+**Por que usar o LCZ4r no QGIS?**
+
+- **Integração perfeita**: Execute scripts R diretamente no QGIS sem alternar entre aplicativos
+- **Análise espacial**: Aproveite as poderosas capacidades GIS do QGIS juntamente com as análises climáticas do LCZ4r
+- **Fluxos de trabalho reproduzíveis**: Documente e compartilhe facilmente seus fluxos de análise
+- **Suporte multilíngue**: Disponível em vários idiomas para acessibilidade global
+:::
+
+## 📺 Tutorial em Vídeo
+
+Assista a este tutorial em vídeo passo a passo para um guia visual do processo de instalação:
+
+<div class="video-container">
+<iframe src="https://www.youtube.com/embed/qG_BbyDb-P8" 
+        title="Installing LCZ4r in QGIS" 
+        frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+        allowfullscreen></iframe>
+</div>
+
+## 📌 Pré-requisitos
+
+Antes de prosseguir, certifique-se de ter os seguintes softwares instalados:
+
+<div class="step-container">
+<div class="step-title">✅ Software Necessário</div>
+
+| Software | Versão | Finalidade | Download |
+|----------|---------|---------|----------|
+| **QGIS** | 3.16 ou superior | Sistema de Informação Geográfica | [qgis.org](https://qgis.org/) |
+| **R** | 4.0 - 4.3 | Ambiente de computação estatística | [cran.r-project.org](https://www.r-project.org/) |
+| **Rtools** | Versão correspondente ao R | Ferramentas de compilação para R (apenas Windows) | [CRAN](https://cran.r-project.org/bin/windows/Rtools/) |
+
+</div>
+
+::: {.callout .callout-tip}
+**💡 Dica**: Certifique-se de que o R seja adicionado ao PATH do sistema durante a instalação. Isso permite que o QGIS se comunique com o R sem problemas. No Windows, marque "Add R to system PATH" durante a instalação.
+:::
+
+## 🗃 Guia de Instalação Passo a Passo
+
+### Passo 1: Instalar o R (Versão 4.0 - 4.3)
+
+<div class="step-container">
+<span class="step-number">1</span> **Instalar o R**
+
+O R é um ambiente de software de código aberto para computação estatística e gráficos, necessário para executar os scripts do LCZ4r.
+
+1. Baixe o R (versão 4.0 a 4.3) do CRAN para o seu sistema operacional:
+   - **Windows**: [R para Windows](https://cran.r-project.org/bin/windows/base/old/4.3.3/)
+   - **macOS**: [R para macOS](https://cran.r-project.org/bin/macosx/)
+   - **Linux**: [R para Linux](https://www.r-project.org/)
+
+2. **Apenas usuários Windows**: Instale a versão correspondente do [Rtools](https://cran.r-project.org/bin/windows/Rtools/) (deve corresponder à versão do R)
+
+3. Verifique a instalação abrindo um terminal/prompt de comando e digitando:
+   ```bash
+   R --version
+
+### Step 2: Install the Processing R Provider in QGIS
+
+<div class="step-container">
+<span class="step-number">2</span> **Install Processing R Provider**
+
+O plugin Processing R Provider permite que você execute scripts R diretamente no QGIS.
+
+1. Abra o **QGIS**
+2. Vá em **Plugins** → **Gerenciar e Instalar Plugins...**
+3. Pesquise por "**Processing R Provider**"
+4. Clique em **Instalar Plugin**
+5. Após a instalação, verifique se o plugin está ativado em **Plugins** → **Instalados**
+
+```{r echo=F, out.width = '100%', fig.align='center'}
+knitr::include_graphics("install_QGIS.png")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/install_QGIS.png" alt="Processing R Provider plugin in QGIS Plugin Manager" width="80%" />
+<p class="caption">O Plugin Processing R Provider no QGIS Plugin Manager - Certifique-se que ele aparece como "Instalado"</p>
+</div>
+
+</div>
+
+### Passo 3: Baixar e Configurar os Scripts do LCZ4r
+
+<div class="step-container">
+<span class="step-number">3</span> **Configurar os Scripts do LCZ4r**
+
+Integre as funcionalidades do LCZ4r no QGIS baixando e configurando os scripts R.
+
+1. Visite a página [Plugin Multilíngue LCZ4r-QGIS](https://bymaxanjos.github.io/LCZ4r/en/articles/examples.html)
+2. [Baixe](https://bymaxanjos.github.io/LCZ4r/en/articles/examples.html#multilingual-plugins) os scripts R no seu idioma preferido
+3. Descompacte o arquivo baixado e salve os scripts em uma pasta de fácil acesso (por exemplo, `Documentos/LCZ4r_scripts/`)
+4. Abra o **QGIS** e navegue até:
+   - **Configurações** → **Opções...** → **Processamento** → **Provedores** → **R**
+5. Em **Pasta de scripts R**, adicione o caminho para a pasta dos scripts LCZ4r
+6. **Desabilite** "Usar biblioteca do usuário em vez das bibliotecas do sistema"
+7. Clique em **OK** para salvar as configurações
+
+```{r echo=F, out.width = '100%', fig.align='center'}
+knitr::include_graphics("directory_QGIS.png")
+```
+
+<<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/directory_QGIS.png" alt="Configurando a pasta de scripts R nas configurações de Processamento do QGIS" width="80%" />
+<p class="caption">Definindo o caminho da pasta de scripts R nas opções de Processamento do QGIS</p>
+</div>
+
+</div>
+
+### Passo 4: Verificar a Instalação dos Scripts
+
+<div class="step-container">
+<span class="step-number">4</span> **Verificar a Instalação**
+
+Se tudo estiver configurado corretamente, você verá as funções do LCZ4r na Caixa de Ferramentas de Processamento.
+
+1. Abra a **Caixa de Ferramentas de Processamento** no QGIS (Visualizar → Painéis → Caixa de Ferramentas de Processamento)
+2. Navegue até **R** → **Scripts de Exemplo**
+3. Você deve ver três categorias do LCZ4r:
+   - **LCZ4r Setup Functions** – Ferramentas de instalação e atualização
+   - **LCZ4r General Functions** – Operações básicas com LCZ
+   - **LCZ4r Local Functions** – Análises climáticas avançadas
+
+</div>
+
+### Passo 5: Instalar o Pacote LCZ4r e Dependências
+
+<div class="step-container">
+<span class="step-number">5</span> **Instalar o Pacote LCZ4r**
+
+Execute o script de instalação para configurar todos os pacotes R necessários.
+
+1. Na Caixa de Ferramentas de Processamento, expanda **R** → **LCZ4r Setup Functions**
+2. Clique duas vezes em **Install LCZ4r**
+3. Clique em **Executar**
+
+::: {.callout .callout-warning}
+**⏱️ Primeira instalação**: A primeira execução pode levar de 5 a 10 minutos, pois instala todas as dependências (mais de 50 pacotes). Por favor, seja paciente!
+:::
+
+</div>
+
+### Passo 6: Executar Seu Primeiro Script LCZ4r
+
+<div class="step-container">
+<span class="step-number">6</span> **Testar Sua Instalação**
+
+Execute um script de teste para confirmar que tudo funciona corretamente.
+
+1. Na Caixa de Ferramentas de Processamento, expanda **R** → **LCZ4r General Functions**
+2. Clique duas vezes em **Download LCZ map**
+3. Digite o nome da sua cidade (ex.: "Berlin")
+4. Clique em **Executar**
+
+🌟 **Sucesso!** Quando o processo terminar, você verá o mapa LCZ de saída na tela do QGIS. Parabéns! Agora você está pronto para explorar todas as funções do LCZ4r!
+
+</div>
+
+### Passo 7: Atualizações Regulares e Seleção de Idioma
+
+<div class="step-container">
+<span class="step-number">7</span> **Manter o LCZ4r Atualizado**
+
+Para garantir que você se beneficie das últimas melhorias e atualizações de idioma:
+
+1. Na Caixa de Ferramentas de Processamento, expanda **R** → **LCZ4r Setup Functions**
+2. Clique duas vezes em **Upgrade LCZ4r**
+3. Selecione seu idioma preferido no menu suspenso
+4. Clique em **Executar**
+
+::: {.callout .callout-tip}
+**💡 Troca de idioma**: Você pode instalar várias versões de idioma. Para alternar entre idiomas, basta executar novamente o script **Upgrade LCZ4r** e selecionar o idioma desejado.
+:::
+
+</div>
+
+## 🔧 Solução de Problemas Comuns
+
+| Problema | Possível Solução |
+|-------|------------------|
+| **R não encontrado** | Certifique-se de que o R está no PATH do sistema. Reinstale o R com a opção "Adicionar ao PATH" |
+| **Plugin não aparece** | Reinicie o QGIS após instalar o Processing R Provider |
+| **Falha na instalação de pacotes** | Execute como administrador (Windows) ou verifique a conexão com a internet |
+| **Scripts não aparecem** | Verifique o caminho da pasta de scripts R nas configurações de Processamento |
+| **Idioma não muda** | Execute novamente o script Upgrade LCZ4r e selecione o idioma |
+
+## 📚 Próximos Passos
+
+Agora que o LCZ4r está instalado no QGIS, explore estes recursos:
+
+- **Funções Gerais**: Aprenda a baixar e visualizar mapas LCZ
+- **Funções Locais**: Analise séries temporais, anomalias térmicas e intensidade de UHI
+- **Modelagem de Temperatura**: Crie mapas interpolados de temperatura
+
+## 📬 Tem sugestões ou feedback?
+
+Agradecemos seus comentários e sugestões! Se você tiver ideias para melhorias ou encontrar algum problema, por favor, nos avise. Clique no botão abaixo para enviar uma nova issue em nosso repositório GitHub.
+
+```{=html}
+<a href='https://github.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/issues/new' class="github-feedback-btn">
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+  </svg>
+  Open GitHub issue
+</a>
+```
