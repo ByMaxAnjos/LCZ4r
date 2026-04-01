@@ -441,7 +441,7 @@ description: >
       <h3 class="card-title">Introdução ao plugin LCZ4r-QGIS</h3>
       <p class="card-description">O plugin LCZ4r-QGIS integra as Funções Gerais e Funções Locais do pacote LCZ4r ao QGIS, permitindo analisar Zonas Climáticas Locais (LCZ) e a Ilha de Calor Urbana diretamente no ambiente do QGIS.</p>
       <a href="https://bymaxanjos.github.io/LCZ4r/en/articles/Introd_QGIS_LCZ4r.html" class="card-cta-button">
-        Getting Started
+        Abrir Tutorial
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16">
           <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
         </svg>
@@ -469,7 +469,7 @@ description: >
       <h3 class="card-title">Instalação do LCZ4r no QGIS</h3>
       <p class="card-description">Guia passo a passo para instalar o LCZ4r no QGIS. Assista ao vídeo tutorial detalhado ou siga as instruções escritas.</p>
       <a href="https://bymaxanjos.github.io/LCZ4r/en/articles/instalation_lcz4r_qgis.html" class="card-cta-button">
-        Installation Guide
+        Guia Instalação
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16">
           <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
         </svg>
@@ -497,7 +497,7 @@ description: >
       <h3 class="card-title">Funções Gerais do LCZ4r no QGIS</h3>
       <p class="card-description">Domine as Funções Gerais do LCZ4r no QGIS: baixe mapas de LCZ, calcule áreas e extraia parâmetros do dossel urbano.</p>
       <a href="https://bymaxanjos.github.io/LCZ4r/pt/articles/Introd_QGIS_LCZ4r_general.html" class="card-cta-button">
-        Open Tutorial
+        Abrir Tutorial
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16">
           <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
         </svg>

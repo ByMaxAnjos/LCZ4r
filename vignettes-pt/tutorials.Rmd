@@ -283,7 +283,7 @@ title: "Tutoriais"
       <h3 class="card-title">Rodando o LCZ4r no Posit Cloud</h3>
       <p class="card-description">Execute o LCZ4r diretamente no Posit Cloud — sem necessidade de instalação do RStudio!</p>
       <a href="https://bymaxanjos.github.io/LCZ4r/pt/articles/posit_cloud.html" class="card-cta-button">
-        Getting Started
+        Abir Posit
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16">
           <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
         </svg>
@@ -312,7 +312,7 @@ title: "Tutoriais"
       <h3 class="card-title">Primeiros passos com as Funções Gerais</h3>
       <p class="card-description">As Funções Gerais facilitam a obtenção, análise e visualização de mapas de Zonas Climáticas Locais (LCZ).</p>
       <a href="https://bymaxanjos.github.io/LCZ4r/pt/articles/Introd_genera_LCZ4r.html" class="card-cta-button">
-        Getting Started
+        Abir Tutorial
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16">
           <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
         </svg>
@@ -341,7 +341,7 @@ title: "Tutoriais"
       <h3 class="card-title">Download de mapa LCZ pela plataforma LCZ Generator.</h3>
       <p class="card-description">O LCZ Generator é uma aplicação web para criação de mapas de Zonas Climáticas Locais (LCZ). Este guia apresenta um passo a passo para gerar mapas LCZ da sua cidade utilizando o pacote LCZ4r.</p>
       <a href="https://bymaxanjos.github.io/LCZ4r/pt/articles/Introd_genera_LCZ4r.html#download-lcz-map-from-lcz-generator-platform" class="card-cta-button">
-        Open Tutorial
+        Abir Tutorial
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16">
           <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
         </svg>
@@ -370,7 +370,7 @@ title: "Tutoriais"
       <h3 class="card-title">Introdução às Funções Locais.</h3>
       <p class="card-description">As Funções Locais do LCZ4r oferecem ferramentas robustas para manipulação e análise de dados de clima urbano, incluindo análise de séries temporais, mapeamento de anomalias térmicas e interpolação espacial.</p>
       <a href="https://bymaxanjos.github.io/LCZ4r/pt/articles/Introd_local_LCZ4r.html" class="card-cta-button">
-        Open Tutorial
+        Abrir Tutorial
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16">
           <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
         </svg>
@@ -399,7 +399,7 @@ title: "Tutoriais"
       <h3 class="card-title">Análise de Séries Temporais.</h3>
       <p class="card-description">A função lcz_ts() permite analisar dados de temperatura do ar associados às Zonas Climáticas Locais (LCZ) ao longo do tempo.</p>
       <a href="https://bymaxanjos.github.io/LCZ4r/pt/articles/local_func_time_series.html" class="card-cta-button">
-        Open Tutorial
+        Abrir Tutorial
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16">
           <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
         </svg>
@@ -428,7 +428,7 @@ title: "Tutoriais"
       <h3 class="card-title">Anomalias Térmicas</h3>
       <p class="card-description">A análise de anomalias térmicas é fundamental para avaliar as diferenças intraurbanas de temperatura do ar.</p>
       <a href="https://bymaxanjos.github.io/LCZ4r/pt/articles/local_func_anomaly.html" class="card-cta-button">
-        Open Tutorial
+        Abrir Tutorial
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16">
           <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
         </svg>
@@ -457,7 +457,7 @@ title: "Tutoriais"
       <h3 class="card-title">Análise da Ilha de Calor Urbana (ICU).</h3>
       <p class="card-description">Este guia demonstra como utilizar a função lcz_uhi_intensity() para calcular e analisar a intensidade da Ilha de Calor Urbana com base nas classes LCZ.</p>
       <a href="https://bymaxanjos.github.io/LCZ4r/pt/articles/local_func_uhi.html" class="card-cta-button">
-        Open Tutorial
+        Abrir Tutorial
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16">
           <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
         </svg>
@@ -486,7 +486,7 @@ title: "Tutoriais"
       <h3 class="card-title">Interpolação da temperatura do ar e de anomalias com base em LCZ.</h3>
       <p class="card-description">Neste guia, apresentamos como utilizar o LCZ4r para interpolar temperatura do ar e anomalias térmicas, utilizando as funções lcz_interp_map e lcz_anomaly_map.</p>
       <a href="https://bymaxanjos.github.io/LCZ4r/pt/articles/local_func_modeling.html" class="card-cta-button">
-        Open Tutorial
+        Abrir Tutorial
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16">
           <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
         </svg>
@@ -515,7 +515,7 @@ title: "Tutoriais"
       <h3 class="card-title">Avaliação da interpolação baseada em LCZ.</h3>
       <p class="card-description">Apresentamos como avaliar a interpolação baseada em LCZ em contextos com baixa densidade de dados observacionais, utilizando o exemplo de Berlim.</p>
       <a href="https://bymaxanjos.github.io/LCZ4r/pt/articles/local_func_modeling_eval.html" class="card-cta-button">
-        Open Tutorial
+        Abrir Tutorial
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16">
           <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
         </svg>
@@ -544,7 +544,7 @@ title: "Tutoriais"
       <h3 class="card-title">Modelagem da Ilha de Calor Urbana com dados colaborativos de temperatura do ar.</h3>
       <p class="card-description">Neste guia, aplicamos o LCZ4r para modelar a Ilha de Calor Urbana utilizando dados colaborativos (crowdsourced) de temperatura do ar em Berlim.</p>
       <a href="https://bymaxanjos.github.io/LCZ4r/pt/articles/local_func_modeling_crows.html" class="card-cta-button">
-        Open Tutorial
+        Abrir Tutorial
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16">
           <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
         </svg>
