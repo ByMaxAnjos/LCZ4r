@@ -103,10 +103,10 @@ reference:
   - lcz_data
 
 articles:
-  - title: "Introdução"
+  - title: "Introduction"
     contents:
       - about
-  - title: "Tutoriais"
+  - title: "Tutorials"
     contents:
       - tutorials
       - Introd_genera_LCZ4r
@@ -124,3 +124,4 @@ articles:
       - Introd_QGIS_LCZ4r
       - instalation_lcz4r_qgis
       - Introd_QGIS_LCZ4r_general
+
