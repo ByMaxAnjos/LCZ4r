@@ -56,18 +56,6 @@ home:
   title: "LCZ4r"
   description: "Pacote em R para análise de Zonas Climáticas Locais (Local Climate Zones) e ilhas de calor urbanas"
 
-
-articles:
-  - title: "Introdução"
-    contents:
-      - about
-  - title: "Tutoriais"
-    contents:
-      - tutorials
-  - title: "Plugin QGIS"
-    contents:
-      - examples
-
 reference:
 - title: "Funções Gerais"
   desc: >
