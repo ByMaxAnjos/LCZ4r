@@ -4,64 +4,553 @@ title: "Tutoriales"
 
 ```{=html}
 <style>
+  /* ================================================================
+     Forest Canopy Theme — Tutorial Grid (with image cards)
+     Aligned with: LCZ4r landing page · custom-modern.css · style.css
+     Tokens: #f8faf7 bg · #1a2e1a text · #10b981 primary · #0ea5e9 sky
+  ================================================================ */
+
+  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
   :root {
-    --fc-bg: #f8faf7; --fc-surface: #f0f4ef; --fc-elevated: #e6ede4;
-    --fc-primary: #10b981; --fc-deep: #059669; --fc-sky: #0ea5e9;
-    --fc-text: #1a2e1a; --fc-muted: #4a6741;
-    --fc-border: rgba(16,185,129,0.18); --fc-radius: 14px;
-    --fc-transition: 0.28s cubic-bezier(.4,0,.2,1);
+    --fc-bg-page:       #f8faf7;
+    --fc-bg-card:       rgba(255, 255, 255, 0.90);
+    --fc-bg-elevated:   #e6ede4;
+    --fc-primary:       #10b981;
+    --fc-primary-dark:  #059669;
+    --fc-sky:           #0ea5e9;
+    --fc-text-main:     #1a2e1a;
+    --fc-text-body:     #4a6741;
+    --fc-text-muted:    #8aaa82;
+    --fc-border:        rgba(16, 185, 129, 0.18);
+    --fc-border-hover:  rgba(16, 185, 129, 0.55);
+    --fc-shadow:        0 4px 24px -4px rgba(16, 40, 16, 0.10);
+    --fc-shadow-hover:  0 16px 48px -8px rgba(16, 40, 16, 0.20);
+    --fc-radius:        16px;
+    --fc-radius-sm:     8px;
+    --fc-ease:          cubic-bezier(0.25, 0.8, 0.25, 1);
   }
-  .tut-hero { background: linear-gradient(135deg,#1a2e1a 0%,#10b981 60%,#0ea5e9 100%); border-radius: var(--fc-radius); padding: 2.4rem 2rem 2rem; margin-bottom: 2rem; color:#fff; }
-  .tut-hero-eyebrow { font-size:.72rem; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:rgba(255,255,255,0.7); margin-bottom:.5rem; }
-  .tut-hero h1 { font-size:clamp(1.5rem,4vw,2.2rem); font-weight:700; margin:0 0 .7rem; }
-  .tut-hero p { font-size:1rem; color:rgba(255,255,255,0.85); margin:0; max-width:560px; line-height:1.6; }
-  .tut-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.4rem; margin-bottom:2.4rem; }
-  .tut-card { background:rgba(255,255,255,0.82); backdrop-filter:blur(10px); border:1px solid var(--fc-border); border-radius:var(--fc-radius); overflow:hidden; text-decoration:none !important; color:inherit !important; display:flex; flex-direction:column; transition:transform var(--fc-transition),box-shadow var(--fc-transition); }
-  .tut-card:hover { transform:translateY(-4px); box-shadow:0 10px 32px rgba(16,185,129,0.18); }
-  .tut-card-img { width:100%; height:180px; object-fit:cover; background:var(--fc-elevated); display:block; }
-  .tut-card-img-placeholder { width:100%; height:180px; background:linear-gradient(135deg,#e8f5e9,#d1fae5); display:flex; align-items:center; justify-content:center; font-size:3rem; }
-  .tut-card-badge { position:absolute; top:.8rem; right:.8rem; background:rgba(16,185,129,0.9); color:#fff; border-radius:100px; padding:.2rem .7rem; font-size:.72rem; font-weight:600; }
-  .tut-card-body { padding:1.3rem 1.4rem 1.5rem; flex:1; display:flex; flex-direction:column; position:relative; }
-  .tut-card-icon { width:40px; height:40px; background:linear-gradient(135deg,#e8f5e9,#d1fae5); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:1.2rem; margin-bottom:.8rem; }
-  .tut-card-title { font-size:1.05rem; font-weight:700; color:var(--fc-text); margin:0 0 .4rem; }
-  .tut-card-desc { font-size:.88rem; color:var(--fc-muted); line-height:1.55; flex:1; margin:0 0 1rem; }
-  .tut-card-btn { display:inline-flex; align-items:center; gap:.4rem; background:linear-gradient(135deg,var(--fc-primary),var(--fc-deep)); color:#fff !important; text-decoration:none !important; padding:.5rem 1.1rem; border-radius:100px; font-size:.82rem; font-weight:600; align-self:flex-start; transition:filter var(--fc-transition); }
-  .tut-card-btn:hover { filter:brightness(1.08); }
-  .github-feedback-btn { display:inline-flex; align-items:center; gap:.5rem; background:linear-gradient(135deg,#1a2e1a,#10b981); color:#fff !important; text-decoration:none !important; padding:.7rem 1.5rem; border-radius:100px; font-size:.88rem; font-weight:600; box-shadow:0 4px 14px rgba(26,46,26,0.25); transition:filter var(--fc-transition),transform var(--fc-transition); margin-top:.5rem; }
-  .github-feedback-btn:hover { filter:brightness(1.1); transform:translateY(-2px); }
-  @media(max-width:640px){.tut-grid{grid-template-columns:1fr;}.tut-hero{padding:1.6rem 1.2rem;}}
-  @media(prefers-reduced-motion:reduce){.tut-card,.tut-card-btn,.github-feedback-btn{transition:none;}}
+
+  /* ── Grid layout ─────────────────────────────────────────────── */
+  .tutorial-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.75rem;
+    padding: 2rem 0;
+    font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  /* ── Card base ────────────────────────────────────────────────── */
+  .tutorial-card {
+    background: var(--fc-bg-card);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: var(--fc-radius);
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--fc-border);
+    box-shadow: var(--fc-shadow);
+    transition: transform 0.32s var(--fc-ease),
+                box-shadow 0.32s var(--fc-ease),
+                border-color 0.32s var(--fc-ease);
+    overflow: hidden;
+  }
+
+  .tutorial-card:hover {
+    transform: translateY(-7px);
+    box-shadow: var(--fc-shadow-hover);
+    border-color: var(--fc-border-hover);
+  }
+
+  /* ── Card image ───────────────────────────────────────────────── */
+  .card-image-wrapper {
+    position: relative;
+    width: 100%;
+    padding-bottom: 52%;   /* ~16:8 aspect ratio — wide cinematic crop */
+    overflow: hidden;
+    background: var(--fc-bg-elevated);
+  }
+
+  .card-image-wrapper img {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    transition: transform 0.45s var(--fc-ease);
+    filter: saturate(0.92) brightness(0.97);
+  }
+
+  .tutorial-card:hover .card-image-wrapper img {
+    transform: scale(1.05);
+    filter: saturate(1.05) brightness(1.00);
+  }
+
+  /* Gradient overlay at bottom of image */
+  .card-image-wrapper::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 55%;
+    background: linear-gradient(
+      to top,
+      rgba(248, 250, 247, 0.95) 0%,
+      rgba(248, 250, 247, 0.40) 55%,
+      transparent 100%
+    );
+    pointer-events: none;
+  }
+
+  /* Badge floated over the image */
+  .card-image-badge {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    z-index: 2;
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(8px);
+    color: var(--fc-primary-dark);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    padding: 4px 12px;
+    border-radius: 100px;
+    text-transform: uppercase;
+    border: 1px solid var(--fc-border);
+  }
+
+  /* ── Card body (text area) ────────────────────────────────────── */
+  .card-body {
+    padding: 1.5rem 1.75rem 1.75rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+
+  /* ── Card header row (icon + badge) ──────────────────────────── */
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 0.9rem;
+  }
+
+  .card-icon {
+    color: var(--fc-primary);
+    background: linear-gradient(135deg, #e8f5e9 0%, #d1fae5 100%);
+    padding: 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(16, 185, 129, 0.20);
+    transition: background 0.3s var(--fc-ease), transform 0.3s var(--fc-ease);
+    flex-shrink: 0;
+  }
+
+  .tutorial-card:hover .card-icon {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    transform: scale(1.10) rotate(-5deg);
+  }
+
+  /* ── Card content ─────────────────────────────────────────────── */
+  .card-title {
+    color: var(--fc-text-main);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0 0 0.55rem 0;
+    line-height: 1.25;
+  }
+
+  .card-description {
+    color: var(--fc-text-body);
+    font-size: 0.90rem;
+    line-height: 1.65;
+    flex-grow: 1;
+    margin-bottom: 1.5rem;
+  }
+
+  /* ── CTA button ───────────────────────────────────────────────── */
+  .card-cta-button {
+    background: linear-gradient(135deg, var(--fc-primary) 0%, var(--fc-primary-dark) 100%);
+    color: #ffffff !important;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-align: center;
+    text-decoration: none !important;
+    padding: 11px 20px;
+    border-radius: var(--fc-radius-sm);
+    transition: filter 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 10px rgba(16, 185, 129, 0.28);
+    letter-spacing: 0.01em;
+  }
+
+  .card-cta-button:hover {
+    filter: brightness(1.08);
+    transform: translateX(4px);
+    box-shadow: 0 4px 18px rgba(16, 185, 129, 0.40);
+    text-decoration: none !important;
+    color: #ffffff !important;
+  }
+
+  /* ── SVG icons ────────────────────────────────────────────────── */
+  .tutorial-card svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  /* ── GitHub feedback button ───────────────────────────────────── */
+  .github-feedback-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, var(--fc-primary) 0%, var(--fc-sky) 100%);
+    color: #ffffff !important;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 11px 22px;
+    border-radius: var(--fc-radius-sm);
+    border: none;
+    cursor: pointer;
+    text-decoration: none !important;
+    transition: filter 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 12px rgba(16, 185, 129, 0.28);
+    letter-spacing: 0.01em;
+  }
+
+  .github-feedback-btn:hover {
+    filter: brightness(1.08);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.38);
+    text-decoration: none !important;
+    color: #ffffff !important;
+  }
+
+  /* ── Responsive ───────────────────────────────────────────────── */
+  @media (max-width: 640px) {
+    .tutorial-grid {
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+      padding: 1rem 0;
+    }
+    .card-body {
+      padding: 1.25rem 1.4rem 1.5rem;
+    }
+    .card-title { font-size: 1.1rem; }
+  }
+
+  /* ── Reduced motion ───────────────────────────────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    .tutorial-card,
+    .card-cta-button,
+    .card-icon,
+    .card-image-wrapper img,
+    .github-feedback-btn { transition: none; }
+  }
+
 </style>
 
-<div class="tut-hero">
-  <div class="tut-hero-eyebrow">LCZ4r · Tutoriales</div>
-  <h1>Tutoriales LCZ4r</h1>
-  <p>Aprenda a usar LCZ4r paso a paso — desde la instalación hasta análisis avanzados de Islas de Calor Urbanas y Zonas Climáticas Locales.</p>
-</div>
+<div class="tutorial-grid">
 
-<div class="tut-grid">
-
-  <a href="https://bymaxanjos.github.io/LCZ4r/es/articles/about.html" class="tut-card" style="position:relative;">
-    <span class="tut-card-badge">Esencial</span>
-    <img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/vignettes/fig_general_1_1.png" alt="LCZ Map" class="tut-card-img" onerror="this.style.display='none'">
-    <div class="tut-card-body">
-      <div class="tut-card-icon">🗺️</div>
-      <div class="tut-card-title">Tutorial Introductorio</div>
-      <p class="tut-card-desc">Aprenda el flujo completo: desde la instalación del paquete hasta la creación de mapas ZCL y series temporales. Ideal para principiantes.</p>
-      <span class="tut-card-btn">Empezar Ahora →</span>
+  <!-- Card 1:Ejecutando LCZ4r en Posit Cloud -->
+  <div class="tutorial-card">
+    <div class="card-image-wrapper">
+      <span class="card-image-badge">Posit Cloud</span>
+      <img
+        src="https://github.com/ByMaxAnjos/LCZ4r/raw/main/inst/figures/posit_cloud.png"
+        alt="LCZ map SP"
+        loading="lazy"
+        onerror="this.parentElement.style.display='none'">
     </div>
-  </a>
-
-  <a href="https://bymaxanjos.github.io/LCZ4r/es/reference/index.html" class="tut-card" style="position:relative;">
-    <span class="tut-card-badge">Avanzado</span>
-    <img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/vignettes/fig_local_uhi_2.png" alt="UHI Analysis" class="tut-card-img" onerror="this.style.display='none'">
-    <div class="tut-card-body">
-      <div class="tut-card-icon">🌡️</div>
-      <div class="tut-card-title">Análisis de Isla de Calor Urbana</div>
-      <p class="tut-card-desc">Explore flujos de trabajo avanzados para el cálculo de intensidad ICU, detección de anomalías térmicas e interpolación de temperatura del aire.</p>
-      <span class="tut-card-btn">Ver Funciones →</span>
+    <div class="card-body">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        </div>
+      </div>
+      <h3 class="card-title">Ejecutando LCZ4r en Posit Cloud</h3>
+      <p class="card-description">Ejecuta LCZ4r directamente en Posit Cloud, ¡sin necesidad de instalar RStudio!</p>
+      <a href="https://bymaxanjos.github.io/LCZ4r/es/articles/posit_cloud.html" class="card-cta-button">
+        Empezando
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+      </a>
     </div>
-  </a>
+  </div>
+
+  <!-- Card 1: Introducción -->
+  <div class="tutorial-card">
+    <div class="card-image-wrapper">
+      <span class="card-image-badge">Funciones generales</span>
+      <img
+        src="https://github.com/ByMaxAnjos/LCZ4r/raw/main/inst/figures/fig_general_1_1.png"
+        alt="LCZ map SP"
+        loading="lazy"
+        onerror="this.parentElement.style.display='none'">
+    </div>
+    <div class="card-body">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        </div>
+      </div>
+      <h3 class="card-title">Primeros pasos con las funciones generales</h3>
+      <p class="card-description">Las funciones generales facilitan la recuperación, el análisis y la visualización de los mapas de LCZ</p>
+      <a href="https://bymaxanjos.github.io/LCZ4r/es/articles/Introd_genera_LCZ4r.html" class="card-cta-button">
+        Empezando
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- Card 2: Generador -->
+  <div class="tutorial-card">
+    <div class="card-image-wrapper">
+      <span class="card-image-badge">Generador LCZ</span>
+      <img
+        src="https://github.com/ByMaxAnjos/LCZ4r/raw/main/inst/figures/generator_card.png"
+        alt="Plataforma generadora"
+        loading="lazy"
+        onerror="this.parentElement.style.display='none'">
+    </div>
+    <div class="card-body">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.58 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.58 4 8 4s8-1.79 8-4M4 7c0-2.21 3.58-4 8-4s8 1.79 8 4m0 5c0 2.21-3.58 4-8 4s-8-1.79-8-4" />
+          </svg>
+        </div>
+      </div>
+      <h3 class="card-title">Descarga el mapa LCZ desde la plataforma Generador LCZ.</h3>
+      <p class="card-description">El Generador de Zonas Climáticas Locales (LCZ) es una aplicación web para crear mapas de Zonas Climáticas Locales (LCZ). Esta guía proporciona instrucciones paso a paso para generar un mapa LCZ para su ciudad utilizando el paquete LCZ4r.</p>
+      <a href="https://bymaxanjos.github.io/LCZ4r/es/articles/Introd_genera_LCZ4r.html#download-lcz-map-from-lcz-generator-platform" class="card-cta-button">
+       Abrir tutorial
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+      </a>
+    </div>
+  </div>
+
+<!-- Card 3: Introducción a las funciones locales -->
+  <div class="tutorial-card">
+    <div class="card-image-wrapper">
+      <span class="card-image-badge">Funciones locales</span>
+      <img
+        src="https://github.com/ByMaxAnjos/LCZ4r/raw/main/inst/figures/introd_local_card.png"
+        alt="Introducción a las funciones locales"
+        loading="lazy"
+        onerror="this.parentElement.style.display='none'">
+    </div>
+    <div class="card-body">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.58 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.58 4 8 4s8-1.79 8-4M4 7c0-2.21 3.58-4 8-4s8 1.79 8 4m0 5c0 2.21-3.58 4-8 4s-8-1.79-8-4" />
+          </svg>
+        </div>
+      </div>
+      <h3 class="card-title">Introducción a las funciones locales.</h3>
+      <p class="card-description">Las funciones locales de LCZ4r ofrecen potentes herramientas para gestionar y analizar datos climáticos urbanos. Permiten el análisis de series temporales, la cartografía de anomalías térmicas, la interpolación espacial y mucho más.</p>
+      <a href="https://bymaxanjos.github.io/LCZ4r/es/articles/Introd_local_LCZ4r.html" class="card-cta-button">
+         Abrir tutorial
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+      </a>
+    </div>
+  </div>
+
+<!-- Card 4: Análisis de series temporales -->
+  <div class="tutorial-card">
+    <div class="card-image-wrapper">
+      <span class="card-image-badge">Funciones locales</span>
+      <img
+        src="https://github.com/ByMaxAnjos/LCZ4r/raw/main/inst/figures/fig_local_ts_5.png"
+        alt="Análisis de series temporales"
+        loading="lazy"
+        onerror="this.parentElement.style.display='none'">
+    </div>
+    <div class="card-body">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.58 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.58 4 8 4s8-1.79 8-4M4 7c0-2.21 3.58-4 8-4s8 1.79 8 4m0 5c0 2.21-3.58 4-8 4s-8-1.79-8-4" />
+          </svg>
+        </div>
+      </div>
+      <h3 class="card-title">Análisis de series temporales.</h3>
+      <p class="card-description">La función lcz_ts() permite analizar datos de temperatura del aire asociados a las Zonas Climáticas Locales (LCZ) a lo largo del tiempo..</p>
+      <a href="https://bymaxanjos.github.io/LCZ4r/es/articles/local_func_time_series.html" class="card-cta-button">
+        Abrir tutorial
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+      </a>
+    </div>
+  </div>
+
+<!-- Card 5: Anomalías térmicas -->
+  <div class="tutorial-card">
+    <div class="card-image-wrapper">
+      <span class="card-image-badge">Funciones locales</span>
+      <img
+        src="https://github.com/ByMaxAnjos/LCZ4r/raw/main/inst/figures/fig_local_anomaly_1.png"
+        alt="Anomalías térmicas"
+        loading="lazy"
+        onerror="this.parentElement.style.display='none'">
+    </div>
+    <div class="card-body">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.58 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.58 4 8 4s8-1.79 8-4M4 7c0-2.21 3.58-4 8-4s8 1.79 8 4m0 5c0 2.21-3.58 4-8 4s-8-1.79-8-4" />
+          </svg>
+        </div>
+      </div>
+      <h3 class="card-title">Anomalías térmicas.</h3>
+      <p class="card-description">La anomalía térmica es una excelente manera de evaluar las diferencias de temperatura del aire dentro de las zonas urbanas.</p>
+      <a href="https://bymaxanjos.github.io/LCZ4r/es/articles/local_func_anomaly.html" class="card-cta-button">
+        Abrir tutorial
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+      </a>
+    </div>
+  </div>
+
+<!-- Card 6: Análisis de la isla de calor urbana (ICU) -->
+  <div class="tutorial-card">
+    <div class="card-image-wrapper">
+      <span class="card-image-badge">Funciones locales</span>
+      <img
+        src="https://github.com/ByMaxAnjos/LCZ4r/raw/main/inst/figures/fig_local_uhi_4.png"
+        alt="Análisis de la isla de calor urbana (ICU)"
+        loading="lazy"
+        onerror="this.parentElement.style.display='none'">
+    </div>
+    <div class="card-body">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.58 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.58 4 8 4s8-1.79 8-4M4 7c0-2.21 3.58-4 8-4s8 1.79 8 4m0 5c0 2.21-3.58 4-8 4s-8-1.79-8-4" />
+          </svg>
+        </div>
+      </div>
+      <h3 class="card-title">Análisis de la isla de calor urbana (ICU)</h3>
+      <p class="card-description">Esta guía muestra cómo usar la función lcz_uhi_intensity() para calcular y analizar la intensidad del efecto isla de calor urbano (UHI) utilizando clases LCZ.</p>
+      <a href="https://bymaxanjos.github.io/LCZ4r/es/articles/local_func_uhi.html" class="card-cta-button">
+        Abrir tutorial
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+      </a>
+    </div>
+  </div>
+
+<!-- Card 7: Interpolación de la temperatura del aire y las anomalías como fondo de la LCZ -->
+  <div class="tutorial-card">
+    <div class="card-image-wrapper">
+      <span class="card-image-badge">Funciones locales</span>
+      <img
+        src="https://github.com/ByMaxAnjos/LCZ4r/raw/main/inst/figures/fig_local_modeling_card.png"
+        alt="Interpolación de la temperatura del aire y las anomalías como fondo de la LCZ"
+        loading="lazy"
+        onerror="this.parentElement.style.display='none'">
+    </div>
+    <div class="card-body">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.58 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.58 4 8 4s8-1.79 8-4M4 7c0-2.21 3.58-4 8-4s8 1.79 8 4m0 5c0 2.21-3.58 4-8 4s-8-1.79-8-4" />
+          </svg>
+        </div>
+      </div>
+      <h3 class="card-title">Interpolación de la temperatura del aire y las anomalías como fondo de la LCZ.</h3>
+      <p class="card-description">En esta guía, explicaremos cómo usar LCZ4r para interpolar la temperatura del aire y las anomalías térmicas, utilizando las funciones lcz_interp_map y lcz_anomaly_map.</p>
+      <a href="https://bymaxanjos.github.io/LCZ4r/es/articles/local_func_modeling.html" class="card-cta-button">
+        Abrir tutorial
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+      </a>
+    </div>
+  </div>
+
+<!-- Card 8: Evaluación de la interpolación basada en LCZ -->
+  <div class="tutorial-card">
+    <div class="card-image-wrapper">
+      <span class="card-image-badge">Funciones locales</span>
+      <img
+        src="https://github.com/ByMaxAnjos/LCZ4r/raw/main/inst/figures/fig_local_modeling_eval_card.png"
+        alt="Evaluación de la interpolación basada en LCZ"
+        loading="lazy"
+        onerror="this.parentElement.style.display='none'">
+    </div>
+    <div class="card-body">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.58 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.58 4 8 4s8-1.79 8-4M4 7c0-2.21 3.58-4 8-4s8 1.79 8 4m0 5c0 2.21-3.58 4-8 4s-8-1.79-8-4" />
+          </svg>
+        </div>
+      </div>
+      <h3 class="card-title">Evaluación de la interpolación basada en LCZ.</h3>
+      <p class="card-description">Aquí mostraremos cómo evaluar la interpolación basada en LCZ para datos de observación de baja densidad en Berlín.</p>
+      <a href="https://bymaxanjos.github.io/LCZ4r/es/articles/local_func_modeling_eval.html" class="card-cta-button">
+        Abrir tutorial
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+      </a>
+    </div>
+  </div>
+
+<!-- Card 9: Modelado de la isla de calor urbana con temperaturas del aire obtenidas mediante crowdsourcing -->
+  <div class="tutorial-card">
+    <div class="card-image-wrapper">
+      <span class="card-image-badge">Funciones locales</span>
+      <img
+        src="https://github.com/ByMaxAnjos/LCZ4r/raw/main/inst/figures/fig_local_modeling_crows_card.png"
+        alt="Modelado de la isla de calor urbana con temperaturas del aire obtenidas mediante crowdsourcing"
+        loading="lazy"
+        onerror="this.parentElement.style.display='none'">
+    </div>
+    <div class="card-body">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.58 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.58 4 8 4s8-1.79 8-4M4 7c0-2.21 3.58-4 8-4s8 1.79 8 4m0 5c0 2.21-3.58 4-8 4s-8-1.79-8-4" />
+          </svg>
+        </div>
+      </div>
+      <h3 class="card-title">Modelado de la isla de calor urbana con temperaturas del aire obtenidas mediante crowdsourcing.</h3>
+      <p class="card-description">En esta guía, aplicaremos el modelo LCZ4r para simular el efecto de isla de calor urbana utilizando temperaturas del aire obtenidas mediante crowdsourcing en Berlín.</p>
+      <a href="https://bymaxanjos.github.io/LCZ4r/es/articles/local_func_modeling_crows.html" class="card-cta-button">
+        Abrir tutorial
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+      </a>
+    </div>
+  </div>
 
 </div>
 ```
@@ -69,12 +558,13 @@ title: "Tutoriales"
 ---
 
 ## ¿Tiene comentarios o sugerencias?
-
-¿Tiene ideas para mejorar o encontró algún error? ¡Nos encantaría escucharle!
+¿Tiene una idea para mejorar o detectó un error? ¡Nos encantaría saber de usted! Haga clic en el botón a continuación para crear una nueva edición (Github) y compartir sus comentarios o sugerencias directamente con nosotros.
 
 ```{=html}
-<a href='https://github.com/ByMaxAnjos/LCZ4r/issues/new' class="github-feedback-btn">
-  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
-  Abrir un issue en GitHub
+<a href='https://github.com/ByMaxAnjos/climasus4r/issues/new' class="github-feedback-btn">
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+  </svg>
+  Abrir incidencia en GitHub
 </a>
 ```

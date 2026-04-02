@@ -1,0 +1,592 @@
+---
+title: "Dominando las funciones generales de LCZ4r en QGIS"
+author: "Max Anjos"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 4
+    toc_float:
+      collapsed: true
+      smooth_scroll: true
+    number_sections: true
+    theme: flatly
+    highlight: tango
+    code_folding: show
+    code_download: true
+    self_contained: false
+    df_print: paged
+---
+
+```{css, echo=FALSE}
+/* ── Variáveis de Cores Modernas ────────────────── */
+:root {
+  --primary-color: #1D9E75;
+  --dark-green: #0f3d2e;
+  --bg-light: #f8faf9;
+  --text-main: #1a1a1a;
+  --code-bg: #fdfdfd;
+  --qgis-blue: #5890be;
+  --warning-orange: #ff9800;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 18px;
+  color: var(--text-main);
+  background-color: #fff;
+  line-height: 1.6;
+}
+
+/* ── Títulos com Inter-spacing ─────────────────── */
+h1, h2, h3, h4 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  color: var(--dark-green);
+}
+
+h1.title {
+  font-size: 2.8em;
+  border-bottom: 4px solid var(--primary-color);
+  padding-bottom: 10px;
+  margin-bottom: 1.5rem;
+}
+
+h2 {
+  margin-top: 2rem;
+  border-left: 4px solid var(--primary-color);
+  padding-left: 1rem;
+}
+
+/* ── Code Blocks Estilizados ────────────────────── */
+pre.r, pre.sourceCode {
+  background-color: var(--code-bg);
+  border: 1px solid #e1e1e1;
+  border-left: 5px solid var(--primary-color) !important;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  padding: 1rem;
+}
+
+/* ── Custom Callouts (Estilo Quarto) ────────────── */
+.callout {
+  padding: 1.2em 1.5em;
+  margin: 1.5em 0;
+  border-radius: 8px;
+  border-left: 6px solid;
+  background-color: var(--bg-light);
+}
+
+.callout-note {
+  background-color: #f0f7ff;
+  border-color: #007bff;
+}
+
+.callout-tip {
+  background-color: #e8f5e9;
+  border-color: #1D9E75;
+}
+
+.callout-warning {
+  background-color: #fff3e0;
+  border-color: #ff9800;
+}
+
+.callout-info {
+  background-color: #e3f2fd;
+  border-color: #2196f3;
+}
+
+/* ── Video container ────────────────────────────── */
+.video-container {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  margin: 1.5rem 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+}
+
+/* ── Function cards ─────────────────────────────── */
+.function-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.function-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.25rem;
+  border: 1px solid #e1e1e1;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.function-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+
+.function-card h4 {
+  margin-top: 0;
+  color: var(--primary-color);
+  font-size: 1.1rem;
+}
+
+.function-card p {
+  font-size: 0.85rem;
+  color: var(--text-main);
+  margin-bottom: 0;
+}
+
+/* ── Step container styling ─────────────────────── */
+.step-container {
+  background-color: var(--bg-light);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  border-left: 4px solid var(--primary-color);
+}
+
+.step-number {
+  display: inline-block;
+  background-color: var(--primary-color);
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 32px;
+  font-weight: bold;
+  margin-right: 12px;
+  font-size: 1rem;
+}
+
+.step-title {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--dark-green);
+  margin-bottom: 1rem;
+  display: inline-block;
+}
+
+/* ── Table styling ───────────────────────────────── */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+}
+
+th, td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #e1e1e1;
+}
+
+th {
+  background-color: var(--bg-light);
+  font-weight: 600;
+  color: var(--dark-green);
+}
+
+tr:hover {
+  background-color: var(--bg-light);
+}
+
+/* ── Figure styling ─────────────────────────────── */
+.figure {
+  margin: 1.5rem 0;
+  text-align: center;
+}
+
+.figure img {
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  max-width: 100%;
+  height: auto;
+}
+
+.figure .caption {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 8px;
+  font-style: italic;
+}
+
+/* ── Badge styling ───────────────────────────────── */
+.badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+.badge-primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.badge-info {
+  background-color: #2196f3;
+  color: white;
+}
+
+/* ── Botão GitHub aprimorado ───────────────────── */
+.github-feedback-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #24292e;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-family: sans-serif;
+  transition: background-color 0.2s;
+  margin-top: 1rem;
+}
+
+.github-feedback-btn:hover {
+  background-color: #2c3e50;
+  color: white;
+  text-decoration: none;
+}
+
+/* ── Contact info ───────────────────────────────── */
+.contact-card {
+  background: linear-gradient(135deg, #e8f5e9 0%, #d1fae5 100%);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  text-align: center;
+  border: 1px solid var(--primary-color);
+}
+
+.contact-email {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.contact-email:hover {
+  text-decoration: underline;
+}
+
+/* ── Responsive ─────────────────────────────────── */
+@media (max-width: 768px) {
+  body {
+    font-size: 16px;
+  }
+  
+  h1.title {
+    font-size: 2rem;
+  }
+  
+  .function-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  th, td {
+    padding: 8px;
+    font-size: 0.85rem;
+  }
+}
+```
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.align = "center",
+  fig.width = 8,
+  fig.height = 5,
+  out.width = "90%"
+)
+```
+
+# Introducción
+
+Las **Funciones generales de LCZ4r** están diseñadas para facilitar la recuperación, el análisis y la visualización de zonas climáticas locales (LCZ) cuando los datos relacionados con LCZ no están disponibles. Estas funciones permiten a los usuarios:
+
+- **Descargar** mapas LCZ de conjuntos de datos globales
+- **Calcular** clases y áreas LCZ
+- **Extraer** parámetros del dosel urbano (UCP) como:
+  - Factor de visión del cielo (SVF)
+  - Fracción de superficie impermeable (ISF)
+  - Altura del elemento de rugosidad (HRE)
+  - ¡Y muchos más!
+
+<!-- badges: start -->
+[![Ciclo de vida: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+<!-- badges: end -->
+
+::: {.callout .callout-nota}
+**¿Qué son las Funciones Generales?**
+
+Las Funciones Generales sirven como base de LCZ4r y proporcionan herramientas esenciales para:
+- **Adquisición de datos**: descargue mapas LCZ para cualquier ciudad del mundo
+- **Procesamiento de datos**: Calcular áreas, extraer parámetros
+- **Visualización de datos**: cree mapas LCZ listos para publicar
+:::
+
+## 📺 Vídeo tutorial
+
+Mire este tutorial detallado sobre las funciones generales de LCZ4r en QGIS:
+
+<div class="video-container">
+<iframe src="https://www.youtube.com/embed/WeaP1a2DCyw" 
+        title="Tutorial de Funciones Generales de LCZ4r-QGIS" 
+        borde del marco="0" 
+        permitir="acelerómetro; reproducción automática; escritura en portapapeles; medios cifrados; giroscopio; imagen en imagen" 
+        permitir pantalla completa></iframe>
+</div>
+
+## 📋 Descripción general de funciones generales
+
+Las siguientes funciones están disponibles en la sección **Funciones generales de LCZ4r** de su Caja de herramientas de procesamiento QGIS:
+
+<div class="function-grid">
+
+<div class="function-card">
+<h4>📥 Descargar mapa LCZ</h4>
+<p>Descargue mapas LCZ de conjuntos de datos globales (mundo, Europa, EE. UU.) o la plataforma LCZ Generator</p>
+</div>
+
+<div class="function-card">
+<h4>✂️ Clip Mapa LCZ</h4>
+<p>Recorte mapas LCZ a su ciudad o región de interés (ROI) personalizada</p>
+</div>
+
+<div class="function-card">
+<h4>🗺️ Trazar mapa LCZ</h4>
+<p>Visualice mapas LCZ con colores y etiquetas personalizables</p>
+</div>
+
+<div class="function-card">
+<h4>📐 Calcular el área LCZ</h4>
+<p>Calcule estadísticas de área para cada clase LCZ en su área de estudio</p>
+</div>
+
+<div class="function-card">
+<h4>📊 Obtener parámetros LCZ</h4>
+<p>Extraiga los parámetros del dosel urbano (SVF, ISF, HRE, etc.) para cada LCZ</p>
+</div>
+
+<div class="function-card">
+<h4>🎨 Trazar parámetros LCZ</h4>
+<p>Visualice mapas de parámetros (por ejemplo, factor de visión del cielo, longitud de rugosidad)</p>
+</div>
+
+</div>
+
+## 🚀 Comenzando
+
+### Requisitos previos
+
+Antes de utilizar las Funciones generales, asegúrese de tener:
+
+1. **LCZ4r instalado** en QGIS (ver [guía de instalación](https://bymaxanjos.github.io/LCZ4r/en/articles/instalation_lcz4r_qgis.html))
+2. **Complemento Processing R Provider** instalado y configurado
+3. **Conexión a Internet** para descargar mapas LCZ (uso por primera vez)
+
+### Fuentes de datos disponibles
+
+| Fuente | Cobertura | Función |
+|--------|----------|----------|
+| Mapa global LCZ | En todo el mundo | `lcz_get_map()` |
+| Mapa LCZ europeo | Europa | `lcz_get_map_euro()` |
+| Mapa LCZ de EE. UU. | Estados Unidos continental | `lcz_get_map_usa()` |
+| Generador LCZ | Ciudades personalizadas | `lcz_get_map_generator()` |
+
+## 🗺️ Tutorial paso a paso
+
+### Paso 1: descargue un mapa LCZ
+
+<div class="step-container">
+<span class="step-number">1</span>
+<span class="step-title">Descargue el mapa LCZ para su ciudad</span>
+
+1. En la Caja de herramientas de procesamiento, navegue hasta **R** → **Funciones generales de LCZ4r**
+2. Haga doble clic en **Descargar mapa LCZ**
+3. Ingrese el nombre de su ciudad (por ejemplo, "São Paulo", "París", "Tokio")
+4. Elija el conjunto de datos (Global, Europa o EE. UU.)
+5. Haga clic en **Ejecutar**
+
+**Salida**: Se agregará una capa ráster con clasificación LCZ para su ciudad a su lienzo QGIS.
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_1.png" alt="LCZ map of São Paulo" width="80%" />
+<p class="caption">Ejemplo: mapa LCZ de São Paulo, Brasil</p>
+</div>
+
+</div>
+
+### Paso 2: Visualice su mapa LCZ
+
+<div class="step-container">
+<span class="step-number">2</span>
+<span class="step-title">Personaliza y visualiza</span>
+
+1. Haga doble clic en **Trazar mapa LCZ**
+2. Seleccione su capa de mapa LCZ descargada
+3. Personaliza colores y etiquetas (opcional)
+4. Haga clic en **Ejecutar**
+
+**Resultado**: Un mapa LCZ listo para publicar con la leyenda y la combinación de colores adecuados.
+
+</div>
+
+### Paso 3: Calcular las áreas LCZ
+
+<div class="step-container">
+<span class="step-number">3</span>
+<span class="step-title">Estadísticas del área de cálculo</span>
+
+1. Haga doble clic en **Calcular área LCZ**
+2. Seleccione su capa de mapa LCZ
+3. Haga clic en **Ejecutar**
+
+**Resultado**: una tabla que muestra el área (km²) y el porcentaje para cada clase LCZ:
+
+| Clase LCZ | Área (km²) | Porcentaje |
+|-----------|------------|------------|
+| Compacto de media altura | 45,2 | 12,3% |
+| Abierto de poca altura | 78,5 | 21,4% |
+| Árboles densos | 32.1 | 8,7% |
+| ... | ... | ... |
+
+</div>
+
+### Paso 4: Extraer los parámetros del dosel urbano
+
+<div class="step-container">
+<span class="step-number">4</span>
+<span class="step-title">Recuperar parámetros LCZ</span>
+
+1. Haga doble clic en **Obtener parámetros LCZ**
+2. Seleccione su capa de mapa LCZ
+3. Elija los parámetros de interés (por ejemplo, SVFmean, BSFmax, HREmean)
+4. Haga clic en **Ejecutar**
+
+**Salida**: una pila de ráster que contiene parámetros seleccionados para cada celda de la cuadrícula.
+
+**Parámetros disponibles**:
+
+| Código | Parámetro | Unidad |
+|------|-----------|------|
+| SVFmedia | Factor de vista del cielo | [0-1] |
+| BSFmedia | Fracción de superficie del edificio | [%] |
+| ISFmedia | Fracción de superficie impermeable | [%] |
+| HREmedia | Elementos de rugosidad de altura | [metro] |
+| z0 | Longitud de rugosidad | [metro] |
+
+</div>
+
+### Paso 5: visualizar mapas de parámetros
+
+<div class="step-container">
+<span class="step-number">5</span>
+<span class="step-title">Trazar parámetros LCZ</span>
+
+1. Haga doble clic en **Trazar parámetros LCZ**
+2. Seleccione su ráster de parámetros (del Paso 4)
+3. Elija el parámetro a visualizar (por ejemplo, SVFmedia)
+4. Haga clic en **Ejecutar**
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_4.png" alt="Sky View Factor map" width="80%" />
+<p class="caption">Ejemplo: mapa del factor de visión del cielo que muestra áreas con visibilidad del cielo restringida (SVF bajo en áreas urbanas compactas)</p>
+</div>
+
+</div>
+
+## 💡 Consejos avanzados
+
+### Trabajar con mapas del generador LCZ
+
+Para ciudades no cubiertas en conjuntos de datos globales:
+
+1. Visita el [Plataforma generadora LCZ](https://lcz-generator.rub.de/)
+2. Busca tu ciudad o sube tu propia zona de entrenamiento
+3. Copie el ID de envío
+4. Utilice **Descargar mapa LCZ desde Generator** con el ID
+
+### Regiones de interés personalizadas (ROI)
+
+Para analizar un área específica:
+
+1. Crea una capa de polígono en QGIS (tu área de interés)
+2. Utilice **Recortar mapa LCZ** con su capa de ROI
+3. El mapa se recortará a su área de estudio exacta.
+
+### Guardar sus resultados
+
+Salida de todas las funciones:
+- **Capas ráster**: agregadas automáticamente al lienzo de QGIS
+- **Tablas**: se muestran en el Visor de resultados (se pueden exportar como CSV)
+- **Gráficos**: Se muestra en la interfaz QGIS
+
+## 📊 Ejemplo de flujo de trabajo
+
+A continuación se muestra un ejemplo completo de flujo de trabajo para un estudio de clima urbano típico:
+
+```r
+# 1. Download LCZ map for Berlin
+lcz_map <- lcz_get_map(city = "Berlin")
+
+# 2. Calculate area distribution
+lcz_areas <- lcz_cal_area(lcz_map)
+
+# 3. Extract parameters
+lcz_params <- lcz_get_parameters(lcz_map)
+
+# 4. Visualize Sky View Factor
+lcz_plot_parameters(lcz_params, iselect = "SVFmean")
+```
+
+## 🔧 Solución de problemas
+
+| Problema | Solución |
+|-------|----------|
+| **El mapa no se descarga** | Verifique la conexión a Internet; Pruebe un conjunto de datos alternativo |
+| **Faltan clases de LCZ** | Asegúrese de que la ciudad esté dentro de la cobertura del conjunto de datos |
+| **Procesamiento lento** | Reducir la resolución espacial o el tamaño del área de estudio |
+| **La extracción de parámetros falla** | Verifique que el mapa LCZ tenga valores válidos (1-17) |
+
+## 📚 Recursos adicionales
+
+- [Documentación de funciones generales de LCZ4r](https://bymaxanjos.github.io/LCZ4r/en/articles/Introd_genera_LCZ4r.html)
+- [Sistema de clasificación LCZ](https://www.wudapt.org/lcz-generator/)
+- [Stewart y Oke (2012) - Marco LCZ](https://doi.org/10.1175/BAMS-D-11-00019.1)
+
+## 📬 ¿Tiene comentarios o sugerencias?
+
+¡Agradecemos sus comentarios y sugerencias! Si tiene ideas para mejorar o detecta algún problema, háganoslo saber. Haga clic en el botón a continuación para enviar un nuevo número en nuestro repositorio de GitHub.
+
+```{=html}
+<a href='https://github.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/issues/new' class="github-feedback-btn">
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+  </svg>
+  Abrir incidencia en GitHub
+</a>
+```
