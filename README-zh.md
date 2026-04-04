@@ -26,7 +26,7 @@
 ```r
 if (!require("remotes")) { install.packages("remotes")}
 # 直接从 GitHub 安装或更新
-remotes::install_github("ByMaxAnjos/climasus4r", upgrade = "never")
+remotes::install_github("ByMaxAnjos/LCZ4r", upgrade = "never")
 ```
 
 ::: callout-warning

@@ -26,7 +26,7 @@ Esta é a maneira mais rápida de obter a versão mais recente do pacote.
 ```r
 if (!require("remotes")) { install.packages("remotes")}
 # Instalar ou atualizar diretamente do GitHub
-remotes::install_github("ByMaxAnjos/climasus4r", upgrade = "never")
+remotes::install_github("ByMaxAnjos/LCZ4r", upgrade = "never")
 ```
 
 ::: callout-warning

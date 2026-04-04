@@ -28,7 +28,7 @@ This is the fastest way to get the latest version of the package.
 ```r
 if (!require("remotes")) { install.packages("remotes")}
 # Install or update directly from GitHub
-remotes::install_github("ByMaxAnjos/climasus4r", upgrade = "never")
+remotes::install_github("ByMaxAnjos/LCZ4r", upgrade = "never")
 ```
 ::: callout-warning
 Updates: `LCZ4r` is under active development. To update, simply run the command above again.
