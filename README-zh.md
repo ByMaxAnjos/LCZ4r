@@ -77,7 +77,7 @@ library(LCZ4r)
 
 ---
 
-## [在 Posit Cloud 上运行 LCZ4r，无需安装 RStudio！](https://bymaxanjos.github.io/LCZ4r/en/articles/posit_cloud.html)
+## [在 Posit Cloud 上运行 LCZ4r，无需安装 RStudio！](https://bymaxanjos.github.io/LCZ4r/zh/articles/posit_cloud.html)
 
 <a href="https://posit.cloud/content/9921467" target="_blank">
   <p style="text-align:center;">

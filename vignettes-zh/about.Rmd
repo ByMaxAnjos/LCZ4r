@@ -1,31 +1,45 @@
 ---
-title: "关于 LCZ4r"
+title: "关于LCZ4r"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{关于 LCZ4r}
+  %\VignetteIndexEntry{关于LCZ4r}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
 ```
-## 项目简介
-**LCZ4r** 是一个开源 R 软件包，旨在促进城市气候研究中局地气候区 (LCZ) 数据的检索、分析和可视化。该软件包与 [全球局地气候区地图](https://www.wudapt.org/) 集成，并提供一套全面的功能，用于绘制城市形态图、分析城市热岛 (UHI) 强度以及模拟时空空气温度模式。
-LCZ4r 的开发旨在为从事城市气候学、城市规划和环境科学的研究人员、学生和从业者降低技术门槛。通过在 R 中提供可复现、文档完善的工作流程，该软件包使用户能够通过几行代码从原始 LCZ 数据生成可供发表的地图和分析结果。
-该软件包还通过 [LCZ4r-QGIS 插件](https://bymaxanjos.github.io/LCZ4r/articles/Introd_QGIS_LCZ4r.html) 与 **QGIS** 集成，使偏好图形界面的用户也能使用其功能。
-## 核心功能
-- **LCZ 地图检索**: 直接从 WUDAPT 全球数据库下载世界上任何城市的 LCZ 地图。
-- **城市热岛分析**: 使用气象站数据按 LCZ 等级量化 UHI 强度。
-- **空气温度建模**: 使用基于 LCZ 的空间建模对城市地区的空气温度进行插值和绘图。
-- **异常检测**: 识别并可视化相对于 LCZ 基线的温度异常。
-- **QGIS 集成**: 通过多语言的 LCZ4r-QGIS 插件直接在 QGIS 中运行所有分析。
-## 团队介绍
-**LCZ4r** 由 [Max Anjos](https://github.com/ByMaxAnjos) 及城市气候学、地理学和数据科学领域的合作者创建和维护。该项目欢迎社区贡献——如果您想做出贡献，请在 [GitHub](https://github.com/ByMaxAnjos/LCZ4r) 上提出问题或拉取请求。
-## 如何引用
+
+## 项目
+
+**LCZ4r** 是一个开源 R 包，旨在促进城市气候研究的当地气候区 (LCZ) 数据的检索、分析和可视化。该软件包集成了 [全球 LCZ 地图](https://www.wudapt.org/) 并提供了一套全面的函数，用于绘制城市形态、分析城市热岛 (UHI) 强度以及建模时空气温模式。
+
+LCZ4r 的开发是为了降低城市气候学、城市规划和环境科学领域的研究人员、学生和从业人员的技术障碍。通过在 R 中提供可重复、记录齐全的工作流程，该软件包使用户能够通过几行代码从原始 LCZ 数据转换为可发布的地图和分析。
+
+该软件包还通过以下方式与 **QGIS** 集成 [LCZ4r-QGIS插件](https://bymaxanjos.github.io/LCZ4r/articles/Introd_QGIS_LCZ4r.html)，使喜欢图形界面的用户可以使用其功能。
+
+## 关键能力
+
+- **LCZ 地图检索**：直接从 WUDAPT 全球数据库下载世界上任何城市的 LCZ 地图。
+- **城市热岛分析**：使用气象站数据按 LCZ 等级量化 UHI 强度。
+- **气温建模**：使用基于 LCZ 的空间建模来插值并绘制城市地区的气温。
+- **异常检测**：识别并可视化相对于 LCZ 基线的温度异常。
+- **QGIS 集成**：通过多语言 LCZ4r-QGIS 插件直接在 QGIS 中运行所有分析。
+
+## 团队
+
+**LCZ4r** 由以下人员创建和维护 [马克斯·安霍斯](https://github.com/ByMaxAnjos) 以及来自城市气候学、地理学和数据科学领域的合作者。该项目对社区贡献开放——如果您想贡献，请在以下位置提出问题或拉取请求： [GitHub](https://github.com/ByMaxAnjos/LCZ4r).
+
+## 引文
+
 如果您在研究中使用 LCZ4r，请引用：
-> Anjos, M., & Meier, F. (2024). **LCZ4r: An R package for Local Climate Zone analysis and Urban Heat Island research**. *Nature Cities*. https://doi.org/10.1038/s44284-024-00135-4
-## 资金与支持
-LCZ4r 的开发得到了致力于推动城市气候科学发展的研究机构和资助机构的支持。我们感谢所有通过反馈、错误报告和功能请求帮助改进该软件包的贡献者和用户。
+
+> 安霍斯，M.，＆迈耶，F.（2024）。 **LCZ4r：用于当地气候区分析和城市热岛研究的 R 包**。 *自然城市*。 https://doi.org/10.1038/s44284-024-00135-4
+
+## 资金和支持
+
+LCZ4r 的开发得到了致力于推进城市气候科学的研究机构和资助机构的支持。我们感谢所有通过反馈、错误报告和功能请求帮助改进软件包的贡献者和用户。

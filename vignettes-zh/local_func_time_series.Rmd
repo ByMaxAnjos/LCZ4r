@@ -1,0 +1,412 @@
+---
+title: "时间序列分析"
+author: "Max Anjos"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 4
+    toc_float:
+      collapsed: true
+      smooth_scroll: true
+    number_sections: true
+    theme: flatly
+    highlight: tango
+    code_folding: show
+    code_download: true
+    self_contained: false
+    df_print: paged
+---
+
+```{css, echo=FALSE}
+/* ── Variáveis de Cores Modernas ────────────────── */
+:root {
+  --primary-color: #1D9E75;
+  --dark-green: #0f3d2e;
+  --bg-light: #f8faf9;
+  --text-main: #1a1a1a;
+  --code-bg: #fdfdfd;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 18px;
+  color: var(--text-main);
+  background-color: #fff;
+}
+
+/* ── Títulos com Inter-spacing ─────────────────── */
+h1, h2, h3 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  color: var(--dark-green);
+}
+
+h1.title {
+  font-size: 2.8em;
+  border-bottom: 4px solid var(--primary-color);
+  padding-bottom: 10px;
+}
+
+/* ── Code Blocks Estilizados ────────────────────── */
+pre.r {
+  background-color: var(--code-bg);
+  border: 1px solid #e1e1e1;
+  border-left: 5px solid var(--primary-color) !important;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* ── Custom Callouts (Estilo Quarto) ────────────── */
+.callout {
+  padding: 1.2em;
+  margin: 1.5em 0;
+  border-radius: 0 8px 8px 0;
+  border-left: 6px solid;
+}
+
+.callout-note {
+  background-color: #f0f7ff;
+  border-color: #007bff;
+}
+
+.callout-tip {
+  background-color: #e8f5e9;
+  border-color: #1D9E75;
+}
+
+/* ── Transições suaves no menu lateral ──────────── */
+.list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+/* ── Estilo para imagens ───────────────────────── */
+.figure img {
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+  margin-bottom: 10px;
+}
+
+.figure img:hover {
+  transform: scale(1.02);
+}
+
+.figure .caption {
+  font-size: 0.9em;
+  color: #666;
+  margin-top: 5px;
+  font-style: italic;
+}
+
+/* ── Botão GitHub aprimorado ───────────────────── */
+.github-feedback-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #24292e;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-family: sans-serif;
+  transition: background-color 0.2s;
+}
+
+.github-feedback-btn:hover {
+  background-color: #2c3e50;
+  color: white;
+  text-decoration: none;
+}
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo    = TRUE,
+  eval    = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  comment = "#>",
+  fig.align = "center",
+  out.width = "80%",
+  fig.retina = 2
+)
+```
+
+## 入门
+
+这 `lcz_ts()` 功能允许您分析随时间变化与当地气候区 (LCZ) 相关的气温数据。在本教程中，我们将使用以下命令对 2019-2020 年柏林的气温进行每小时频率分析 `lcz_data` 来自 LCZ4r 封装。
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+library(LCZ4r)
+
+# 获取您所在城市的LCZ地图
+lcz_map <- lcz_get_map_euro(city = "Berlin")
+
+# 从LCZ4r加载样本数据
+data("lcz_data")
+```
+
+## 基本时间序列分析
+
+让我们从基本分析开始 `lcz_ts()` 观察每小时的温度波动。
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 获取每月 LCZ 气温时间序列
+lcz_ts(lcz_map, 
+       data_frame = lcz_data, 
+       var = "airT", 
+       station_id = "station",
+       time.freq = "month",
+       ylab = "Air temperature [°C]",
+       xlab = "Date",
+       title = "LCZ - Time Series",
+       caption = "Source: LCZ4r, 2024.")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_ts_1.png" alt="Monthly LCZ-air temperature time series for Berlin" width="80%" />
+<p class="caption">柏林每月 LCZ 气温时间序列显示不同 LCZ 类别的季节性温度变化</p>
+</div>
+
+## 使用plot_type 绘制选项
+
+这 `plot_type` 论证中 `lcz_ts()` 提供多种可视化效果：
+
+* **“basic_line”**：简单的线图
+* **“faceted_line”**：按 LCZ 或车站划分的带面的线图
+* **“热图”**：用于可视化时间模式的热图
+* **“warming_stripes”**：代表温度随时间变化的条纹
+
+以下是使用每种绘图类型的示例。
+
+### 1. 基本线图
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 2019年9月每日气温
+lcz_ts(lcz_map, 
+       data_frame = lcz_data, 
+       var = "airT", 
+       station_id = "station",
+       time.freq = "day",
+       year = 2019, month = 9,
+       plot_type = "basic_line")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_ts_2.png" alt="Basic line plot showing daily temperature variations in September 2019" width="80%" />
+<p class="caption">显示 2019 年 9 月柏林每日气温变化的基本线图</p>
+</div>
+
+### 2. 按车站划分的多面线图
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 2019年1月至3月各站点每日气温
+lcz_ts(lcz_map, 
+       data_frame = lcz_data, 
+       var = "airT", 
+       station_id = "station", 
+       time.freq = "hour",
+       year = 2019, month = 1:3,
+       plot_type = "facet_line", 
+       facet = "station")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_ts_3.png" alt="Faceted line plot showing temperature patterns across different meteorological stations" width="80%" />
+<p class="caption">显示柏林不同气象站温度模式的多面线图（2019 年 1 月至 3 月）</p>
+</div>
+
+### 3. 温度随时间变化的热图
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 2020年1月15日每小时气温，LCZ面
+lcz_ts(lcz_map, 
+       data_frame = lcz_data, 
+       var = "airT", 
+       station_id = "station", 
+       time.freq = "hour",
+       year = 2020, month = 1, day = 15,
+       plot_type = "heatmap", 
+       facet = "LCZ")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_ts_4.png" alt="Heatmap showing hourly temperature variations across LCZ classes" width="80%" />
+<p class="caption">显示 2020 年 1 月 15 日不同 LCZ 类别每小时温度变化的热图</p>
+</div>
+
+### 4. 保暖条纹
+
+```{r eval=FALSE, fig.height=7, fig.width=11, message=FALSE, warning=FALSE}
+# 2020 年逐小时气温，以升温条纹的形式呈现
+lcz_ts(lcz_map, 
+       data_frame = lcz_data, 
+       var = "airT", 
+       station_id = "station", 
+       time.freq = "hour", 
+       year = 2020, month = 1:12,
+       plot_type = "warming_stripes",
+       facet = "LCZ")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_ts_5.png" alt="Warming stripes visualization showing temperature trends across LCZ classes" width="80%" />
+<p class="caption">变暖条纹可视化显示 2020 年不同 LCZ 类别的温度趋势</p>
+</div>
+
+## 使用“by”参数拆分数据
+
+您可以按时间或空间类别（例如“年”、“月”、“季节”、“工作日”、“周末”、“年份季节”等）分割数据。
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 2020年各季节每日气温
+lcz_ts(lcz_map, 
+       data_frame = lcz_data, 
+       var = "airT", 
+       station_id = "station", 
+       time.freq = "day",
+       year = 2020,
+       plot_type = "basic_line", 
+       by = "season")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_ts_6.png" alt="Temperature variations across different seasons in 2020" width="80%" />
+<p class="caption">2020年柏林不同季节气温变化</p>
+</div>
+
+## 用“by”参数划分夜间和白天
+
+您还可以按夜间和白天时段分割数据 `by = "daylight"`.
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 2020年1月15日气温日变化
+lcz_ts(lcz_map, 
+       data_frame = lcz_data, 
+       var = "airT", 
+       station_id = "station", 
+       time.freq = "hour",
+       year = 2020, month = 1, day = 15,
+       plot_type = "heatmap", 
+       by = "daylight")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_ts_7.png" alt="Comparison of daytime and nighttime temperature patterns" width="80%" />
+<p class="caption">2020年1月15日白天和夜间气温模式对比</p>
+</div>
+
+### 将日光与月份结合起来
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 2020年1月15日和7月15日气温的日变化
+lcz_ts(lcz_map, 
+       data_frame = lcz_data, 
+       var = "airT", 
+       station_id = "station", 
+       time.freq = "hour",
+       year = 2020, month = c(1, 7), day = 15,
+       plot_type = "basic_line", 
+       by = c("daylight", "monthyear"))
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_ts_8.png" alt="Comparison of diurnal temperature cycles in winter and summer" width="80%" />
+<p class="caption">2020年冬季（一月）和夏季（七月）日气温循环比较</p>
+</div>
+
+## 平滑温度趋势
+
+通过设置启用平滑 `smooth = TRUE`，它添加了广义加性模型 (GAM) 线来显示温度趋势。
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 2019-2020年各站点每日气温变化趋势
+lcz_ts(lcz_map, 
+       data_frame = lcz_data, 
+       var = "airT", 
+       station_id = "station", 
+       time.freq = "hour",
+       year = 2019:2020,
+       plot_type = "basic_line", 
+       smooth = TRUE)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_ts_9.png" alt="Temperature trends with GAM smoothing for 2019-2020" width="80%" />
+<p class="caption">2019-2020 年各站 GAM 平滑的温度趋势</p>
+</div>
+
+## 保存地块
+
+要保存绘图和数据框，请设置 `isave = TRUE` 并指定文件类型 `save_extension` （例如，“png”、“jpeg”、“svg”、“pdf”）。一个文件夹 `LCZ4r_output` 在您的 PC 上创建。
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 将日光图和数据框保存到电脑
+lcz_ts(lcz_map, 
+       data_frame = lcz_data, 
+       var = "airT", 
+       station_id = "station", 
+       time.freq = "hour",
+       year = 2020, month = 1, day = 15,
+       plot_type = "basic_line", 
+       by = "daylight", 
+       isave = TRUE)
+```
+
+::: {.callout .callout-tip}
+**提示**：保存的文件将自动组织在 `LCZ4r_output` 带有时间戳的文件名的文件夹，以便于参考。
+:::
+
+## 返回数据框作为结果
+
+要将结果保存在 R 中，请设置 `iplot = FALSE` 并创建一个对象。
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 返回 2020 年 1 月 15 日的日照数据框
+my_output <- lcz_ts(lcz_map, 
+                    data_frame = lcz_data, 
+                    var = "airT", 
+                    station_id = "station", 
+                    time.freq = "hour",
+                    year = 2020, month = 1, day = 15,
+                    plot_type = "basic_line", 
+                    by = "daylight", 
+                    iplot = FALSE)
+
+# 查看返回的数据框的结构
+str(my_output)
+```
+
+## 参数汇总
+
+以下是主要参数的快速参考 `lcz_ts()`:
+
+|参数|描述 |选项|
+|-----------|-------------|---------|
+| `time.freq` |时间聚合频率| “时”、“日”、“月”、“年”|
+| `plot_type` |可视化类型| “basic_line”、“facet_line”、“热图”、“warming_stripes”|
+| `by` |数据分割方式| “季节”、“月份”、“工作日”、“日光”、“年份季节”|
+| `smooth` |添加GAM趋势线|对/错 |
+| `isave` |将输出保存到 PC |对/错 |
+| `iplot` |显示图 |对/错 |
+
+---
+
+## 有反馈或建议吗？
+
+您有改进的想法或者发现错误吗？我们很乐意听取您的意见！单击下面的按钮创建新问题 (GitHub) 并直接与我们分享您的反馈或建议。
+
+```{=html}
+<a href='https://github.com/ByMaxAnjos/LCZ4r/issues/new' class="github-feedback-btn">
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+  </svg>
+ 打开 GitHub 问题
+</a>
+```

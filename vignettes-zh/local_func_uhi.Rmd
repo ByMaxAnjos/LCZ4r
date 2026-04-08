@@ -1,0 +1,423 @@
+---
+title: "城市热岛效应分析"
+author: "Max Anjos"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 4
+    toc_float:
+      collapsed: true
+      smooth_scroll: true
+    number_sections: true
+    theme: flatly
+    highlight: tango
+    code_folding: show
+    code_download: true
+    self_contained: false
+    df_print: paged
+---
+
+```{css, echo=FALSE}
+/* ── Variáveis de Cores Modernas ────────────────── */
+:root {
+  --primary-color: #1D9E75;
+  --dark-green: #0f3d2e;
+  --bg-light: #f8faf9;
+  --text-main: #1a1a1a;
+  --code-bg: #fdfdfd;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 18px;
+  color: var(--text-main);
+  background-color: #fff;
+}
+
+/* ── Títulos com Inter-spacing ─────────────────── */
+h1, h2, h3 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  color: var(--dark-green);
+}
+
+h1.title {
+  font-size: 2.8em;
+  border-bottom: 4px solid var(--primary-color);
+  padding-bottom: 10px;
+}
+
+/* ── Code Blocks Estilizados ────────────────────── */
+pre.r {
+  background-color: var(--code-bg);
+  border: 1px solid #e1e1e1;
+  border-left: 5px solid var(--primary-color) !important;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* ── Custom Callouts (Estilo Quarto) ────────────── */
+.callout {
+  padding: 1.2em;
+  margin: 1.5em 0;
+  border-radius: 0 8px 8px 0;
+  border-left: 6px solid;
+}
+
+.callout-note {
+  background-color: #f0f7ff;
+  border-color: #007bff;
+}
+
+.callout-tip {
+  background-color: #e8f5e9;
+  border-color: #1D9E75;
+}
+
+.callout-warning {
+  background-color: #fff3e0;
+  border-color: #ff9800;
+}
+
+/* ── Transições suaves no menu lateral ──────────── */
+.list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+/* ── Estilo para imagens ───────────────────────── */
+.figure img {
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+  margin-bottom: 10px;
+}
+
+.figure img:hover {
+  transform: scale(1.02);
+}
+
+.figure .caption {
+  font-size: 0.9em;
+  color: #666;
+  margin-top: 5px;
+  font-style: italic;
+}
+
+/* ── Botão GitHub aprimorado ───────────────────── */
+.github-feedback-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #24292e;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-family: sans-serif;
+  transition: background-color 0.2s;
+}
+
+.github-feedback-btn:hover {
+  background-color: #2c3e50;
+  color: white;
+  text-decoration: none;
+}
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo    = TRUE,
+  eval    = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  comment = "#>",
+  fig.align = "center",
+  out.width = "80%",
+  fig.retina = 2
+)
+```
+
+## 介绍
+
+这 `lcz_uhi_intensity()` 函数旨在根据气温测量值和当地气候区 (LCZ) 计算城市热岛 (UHI) 强度。城市热岛强度被定义为城市和农村地区之间的温差，提供了城市地区与周围农村环境相比温暖程度的定量衡量标准。
+
+本指南演示了如何使用 `lcz_uhi_intensity()` 使用 LCZ 类别计算和分析 UHI 强度的函数。该函数支持两种计算方法：
+
+### 方法 1：基于 LCZ 的方法
+自动识别 LCZ 建筑类型 (LCZ 1-10) 代表城市温度，而 LCZ 自然类型 (LCZ A-G / 11-17) 代表乡村温度。当您的研究区域有全面的 LCZ 分类时，此方法是理想的选择。
+
+### 方法二：手动方法
+允许用户手动选择特定站点作为城市和农村地区的参考。当您有预定义参考站或 LCZ 分类不完整时，此方法非常有用。
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+library(LCZ4r)
+
+# 获取您所在城市的LCZ地图
+lcz_map <- lcz_get_map_euro(city = "Berlin")
+
+# 从LCZ4r加载样本数据
+data("lcz_data")
+```
+
+::: {.callout .callout-note}
+**了解城市热岛强度**：
+
+- **正UHI强度**（红色）：城市地区比农村地区温暖（典型的城市热岛）
+- **负UHI强度**（蓝色）：城市地区比农村地区凉爽（城市冷岛）
+- **零热岛强度**：城乡无温差
+
+城市热岛强度通常在夜间达到峰值，并且会因季节和天气条件而发生显着变化。
+:::
+
+## UHI时间序列
+
+此示例计算 2019 年按月汇总的每小时 UHI 强度，从而深入了解城市供暖的季节性模式。
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 计算2019年各月每小时的城市热岛强度
+lcz_uhi_intensity(lcz_map, 
+                  data_frame = lcz_data, 
+                  var = "airT", 
+                  station_id = "station",
+                  time.freq = "hour", 
+                  method = "LCZ",
+                  year = 2019,
+                  by = "month")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_uhi_1.png" alt="Monthly UHI intensity time series for Berlin" width="80%" />
+<p class="caption">2019 年柏林每月 UHI 强度时间序列。正值表示城市地区比农村地区温暖，峰值强度通常出现在夏季。</p>
+</div>
+
+## 城市热岛季节性
+
+该分析按季节划分数据，提供有关城市热岛强度全年变化情况的更详细视图。这 `group = TRUE` 参数还分别显示城市和乡村的温度分量。
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 计算2019年各季节的每小时城市热岛强度，包括城市和乡村气温。
+lcz_uhi_intensity(lcz_map, 
+                  data_frame = lcz_data, 
+                  var = "airT", 
+                  station_id = "station",
+                  time.freq = "hour", 
+                  method = "LCZ",
+                  year = 2019,
+                  by = "season",
+                  group = TRUE)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_uhi_2.png" alt="Seasonal UHI intensity patterns with urban and rural temperature components" width="80%" />
+<p class="caption">显示城市和农村温度组成部分的季节性 UHI 强度模式。这种可视化有助于识别 UHI 震级的季节性变化以及造成的温度差异。</p>
+</div>
+
+## 热岛昼夜周期
+
+了解城市热岛强度的昼夜循环对于城市气候研究至关重要。此示例计算特定日期的昼夜模式。
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 计算2019年2月6日城市热岛强度的日变化周期
+lcz_uhi_intensity(lcz_map, 
+                  data_frame = lcz_data, 
+                  var = "airT", 
+                  station_id = "station",
+                  time.freq = "hour", 
+                  method = "LCZ",
+                  year = 2019, month = 2, day = 6,
+                  by = "daylight",
+                  group = TRUE)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_uhi_3.png" alt="Diurnal cycle of UHI intensity showing daytime and nighttime patterns" width="80%" />
+<p class="caption">2019 年 2 月 6 日 UHI 强度的昼夜周期，显示白天和夜间时段的不同模式。 UHI 强度通常在日落后增强。</p>
+</div>
+
+## 手动方法：自定义参考选择
+
+手动方法允许您指定自定义站点作为城市和乡村参考。当您有特定的监测站作为研究区域的代表性参考时，这特别有用。
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 使用手动方法计算2019年2月和7月城市热岛强度的日变化周期。
+lcz_uhi_intensity(lcz_map, 
+                  data_frame = lcz_data, 
+                  var = "airT", 
+                  station_id = "station",
+                  time.freq = "hour", 
+                  year = 2019, month = c(2, 7), day = 6,
+                  method = "manual",
+                  Turban = "bamberger",      # Urban reference station
+                  Trural = "airporttxl",     # Rural reference station
+                  by = c("daylight", "month"),
+                  group = TRUE)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_uhi_4.png" alt="UHI intensity comparison between winter and summer using custom reference stations" width="80%" />
+<p class="caption">使用自定义参考站进行 2019 年冬季（2 月）和夏季（7 月）UHI 强度比较。这证明了手动方法进行目标分析的灵活性。</p>
+</div>
+
+## 高级分析选项
+
+### 多个时间频率
+
+您可以分析不同时间聚合下的 UHI 强度：
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 2019年夏季每日城市热岛强度
+daily_uhi <- lcz_uhi_intensity(lcz_map, 
+                               data_frame = lcz_data, 
+                               var = "airT", 
+                               station_id = "station",
+                               time.freq = "day", 
+                               method = "LCZ",
+                               year = 2019, month = 6:8,
+                               iplot = FALSE)
+
+# 2019年每月城市热岛强度
+monthly_uhi <- lcz_uhi_intensity(lcz_map, 
+                                 data_frame = lcz_data, 
+                                 var = "airT", 
+                                 station_id = "station",
+                                 time.freq = "month", 
+                                 method = "LCZ",
+                                 year = 2019,
+                                 iplot = FALSE)
+```
+
+### 组合多个拆分选项
+
+您可以组合多个分割标准进行更详细的分析：
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 按工作日和季节划分的城市热岛强度
+lcz_uhi_intensity(lcz_map, 
+                  data_frame = lcz_data, 
+                  var = "airT", 
+                  station_id = "station",
+                  time.freq = "hour", 
+                  method = "LCZ",
+                  year = 2019,
+                  by = c("weekday", "season"),
+                  group = TRUE)
+```
+
+### 统计摘要
+
+您可以返回数据框进行进一步的统计分析：
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 返回用于统计分析的城市热岛强度数据框
+uhi_data <- lcz_uhi_intensity(lcz_map, 
+                              data_frame = lcz_data, 
+                              var = "airT", 
+                              station_id = "station",
+                              time.freq = "hour", 
+                              method = "LCZ",
+                              year = 2019,
+                              iplot = FALSE)
+
+# 计算汇总统计量
+summary(uhi_data)
+
+# 计算季节平均值
+aggregate(uhi_value ~ season, data = uhi_data, FUN = mean)
+```
+
+## 保存地块
+
+要将绘图保存到计算机，请设置 `isave = TRUE` 并指定文件类型：
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 将城市热岛强度图保存到电脑
+lcz_uhi_intensity(lcz_map, 
+                  data_frame = lcz_data, 
+                  var = "airT", 
+                  station_id = "station",
+                  time.freq = "hour", 
+                  method = "LCZ",
+                  year = 2019,
+                  by = "season",
+                  group = TRUE,
+                  isave = TRUE,
+                  save_extension = "png")
+```
+
+::: {.callout .callout-tip}
+**提示**：保存的绘图会自动组织在 `LCZ4r_output` 具有描述性文件名的文件夹，包括分析参数和时间戳。
+:::
+
+## UHI 分析的实际应用
+
+了解城市热岛强度模式可以为各种城市规划和气候适应策略提供信息：
+
+### 1. 热浪准备
+确定城市热岛强度最高的时期和地区，以针对热浪干预和早期预警系统。
+
+### 2. 城市规划
+使用季节和昼夜模式来指导城市设计决策，例如：
+- 绿色基础设施布局
+- 建筑高度和密度规定
+- 酷材料实施策略
+
+### 3. 适应气候变化
+建立基线城市热岛模式以监测随时间的变化并评估缓解措施的有效性。
+
+### 4. 公共卫生规划
+确定城市热岛强度持续较高的地区的弱势群体，以实施有针对性的健康干预措施。
+
+::: {.callout .callout-警告}
+**重要注意事项**：
+
+- 城市热岛强度计算需要城市和农村地区的监测站有足够的空间覆盖
+- 天气条件（风速、云量）会显着影响城市热岛强度
+- LCZ 方法假设建成的 LCZ 代表城市条件，自然 LCZ 代表农村条件
+- 当 LCZ 分类不完整或首选特定参考站时，请考虑使用手动方法
+:::
+
+## 参数汇总
+
+以下是主要参数的快速参考 `lcz_uhi_intensity()`:
+
+|参数|描述 |选项|
+|-----------|-------------|---------|
+| `time.freq` |时间聚合频率| “时”、“日”、“月”、“年”|
+| `method` |计算方法| “LCZ”（自动）、“手动”（自定义）|
+| `Turban` |城市参考站（手动法）|城市参考车站ID |
+| `Trural` |农村参考站（手动法）|农村参考站ID |
+| `by` |数据分割方式| “月份”、“季节”、“白天”、“工作日”等 |
+| `group` |显示城市/乡村组成部分 |对/错 |
+| `isave` |将输出保存到 PC |对/错 |
+| `iplot` |显示图 |对/错 |
+
+## 解释结果
+
+分析 UHI 强度结果时，请考虑：
+
+- **峰值强度时间**：通常在日落后 3-5 小时
+- **季节性模式**：通常在夏季和冬季最强（取决于气候）
+- **天气影响**：晴朗、平静的夜晚会产生最强的 UHI 信号
+- **城市形态**：紧凑的建筑区域通常比开放区域表现出更高的强度
+- **植被影响**：绿色空间可以显着降低当地的热岛强度
+
+---
+
+## 有反馈或建议吗？
+
+您有改进的想法或者发现错误吗？我们很乐意听取您的意见！单击下面的按钮创建新问题 (GitHub) 并直接与我们分享您的反馈或建议。
+
+```{=html}
+<a href='https://github.com/ByMaxAnjos/LCZ4r/issues/new' class="github-feedback-btn">
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+  </svg>
+ 打开 GitHub 问题
+</a>
+```

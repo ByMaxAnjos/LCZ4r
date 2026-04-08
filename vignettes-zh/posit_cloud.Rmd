@@ -1,0 +1,480 @@
+---
+title: "在 Posit Cloud 中运行 LCZ4r"
+author: "Max Anjos"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 4
+    toc_float:
+      collapsed: true
+      smooth_scroll: true
+    number_sections: true
+    theme: flatly
+    highlight: tango
+    code_folding: show
+    code_download: true
+    self_contained: false
+    df_print: paged
+---
+
+```{css, echo=FALSE}
+/* ── Variáveis de Cores Modernas ────────────────── */
+:root {
+  --primary-color: #1D9E75;
+  --dark-green: #0f3d2e;
+  --bg-light: #f8faf9;
+  --text-main: #1a1a1a;
+  --code-bg: #fdfdfd;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 18px;
+  color: var(--text-main);
+  background-color: #fff;
+}
+
+/* ── Títulos com Inter-spacing ─────────────────── */
+h1, h2, h3 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  color: var(--dark-green);
+}
+
+h1.title {
+  font-size: 2.8em;
+  border-bottom: 4px solid var(--primary-color);
+  padding-bottom: 10px;
+}
+
+/* ── Code Blocks Estilizados ────────────────────── */
+pre.r {
+  background-color: var(--code-bg);
+  border: 1px solid #e1e1e1;
+  border-left: 5px solid var(--primary-color) !important;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* ── Custom Callouts (Estilo Quarto) ────────────── */
+.callout {
+  padding: 1.2em;
+  margin: 1.5em 0;
+  border-radius: 0 8px 8px 0;
+  border-left: 6px solid;
+}
+
+.callout-note {
+  background-color: #f0f7ff;
+  border-color: #007bff;
+}
+
+.callout-tip {
+  background-color: #e8f5e9;
+  border-color: #1D9E75;
+}
+
+.callout-warning {
+  background-color: #fff3e0;
+  border-color: #ff9800;
+}
+
+/* ── Transições suaves no menu lateral ──────────── */
+.list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+/* ── Estilo para imagens ───────────────────────── */
+.figure img {
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+  margin-bottom: 10px;
+}
+
+.figure img:hover {
+  transform: scale(1.02);
+}
+
+.figure .caption {
+  font-size: 0.9em;
+  color: #666;
+  margin-top: 5px;
+  font-style: italic;
+}
+
+/* ── Botão GitHub aprimorado ───────────────────── */
+.github-feedback-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #24292e;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-family: sans-serif;
+  transition: background-color 0.2s;
+}
+
+.github-feedback-btn:hover {
+  background-color: #2c3e50;
+  color: white;
+  text-decoration: none;
+}
+
+/* ── Estilos específicos para o tutorial Posit Cloud ── */
+.step-container {
+  background-color: var(--bg-light);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px 0;
+  border-left: 4px solid var(--primary-color);
+}
+
+.step-number {
+  display: inline-block;
+  background-color: var(--primary-color);
+  color: white;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 30px;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.script-card {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 15px;
+  margin: 15px 0;
+  border: 1px solid #e1e1e1;
+  transition: transform 0.2s ease;
+}
+
+.script-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.script-title {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  color: var(--dark-green);
+  margin-bottom: 8px;
+  font-size: 1.2em;
+}
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo    = TRUE,
+  eval    = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  comment = "#>",
+  fig.align = "center",
+  out.width = "80%",
+  fig.retina = 2
+)
+```
+
+## 介绍
+
+欢迎来到 Posit Cloud 上的 LCZ4r 套件演示！本指南将引导您完成运行 LCZ4r 的步骤，并探索其在基于云的环境中进行本地气候区 (LCZ) 分析的强大工具。
+
+::: {.callout .callout-note}
+**为什么选择定位云？**
+
+Posit Cloud（以前称为 RStudio Cloud）为 LCZ4r 用户提供了多项优势：
+- **无需安装**：直接在浏览器中运行 R 和 LCZ4r
+- **预配置环境**：所有依赖项均已安装
+- **随处访问**：在任何可以访问互联网的计算机上工作
+- **协作就绪**：轻松与同事共享项目
+- **提供免费套餐**：无需任何费用即可开始使用
+:::
+
+## 入门
+
+请按照以下分步说明在 Posit Cloud 中访问和运行 LCZ4r：
+
+<div class="step-container">
+<span class="step-number">1</span> **访问职位工作区**
+
+单击以下链接访问 LCZ4r 工作区：
+
+🔗 **LCZ4r 演示工作区**： [https://posit.cloud/content/9921467](https://posit.cloud/content/9921467)
+</div>
+
+<div class="step-container">
+<span class="step-number">2</span> **登录或创建帐户**
+
+- 如果您还没有 Posit Cloud 帐户，请点击“注册”创建一个（提供免费套餐）
+- 登录您的帐户以访问工作区
+- 您可以使用Google或GitHub帐户快速注册
+</div>
+
+<div class="step-container">
+<span class="step-number">3</span> **保存永久副本**
+
+**重要**：确保**保存项目的永久副本**：
+
+1. 点击左上角的项目名称
+2. 从下拉菜单中选择“保存永久副本”
+3. 为您的副本选择一个名称（例如“我的 LCZ4r 分析”）
+4. 这可确保您拥有自己的版本，不会受到原始版本更改的影响
+</div>
+
+<div class="step-container">
+<span class="step-number">4</span> **探索 R 脚本**
+
+该项目包含按功能组织的三个主要 R 脚本：
+
+<div class="script-card">
+<div class="script-title">📊 通用函数.R</div>
+<p>演示 LCZ 分析的一般功能，包括：</p>
+<ul>
+<li>从全球数据集中下载和可视化 LCZ 地图</li>
+<li>计算 LCZ 面积和城市冠层参数</li>
+<li>绘制基本 LCZ 地图和统计数据</li>
+</ul>
+</div>
+
+<div class="script-card">
+<div class="script-title">🏙️ local_functions.R</div>
+<p>专注于具有先进功能的本地化 LCZ 分析：</p>
+<ul>
+<li>气温时间序列分析</li>
+<li>热异常计算</li>
+<li>使用克里格法进行空间插值</li>
+<li>城市热岛强度评估</li>
+</ul>
+</div>
+
+<div class="script-card">
+<div class="script-title">🌡️建模_温度.R</div>
+<p>专业温度建模和 UHI 分析：</p>
+<ul>
+<li>温度插值和绘图</li>
+<li>热异常测绘</li>
+<li>按 LCZ 等级计算 UHI 强度</li>
+<li>模型评估和验证</li>
+</ul>
+</div>
+</div>
+
+<div class="step-container">
+<span class="step-number">5</span> **运行脚本**
+
+**好消息**：LCZ4r 软件包和所有依赖项已安装在 Posit Cloud 环境中，因此您可以开始使用了！
+
+运行脚本：
+1. 通过在“文件”窗格中单击其名称来打开每个脚本
+2. 逐行运行代码 `Ctrl + Enter` （或者 `Cmd + Enter` 在苹果机上）
+3. 或者通过选择代码并单击“运行”来运行整个部分
+4. 探索控制台和绘图窗格中的结果
+</div>
+
+## 可视化工作空间
+
+以下是 Posit Cloud 工作区的屏幕截图，可帮助您了解方向：
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/image_cloud.png" alt="Posit Cloud workspace interface showing the LCZ4r demo project" width="80%" />
+<p class="caption">Posit Cloud 工作区界面显示 LCZ4r 演示项目以及文件资源管理器、代码编辑器和控制台窗格。</p>
+</div>
+
+## 工作区概述
+
+### Posit Cloud 中的关键面板
+
+|面板|地点 |目的|
+|-------|----------|---------|
+| **文件** |右下|浏览项目文件和脚本 |
+| **编辑** |左上/中心 |编写和编辑 R 代码 |
+| **控制台** |左下|执行命令并查看输出 |
+| **地块** |右下|查看生成的图形 |
+| **环境** |右上角 |查看加载的对象和变量 |
+
+### 脚本工作流程建议
+
+1. **开始于 `general_functions.R`**：熟悉基本的 LCZ 地图操作
+2. **移至 `local_functions.R`**：探索时间序列和异常分析
+3. **前进至 `modelling_temperature.R`**：深入研究空间插值和 UHI 建模
+
+## 运行您的第一次分析
+
+让我们测试一切是否正常工作：
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 加载LCZ4r软件包
+library(LCZ4r)
+
+# 使用简单的 LCZ 地图下载进行测试
+lcz_map <- lcz_get_map(city = "Berlin")
+
+# 可视化地图
+lcz_plot_map(lcz_map)
+```
+
+如果您看到 LCZ 地图出现在“绘图”面板中，则一切正常！
+
+## 常见问题故障排除
+
+::: {.callout .callout-警告}
+**连接超时**
+
+如果您在下载 LCZ 地图时遇到连接超时：
+- 检查您的互联网连接
+- 非高峰时段重试
+- 使用 `lcz_get_map_generator()` 具有已知 ID 的功能可加快访问速度
+:::
+
+::: {.callout .callout-tip}
+**内存限制**
+
+Posit Cloud 的免费套餐内存有限（1 GB）：
+- 从较小的空间分辨率开始（例如， `sp.res = 500` 而不是 100）
+- 首先处理较短时间段的数据
+- 使用 `gc()` 需要时清除内存
+- 考虑升级到付费计划以进行更大规模的分析
+:::
+
+::: {.callout .callout-note}
+**保存您的工作**
+
+- 您的项目会自动保存在 Posit Cloud 中
+- 使用“绘图”面板中的“导出”按钮导出绘图
+- 使用下载结果 `write.csv()` 对于数据框
+- 保存地图 `writeRaster()` 用于光栅输出
+:::
+
+## 定制您的工作空间
+
+### 添加附加包
+
+如果您需要预安装之外的其他软件包：
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 根据需要安装软件包
+install.packages("package_name")
+
+# 对于 GitHub 包
+if (!require("remotes")) install.packages("remotes")
+remotes::install_github("username/repository")
+```
+
+### 创建新脚本
+
+1. 在“文件”窗格中单击“新建文件”→“R 脚本”
+2. 编写您的分析代码
+3. 使用适当的名称保存（例如“my_analysis.R”）
+
+### 组织输出
+
+创建文件夹以使您的工作井井有条：
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 创建输出目录
+dir.create("figures", showWarnings = FALSE)
+dir.create("data", showWarnings = FALSE)
+dir.create("results", showWarnings = FALSE)
+
+# 将图表保存到图形文件夹
+ggsave("figures/my_plot.png", width = 8, height = 6)
+
+# 将数据保存到数据文件夹
+write.csv(my_data, "data/my_results.csv", row.names = FALSE)
+```
+
+## 协作功能
+
+Posit Cloud 让协作变得简单：
+
+1. **分享您的项目**：点击“分享”按钮邀请合作者
+2. **设置权限**：选择“查看”或“编辑”访问级别
+3. **实时协作**：与团队成员同时工作
+4. **版本历史记录**：访问您作品的先前版本
+
+## 学习资源
+
+要在 Posit Cloud 上充分利用 LCZ4r：
+
+|资源 |描述 |
+|----------|-------------|
+| [LCZ4r 文档](https://github.com/ByMaxAnjos/LCZ4r) |完整的包文档和示例 |
+| [R 数据科学](https://r4ds.had.co.nz/) |学习 R 编程基础知识 |
+| [空间数据科学](https://rspatial.org/) | R 中的高级空间分析 |
+| [LCZ发电机](https://lcz-generator.rub.de/) |访问您研究区域的 LCZ 地图 |
+
+## 快速参考
+
+### 基本键盘快捷键
+
+|行动| Windows/Linux |苹果电脑|
+|--------|---------------|-----|
+|运行当前行/选择 | `Ctrl + Enter` | `Cmd + Enter` |
+|运行整个脚本 | `Ctrl + Shift + Enter` | `Cmd + Shift + Enter` |
+|清除控制台| `Ctrl + L` | `Cmd + L` |
+|注释/取消注释行 | `Ctrl + Shift + C` | `Cmd + Shift + C` |
+
+### 实用的入门功能
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 检查软件包版本
+packageVersion("LCZ4r")
+
+# 获取任何功能的帮助
+?lcz_get_map
+
+# 列出所有LCZ4r函数
+ls("package:LCZ4r")
+
+# 查看可用数据集
+data(package = "LCZ4r")
+```
+
+## 常见问题解答
+
+**问：我可以在 Posit Cloud 中使用自己的数据吗？**
+
+答：是的！通过“文件”窗格（“上传”按钮）上传数据文件或使用 `read.csv()` 以及您的数据的 URL。
+
+**问：我的 Posit Cloud 项目可以使用多久？**
+
+答：免费帐户每月最多有 25 个项目小时。付费帐户没有时间限制。只要您维护您的帐户，您的项目就会无限期地保留。
+
+**问：我可以安装额外的软件包吗？**
+
+答：是的，您可以使用以下命令安装任何 CRAN 或 GitHub 软件包 `install.packages()` 或者 `remotes::install_github()`.
+
+**问：如何导出我的结果？**
+
+答：使用 `write.csv()` 对于数据框， `writeRaster()` 对于空间栅格，“绘图”面板中的“导出”按钮用于图形。
+
+**问：如果演示工作区不可用怎么办？**
+
+答：您可以创建一个新的 Posit Cloud 项目并使用以下命令手动安装 LCZ4r `remotes::install_github("ByMaxAnjos/LCZ4r")`.
+
+---
+
+## 有反馈或建议吗？
+
+您有改进的想法或者发现错误吗？我们很乐意听取您的意见！单击下面的按钮创建新问题 (GitHub) 并直接与我们分享您的反馈或建议。
+
+```{=html}
+<a href='https://github.com/ByMaxAnjos/LCZ4r/issues/new' class="github-feedback-btn">
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+  </svg>
+  打开 GitHub 问题
+</a>
+```

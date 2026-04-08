@@ -1,0 +1,426 @@
+---
+title: "热异常"
+author: "Max Anjos"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 4
+    toc_float:
+      collapsed: true
+      smooth_scroll: true
+    number_sections: true
+    theme: flatly
+    highlight: tango
+    code_folding: show
+    code_download: true
+    self_contained: false
+    df_print: paged
+---
+
+```{css, echo=FALSE}
+/* ── Variáveis de Cores Modernas ────────────────── */
+:root {
+  --primary-color: #1D9E75;
+  --dark-green: #0f3d2e;
+  --bg-light: #f8faf9;
+  --text-main: #1a1a1a;
+  --code-bg: #fdfdfd;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 18px;
+  color: var(--text-main);
+  background-color: #fff;
+}
+
+/* ── Títulos com Inter-spacing ─────────────────── */
+h1, h2, h3 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  color: var(--dark-green);
+}
+
+h1.title {
+  font-size: 2.8em;
+  border-bottom: 4px solid var(--primary-color);
+  padding-bottom: 10px;
+}
+
+/* ── Code Blocks Estilizados ────────────────────── */
+pre.r {
+  background-color: var(--code-bg);
+  border: 1px solid #e1e1e1;
+  border-left: 5px solid var(--primary-color) !important;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* ── Custom Callouts (Estilo Quarto) ────────────── */
+.callout {
+  padding: 1.2em;
+  margin: 1.5em 0;
+  border-radius: 0 8px 8px 0;
+  border-left: 6px solid;
+}
+
+.callout-note {
+  background-color: #f0f7ff;
+  border-color: #007bff;
+}
+
+.callout-tip {
+  background-color: #e8f5e9;
+  border-color: #1D9E75;
+}
+
+/* ── Transições suaves no menu lateral ──────────── */
+.list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+/* ── Estilo para imagens ───────────────────────── */
+.figure img {
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+  margin-bottom: 10px;
+}
+
+.figure img:hover {
+  transform: scale(1.02);
+}
+
+.figure .caption {
+  font-size: 0.9em;
+  color: #666;
+  margin-top: 5px;
+  font-style: italic;
+}
+
+/* ── Botão GitHub aprimorado ───────────────────── */
+.github-feedback-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #24292e;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-family: sans-serif;
+  transition: background-color 0.2s;
+}
+
+.github-feedback-btn:hover {
+  background-color: #2c3e50;
+  color: white;
+  text-decoration: none;
+}
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo    = TRUE,
+  eval    = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  comment = "#>",
+  fig.align = "center",
+  out.width = "80%",
+  fig.retina = 2
+)
+```
+
+## 入门
+
+热异常是评估城市内气温差异的好方法。在每个 LCZ 站，热异常定义为其温度与所有 LCZ 站的总体平均温度之间的差异。例如，正温度异常表明特定 LCZ 比所有其他 LCZ 更温暖。
+
+这 `lcz_anomaly()` 函数具有与 `lcz_ts()` 关于**时间选择的灵活性**和**通过时间窗口或站点分割 LCZ 时间序列**。
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+library(LCZ4r)
+
+# 获取您所在城市的LCZ地图
+lcz_map <- lcz_get_map_euro(city = "Berlin")
+
+# 从LCZ4r加载样本数据
+data("lcz_data")
+```
+
+::: {.callout .callout-note}
+**了解热异常**： 
+
+- **正异常**（红色/暖色）：车站温度高于城市平均水平
+- **负异常**（蓝色/冷色）：车站比城市平均温度凉爽
+- **零异常**：站点温度等于城市平均值
+
+该指标有助于识别城市内的城市热岛和凉爽点。
+:::
+
+## 使用plot_type 绘制选项
+
+这 `plot_type` 论证中 `lcz_anomaly()` 提供多种可视化效果：
+
+* **“diverging_bar”**：从中心（零）发散的水平条形图，正异常向右延伸，负异常向左延伸
+* **“条形”**：显示每个站点的异常幅度的条形图，根据异常是正还是负来着色
+* **“dot”**：显示平均温度值和参考值的点图，并用线连接它们
+* **“棒棒糖”**：棒棒糖图，其中每个“棒”代表一个异常值，顶部的点代表异常的大小
+
+以下是使用每种绘图类型的示例。
+
+### 1. 发散条形图
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 2019年2月6日05:00的热异常情况
+lcz_anomaly(lcz_map, 
+            data_frame = lcz_data, 
+            var = "airT", 
+            station_id = "station", 
+            time.freq = "hour", 
+            year = 2019, month = 2, day = 6, hour = 5,
+            plot_type = "diverging_bar",
+            ylab = "Air temperature [°C]",
+            xlab = "Stations",
+            title = "LCZ Thermal Anomalies",
+            caption = "Source: LCZ4r, 2024")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_anomaly_1.png" alt="Diverging bar plot showing thermal anomalies across LCZ stations" width="80%" />
+<p class="caption">显示柏林 LCZ 站热异常的发散条形图（2019 年 2 月 6 日 05:00）。正异常（红色）表示较温暖的站点，负异常（蓝色）表示较冷的站点。</p>
+</div>
+
+### 2. 条形图
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 2019年2月6日05:00的柱状图
+lcz_anomaly(lcz_map, 
+            data_frame = lcz_data, 
+            var = "airT", 
+            station_id = "station", 
+            time.freq = "hour", 
+            year = 2019, month = 2, day = 6, hour = 5,
+            plot_type = "bar")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_anomaly_2.png" alt="Bar plot showing magnitude of thermal anomalies" width="80%" />
+<p class="caption">显示每个站热异常强度的条形图。延伸到零以上的条形表示正异常（较暖），低于零的条形表示负异常（较冷）。</p>
+</div>
+
+### 3. 点图
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 2019年2月6日05:00的点阵图
+lcz_anomaly(lcz_map, 
+            data_frame = lcz_data, 
+            var = "airT", 
+            station_id = "station", 
+            time.freq = "hour", 
+            year = 2019, month = 2, day = 6, hour = 5,
+            plot_type = "dot")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_anomaly_3.png" alt="Dot plot comparing station temperatures to urban average" width="80%" />
+<p class="caption">点图显示各个站点温度（彩色点）与城市平均温度（垂直虚线）的比较。距线的距离代表热异常幅度。</p>
+</div>
+
+### 4. 棒棒糖情节
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 2019年2月6日05:00的棒棒糖图
+lcz_anomaly(lcz_map, 
+            data_frame = lcz_data, 
+            var = "airT", 
+            station_id = "station", 
+            time.freq = "hour", 
+            year = 2019, month = 2, day = 6, hour = 5,
+            plot_type = "lollipop")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_anomaly_4.png" alt="Lollipop plot emphasizing anomaly magnitude" width="80%" />
+<p class="caption">棒棒糖图强调热异常的大小和方向。每根“棒”的长度代表异常值，点的大小表示异常值的大小。</p>
+</div>
+
+## 使用“by”参数分割异常
+
+### 白天与夜间比较
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 计算2019年2月6日夜间和白天的异常值
+lcz_anomaly(lcz_map, 
+            data_frame = lcz_data, 
+            var = "airT", 
+            station_id = "station", 
+            time.freq = "hour", 
+            year = 2019, month = 2, day = 6, 
+            plot_type = "diverging_bar",
+            by = "daylight")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_anomaly_5.png" alt="Comparison of thermal anomalies between daytime and nighttime" width="80%" />
+<p class="caption">2019 年 2 月 6 日白天和夜间的热异常比较。这揭示了城市热模式在昼夜期间的变化。</p>
+</div>
+
+### 将日光与月份结合起来
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 计算2019年2月和8月的月平均异常值
+lcz_anomaly(lcz_map, 
+            data_frame = lcz_data, 
+            var = "airT", 
+            station_id = "station", 
+            time.freq = "hour", 
+            year = 2019, month = c(2, 8), 
+            plot_type = "bar",
+            by = c("daylight", "month"))
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_anomaly_6.png" alt="Seasonal and diurnal patterns of thermal anomalies" width="80%" />
+<p class="caption">热异常的季节和昼夜模式：比较冬季（二月）和夏季（八月）的白天和夜间。</p>
+</div>
+
+## 高级分析选项
+
+### 时间聚合
+
+您可以聚合不同时间频率的异常：
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 计算2019年2月的每日平均异常值
+daily_anomalies <- lcz_anomaly(lcz_map, 
+                               data_frame = lcz_data, 
+                               var = "airT", 
+                               station_id = "station", 
+                               time.freq = "day", 
+                               year = 2019, month = 2,
+                               plot_type = "bar",
+                               iplot = FALSE)
+
+# 计算 2019 年的月平均异常值
+monthly_anomalies <- lcz_anomaly(lcz_map, 
+                                 data_frame = lcz_data, 
+                                 var = "airT", 
+                                 station_id = "station", 
+                                 time.freq = "month", 
+                                 year = 2019,
+                                 plot_type = "bar",
+                                 iplot = FALSE)
+```
+
+### 自定义视觉外观
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 自定义发散柱状图，可添加特定颜色和标签
+lcz_anomaly(lcz_map, 
+            data_frame = lcz_data, 
+            var = "airT", 
+            station_id = "station", 
+            time.freq = "hour", 
+            year = 2019, month = 7, day = 15, hour = 14,  # Summer afternoon
+            plot_type = "diverging_bar",
+            ylab = "Temperature Anomaly [°C]",
+            xlab = "LCZ Classes",
+            title = "Summer Afternoon Thermal Anomalies",
+            subtitle = "July 15, 2019 - 14:00h",
+            caption = "Source: LCZ4r, 2024")
+```
+
+## 返回数据框作为结果
+
+要将结果保存在 R 中，请设置 `iplot = FALSE` 并创建一个对象。
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 返回包含 2019 年 2 月和 8 月热异常数据的数据框
+my_output <- lcz_anomaly(lcz_map, 
+                         data_frame = lcz_data, 
+                         var = "airT", 
+                         station_id = "station", 
+                         time.freq = "hour", 
+                         year = 2019, month = c(2, 8), 
+                         plot_type = "bar",
+                         by = c("daylight", "month"),
+                         iplot = FALSE)
+
+# 查看返回的数据框的结构
+str(my_output)
+
+# 查看前几行
+head(my_output)
+```
+
+## 保存地块
+
+要将绘图保存到计算机，请设置 `isave = TRUE` 并指定文件类型 `save_extension` （例如，“png”、“jpeg”、“svg”、“pdf”）。
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 将热异常图保存到电脑
+lcz_anomaly(lcz_map, 
+            data_frame = lcz_data, 
+            var = "airT", 
+            station_id = "station", 
+            time.freq = "hour", 
+            year = 2019, month = 7, day = 15, hour = 14,
+            plot_type = "diverging_bar",
+            by = "daylight",
+            isave = TRUE,
+            save_extension = "png")
+```
+
+::: {.callout .callout-tip}
+**提示**：保存的图将自动组织在 `LCZ4r_output` 带有时间戳的文件名的文件夹，以便于参考。该文件夹将在您当前的工作目录中创建。
+:::
+
+## 参数汇总
+
+以下是主要参数的快速参考 `lcz_anomaly()`:
+
+|参数|描述 |选项|
+|-----------|-------------|---------|
+| `time.freq` |时间聚合频率| “时”、“日”、“月”、“年”|
+| `plot_type` |可视化类型| “diverging_bar”、“bar”、“dot”、“棒棒糖”|
+| `by` |数据分割方式| “日光”、“月份”、“季节”、“工作日”等 |
+| `isave` |将输出保存到 PC |对/错 |
+| `iplot` |显示图 |对/错 |
+| `var` |要分析的变量 |带有温度数据的列名称 |
+| `station_id` |站标识符栏|带有站 ID 的列名称 |
+
+## 解释热异常
+
+了解热异常的模式可以提供有价值的见解：
+
+- **紧凑建造的 LCZ** 通常在白天显示出正异常
+- **开放式低层 LCZ** 由于通风较好而经常表现出负面异常现象
+- **工业区**经常表现出强烈的正异常
+- **植被 LCZ 通常显示出负异常，尤其是在白天
+- **水体**可以创建具有持续负异常的凉爽岛屿
+
+::: {.callout .callout-note}
+**应用示例**：城市规划者可以使用热异常图来识别热脆弱区域，并在持续出现正异常的地方优先考虑绿色基础设施或凉爽材料等干预措施。
+:::
+
+---
+
+## 有反馈或建议吗？
+
+您有改进的想法或者发现错误吗？我们很乐意听取您的意见！单击下面的按钮创建新问题 (GitHub) 并直接与我们分享您的反馈或建议。
+
+```{=html}
+<a href='https://github.com/ByMaxAnjos/LCZ4r/issues/new' class="github-feedback-btn">
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+  </svg>
+  打开 GitHub 问题
+</a>
+```

@@ -1,127 +1,838 @@
 ---
-title: "LCZ4r-QGIS 插件"
+title: "多语言 LCZ4r-QGIS 插件"
+description: >
+  **QGIS中的局部气候区（LCZ）和城市热岛分析！**  
+  一个将 LCZ4r 包与 QGIS 集成的 LCZ4r-QGIS 插件库，支持多种语言。
 ---
+
 ```{=html}
 <style>
   /* ================================================================
-     Forest Canopy Theme — QGIS Plugin Page
+     Forest Canopy Theme — Tutorial Grid (with image cards)
      Aligned with: LCZ4r landing page · custom-modern.css · style.css
      Tokens: #f8faf7 bg · #1a2e1a text · #10b981 primary · #0ea5e9 sky
   ================================================================ */
-  @import url("https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&family=Inter:wght@400;500;600&display=swap");
-  .qgis-plugin-container {
-    font-family: "Inter", sans-serif;
-    background-color: #f8faf7;
-    color: #1a2e1a;
-    padding: 2rem 1rem;
-    max-width: 1000px;
-    margin: 0 auto;
+
+  @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --fc-bg-page:       #f8faf7;
+    --fc-bg-card:       rgba(255, 255, 255, 0.90);
+    --fc-bg-elevated:   #e6ede4;
+    --fc-primary:       #10b981;
+    --fc-primary-dark:  #059669;
+    --fc-sky:           #0ea5e9;
+    --fc-text-main:     #1a2e1a;
+    --fc-text-body:     #4a6741;
+    --fc-text-muted:    #8aaa82;
+    --fc-border:        rgba(16, 185, 129, 0.18);
+    --fc-border-hover:  rgba(16, 185, 129, 0.55);
+    --fc-shadow:        0 4px 24px -4px rgba(16, 40, 16, 0.10);
+    --fc-shadow-hover:  0 16px 48px -8px rgba(16, 40, 16, 0.20);
+    --fc-radius:        16px;
+    --fc-radius-sm:     8px;
+    --fc-ease:          cubic-bezier(0.25, 0.8, 0.25, 1);
   }
-  .qgis-header {
-    text-align: center;
-    margin-bottom: 3rem;
-  }
-  .qgis-header h1 {
-    font-family: "Source Serif 4", serif;
-    font-size: 2.75rem;
-    font-weight: 700;
-    color: #1a2e1a;
-    margin-bottom: 0.5rem;
-  }
-  .qgis-header p {
-    font-size: 1.15rem;
-    color: #4a6741;
-    max-width: 600px;
-    margin: 0 auto;
-  }
-  .qgis-content {
+
+  /* ── Grid layout ─────────────────────────────────────────────── */
+  .tutorial-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 3rem;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.75rem;
+    padding: 2rem 0;
+    font-family: 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  }
+
+  /* ── Card base ────────────────────────────────────────────────── */
+  .tutorial-card {
+    background: var(--fc-bg-card);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: var(--fc-radius);
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--fc-border);
+    box-shadow: var(--fc-shadow);
+    transition: transform 0.32s var(--fc-ease),
+                box-shadow 0.32s var(--fc-ease),
+                border-color 0.32s var(--fc-ease);
+    overflow: hidden;
+  }
+
+  .tutorial-card:hover {
+    transform: translateY(-7px);
+    box-shadow: var(--fc-shadow-hover);
+    border-color: var(--fc-border-hover);
+  }
+
+  /* ── Card image ───────────────────────────────────────────────── */
+  .card-image-wrapper {
+    position: relative;
+    width: 100%;
+    padding-bottom: 52%;
+    overflow: hidden;
+    background: var(--fc-bg-elevated);
+  }
+
+  .card-image-wrapper img {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    transition: transform 0.45s var(--fc-ease);
+    filter: saturate(0.92) brightness(0.97);
+  }
+
+  .tutorial-card:hover .card-image-wrapper img {
+    transform: scale(1.05);
+    filter: saturate(1.05) brightness(1.00);
+  }
+
+  .card-image-wrapper::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 55%;
+    background: linear-gradient(
+      to top,
+      rgba(248, 250, 247, 0.95) 0%,
+      rgba(248, 250, 247, 0.40) 55%,
+      transparent 100%
+    );
+    pointer-events: none;
+  }
+
+  .card-image-badge {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    z-index: 2;
+    background: rgba(255, 255, 255, 0.88);
+    backdrop-filter: blur(8px);
+    color: var(--fc-primary-dark);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    padding: 4px 12px;
+    border-radius: 100px;
+    text-transform: uppercase;
+    border: 1px solid var(--fc-border);
+  }
+
+  .card-body {
+    padding: 1.5rem 1.75rem 1.75rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+
+  .card-header {
+    display: flex;
     align-items: center;
+    gap: 10px;
+    margin-bottom: 0.9rem;
   }
-  .qgis-text-content h2 {
-    font-family: "Source Serif 4", serif;
-    font-size: 2rem;
-    font-weight: 600;
-    color: #1a2e1a;
-    margin-bottom: 1rem;
+
+  .card-icon {
+    color: var(--fc-primary);
+    background: linear-gradient(135deg, #e8f5e9 0%, #d1fae5 100%);
+    padding: 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(16, 185, 129, 0.20);
+    transition: background 0.3s var(--fc-ease), transform 0.3s var(--fc-ease);
+    flex-shrink: 0;
   }
-  .qgis-text-content p {
-    font-size: 1.1rem;
-    line-height: 1.7;
-    color: #4a6741;
+
+  .tutorial-card:hover .card-icon {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    transform: scale(1.10) rotate(-5deg);
+  }
+
+  .card-title {
+    color: var(--fc-text-main);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 0 0 0.55rem 0;
+    line-height: 1.25;
+  }
+
+  .card-description {
+    color: var(--fc-text-body);
+    font-size: 0.90rem;
+    line-height: 1.65;
+    flex-grow: 1;
     margin-bottom: 1.5rem;
   }
-  .lang-badges {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 1.5rem;
-  }
-  .lang-badge {
-    background-color: #e6ede4;
-    color: #4a6741;
-    padding: 5px 12px;
-    border-radius: 99px;
-    font-size: 0.9rem;
-    font-weight: 500;
-  }
-  .qgis-image-content img {
-    width: 100%;
-    border-radius: 16px;
-    box-shadow: 0 8px 32px -8px rgba(16, 40, 16, 0.2);
-    border: 1px solid rgba(16, 185, 129, 0.18);
-  }
-  .cta-button {
-    display: inline-block;
-    margin-top: 1rem;
-    padding: 12px 28px;
-    border-radius: 8px;
-    background: linear-gradient(135deg, #10b981, #059669);
-    color: white;
+
+  .card-cta-button {
+    background: linear-gradient(135deg, var(--fc-primary) 0%, var(--fc-primary-dark) 100%);
+    color: #ffffff !important;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.875rem;
     font-weight: 600;
-    text-decoration: none;
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
-    transition: all 0.3s ease;
+    text-align: center;
+    text-decoration: none !important;
+    padding: 11px 20px;
+    border-radius: var(--fc-radius-sm);
+    transition: filter 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 2px 10px rgba(16, 185, 129, 0.28);
+    letter-spacing: 0.01em;
   }
-  .cta-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+
+  .card-cta-button:hover {
+    filter: brightness(1.08);
+    transform: translateX(4px);
+    box-shadow: 0 4px 18px rgba(16, 185, 129, 0.40);
+    text-decoration: none !important;
+    color: #ffffff !important;
+  }
+
+  .tutorial-card svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  /* ── Multilingual Grid Styles ─────────────────────────────────── */
+  .multilingual-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.75rem;
+    margin: 2rem 0;
+    font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
+  }
+
+  .language-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid rgba(16, 185, 129, 0.15);
+    transition: all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .language-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 32px -12px rgba(16, 185, 129, 0.25);
+    border-color: rgba(16, 185, 129, 0.4);
+  }
+
+  .card-header-lang {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    background: linear-gradient(135deg, #f8faf7 0%, #ffffff 100%);
+    border-bottom: 2px solid rgba(16, 185, 129, 0.2);
+  }
+
+  .lang-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .flag-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 2px solid white;
+  }
+
+  .lang-name {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #1a2e1a;
+  }
+
+  .status-badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 30px;
+  }
+
+  .status-badge.available {
+    background: #e8f5e9;
+    color: #1D9E75;
+  }
+
+  .status-badge.coming {
+    background: #fff3e0;
+    color: #ff9800;
+  }
+
+  .status-badge.progress {
+    background: #e3f2fd;
+    color: #2196f3;
+  }
+
+  .card-body-lang {
+    padding: 1.25rem;
+    flex-grow: 1;
+  }
+
+  .lang-description {
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: #4a6741;
+    margin-bottom: 1rem;
+  }
+
+  .author-info {
+    font-size: 0.7rem;
+    color: #8aaa82;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid #e9ecef;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .author-info svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .download-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: linear-gradient(135deg, #1D9E75 0%, #059669 100%);
+    color: white;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.85rem;
+    padding: 10px 20px;
+    border-radius: 40px;
+    transition: all 0.25s ease;
+    width: 100%;
+    border: none;
+    cursor: pointer;
+    margin-top: 0.5rem;
+  }
+
+  .download-btn:hover {
+    transform: translateX(4px);
+    background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    text-decoration: none;
     color: white;
   }
-  @media (max-width: 768px) {
-    .qgis-content { grid-template-columns: 1fr; }
-    .qgis-image-content { order: -1; }
+
+  .download-btn.disabled {
+    background: linear-gradient(135deg, #9ca3af 0%, #6b7280 100%);
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.6;
+  }
+
+  .download-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  /* ── GitHub feedback button ───────────────────────────────────── */
+  .github-feedback-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, var(--fc-primary) 0%, var(--fc-sky) 100%);
+    color: #ffffff !important;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 11px 22px;
+    border-radius: var(--fc-radius-sm);
+    border: none;
+    cursor: pointer;
+    text-decoration: none !important;
+    transition: filter 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 12px rgba(16, 185, 129, 0.28);
+    letter-spacing: 0.01em;
+    margin-top: 1rem;
+  }
+
+  .github-feedback-btn:hover {
+    filter: brightness(1.08);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.38);
+    text-decoration: none !important;
+    color: #ffffff !important;
+  }
+
+  /* ── Section headers ──────────────────────────────────────────── */
+  .section-title {
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--fc-text-main);
+    margin: 2rem 0 1rem 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 3px solid var(--fc-primary);
+    display: inline-block;
+  }
+
+  /* ── Responsive ───────────────────────────────────────────────── */
+  @media (max-width: 640px) {
+    .tutorial-grid,
+    .multilingual-grid {
+      grid-template-columns: 1fr;
+      gap: 1.25rem;
+      padding: 1rem 0;
+    }
+    .card-body,
+    .card-body-lang {
+      padding: 1.25rem 1.4rem 1.5rem;
+    }
+    .card-title { font-size: 1.1rem; }
+    .section-title { font-size: 1.4rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tutorial-card,
+    .language-card,
+    .card-cta-button,
+    .download-btn,
+    .card-icon,
+    .card-image-wrapper img,
+    .github-feedback-btn {
+      transition: none;
+    }
   }
 </style>
-<div class="qgis-plugin-container">
-  <div class="qgis-header">
-    <h1>LCZ4r-QGIS 插件</h1>
-    <p>将 R 的统计能力与 QGIS 的地理空间可视化无缝结合。</p>
-  </div>
-  <div class="qgis-content">
-    <div class="qgis-text-content">
-      <h2>简化的地理空间分析</h2>
-      <p>LCZ4r-QGIS 插件将 LCZ4r 的强大功能直接带入您的 QGIS 环境。这个多语言插件允许对局地气候区和城市热岛进行交互式分析和可视化，将 R 的统计能力与 QGIS 的制图功能相结合。</p>
-      <p>该插件与 QGIS 3.x 及以上版本兼容，并直接与 LCZ4r R 软件包集成，为您的城市气候研究提供一个统一的平台。</p>
-      <div class="lang-badges">
-        <span class="lang-badge">English</span>
-        <span class="lang-badge">Português</span>
-        <span class="lang-badge">Español</span>
-        <span class="lang-badge">中文</span>
-        <span class="lang-badge">Deutsch</span>
-        <span class="lang-badge">Français</span>
-        <span class="lang-badge">Italiano</span>
-        <span class="lang-badge">日本語</span>
-        <span class="lang-badge">한국어</span>
-        <span class="lang-badge">Русский</span>
-      </div>
-      <a href="https://lcz-rast.github.io/lcz-qgis/" target="_blank" class="cta-button">了解更多关于插件的信息</a>
+
+<div class="tutorial-grid">
+
+  <!-- Card 1: LCZ4r-QGIS插件简介 -->
+  <div class="tutorial-card">
+    <div class="card-image-wrapper">
+      <span class="card-image-badge">插件</span>
+      <img
+        src="https://github.com/ByMaxAnjos/LCZ4r/raw/main/inst/figures/logo_qgis.png"
+        alt="LCZ4r QGIS Plugin Logo"
+        loading="lazy">
     </div>
-    <div class="qgis-image-content">
-      <img src="https://raw.githubusercontent.com/lcz-rast/lcz-qgis/main/img/lcz_qgis_en.png" alt="LCZ4r-QGIS Plugin Interface">
+    <div class="card-body">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        </div>
+      </div>
+      <h3 class="card-title">LCZ4r-QGIS插件简介</h3>
+      <p class="card-description">LCZ-QGIS 插件将 LCZ4r 包中的通用功能和局部功能集成到 QGIS 中，使用户能够直接在 QGIS 环境中分析 LCZ 和城市热岛。</p>
+      <a href="https://bymaxanjos.github.io/LCZ4r/zh/articles/Introd_QGIS_LCZ4r.html" class="card-cta-button">
+        入门
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- Card 2: 在 QGIS 中安装 LCZ4r -->
+  <div class="tutorial-card">
+    <div class="card-image-wrapper">
+      <span class="card-image-badge">安装</span>
+      <img
+        src="https://github.com/ByMaxAnjos/LCZ4r/raw/main/inst/figures/fig_general_1_1.png"
+        alt="LCZ map of São Paulo"
+        loading="lazy">
+    </div>
+    <div class="card-body">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.58 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.58 4 8 4s8-1.79 8-4M4 7c0-2.21 3.58-4 8-4s8 1.79 8 4m0 5c0 2.21-3.58 4-8 4s-8-1.79-8-4" />
+          </svg>
+        </div>
+      </div>
+      <h3 class="card-title">在 QGIS 中安装 LCZ4r</h3>
+      <p class="card-description">QGIS中LCZ4r安装分步指南。观看详细的视频教程或按照文字说明进行操作。</p>
+      <a href="https://bymaxanjos.github.io/LCZ4r/zh/articles/instalation_lcz4r_qgis.html" class="card-cta-button">
+        Installation Guide
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- Card 3: LCZ4r 在 QGIS 中的通用功能 -->
+  <div class="tutorial-card">
+    <div class="card-image-wrapper">
+      <span class="card-image-badge">Plugin</span>
+      <img
+        src="https://github.com/ByMaxAnjos/LCZ4r/raw/main/inst/figures/qgis_general.png"
+        alt="LCZ4r General Functions in QGIS"
+        loading="lazy">
+    </div>
+    <div class="card-body">
+      <div class="card-header">
+        <div class="card-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+          </svg>
+        </div>
+      </div>
+      <h3 class="card-title">LCZ4r 在 QGIS 中的通用功能</h3>
+      <p class="card-description">掌握 QGIS 中的 LCZ4r 通用功能：下载 LCZ 地图、计算面积和提取城市冠层参数。</p>
+      <a href="https://bymaxanjos.github.io/LCZ4r/zh/articles/Introd_QGIS_LCZ4r_general.html" class="card-cta-button">
+        Open Tutorial
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5" width="16" height="16">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+      </a>
     </div>
   </div>
 </div>
+
+🌐 多语言插件
+
+<div class="multilingual-grid">
+
+  <!-- English -->
+  <div class="language-card">
+    <div class="card-header-lang">
+      <div class="lang-info">
+        <img class="flag-icon" src="https://flagcdn.com/w80/gb.png" alt="United Kingdom">
+        <span class="lang-name">English</span>
+      </div>
+      <span class="status-badge available">✅ 可用的</span>
+    </div>
+    <div class="card-body-lang">
+      <p class="lang-description">LCZ4r-QGIS 插件将 LCZ4r 包中的通用函数和本地函数集成到 QGIS 环境中。</p>
+      <a href="https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/English_LCZ4r.zip" class="download-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg>
+        下载插件
+      </a>
+      <div class="author-info">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
+        Max Anjos (maxanjos@campus.ul.pt)
+      </div>
+    </div>
+  </div>
+
+  <!-- Portuguese -->
+  <div class="language-card">
+    <div class="card-header-lang">
+      <div class="lang-info">
+        <img class="flag-icon" src="https://flagcdn.com/w80/br.png" alt="Brazil">
+        <span class="lang-name">Português</span>
+      </div>
+      <span class="status-badge available">✅ 可用的</span>
+    </div>
+    <div class="card-body-lang">
+      <p class="lang-description">O 插件 LCZ4r-QGIS 集成为 LCZ4r 无环境 QGIS 的功能和位置。</p>
+      <a href="https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Portuguese_LCZ4r.zip" class="download-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg>
+        下载插件
+      </a>
+      <div class="author-info">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
+        Antônio Campos Neto
+      </div>
+    </div>
+  </div>
+
+  <!-- German -->
+  <div class="language-card">
+    <div class="card-header-lang">
+      <div class="lang-info">
+        <img class="flag-icon" src="https://flagcdn.com/w80/de.png" alt="Germany">
+        <span class="lang-name">Deutsch</span>
+      </div>
+      <span class="status-badge available">✅ 可用的</span>
+    </div>
+    <div class="card-body-lang">
+      <p class="lang-description">LCZ4r-QGIS 插件将 LCZ4r 包的通用功能和本地功能集成到 QGIS 环境中。.</p>
+      <a href="https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Deutsch_LCZ4r.zip" class="download-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg>
+        插件下载
+      </a>
+      <div class="author-info">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
+        Antônio Campos Neto
+      </div>
+    </div>
+  </div>
+
+  <!-- Chinese -->
+  <div class="language-card">
+    <div class="card-header-lang">
+      <div class="lang-info">
+        <img class="flag-icon" src="https://flagcdn.com/w80/cn.png" alt="China">
+        <span class="lang-name">中文</span>
+      </div>
+      <span class="status-badge available">✅ 可用的</span>
+    </div>
+    <div class="card-body-lang">
+      <p class="lang-description">LCZ4r-QGIS插件将LCZ4r包中的通用功能和地方功能集成到QGIS环境中。</p>
+      <a href="https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Chinese_LCZ4r.zip" class="download-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg>
+        下载插件
+      </a>
+      <div class="author-info">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
+        Antônio Campos Neto
+      </div>
+    </div>
+  </div>
+
+  <!-- Spanish -->
+  <div class="language-card">
+    <div class="card-header-lang">
+      <div class="lang-info">
+        <img class="flag-icon" src="https://flagcdn.com/w80/es.png" alt="Spain">
+        <span class="lang-name">Español</span>
+      </div>
+      <span class="status-badge available">✅ 可用的</span>
+    </div>
+    <div class="card-body-lang">
+      <p class="lang-description">LCZ4r-QGIS 插件集成了 LCZ4r 和 QGIS 的常规功能和区域设置。</p>
+      <a href="https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/Spanish_LCZ4r.zip" class="download-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg>
+        下载插件
+      </a>
+      <div class="author-info">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
+        Antônio Campos Neto
+      </div>
+    </div>
+  </div>
+
+  <!-- French -->
+  <div class="language-card">
+    <div class="card-header-lang">
+      <div class="lang-info">
+        <img class="flag-icon" src="https://flagcdn.com/w80/fr.png" alt="France">
+        <span class="lang-name">Français</span>
+      </div>
+      <span class="status-badge available">✅ 可用的</span>
+    </div>
+    <div class="card-body-lang">
+      <p class="lang-description">LCZ4r-QGIS 插件将 LCZ4r 包的通用功能和局部功能集成到 QGIS 环境中.</p>
+      <a href="https://raw.githubusercontent.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/refs/heads/master/scripts/French_LCZ4r.zip" class="download-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+        </svg>
+        下载
+      </a>
+      <div class="author-info">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
+        Antônio Campos Neto
+      </div>
+    </div>
+  </div>
+
+  <!-- Japanese (Coming Soon) -->
+  <div class="language-card">
+    <div class="card-header-lang">
+      <div class="lang-info">
+        <img class="flag-icon" src="https://flagcdn.com/w80/jp.png" alt="Japan">
+        <span class="lang-name">日本語</span>
+      </div>
+      <span class="status-badge coming">🔜 即将推出</span>
+    </div>
+    <div class="card-body-lang">
+      <p class="lang-description">LCZ4r-QGIS 插件将 LCZ4r 包的通用和本地功能集成到 QGIS 环境中。</p>
+      <a href="#" class="download-btn disabled">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        即将推出
+      </a>
+      <div class="author-info">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        开发中
+      </div>
+    </div>
+  </div>
+
+  <!-- Italian (即将推出) -->
+  <div class="language-card">
+    <div class="card-header-lang">
+      <div class="lang-info">
+        <img class="flag-icon" src="https://flagcdn.com/w80/it.png" alt="Italy">
+        <span class="lang-name">Italiano</span>
+      </div>
+      <span class="status-badge coming">🔜 即将推出</span>
+    </div>
+    <div class="card-body-lang">
+      <p class="lang-description">LCZ4r-QGIS 插件将 LCZ4r 包的通用和本地功能集成到 QGIS 环境中。.</p>
+      <a href="#" class="download-btn disabled">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        即将推出
+      </a>
+      <div class="author-info">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        开发中
+      </div>
+    </div>
+  </div>
+
+  <!-- Hindi (进行中) -->
+  <div class="language-card">
+    <div class="card-header-lang">
+      <div class="lang-info">
+        <img class="flag-icon" src="https://flagcdn.com/w80/in.png" alt="India">
+        <span class="lang-name">हिंदी</span>
+      </div>
+      <span class="status-badge progress">🔄 进行中</span>
+    </div>
+    <div class="card-body-lang">
+      <p class="lang-description">LCZ4r-QGIS 插件将 LCZ4r 包中的常用函数和本地函数集成到 QGIS 环境中。</p>
+      <a href="#" class="download-btn disabled">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        进行中
+      </a>
+      <div class="author-info">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        翻译进行中
+      </div>
+    </div>
+  </div>
+
+  <!-- Arabic (进行中） -->
+  <div class="language-card">
+    <div class="card-header-lang">
+      <div class="lang-info">
+        <img class="flag-icon" src="https://flagcdn.com/w80/sa.png" alt="Saudi Arabia">
+        <span class="lang-name">العربية</span>
+      </div>
+      <span class="status-badge progress">🔄 进行中</span>
+    </div>
+    <div class="card-body-lang">
+      <p class="lang-description" dir="rtl">LCZ4r-QGIS 插件将 LCZ4r 包中的全局和局部函数集成到 QGIS 环境中。.</p>
+      <a href="#" class="download-btn disabled">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+      几乎
+      </a>
+      <div class="author-info">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+       翻译进行中
+      </div>
+    </div>
+  </div>
+
+  <!-- Bengali (进行中) -->
+  <div class="language-card">
+    <div class="card-header-lang">
+      <div class="lang-info">
+        <img class="flag-icon" src="https://flagcdn.com/w80/bd.png" alt="Bangladesh">
+        <span class="lang-name">বাংলা</span>
+      </div>
+      <span class="status-badge progress">🔄 进行中</span>
+    </div>
+    <div class="card-body-lang">
+      <p class="lang-description">LCZ4r-QGIS 插件将 LCZ4r 包的通用和本地功能集成到 QGIS 环境中。</p>
+      <a href="#" class="download-btn disabled">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        进行中
+      </a>
+      <div class="author-info">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        翻译进行中
+      </div>
+    </div>
+  </div>
+
+  <!-- Russian (进行中) -->
+  <div class="language-card">
+    <div class="card-header-lang">
+      <div class="lang-info">
+        <img class="flag-icon" src="https://flagcdn.com/w80/ru.png" alt="Russia">
+        <span class="lang-name">Русский</span>
+      </div>
+      <span class="status-badge progress">🔄 进行中</span>
+    </div>
+    <div class="card-body-lang">
+      <p class="lang-description">LCZ4r-QGIS 插件将 LCZ4r 包中的通用和本地功能集成到 QGIS 环境中。.</p>
+      <a href="#" class="download-btn disabled">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        开发中
+      </a>
+      <div class="author-info">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        翻译进行中
+      </div>
+    </div>
+  </div>
+
+</div>
+```
+
+## 有反馈或建议吗？
+
+您有改进的想法或者发现错误吗？我们很乐意听取您的意见！单击下面的按钮创建新问题 (GitHub) 并直接与我们分享您的反馈或建议。
+
+```{=html}
+<a href='https://github.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/issues/new' class="github-feedback-btn">
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+  </svg>
+  打开 GitHub 问题
+</a>
 ```

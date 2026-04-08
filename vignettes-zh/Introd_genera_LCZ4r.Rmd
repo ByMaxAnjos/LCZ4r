@@ -1,0 +1,417 @@
+---
+title: "地图、区域和参数"
+author: "Max Anjos"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 4
+    toc_float:
+      collapsed: true
+      smooth_scroll: true
+    number_sections: true
+    theme: flatly
+    highlight: tango
+    code_folding: show
+    code_download: true
+    self_contained: false
+    df_print: paged
+---
+
+```{css, echo=FALSE}
+/* ── Variáveis de Cores Modernas ────────────────── */
+:root {
+  --primary-color: #1D9E75;
+  --dark-green: #0f3d2e;
+  --bg-light: #f8faf9;
+  --text-main: #1a1a1a;
+  --code-bg: #fdfdfd;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 18px;
+  color: var(--text-main);
+  background-color: #fff;
+}
+
+/* ── Títulos com Inter-spacing ─────────────────── */
+h1, h2, h3 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  color: var(--dark-green);
+}
+
+h1.title {
+  font-size: 2.8em;
+  border-bottom: 4px solid var(--primary-color);
+  padding-bottom: 10px;
+}
+
+/* ── Code Blocks Estilizados ────────────────────── */
+pre.r {
+  background-color: var(--code-bg);
+  border: 1px solid #e1e1e1;
+  border-left: 5px solid var(--primary-color) !important;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* ── Custom Callouts (Estilo Quarto) ────────────── */
+.callout {
+  padding: 1.2em;
+  margin: 1.5em 0;
+  border-radius: 0 8px 8px 0;
+  border-left: 6px solid;
+}
+
+.callout-note {
+  background-color: #f0f7ff;
+  border-color: #007bff;
+}
+
+/* ── Transições suaves no menu lateral ──────────── */
+.list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+/* ── Estilo para imagens ───────────────────────── */
+.figure img {
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+}
+
+.figure img:hover {
+  transform: scale(1.02);
+}
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo    = TRUE,
+  eval    = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  comment = "#>",
+  fig.align = "center",
+  out.width = "80%",
+  fig.retina = 2
+)
+```
+
+
+这 **`LCZ4r` 一般功能**旨在在数据不易获得时促进 LCZ 的检索、分析和可视化。这些功能使用户能够快速下载 LCZ 地图、计算 LCZ 类别并提取感兴趣的特定城市冠层参数 (UCP)，例如天空视角系数、不透水表面分数和粗糙度元素高度等。
+
+## 入门
+
+一般功能，每个功能都有独特的用途：
+
+|功能|描述 |所需数据 |需要互联网接入 |
+|-------------------------|------------------------------------------------------------|---------------|--------------------------|
+| `lcz_get_map()`         |从全球数据集下载您的 LCZ 地图 |不需要 |是的 |
+| `lcz_get_map_euro()`    |从欧洲数据集下载 LCZ 地图 |不需要 |是的 |
+| `lcz_get_map_usa()`     |从美国大陆数据集下载 LCZ 地图 |不需要 |是的 |
+| `lcz_get_map_generator()` |从 LCZ 生成器平台下载 LCZ 地图 |不需要 |是的 |
+| `lcz_get_map2()`        |为您的城市或投资回报率剪辑 LCZ 地图 |两者 |两者 |
+| `lcz_plot_map()`        |可视化 LCZ 地图 |不需要 |不需要|
+| `lcz_cal_area()`        |计算 LCZ 面积 |不需要 |不需要|
+| `lcz_get_parameters()`  |检索 LCZ 参数 |不需要 |不需要|
+| `lcz_plot_parameters()` |可视化 LCZ 参数图 |不需要 |不需要|
+
+::: {.callout .callout-note}
+**提示**：利用 `help(lcz_*)` 功能来访问每个 LCZ 功能的综合文档。例如，您可以探索有关以下内容的详细信息： `lcz_get_map` 通过键入功能 `help("lcz_get_map")`.
+:::
+
+## 下载并可视化 LCZ 地图 {.tabset .tabset-fade .tabset-pills}
+
+这 `lcz_get_map()` 功能有助于获取您选择的城市或特定感兴趣区域 (ROI) 的 LCZ 地图。以下是世界各地城市的示例：
+
+### 圣保罗
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+library(LCZ4r)
+
+# 获取您所在城市的LCZ地图
+lcz_map <- lcz_get_map(city = "São Paulo")
+
+# 将获得的LCZ图可视化
+lcz_plot_map(lcz_map)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_1.png" alt="LCZ map for São Paulo" width="80%" />
+<p class="caption">圣保罗 LCZ 地图</p>
+</div>
+
+### 巴黎
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+euro_map <- lcz_get_map_euro(city = "Paris")
+lcz_plot_map(euro_map)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_2.png" alt="LCZ map for Paris" width="80%" />
+<p class="caption">巴黎 LCZ 地图</p>
+</div>
+
+### 伦敦
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+euro_map <- lcz_get_map_euro(city = "London")
+lcz_plot_map(euro_map)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_3.png" alt="LCZ map for London" width="80%" />
+<p class="caption">伦敦 LCZ 地图</p>
+</div>
+
+### 悉尼
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+lcz_map <- lcz_get_map(city = "Sydney")
+lcz_plot_map(lcz_map)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_4.png" alt="LCZ map for Sydney" width="80%" />
+<p class="caption">悉尼 LCZ 地图</p>
+</div>
+
+### 北京
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+lcz_map <- lcz_get_map(city = "Beijing")
+lcz_plot_map(lcz_map)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_5.png" alt="LCZ map for Beijing" width="80%" />
+<p class="caption">北京 LCZ 地图</p>
+</div>
+
+### 纽约
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+usa_map <- lcz_get_map_usa(city = "New York")
+lcz_plot_map(usa_map)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_6.png" alt="LCZ map for New York" width="80%" />
+<p class="caption">纽约的 LCZ 地图</p>
+</div>
+
+### 内罗毕
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+my_map <- lcz_get_map(city = "Nairobi")
+lcz_plot_map(my_map)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_7.png" alt="LCZ map for Nairobi" width="80%" />
+<p class="caption">内罗毕的 LCZ 地图</p>
+</div>
+
+## 从 LCZ 生成器平台下载 LCZ 地图
+
+要将 LCZ 地图无缝集成到 LCZ4r 软件包中，请按照以下步骤获取您所需城市的 ID 代码：
+
+1. **访问 LCZ 生成器**：访问 [LCZ 生成器页面](https://lcz-generator.rub.de/).
+2. **找到您的城市**：导航至 [意见书](https://lcz-generator.rub.de/submissions) 部分并使用搜索栏搜索您的城市。
+3. **从资料表中获取 ID**：点击您所在城市提交信息旁边的 **显示资料表**，然后从 *提交信息* 部分复制 **ID**（例如 **3110e623fbe4e73b1cde55f0e9832c4f5640ac21**）
+4. **参考示例**：查看此示例 [LCZ 情况说明书](https://lcz-generator.rub.de/factsheets/3110e623fbe4e73b1cde55f0e9832c4f5640ac21/3110e623fbe4e73b1cde55f0e9832c4f5640ac21_factsheet.html) 了解格式和细节。
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+lcz_map <- lcz_get_map_generator(ID = "3110e623fbe4e73b1cde55f0e9832c4f5640ac21")
+lcz_plot_map(lcz_map)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_generator.png" alt="LCZ map from Generator Platform" width="80%" />
+<p class="caption">来自 Generator Platform 的 LCZ 地图</p>
+</div>
+
+::: {.callout .callout-note}
+**💡提示 1**：感兴趣区域 (ROI) 的 LCZ 地图
+
+此示例演示了如何在中使用 **roi** 参数 `lcz_get_map*` 可以为您的 ROI 裁剪 LCZ 地图。您必须将 shapefile 导入到 R 中。
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 装载包
+library(sf)
+
+# 将 Shapefile 文件导入 R
+my_shp <- sf::st_read("path/shp_name.shp") # You can also use shapefile in .gpkg format
+
+# 获取您的 LCZ 地图 ROI
+lcz_map <- lcz_get_map(roi = my_shp)
+
+# 可视化LCZ图
+lcz_plot_map(lcz_map)
+```
+:::
+
+::: {.callout .callout-note}
+**💡提示 2**：使用以下命令剪辑您的城市或感兴趣区域 (ROI) 的 LCZ 地图生成器 `lcz_get_map2()`
+
+这个例子演示了如何使用 `lcz_get_map2()` 功能可针对您的特定城市或 ROI 裁剪 LCZ 地图。对于城市，裁剪后的地图源自 OpenStreetMap 数据库，而对于 ROI，它使用导入的 shapefile。
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 获取 LCZ 地图生成器 (e.g., Rio de Janeiro)
+lcz_map_generator <- lcz_get_map_generator(ID = "3110e623fbe4e73b1cde55f0e9832c4f5640ac21")
+
+# 将 LCZ 地图生成器裁剪到您的城市 
+lcz_map <- lcz_get_map2(lcz_map_generator, city = "Rio de Janeiro")
+
+# 可视化LCZ图
+lcz_plot_map(lcz_map)
+
+# LCZ 地图生成器剪辑 ROI
+library(sf)
+my_shp <- sf::st_read("path/shp_name.shp") # You can also use shapefile in .gpkg format
+lcz_map <- lcz_get_map2(lcz_map_generator, roi = my_shp)
+
+# 可视化LCZ图
+lcz_plot_map(lcz_map)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_7.png" alt="Clipped LCZ map for Rio de Janeiro" width="80%" />
+<p class="caption">里约热内卢 LCZ 剪裁地图</p>
+</div>
+:::
+
+## 计算 LCZ 面积
+
+这 `lcz_cal_area()` 函数计算每个 LCZ 类别的面积：
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+lcz_map <- lcz_get_map(city = "Rio de Janeiro")
+lcz_cal_area(lcz_map)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_2.png" alt="LCZ areas calculation for Rio de Janeiro" width="80%" />
+<p class="caption">里约热内卢 LCZ 面积计算</p>
+</div>
+
+::: {.callout .callout-note}
+**提示**：此函数提供了计算的 LCZ 面积的 table.csv。要另存为 CSV，请使用： `lcz_cal_area(lcz_map, iplot = FALSE)`
+:::
+
+## 检索并可视化 LCZ 参数
+
+这 `lcz_get_parameters()` 函数使您可以访问来自 Stewart 和 Oke (2012) 的各种 LCZ 参数，包括最小值、最大值和平均值。这些参数可转换为 shapefile 或栅格堆栈，其中多个栅格聚合到单个文件中。
+
+以下是可用 LCZ 参数的概览：
+
+|代码|参数|描述 |单位|
+|------|-----------|-------------|------|
+| SVF最小值|天空视角|最小天空视角| [0-1]|
+|最大SVF |天空视角|最大天空视角| [0-1]|
+| SVF 意思是 |天空视角|平均天空视角系数| [0-1]|
+|阿敏 |纵横比|最小纵横比| [0-3] |
+| AR 最大 |纵横比 |最大纵横比 | [0-3] |
+| AR平均|纵横比|平均纵横比| [0-3] |
+| BSFmin |建筑表面分数|最小建筑面积| [%] |
+|最大BSF |建筑表面分数|最大建筑表面分数| [%] |
+| BSF 意思是：建筑表面分数|平均建筑表面分数| [%] |
+| ISFmin |不透水表面分数|最小不透水表面分数| [%] |
+|最大 ISF |不透水表面分数|最大不透水表面分数| [%] |
+| ISF 意思 |不透水表面分数|平均不透水表面分数| [%] |
+|最小PSF |植被表面分数|最小植被表面比例| [%] |
+|最大PSF |植被表面分数|最大植被表面比例| [%] |
+| PSF 平均值 |植被表面分数|平均植被表面比例| [%] |
+|最小 TSF |树表面分数|最小树表面分数| [%] |
+|最大 TSF |树表面分数|最大树表面分数| [%] |
+| TSF 平均值 |树表面分数|平均树木表面分数| [%] |
+|最小 HRE |高度粗糙度元素|最小高度粗糙度元素 | [米] |
+|最大心率 |高度粗糙度元素|最大高度粗糙度元素| [米] |
+| HRE 意味着 |高度粗糙度元素|平均高度粗糙度元素| [米] |
+| TRC 分钟 |地形粗糙度等级 |最小地形粗糙度等级 | [米] |
+|最大TRC |地形粗糙度等级 |最大地形粗糙度等级 | [米] |
+| TRC 平均值 |地形粗糙度等级 |平均地形粗糙度等级 | [米] |
+| SAD分钟|表面导纳|最小表面导纳| [J m⁻2 s1⁄2 K⁻1] |
+|最大 SAD |表面导纳|最大表面导纳| [J m⁻2 s1⁄2 K⁻1] |
+|悲伤的意思是|表面导纳|平均表面导纳| [J m⁻2 s1⁄2 K⁻1] |
+|最低盐度 |地表反照率|最小地表反照率| [0-0.5]|
+|最大SAL |地表反照率 |最大表面反照率| [0-0.5]|
+| SAL 意思是：地表反照率 |平均表面反照率| [0-0.5]|
+|阿敏|人为热输出|最低人为热输出| [W·米⁻²] |
+|最大风速 |人为热输出|最大人为热输出| [W·米⁻²] |
+|啊意思是|人为热输出|平均人为热输出| [W·米⁻²] |
+| z0 |粗糙度长度|粗糙度长度等级 | [米] |
+
+### 里约热内卢 LCZ 参数
+
+```{r eval=FALSE, fig.height=7, fig.width=11, message=FALSE, warning=FALSE}
+# Extract the LCZ parameters for raster stack format
+lcz_map <- lcz_get_map(city = "Rio de Janeiro")
+LCZpar <- lcz_get_parameters(lcz_map, istack = TRUE)
+LCZpar
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_3.png" alt="LCZ parameters raster stack for Rio de Janeiro" width="80%" />
+<p class="caption">里约热内卢的 LCZ 参数栅格堆栈</p>
+</div>
+
+## 地图 {.tabset .tabset-fade .tabset-pills}
+
+### 天空视角系数
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+lcz_plot_parameters(LCZpar, iselect = "SVFmean")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_4.png" alt="Sky View Factor map for Rio de Janeiro" width="80%" />
+<p class="caption">里约热内卢的天空视角地图</p>
+</div>
+
+### 建筑表面分数
+
+```{r eval=FALSE}
+lcz_plot_parameters(LCZpar, iselect = "BSFmax")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_5.png" alt="Building Surface Fraction map for Rio de Janeiro" width="80%" />
+<p class="caption">里约热内卢的建筑表面分数地图</p>
+</div>
+
+### 粗糙度 长度
+
+```{r eval=FALSE, fig.height=5, fig.width=9, message=FALSE, warning=FALSE}
+lcz_plot_parameters(LCZpar, iselect = "z0")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_6.png" alt="Roughness Length map for Rio de Janeiro" width="80%" />
+<p class="caption">里约热内卢的粗糙度长度地图</p>
+</div>
+
+---
+
+## 有反馈或建议吗？
+
+您有改进的想法或者发现错误吗？我们很乐意听取您的意见！单击下面的按钮创建新问题 (GitHub) 并直接与我们分享您的反馈或建议。
+
+```{=html}
+<a href='https://github.com/ByMaxAnjos/LCZ4r/issues/new' class="github-feedback-btn" style="display: inline-flex; align-items: center; gap: 8px; background-color: #24292e; color: white; padding: 10px 20px; border-radius: 6px; text-decoration: none; font-family: sans-serif; transition: background-color 0.2s;">
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+  </svg>
+  打开 GitHub 问题
+</a>
+```
+```

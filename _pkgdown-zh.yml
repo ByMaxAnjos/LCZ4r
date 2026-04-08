@@ -89,6 +89,18 @@ articles:
   - title: "教程"
     contents:
       - tutorials
+      - Introd_genera_LCZ4r
+      - Introd_local_LCZ4r
+      - local_func_time_series
+      - local_func_anomaly
+      - local_func_uhi
+      - local_func_modeling
+      - local_func_modeling_eval
+      - local_func_modeling_crows
+      - posit_cloud
   - title: "QGIS 插件"
     contents:
       - examples
+      - Introd_QGIS_LCZ4r
+      - instalation_lcz4r_qgis
+      - Introd_QGIS_LCZ4r_general

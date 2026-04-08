@@ -1,0 +1,592 @@
+---
+title: "Mastering LCZ4r General Functions in QGIS"
+author: "Max Anjos"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 4
+    toc_float:
+      collapsed: true
+      smooth_scroll: true
+    number_sections: true
+    theme: flatly
+    highlight: tango
+    code_folding: show
+    code_download: true
+    self_contained: false
+    df_print: paged
+---
+
+```{css, echo=FALSE}
+/* ── Variáveis de Cores Modernas ────────────────── */
+:root {
+  --primary-color: #1D9E75;
+  --dark-green: #0f3d2e;
+  --bg-light: #f8faf9;
+  --text-main: #1a1a1a;
+  --code-bg: #fdfdfd;
+  --qgis-blue: #5890be;
+  --warning-orange: #ff9800;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 18px;
+  color: var(--text-main);
+  background-color: #fff;
+  line-height: 1.6;
+}
+
+/* ── Títulos com Inter-spacing ─────────────────── */
+h1, h2, h3, h4 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  color: var(--dark-green);
+}
+
+h1.title {
+  font-size: 2.8em;
+  border-bottom: 4px solid var(--primary-color);
+  padding-bottom: 10px;
+  margin-bottom: 1.5rem;
+}
+
+h2 {
+  margin-top: 2rem;
+  border-left: 4px solid var(--primary-color);
+  padding-left: 1rem;
+}
+
+/* ── Code Blocks Estilizados ────────────────────── */
+pre.r, pre.sourceCode {
+  background-color: var(--code-bg);
+  border: 1px solid #e1e1e1;
+  border-left: 5px solid var(--primary-color) !important;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  padding: 1rem;
+}
+
+/* ── Custom Callouts (Estilo Quarto) ────────────── */
+.callout {
+  padding: 1.2em 1.5em;
+  margin: 1.5em 0;
+  border-radius: 8px;
+  border-left: 6px solid;
+  background-color: var(--bg-light);
+}
+
+.callout-note {
+  background-color: #f0f7ff;
+  border-color: #007bff;
+}
+
+.callout-tip {
+  background-color: #e8f5e9;
+  border-color: #1D9E75;
+}
+
+.callout-warning {
+  background-color: #fff3e0;
+  border-color: #ff9800;
+}
+
+.callout-info {
+  background-color: #e3f2fd;
+  border-color: #2196f3;
+}
+
+/* ── Video container ────────────────────────────── */
+.video-container {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  overflow: hidden;
+  border-radius: 12px;
+  margin: 1.5rem 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.video-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+}
+
+/* ── Function cards ─────────────────────────────── */
+.function-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.function-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.25rem;
+  border: 1px solid #e1e1e1;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.function-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+}
+
+.function-card h4 {
+  margin-top: 0;
+  color: var(--primary-color);
+  font-size: 1.1rem;
+}
+
+.function-card p {
+  font-size: 0.85rem;
+  color: var(--text-main);
+  margin-bottom: 0;
+}
+
+/* ── Step container styling ─────────────────────── */
+.step-container {
+  background-color: var(--bg-light);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  border-left: 4px solid var(--primary-color);
+}
+
+.step-number {
+  display: inline-block;
+  background-color: var(--primary-color);
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 32px;
+  font-weight: bold;
+  margin-right: 12px;
+  font-size: 1rem;
+}
+
+.step-title {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--dark-green);
+  margin-bottom: 1rem;
+  display: inline-block;
+}
+
+/* ── Table styling ───────────────────────────────── */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+}
+
+th, td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #e1e1e1;
+}
+
+th {
+  background-color: var(--bg-light);
+  font-weight: 600;
+  color: var(--dark-green);
+}
+
+tr:hover {
+  background-color: var(--bg-light);
+}
+
+/* ── Figure styling ─────────────────────────────── */
+.figure {
+  margin: 1.5rem 0;
+  text-align: center;
+}
+
+.figure img {
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  max-width: 100%;
+  height: auto;
+}
+
+.figure .caption {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 8px;
+  font-style: italic;
+}
+
+/* ── Badge styling ───────────────────────────────── */
+.badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+.badge-primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.badge-info {
+  background-color: #2196f3;
+  color: white;
+}
+
+/* ── Botão GitHub aprimorado ───────────────────── */
+.github-feedback-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #24292e;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-family: sans-serif;
+  transition: background-color 0.2s;
+  margin-top: 1rem;
+}
+
+.github-feedback-btn:hover {
+  background-color: #2c3e50;
+  color: white;
+  text-decoration: none;
+}
+
+/* ── Contact info ───────────────────────────────── */
+.contact-card {
+  background: linear-gradient(135deg, #e8f5e9 0%, #d1fae5 100%);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  text-align: center;
+  border: 1px solid var(--primary-color);
+}
+
+.contact-email {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.contact-email:hover {
+  text-decoration: underline;
+}
+
+/* ── Responsive ─────────────────────────────────── */
+@media (max-width: 768px) {
+  body {
+    font-size: 16px;
+  }
+  
+  h1.title {
+    font-size: 2rem;
+  }
+  
+  .function-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  th, td {
+    padding: 8px;
+    font-size: 0.85rem;
+  }
+}
+```
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.align = "center",
+  fig.width = 8,
+  fig.height = 5,
+  out.width = "90%"
+)
+```
+
+# 介绍
+
+**LCZ4r 通用功能** 旨在促进当地气候带 (LCZ) 相关数据不易获得时的检索、分析和可视化。这些功能使用户能够：
+
+- **从全球数据集中下载** LCZ 地图
+- **计算** LCZ 类别和区域
+- **提取**城市冠层参数（UCP），例如：
+  - 天空视角系数 (SVF)
+  - 不透水表面分数 (ISF)
+  - 粗糙度元素高度 (HRE)
+  - 还有更多！
+
+<!-- badges: start -->
+[![生命周期：实验性](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
+<!-- badges: end -->
+
+::: {.callout .callout-note}
+**什么是通用函数？**
+
+通用功能是 LCZ4r 的基础，为以下功能提供必要的工具：
+- **数据获取**：下载全球任何城市的 LCZ 地图
+- **数据处理**：计算面积、提取参数
+- **数据可视化**：创建可供发布的 LCZ 地图
+:::
+
+## 📺 教程视频
+
+观看有关 QGIS 中 LCZ4r 一般功能的详细教程：
+
+<div class="video-container">
+<iframe src="https://www.youtube.com/embed/WeaP1a2DCyw" 
+        title="LCZ4r-QGIS通用功能教程" 
+        框架边框=“0” 
+        允许=“加速度计；自动播放；剪贴板写入；加密媒体；陀螺仪；画中画” 
+        允许全屏></iframe>
+</div>
+
+## 📋 通用功能概述
+
+QGIS 处理工具箱的 **LCZ4r 通用函数** 部分提供以下函数：
+
+<div class="function-grid">
+
+<div class="function-card">
+<h4>📥 下载 LCZ 地图</h4>
+<p>从全球数据集（世界、欧洲、美国）或 LCZ 生成器平台下载 LCZ 地图</p>
+</div>
+
+<div class="function-card">
+<h4>✂️ 剪辑 LCZ 地图</h4>
+<p>将 LCZ 地图剪辑到您的城市或自定义感兴趣区域 (ROI)</p>
+</div>
+
+<div class="function-card">
+<h4>🗺️绘制 LCZ 地图</h4>
+<p>使用可自定义的颜色和标签可视化 LCZ 地图</p>
+</div>
+
+<div class="function-card">
+<h4>📐计算LCZ面积</h4>
+<p>计算您研究区域中每个 LCZ 类别的区域统计数据</p>
+</div>
+
+<div class="function-card">
+<h4>📊 获取 LCZ 参数</h4>
+<p>提取每个 LCZ 的城市冠层参数（SVF、ISF、HRE 等）</p>
+</div>
+
+<div class="function-card">
+<h4>🎨 绘制 LCZ 参数</h4>
+<p>可视化参数图（例如，天空视角系数、粗糙度长度）</p>
+</div>
+
+</div>
+
+## 🚀 开始使用
+
+### 先决条件
+
+在使用通用功能之前，请确保您拥有：
+
+1. **LCZ4r 安装在 QGIS 中**（参见 [安装指南](https://bymaxanjos.github.io/LCZ4r/en/articles/instalation_lcz4r_qgis.html))
+2. **已安装并配置处理 R Provider** 插件
+3. **互联网连接**用于下载 LCZ 地图（首次使用）
+
+### 可用数据源
+
+|来源 |覆盖范围|功能|
+|--------|----------|----------|
+|全球 LCZ 地图 |全球 | `lcz_get_map()` |
+|欧洲 LCZ 地图 |欧洲 | `lcz_get_map_euro()` |
+|美国 LCZ 地图 |美国大陆 | `lcz_get_map_usa()` |
+| LCZ 发电机 |自定义城市 | `lcz_get_map_generator()` |
+
+## 🗺️ 分步教程
+
+### 第 1 步：下载 LCZ 地图
+
+<div class="step-container">
+<span class="step-number">1</span>
+<span class="step-title">下载您所在城市的 LCZ 地图</span>
+
+1. 在处理工具箱中，导航至 **R** → **LCZ4r General Functions**
+2. 双击**下载 LCZ 地图**
+3. 输入您的城市名称（例如“圣保罗”、“巴黎”、“东京”）
+4. 选择数据集（全球、欧洲或美国）
+5. 单击**运行**
+
+**输出**：您所在城市的 LCZ 分类栅格图层将添加到您的 QGIS 画布中。
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_1_1.png" alt="LCZ map of São Paulo" width="80%" />
+<p class="caption">示例：巴西圣保罗 LCZ 地图</p>
+</div>
+
+</div>
+
+### 第 2 步：可视化您的 LCZ 地图
+
+<div class="step-container">
+<span class="step-number">2</span>
+<span class="step-title">定制和可视化</span>
+
+1. 双击 **绘制 LCZ 地图**
+2. 选择您下载的 LCZ 地图图层
+3. 自定义颜色和标签（可选）
+4. 单击**运行**
+
+**输出**：可发布的 LCZ 地图，具有正确的图例和配色方案。
+
+</div>
+
+### 步骤 3：计算 LCZ 面积
+
+<div class="step-container">
+<span class="step-number">3</span>
+<span class="step-title">计算面积统计</span>
+
+1. 双击**计算 LCZ 面积**
+2. 选择您的 LCZ 地图图层
+3. 单击**运行**
+
+**输出**：显示每个 LCZ 类别的面积（平方公里）和百分比的表格：
+
+| LCZ级|面积（平方公里）|百分比 |
+|-----------|------------|------------|
+|紧凑型中层 | 45.2 | 45.2 12.3% |
+|开扬低层| 78.5 | 78.5 21.4% |
+|茂密的树木| 32.1 | 32.1 8.7% |
+| ... | ... | ... |
+
+</div>
+
+### 步骤 4：提取城市冠层参数
+
+<div class="step-container">
+<span class="step-number">4</span>
+<span class="step-title">检索 LCZ 参数</span>
+
+1. 双击**获取LCZ参数**
+2. 选择您的 LCZ 地图图层
+3. 选择感兴趣的参数（例如 SVFmean、BSFmax、HREmean）
+4. 单击**运行**
+
+**输出**：包含每个网格单元选定参数的栅格堆栈。
+
+**可用参数**：
+
+|代码|参数|单位|
+|------|-----------|------|
+| SVF 意思是 |天空视角| [0-1]|
+| BSF 意思是：建筑表面分数| [%] |
+| ISF 意思 |不透水表面分数| [%] |
+| HRE 意味着 |高度粗糙度元素| [米] |
+| z0 |粗糙度长度| [米] |
+
+</div>
+
+### 第 5 步：可视化参数图
+
+<div class="step-container">
+<span class="step-number">5</span>
+<span class="step-title">绘制 LCZ 参数图</span>
+
+1. 双击 **绘制 LCZ 参数**
+2. 选择参数栅格（来自步骤 4）
+3. 选择要可视化的参数（例如 SVFmean）
+4. 单击**运行**
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_general_4.png" alt="Sky View Factor map" width="80%" />
+<p class="caption">示例：天空视野系数地图显示天空能见度有限的区域（紧凑城市地区的 SVF 较低）</p>
+</div>
+
+</div>
+
+## 💡 高级提示
+
+### 使用 LCZ 生成器映射
+
+对于全球数据集中未涵盖的城市：
+
+1. 参观 [LCZ发电机平台](https://lcz-generator.rub.de/)
+2. 搜索您所在的城市或上传您自己的训练区
+3. 复制提交ID
+4. 使用 **从生成器下载 LCZ 地图**以及 ID
+
+### 自定义感兴趣区域 (ROI)
+
+分析特定区域：
+
+1. 在QGIS中创建一个多边形图层（您感兴趣的区域）
+2. 将**剪辑 LCZ 地图**与您的 ROI 图层一起使用
+3. 地图将被剪切到您的确切研究区域
+
+### 保存您的结果
+
+所有函数输出：
+- **栅格图层**：自动添加到 QGIS 画布
+- **表格**：显示在结果查看器中（可以导出为 CSV）
+- **绘图**：在 QGIS 界面中显示
+
+## 📊 示例工作流程
+
+以下是典型城市气候研究的完整示例工作流程：
+
+```r
+# 1. Download LCZ map for Berlin
+lcz_map <- lcz_get_map(city = "Berlin")
+
+# 2. Calculate area distribution
+lcz_areas <- lcz_cal_area(lcz_map)
+
+# 3. Extract parameters
+lcz_params <- lcz_get_parameters(lcz_map)
+
+# 4. Visualize Sky View Factor
+lcz_plot_parameters(lcz_params, iselect = "SVFmean")
+```
+
+## 🔧 故障排除
+
+|问题 |解决方案 |
+|-------|----------|
+| **地图未下载** |检查互联网连接；尝试替代数据集 |
+| **缺少 LCZ 课程** |确保城市位于数据集覆盖范围内 |
+| **处理速度慢** |降低空间分辨率或研究区域大小 |
+| **参数提取失败** |验证 LCZ 地图具有有效值 (1-17) |
+
+## 📚 更多资源
+
+- [LCZ4r 一般功能文档](https://bymaxanjos.github.io/LCZ4r/en/articles/Introd_genera_LCZ4r.html)
+- [LCZ分类系统](https://www.wudapt.org/lcz-generator/)
+- [Stewart & Oke (2012) - LCZ 框架](https://doi.org/10.1175/BAMS-D-11-00019.1)
+
+## 📬 有反馈或建议吗？
+
+我们欢迎您的反馈和建议！如果您有改进的想法或发现任何问题，请告诉我们。单击下面的按钮在我们的 GitHub 存储库上提交新问题。
+
+```{=html}
+<a href='https://github.com/ByMaxAnjos/QGIS-LCZ4r-Multilingual/issues/new' class="github-feedback-btn">
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+  </svg>
+  Open GitHub issue
+</a>
+```

@@ -1,0 +1,477 @@
+---
+title: "利用LCZ进行温度建模"
+author: "Max Anjos"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 4
+    toc_float:
+      collapsed: true
+      smooth_scroll: true
+    number_sections: true
+    theme: flatly
+    highlight: tango
+    code_folding: show
+    code_download: true
+    self_contained: false
+    df_print: paged
+---
+
+```{css, echo=FALSE}
+/* ── Variáveis de Cores Modernas ────────────────── */
+:root {
+  --primary-color: #1D9E75;
+  --dark-green: #0f3d2e;
+  --bg-light: #f8faf9;
+  --text-main: #1a1a1a;
+  --code-bg: #fdfdfd;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 18px;
+  color: var(--text-main);
+  background-color: #fff;
+}
+
+/* ── Títulos com Inter-spacing ─────────────────── */
+h1, h2, h3 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  color: var(--dark-green);
+}
+
+h1.title {
+  font-size: 2.8em;
+  border-bottom: 4px solid var(--primary-color);
+  padding-bottom: 10px;
+}
+
+/* ── Code Blocks Estilizados ────────────────────── */
+pre.r {
+  background-color: var(--code-bg);
+  border: 1px solid #e1e1e1;
+  border-left: 5px solid var(--primary-color) !important;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* ── Custom Callouts (Estilo Quarto) ────────────── */
+.callout {
+  padding: 1.2em;
+  margin: 1.5em 0;
+  border-radius: 0 8px 8px 0;
+  border-left: 6px solid;
+}
+
+.callout-note {
+  background-color: #f0f7ff;
+  border-color: #007bff;
+}
+
+.callout-tip {
+  background-color: #e8f5e9;
+  border-color: #1D9E75;
+}
+
+.callout-warning {
+  background-color: #fff3e0;
+  border-color: #ff9800;
+}
+
+/* ── Transições suaves no menu lateral ──────────── */
+.list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+/* ── Estilo para imagens ───────────────────────── */
+.figure img {
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+  margin-bottom: 10px;
+}
+
+.figure img:hover {
+  transform: scale(1.02);
+}
+
+.figure .caption {
+  font-size: 0.9em;
+  color: #666;
+  margin-top: 5px;
+  font-style: italic;
+}
+
+/* ── Botão GitHub aprimorado ───────────────────── */
+.github-feedback-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #24292e;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-family: sans-serif;
+  transition: background-color 0.2s;
+}
+
+.github-feedback-btn:hover {
+  background-color: #2c3e50;
+  color: white;
+  text-decoration: none;
+}
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo    = TRUE,
+  eval    = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  comment = "#>",
+  fig.align = "center",
+  out.width = "80%",
+  fig.retina = 2
+)
+```
+
+## 介绍
+
+了解城市环境内的温度变化对于气候研究至关重要，特别是在研究城市热岛 (UHI) 时。 LCZ4r 软件包提供了强大的功能，用于在当地气候带 (LCZ) 内创建插值地图和热异常分析。这 `lcz_interp_map()` 和 `lcz_anomaly_map()` 函数可用于生成气温的详细空间表示，使研究人员能够分析城市结构和土地利用对当地气候的影响。
+
+在本指南中，我们将演示如何使用这些函数对柏林 LCZ 的温度数据进行建模，包括：
+
+- 使用 LCZ 类别对气温进行**空间插值**
+- **热异常测绘**以识别热点和冷点
+- **不同时间尺度的时间分析**
+- **空间分辨率和可视化的定制选项**
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+library(LCZ4r)
+
+# 获取您所在城市的LCZ地图
+lcz_map <- lcz_get_map_euro(city = "Berlin")
+
+# 从LCZ4r加载样本数据
+data("lcz_data")
+```
+
+::: {.callout .callout-note}
+**了解 LCZ 空间插值**：
+
+LCZ4r 中的插值函数使用克里金法，这是一种考虑空间自相关来估计未测量位置的温度的地统计技术。通过整合 LCZ 类别，插值可以解释不同城市形态的热特性，从而产生更真实的温度分布。
+
+关键参数：
+- **sp.res**：以米为单位的空间分辨率（默认值：100 m）
+- **tp.res**：时间聚合频率（小时、天、月）
+- **by**：按时间或分类变量拆分分析
+:::
+
+## 插值气温
+
+这 `lcz_interp_map()` 函数根据 LCZ 类别生成插值空气温度图。这些函数应用插值技术来估计整个研究区域的温度。
+
+### 单小时地图插值
+
+以下示例演示如何生成特定日期和时间的温度图。
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 绘制2019年2月6日05:00的气温图
+my_interp_map <- lcz_interp_map(lcz_map,
+                                data_frame = lcz_data, 
+                                var = "airT", 
+                                station_id = "station",
+                                sp.res = 100, 
+                                tp.res = "hour",
+                                year = 2019, month = 2, day = 6, hour = 5)
+
+# 使用标题和标签自定义图表
+lcz_plot_interp(my_interp_map, 
+                title = "LCZ Air Temperature Distribution", 
+                subtitle = "Berlin - February 6, 2019 at 05:00",
+                caption = "Source: LCZ4r, 2024",
+                fill = "Temperature [°C]")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_modeling_1.png" alt="Single-hour temperature interpolation map for Berlin" width="80%" />
+<p class="caption">2019 年 2 月 6 日 05:00 柏林气温的空间插值。该地图显示了不同 LCZ 类别的温度变化，较温暖的区域通常对应于紧凑的建筑区域。</p>
+</div>
+
+### 一天内每小时插值
+
+这 `by = "hour"` 参数允许您生成特定日期的一系列每小时温度图，每个小时表示为一个单独的栅格图层。
+
+```{r eval=FALSE, warning=FALSE}
+# 生成全天每小时温度图
+my_interp_map <- lcz_interp_map(lcz_map,
+                                data_frame = lcz_data, 
+                                var = "airT", 
+                                station_id = "station",
+                                sp.res = 100, 
+                                tp.res = "hour",
+                                year = 2019, month = 2, day = 6,
+                                by = "hour")
+
+# 将栅格图层重命名为带有小时数字的名称
+names(my_interp_map) <- paste0("Hour ", 1:24)
+
+# 可视化所有小时地图
+lcz_plot_interp(my_interp_map, 
+                title = "Hourly LCZ Air Temperature Patterns", 
+                subtitle = "Berlin - February 6, 2019",
+                caption = "Source: LCZ4r, 2024",
+                fill = "Temperature [°C]")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_modeling_2.png" alt="Hourly temperature interpolation sequence showing diurnal patterns" width="80%" />
+<p class="caption">2019 年 2 月 6 日每小时的温度插值序列，显示了柏林 LCZ 级别温度模式的日变化。</p>
+</div>
+
+## 热异常插值
+
+这 `lcz_anomaly_map()` 函数突出显示了相对于 LCZ 平均条件的温度异常。异常图对于识别温度与典型值显着不同的区域特别有用，例如城市地区的热点地区。
+
+### 单日地图插值
+
+```{r eval=FALSE, warning=FALSE}
+# 生成特定日期的热异常图
+my_anomaly_map <- lcz_anomaly_map(lcz_map,
+                                  data_frame = lcz_data,
+                                  var = "airT", 
+                                  station_id = "station",
+                                  sp.res = 100, 
+                                  tp.res = "day",
+                                  year = 2019, month = 2, day = 6)
+
+# 绘制热异常图
+lcz_plot_interp(my_anomaly_map,
+                title = "LCZ Temperature Anomalies",
+                subtitle = "Berlin - Daily Anomalies on February 6, 2019",
+                caption = "Source: LCZ4r, 2024",
+                fill = "Temperature Anomaly [°C]",
+                palette = "bl_yl_rd")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_modeling_3.png" alt="Daily thermal anomaly map for Berlin" width="80%" />
+<p class="caption">2019 年 2 月 6 日柏林的热异常地图。红色区域表示温度高于城市平均水平（热点），而蓝色区域表示温度低于平均水平（冷点）。</p>
+</div>
+
+### 白天和夜间异常
+
+使用 `by = "daylight"` 论证将分析分为白天和夜间时段，揭示了昼夜循环之间的热模式如何变化。
+
+```{r eval=FALSE, warning=FALSE}
+# 将异常情况分为白天和夜间两类
+my_anomaly_map <- lcz_anomaly_map(lcz_map,
+                                  data_frame = lcz_data,
+                                  var = "airT", 
+                                  station_id = "station",
+                                  sp.res = 100, 
+                                  tp.res = "hour",
+                                  year = 2019, month = 2, day = 6,
+                                  by = "daylight")
+
+# 为了清晰起见，请重命名栅格图层。
+names(my_anomaly_map) <- c("Daytime", "Nighttime")
+
+# 绘制昼夜热异常图
+lcz_plot_interp(my_anomaly_map,
+                title = "LCZ Temperature Anomalies",
+                subtitle = "Berlin - Diurnal Cycle on February 6, 2019",
+                caption = "Source: LCZ4r, 2024",
+                fill = "Temperature Anomaly [°C]",
+                palette = "bl_yl_rd")
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_modeling_4.png" alt="Comparison of daytime and nighttime thermal anomalies" width="80%" />
+<p class="caption">2019 年 2 月 6 日白天和夜间热异常的比较。这揭示了城市白天和夜间热模式的差异，城市热岛通常在日落后加强。</p>
+</div>
+
+## 高级建模选项
+
+### 季节性温度模式
+
+您可以生成不同季节的温度图以了解季节变化：
+
+```{r eval=FALSE, warning=FALSE}
+# 生成 2019 年季节性温度图
+seasonal_maps <- lcz_interp_map(lcz_map,
+                                data_frame = lcz_data, 
+                                var = "airT", 
+                                station_id = "station",
+                                sp.res = 100, 
+                                tp.res = "day",
+                                year = 2019,
+                                by = "season")
+
+# 可视化季节性模式
+lcz_plot_interp(seasonal_maps,
+                title = "Seasonal LCZ Air Temperature Patterns",
+                subtitle = "Berlin - 2019",
+                caption = "Source: LCZ4r, 2024",
+                fill = "Temperature [°C]")
+```
+
+### 自定义空间分辨率
+
+调整空间分辨率以满足您的分析需求：
+
+```{r eval=FALSE, warning=FALSE}
+# 高分辨率（50米）用于详细分析
+high_res_map <- lcz_interp_map(lcz_map,
+                               data_frame = lcz_data, 
+                               var = "airT", 
+                               station_id = "station",
+                               sp.res = 50,  # Higher resolution
+                               tp.res = "hour",
+                               year = 2019, month = 7, day = 15, hour = 14)
+
+# 较低分辨率（500米）用于区域概览
+low_res_map <- lcz_interp_map(lcz_map,
+                              data_frame = lcz_data, 
+                              var = "airT", 
+                              station_id = "station",
+                              sp.res = 500,  # Lower resolution
+                              tp.res = "hour",
+                              year = 2019, month = 7, day = 15, hour = 14)
+```
+
+::: {.callout .callout-tip}
+**提示**：较高的空间分辨率（较低的 sp.res 值）可生成更详细的地图，但需要更多的计算资源。从默认的 100 m 分辨率开始，然后根据您的具体需求和可用的计算能力进行调整。
+:::
+
+### 多个时间步长
+
+生成多个日期的地图来分析时间变化：
+
+```{r eval=FALSE, warning=FALSE}
+# 生成一年中特定日期的地图
+selected_dates <- lcz_interp_map(lcz_map,
+                                 data_frame = lcz_data, 
+                                 var = "airT", 
+                                 station_id = "station",
+                                 sp.res = 100, 
+                                 tp.res = "day",
+                                 year = 2019, 
+                                 month = c(1, 4, 7, 10), 
+                                 day = 15)
+
+# 可视化季节变化
+lcz_plot_interp(selected_dates,
+                title = "Seasonal Temperature Progression",
+                subtitle = "Berlin - 2019 (15th of Jan, Apr, Jul, Oct)",
+                caption = "Source: LCZ4r, 2024",
+                fill = "Temperature [°C]")
+```
+
+## 使用光栅输出
+
+插值函数返回可以进一步分析的栅格对象：
+
+### 访问栅格值
+
+```{r eval=FALSE, warning=FALSE}
+# 提取栅格数据进行统计分析
+library(raster)
+
+# 获取特定位置的温度值
+temperature_at_point <- extract(my_interp_map, 
+                                cbind(longitude, latitude))
+
+# 计算研究区域的汇总统计数据
+mean_temperature <- cellStats(my_interp_map, stat = "mean")
+max_temperature <- cellStats(my_interp_map, stat = "max")
+min_temperature <- cellStats(my_interp_map, stat = "min")
+
+# 按LCZ分类计算温度
+lcz_values <- extract(my_interp_map, lcz_map)
+```
+
+### 导出栅格
+
+```{r eval=FALSE, warning=FALSE}
+# 将栅格数据另存为 GeoTIFF 格式，以便在其他软件中使用。
+writeRaster(my_interp_map, 
+            filename = "berlin_temperature_20190206_05h.tif", 
+            format = "GTiff",
+            overwrite = TRUE)
+
+# 将多个栅格数据保存在堆栈中
+writeRaster(my_interp_map, 
+            filename = "berlin_hourly_temperatures.tif", 
+            bylayer = TRUE,
+            suffix = "names",
+            format = "GTiff")
+```
+
+## 实际应用
+
+使用 LCZ 进行温度建模有许多实际应用：
+
+### 1.城市热岛评估
+确定持续高温的区域，优先考虑城市降温干预措施。
+
+### 2. 热浪预警
+使用插值温度图来预测极端高温事件期间风险最高的区域。
+
+### 3. 城市规划支持
+为有关绿色基础设施布局、建筑密度和城市设计的决策提供信息。
+
+### 4. 气候适应规划
+对未来场景进行建模以评估所提出的缓解策略的有效性。
+
+### 5. 公共卫生分析
+确定气温热点地区的弱势群体，以实施有针对性的健康干预措施。
+
+## 参数汇总
+
+以下是插值函数中使用的主要参数的快速参考：
+
+|参数|描述 |选项|
+|-----------|-------------|---------|
+| `sp.res` |空间分辨率（米）|数字（例如 100、250、500）|
+| `tp.res` |时间聚合频率| “时”、“日”、“月”、“年”|
+| `by` |数据分割方式| “小时”、“季节”、“月份”、“日光”等 |
+| `palette` |可视化调色板| “bl_yl_rd”、“viridis”、“岩浆”等 |
+| `fill` |彩条标签|文字说明|
+| `title` |情节标题|文字|
+| `subtitle` |剧情副标题|文字|
+| `caption` |情节标题|文字|
+
+## 性能考虑因素
+
+::: {.callout .callout-警告}
+**重要说明**：
+
+- **计算资源**：高分辨率地图（sp.res < 50 m）需要大量内存和处理时间
+- **数据密度**：插值精度取决于监测站的数量和分布
+- **时间分辨率**：长时间的每小时地图可能会生成较大的文件大小
+- **LCZ 表示**：确保您的研究区域具有所有 LCZ 类别的充分代表性，以实现准确插值
+:::
+
+---
+
+## 有反馈或建议吗？
+
+您有改进的想法或者发现错误吗？我们很乐意听取您的意见！单击下面的按钮创建新问题 (GitHub) 并直接与我们分享您的反馈或建议。
+
+```{=html}
+<a href='https://github.com/ByMaxAnjos/LCZ4r/issues/new' class="github-feedback-btn">
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+  </svg>
+  打开 GitHub 问题
+</a>
+```

@@ -1,0 +1,565 @@
+---
+title: "利用众包气温数据和LCZ4r分析城市热岛效应"
+author: "Max Anjos"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_depth: 4
+    toc_float:
+      collapsed: true
+      smooth_scroll: true
+    number_sections: true
+    theme: flatly
+    highlight: tango
+    code_folding: show
+    code_download: true
+    self_contained: false
+    df_print: paged
+---
+
+```{css, echo=FALSE}
+/* ── Variáveis de Cores Modernas ────────────────── */
+:root {
+  --primary-color: #1D9E75;
+  --dark-green: #0f3d2e;
+  --bg-light: #f8faf9;
+  --text-main: #1a1a1a;
+  --code-bg: #fdfdfd;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 18px;
+  color: var(--text-main);
+  background-color: #fff;
+}
+
+/* ── Títulos com Inter-spacing ─────────────────── */
+h1, h2, h3 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  color: var(--dark-green);
+}
+
+h1.title {
+  font-size: 2.8em;
+  border-bottom: 4px solid var(--primary-color);
+  padding-bottom: 10px;
+}
+
+/* ── Code Blocks Estilizados ────────────────────── */
+pre.r {
+  background-color: var(--code-bg);
+  border: 1px solid #e1e1e1;
+  border-left: 5px solid var(--primary-color) !important;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+/* ── Custom Callouts (Estilo Quarto) ────────────── */
+.callout {
+  padding: 1.2em;
+  margin: 1.5em 0;
+  border-radius: 0 8px 8px 0;
+  border-left: 6px solid;
+}
+
+.callout-note {
+  background-color: #f0f7ff;
+  border-color: #007bff;
+}
+
+.callout-tip {
+  background-color: #e8f5e9;
+  border-color: #1D9E75;
+}
+
+.callout-warning {
+  background-color: #fff3e0;
+  border-color: #ff9800;
+}
+
+/* ── Transições suaves no menu lateral ──────────── */
+.list-group-item.active, .list-group-item.active:focus, .list-group-item.active:hover {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+/* ── Estilo para imagens ───────────────────────── */
+.figure img {
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+  margin-bottom: 10px;
+}
+
+.figure img:hover {
+  transform: scale(1.02);
+}
+
+.figure .caption {
+  font-size: 0.9em;
+  color: #666;
+  margin-top: 5px;
+  font-style: italic;
+}
+
+/* ── Botão GitHub aprimorado ───────────────────── */
+.github-feedback-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #24292e;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-family: sans-serif;
+  transition: background-color 0.2s;
+}
+
+.github-feedback-btn:hover {
+  background-color: #2c3e50;
+  color: white;
+  text-decoration: none;
+}
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo    = TRUE,
+  eval    = FALSE,
+  warning = FALSE,
+  message = FALSE,
+  cache = FALSE,
+  comment = "#>",
+  fig.align = "center",
+  out.width = "80%",
+  fig.retina = 2
+)
+```
+
+## 介绍
+
+城市热岛 (UHI) 是城市中的一个严重环境问题，城市地区的气温高于农村地区。本案例研究演示了如何使用来自公民气象站 (CWS) 的众包气温 (Tair) 数据和 R 中的 LCZ4r 软件包来分析 UHI。我们重点关注 2023 年 5 月的每小时 Tair 数据，由德国柏林的 Netatmo CWS 收集，可通过 [R 中的 CrowdQCplus 包](https://github.com/dafenner/CrowdQCplus).
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 安装并加载必要的软件包
+if (!require("pacman")) install.packages("pacman")
+install.packages("sf", type = "binary")
+pacman::p_load(remotes, dplyr, tmap, ggplot2, devtools, data.table)
+
+library(dplyr)   # 用于数据处理
+library(sf)      # 用于向量数据处理
+library(tmap)    # 用于交互式地图可视化
+library(ggplot2) # 用于数据可视化
+library(data.table)
+
+# 安装 CrowdQCplus 以进行 CWS 数据质量控制
+if (!require("CrowdQCplus")) {
+  remotes::install_github("dafenner/CrowdQCplus")
+}
+library(CrowdQCplus)
+```
+
+::: {.callout .callout-note}
+**为什么要众包数据？**
+
+众包气象站提供前所未有的城市温度数据空间覆盖：
+- **高密度**：全市有数百或数千个车站
+- **实时数据**：每小时或每小时一次的测量
+- **具有成本效益**：利用现有的公民基础设施
+- **补充**：填补官方监测网络的空白
+
+然而，仔细的质量控制对于确保数据可靠性至关重要。
+:::
+
+## 数据集准备
+
+### 加载柏林 LCZ 地图
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+
+# 使用 LCZ 生成器平台获取柏林的 LCZ 地图
+lcz_map <- LCZ4r::lcz_get_map_generator(ID = "8576bde60bfe774e335190f2e8fdd125dd9f4299")
+
+# 可视化LCZ图
+LCZ4r::lcz_plot_map(lcz_map)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_modeling_crows_1.png" alt="LCZ map of Berlin showing the spatial distribution of Local Climate Zones" width="80%" />
+<p class="caption">柏林 LCZ 地图显示当地气候带的空间分布。该地图用作分析众包温度数据的空间框架。</p>
+</div>
+
+### 加载和探索 CWS 数据
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 从 CrowdQCplus 软件包加载柏林的 CWS 样本数据
+data(cqcp_cws_data)
+
+# 查看数据集的结构
+head(cqcp_cws_data)
+
+# 汇总统计
+summary(cqcp_cws_data)
+```
+
+### 可视化 CWS 站点分布
+
+```{r eval=FALSE, message=FALSE, warning=FALSE, out.width = '100%', fig.align='center'}
+# 将CWS站点转换为sf对象以进行空间分析
+shp_stations <- cqcp_cws_data %>%
+  distinct(lon, lat, .keep_all = TRUE) %>%
+  st_as_sf(coords = c("lon", "lat"), crs = 4326)
+
+# 在交互式地图上可视化 CWS 站点
+tmap_mode("view")
+qtm(shp_stations, dots.col = "blue", dots.size = 0.3,
+    title = "Citizen Weather Stations in Berlin")
+```
+
+## CWS 数据的质量控制
+
+为了确保数据的可靠性，我们采用了由 [芬纳等人。 (2021)](https://www.frontiersin.org/journals/environmental-science/articles/10.3389/fenvs.2021.720747/full) 使用 CrowdQCplus 包。此过程可以过滤掉统计上不可信的读数，从而提高数据准确性。
+
+### QC流程步骤：
+
+1. **数据填充**：确保时间序列一致
+2. **输入验证**：检查数据结构
+3. **质量控制**：应用统计过滤器来识别异常值
+4. **输出统计数据**：总结 QC 结果
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 执行数据填充和输入检查
+data_crows <- cqcp_padding(cqcp_cws_data)
+data_check <- cqcp_check_input(data_crows)
+
+# 应用质量控制
+if (data_check) {
+  data_qc <- cqcp_qcCWS(data_crows)  # QC process
+}
+
+# 查看质量控制输出
+head(data_qc)
+
+# 显示 QC 输出统计信息
+n_data_qc <- cqcp_output_statistics(data_qc)
+print(n_data_qc)
+```
+
+::: {.callout .callout-tip}
+**了解 QC 输出**：
+
+应用 QC 后，会生成多个列：
+- **ta_int**：通过所有质量控制步骤的温度值
+- **qc_flag**：指示数据质量状态的质量控制标志
+- **qa_flag**：用于额外验证的质量保证标志
+
+对于气温插值，我们使用 `ta_int` 列，代表最可靠的温度估计。
+:::
+
+## LCZ 的昼夜周期分析
+
+我们检查了不同 LCZ 特定日期（2023 年 5 月 1 日）气温的昼夜循环，以了解城市形态如何影响每日温度模式。
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 分析LCZ各类别中的日温度变化
+cws_ts <- lcz_ts(lcz_map, 
+                 data_frame = data_qc,
+                 var = "ta_int", 
+                 station_id = "p_id",
+                 time.freq = "hour",
+                 extract.method = "two.step",
+                 year = 2023, month = 5, day = 1,
+                 by = "daylight")
+
+# 显示时间序列图
+cws_ts
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_modeling_crows_2.png" alt="Diurnal temperature cycle across different LCZ classes in Berlin" width="80%" />
+<p class="caption">2023 年 5 月 1 日，柏林不同 LCZ 等级的昼夜温度循环。请注意，与植被和开放区域相比，紧凑的建筑区域全天保持更高的温度。</p>
+</div>
+
+## 城市热岛分析
+
+### UHI 强度时间序列
+
+我们使用 LCZ 方法计算了 2023 年 5 月每小时的 UHI 强度，该方法根据 LCZ 类别自动选择城市和农村温度。
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 计算2023年5月的城市热岛强度
+cws_uhi <- lcz_uhi_intensity(lcz_map, 
+                             data_frame = data_qc,
+                             var = "ta_int", 
+                             station_id = "p_id",
+                             time.freq = "hour",
+                             extract.method = "two.step",
+                             year = 2023, month = 5,
+                             method = "LCZ")
+
+# 显示城市热岛强度时间序列
+cws_uhi
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_modeling_crows_5.png" alt="UHI intensity time series for Berlin in May 2023" width="80%" />
+<p class="caption">2023年5月柏林的UHI强度时间序列。观测到的最高UHI强度为5月13日16:00 3.7°C，表明城市变暖效应显着。</p>
+</div>
+
+### 城市热岛空间测绘
+
+我们使用基于 LCZ 的空间插值对 2023 年 5 月 13 日 16:00（强度最大的时间）的 UHI 进行了建模。
+
+#### 温度图
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 绘制城市热岛效应高峰期的气温图
+my_interp_map <- lcz_interp_map(
+  lcz_map,
+  data_frame = data_qc,
+  var = "ta_int",
+  station_id = "p_id",
+  sp.res = 100,
+  tp.res = "hour",
+  year = 2023, month = 5, day = 13, hour = 16
+)
+
+# 使用标题和标签自定义图表
+lcz_plot_interp(
+  my_interp_map,
+  title = "Thermal Field - CWS Data",
+  subtitle = "Berlin - May 13, 2023 at 16:00",
+  caption = "Source: LCZ4r, 2024",
+  fill = "Temperature [°C]"
+)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_modeling_crows_6.png" alt="Spatial distribution of air temperature during peak UHI event" width="80%" />
+<p class="caption">2023年5月13日16:00城市热岛高峰事件期间气温空间分布。该地图揭示了不同的热模式，紧凑的城市地区温度较高，植被和周边地区温度较低。</p>
+</div>
+
+#### 热异常图
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 针对同一事件生成热异常图
+my_anomaly_map <- lcz_anomaly_map(
+  lcz_map,
+  data_frame = data_qc,
+  var = "ta_int",
+  station_id = "p_id",
+  sp.res = 100,
+  tp.res = "hour",
+  year = 2023, month = 5, day = 13, hour = 16
+)
+
+# 自定义异常图
+lcz_plot_interp(
+  my_anomaly_map,
+  title = "Thermal Anomaly Field - CWS Data",
+  subtitle = "Berlin - May 13, 2023 at 16:00",
+  caption = "Source: LCZ4r, 2024",
+  fill = "Temperature Anomaly [°C]", 
+  palette = "bl_yl_rd"
+)
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_modeling_crows_7.png" alt="Thermal anomaly map showing deviations from urban average" width="80%" />
+<p class="caption">显示与城市平均水平偏差的热异常图。红色区域表示温度高于平均水平（热点），而蓝色区域表示温度低于平均水平（冷点）。</p>
+</div>
+
+## UHI地图精度评估
+
+我们使用留一交叉验证 (LOOCV) 和计算指标（如 RMSE、MAE 和 sMAPE）评估插值精度。
+
+### 交叉验证
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 评估插值精度
+df_eval <- lcz_interp_eval(
+  lcz_map,
+  data_frame = data_qc,
+  var = "ta_int",
+  station_id = "p_id",
+  year = 2023, month = 5, day = 13, 
+  LOOCV = TRUE,
+  extract.method = "two.step",
+  sp.res = 500,
+  tp.res = "hour",
+  vg.model = "Sph",
+  LCZinterp = TRUE
+)
+```
+
+### LCZ 类别的评估指标
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 按LCZ类计算评估指标
+df_eval_metrics <- df_eval %>%
+  group_by(lcz) %>%
+  summarise(
+    n_obs = n(),                                      # Number of observations
+    rmse = sqrt(mean((observed - predicted)^2)),      # RMSE
+    mae = mean(abs(observed - predicted)),            # MAE
+    smape = mean(2 * abs(observed - predicted) / 
+                (abs(observed) + abs(predicted)) * 100) # sMAPE
+  ) %>%
+  arrange(rmse)
+
+# 显示指标
+df_eval_metrics
+```
+
+### 相关性分析
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 相关图，包含回归方程和 R²
+p1 <- ggplot(df_eval, aes(x = observed, y = predicted)) +
+  geom_point(alpha = 0.3, color = "#1D9E75", size = 1) +
+  geom_smooth(method = "lm", color = "red", se = FALSE, linewidth = 1) +
+  stat_density2d(aes(fill = after_stat(level)), geom = "polygon", alpha = 0.3) +
+  scale_fill_viridis_c(option = "viridis", name = "Density") +
+  stat_poly_eq(
+    aes(label = paste(..eq.label.., ..rr.label.., sep = "~~~")),
+    formula = y ~ x,
+    parse = TRUE,
+    label.x.npc = "left",
+    label.y.npc = "top",
+    size = 4
+  ) +
+  labs(
+    title = "Observed vs. Predicted Temperatures",
+    x = "Observed Temperature [°C]",
+    y = "Predicted Temperature [°C]"
+  ) +
+  theme_minimal(base_size = 14) +
+  theme(
+    plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+    axis.title = element_text(face = "bold")
+  )
+
+# 添加边际直方图
+p1_with_marginals <- ggMarginal(p1, 
+                                 type = "histogram", 
+                                 fill = "#1D9E75", 
+                                 bins = 30,
+                                 alpha = 0.6)
+
+# 打印图表
+p1_with_marginals
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_modeling_crows_8.png" alt="Correlation between observed and predicted temperatures from CWS data" width="80%" />
+<p class="caption">众包数据观测到的温度和预测的温度之间的相关性。高 R² 值表明模型性能良好，证明了 QC 后众包数据的可靠性。</p>
+</div>
+
+### 按 LCZ 类别进行残差分析
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 按LCZ类别划分的残差图
+p2 <- ggplot(df_eval, aes(x = observed, y = residual)) +
+  geom_point(alpha = 0.3, color = "darkgreen", size = 1) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red", linewidth = 0.8) +
+  geom_smooth(method = "loess", color = "blue", se = FALSE, linewidth = 1) +
+  stat_density2d(aes(fill = after_stat(level)), geom = "polygon", alpha = 0.3) +
+  scale_fill_viridis_c(option = "plasma", direction = -1, name = "Density") +
+  facet_wrap(~ lcz, scales = "free", ncol = 3) +
+  labs(
+    title = "Residuals by LCZ Class",
+    x = "Observed Temperature [°C]",
+    y = "Residuals [°C]"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(size = 16, face = "bold", hjust = 0.5),
+    axis.title = element_text(face = "bold"),
+    strip.text = element_text(size = 12, face = "bold"),
+    legend.position = "right",
+    panel.grid.major = element_line(color = "gray90", linetype = "dotted"),
+    panel.grid.minor = element_blank()
+  )
+
+# 打印图表
+p2
+```
+
+<div class="figure" style="text-align: center">
+<img src="https://raw.githubusercontent.com/ByMaxAnjos/LCZ4r/main/inst/figures/fig_local_modeling_crows_9.png" alt="Residual analysis by LCZ class for crowdsourced data" width="80%" />
+<p class="caption">用于众包数据评估的 LCZ 类残差。零附近的随机散布表明模型在不同的城市形态中表现良好。</p>
+</div>
+
+## 主要发现和讨论
+
+### 结果总结
+
+|公制|价值|解读|
+|--------|-------|----------------|
+|峰值热岛强度 | 3.7°C |显着的城市变暖效应|
+|总体 RMSE | ~0.8-1.2°C |预测准确度好 |
+|最佳表现 LCZ |开扬低层|在训练数据中具有良好的代表性 |
+|具有挑战性的 LCZ |紧凑型中层 |更高的空间变异性 |
+
+### 众包数据的优势
+
+1. **高空间分辨率**：数百个站点提供详细的城市热模式
+2. **实时监控**：捕捉快速温度变化
+3. **成本效益**：利用现有的公民基础设施
+4. **补充**：填补官方监测网络的空白
+
+### 质量控制优势
+
+CrowdQCplus QC 流程成功：
+- 识别并删除统计上不可信的读数
+- 降低温度信号中的噪声
+- 改善观测值和预测值之间的相关性
+- 增强的空间模式检测
+
+### 实际应用
+
+1. **热浪预警**：识别极端高温事件期间风险最高的区域
+2. **城市规划**：根据热模式告知绿色基础设施布局
+3. **气候适应**：评估缓解策略的有效性
+4. **公共卫生**：针对高温脆弱地区的干预措施
+
+## 保存结果
+
+```{r eval=FALSE, message=FALSE, warning=FALSE}
+# 将评估指标保存到 CSV 文件
+write.csv(df_eval_metrics, 
+          file = "cws_uhi_metrics_may2023.csv", 
+          row.names = FALSE)
+
+# 保存完整评估数据框
+write.csv(df_eval, 
+          file = "cws_uhi_evaluation_may2023.csv", 
+          row.names = FALSE)
+
+# 保存地块
+ggsave("cws_correlation_plot.png", p1_with_marginals, width = 10, height = 8, dpi = 300)
+ggsave("cws_residuals_by_lcz.png", p2, width = 12, height = 10, dpi = 300)
+```
+
+---
+
+## 有反馈或建议吗？
+
+您有改进的想法或者发现错误吗？我们很乐意听取您的意见！单击下面的按钮创建新问题 (GitHub) 并直接与我们分享您的反馈或建议。
+
+```{=html}
+<a href='https://github.com/ByMaxAnjos/LCZ4r/issues/new' class="github-feedback-btn">
+  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/>
+  </svg>
+  打开 GitHub 问题
+</a>
+```
