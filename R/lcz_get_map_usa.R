@@ -55,7 +55,7 @@ lcz_get_map_usa <- function(city = NULL, roi = NULL, isave_map = FALSE, isave_us
     }
     options(warn = -1)
     # Download the usapean LCZ map
-    lcz_url <- "https://zenodo.org/records/10835692/files/CONUS_LCZ_map_NLCD_v1.0_epsg4326.tif?download=1"
+    lcz_url <- "https://zenodo.org/records/10835692/files/CONUS_LCZ_map_NLCD_v1.0_epsg4326.tif"
     lcz_download <- terra::rast(base::paste0("/vsicurl/", lcz_url))
 
     if (base::is.null(lcz_download)) {
@@ -108,7 +108,7 @@ lcz_get_map_usa <- function(city = NULL, roi = NULL, isave_map = FALSE, isave_us
     return(lcz_ras)
   } else {
     # Download the USA LCZ map
-    lcz_url <- "https://zenodo.org/records/10835692/files/CONUS_LCZ_map_NLCD_v1.0_epsg4326.tif?download=1"
+    lcz_url <- "https://zenodo.org/records/10835692/files/CONUS_LCZ_map_NLCD_v1.0_epsg4326.tif"
     lcz_download <- terra::rast(base::paste0("/vsicurl/", lcz_url))
     roi_crs <- roi %>%
       sf::st_as_sf() %>%

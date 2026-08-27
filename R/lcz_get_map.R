@@ -59,7 +59,7 @@ lcz_get_map <- function(city = NULL, roi = NULL, isave_map = FALSE, isave_global
     }
     options(warn = -1)
     # Download the LCZ global map
-    lcz_url <- "https://zenodo.org/records/8419340/files/lcz_filter_v3.tif?download=1"
+    lcz_url <- "https://zenodo.org/records/8419340/files/lcz_filter_v3.tif"
     lcz_download <- terra::rast(base::paste0("/vsicurl/", lcz_url))
 
     if (base::is.null(lcz_download)) {
@@ -112,7 +112,7 @@ lcz_get_map <- function(city = NULL, roi = NULL, isave_map = FALSE, isave_global
     return(lcz_ras)
   } else {
     # Download the LCZ global map from https://zenodo.org/record/6364594/files/lcz_filter_v1.tif?download=1
-    lcz_url <- "https://zenodo.org/records/8419340/files/lcz_filter_v3.tif?download=1"
+    lcz_url <- "https://zenodo.org/records/8419340/files/lcz_filter_v3.tif"
     lcz_download <- terra::rast(base::paste0("/vsicurl/", lcz_url))
     roi_crs <- roi %>%
       sf::st_as_sf() %>%

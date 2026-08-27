@@ -55,7 +55,7 @@ lcz_get_map_euro <- function(city = NULL, roi = NULL, isave_map = FALSE, isave_e
     }
     options(warn = -1)
     # Download the European LCZ map
-    lcz_url <- "https://zenodo.org/records/10835692/files/EU_LCZ_map.tiff?download=1"
+    lcz_url <- "https://zenodo.org/records/10835692/files/EU_LCZ_map.tiff"
     lcz_download <- terra::rast(base::paste0("/vsicurl/", lcz_url))
 
     if (base::is.null(lcz_download)) {
@@ -108,7 +108,7 @@ lcz_get_map_euro <- function(city = NULL, roi = NULL, isave_map = FALSE, isave_e
     return(lcz_ras)
   } else {
     # Download the European LCZ map
-    lcz_url <- "https://zenodo.org/records/10835692/files/EU_LCZ_map.tiff?download=1"
+    lcz_url <- "https://zenodo.org/records/10835692/files/EU_LCZ_map.tiff"
     lcz_download <- terra::rast(base::paste0("/vsicurl/", lcz_url))
     roi_crs <- roi %>%
       sf::st_as_sf() %>%
