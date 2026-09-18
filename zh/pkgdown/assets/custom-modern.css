@@ -1,0 +1,313 @@
+/*
+ * Climate Fresh Theme for pkgdown - climasus4r
+ * Inspired by Tailwind CSS, Vercel, and Stripe Docs
+ */
+
+/* --- Fonts --- */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap");
+
+/* --- Variables --- */
+:root {
+    --bs-body-bg: #f8fafc; /* slate-50 */
+    --bs-body-color: #1e293b; /* slate-900 */
+    --bs-primary: #10b981; /* emerald-500 */
+    --bs-primary-rgb: 16, 185, 129;
+    --bs-secondary: #3b82f6; /* blue-500 */
+    --bs-link-color: #10b981;
+    --bs-link-hover-color: #059669; /* emerald-600 */
+    --code-bg: #f1f5f9; /* slate-100 */
+    --border-color: #e2e8f0; /* slate-200 */
+    --text-muted: #64748b; /* slate-500 */
+}
+
+/* --- General Body & Typography --- */
+body {
+    font-family: "Inter", sans-serif;
+    background-color: var(--bs-body-bg);
+    color: var(--bs-body-color);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 700;
+    color: #0f172a; /* slate-950 */
+}
+
+/* --- Navbar --- */
+.navbar {
+    background: rgba(255, 255, 255, 0.8) !important;
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.25rem;
+    background: linear-gradient(135deg, var(--bs-primary) 0%, var(--bs-secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.nav-link {
+    color: #475569 !important; /* slate-600 */
+    font-weight: 500;
+    transition: color 0.2s ease-in-out;
+}
+
+.nav-link:hover, .nav-link.active {
+    color: var(--bs-primary) !important;
+}
+
+/* --- Main Content & Sidebar --- */
+.contents {
+    background-color: transparent;
+    border-left: 1px solid var(--border-color);
+}
+
+.sidebar nav[data-bs-spy="scroll"] .nav-link {
+    color: var(--text-muted);
+    border-left: 1px solid transparent;
+    transition: all 0.2s ease-in-out;
+}
+
+.sidebar nav[data-bs-spy="scroll"] .nav-link.active, 
+.sidebar nav[data-bs-spy="scroll"] .nav-link:hover {
+    color: var(--bs-primary);
+    border-left-color: var(--bs-primary);
+    background-color: rgba(16, 185, 129, 0.05);
+    transform: translateX(4px);
+}
+
+/* --- Code Blocks --- */
+pre, code, kbd, samp {
+    font-family: "Fira Code", monospace;
+}
+
+pre {
+    background-color: var(--code-bg) !important;
+    border: 1px solid var(--border-color);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+/* Syntax Highlighting - Vercel/Stripe inspired */
+.sourceCode .kw { color: #be185d; } /* Keywords (pink) */
+.sourceCode .dt { color: #059669; } /* Data types (emerald) */
+.sourceCode .dv { color: #d97706; } /* Decimal values (amber) */
+.sourceCode .bn { color: #d97706; } /* Base-n values */
+.sourceCode .fl { color: #d97706; } /* Float values */
+.sourceCode .ch { color: #2563eb; } /* Char values (blue) */
+.sourceCode .st { color: #2563eb; } /* String values */
+.sourceCode .co { color: #64748b; } /* Comments (slate) */
+.sourceCode .al { color: #dc2626; } /* Alerts (red) */
+.sourceCode .fu { color: #7c3aed; } /* Functions (violet) */
+.sourceCode .er { color: #dc2626; } /* Errors */
+.sourceCode .va { color: #1e293b; } /* Variables (slate) */
+.sourceCode .cf { color: #be185d; } /* Control flow */
+.source-line { color: #94a3b8; } /* Line numbers */
+
+/* --- Tables --- */
+.table {
+    --bs-table-bg: #fff;
+    --bs-table-border-color: var(--border-color);
+    --bs-table-striped-bg: #f8fafc; /* slate-50 */
+    --bs-table-hover-bg: #f1f5f9; /* slate-100 */
+    color: var(--bs-body-color);
+    border-radius: 0.75rem;
+    overflow: hidden;
+}
+
+.table th {
+    background-color: #f8fafc;
+    font-weight: 600;
+}
+
+/* --- Links & Buttons --- */
+a {
+    color: var(--bs-link-color);
+    text-decoration: none;
+    transition: color 0.2s ease-in-out;
+}
+
+a:hover {
+    color: var(--bs-link-hover-color);
+    text-decoration: none;
+}
+
+.btn-primary {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+    color: #fff;
+    font-weight: 600;
+    transition: all 0.2s ease-in-out;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+}
+
+.btn-primary:hover {
+    background-color: #059669;
+    border-color: #059669;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.06);
+}
+
+/* --- Other Elements --- */
+.section h1, .section h2, .section h3, .section h4 {
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+
+blockquote {
+    border-left: 4px solid var(--bs-primary);
+    background-color: rgba(16, 185, 129, 0.05);
+    padding: 1rem 1.5rem;
+    color: #334155; /* slate-700 */
+    border-radius: 0 0.5rem 0.5rem 0;
+}
+
+/* =========================
+   🧠 AI PERSONALIZATION LAYER
+   ========================= */
+
+[data-user="beginner"] {
+    --font-scale: 1.05;
+    --spacing-scale: 1.1;
+}
+
+[data-user="expert"] {
+    --font-scale: 0.95;
+    --spacing-scale: 0.9;
+}
+
+body {
+    font-size: calc(1rem * var(--font-scale, 1));
+}
+
+.container {
+    padding: calc(1rem * var(--spacing-scale, 1));
+}
+
+/* =========================
+   🚀 HERO SECTION
+   ========================= */
+
+.hero {
+    padding: 6rem 1rem 4rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+
+    background: linear-gradient(
+        135deg,
+        var(--primary),
+        var(--secondary),
+        var(--accent)
+    );
+    background-size: 200% 200%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    animation: gradientShift 6s ease infinite;
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.hero p {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    max-width: 720px;
+    margin: 1rem auto;
+}
+
+/* =========================
+   🧊 DEPTH SYSTEM
+   ========================= */
+
+.layer-1 { box-shadow: var(--shadow-sm); }
+.layer-2 { box-shadow: var(--shadow-md); }
+.layer-3 { box-shadow: var(--shadow-lg); }
+.layer-4 { box-shadow: var(--shadow-xl); }
+
+.glow {
+    box-shadow: 0 0 40px var(--primary-glow);
+}
+
+/* =========================
+   ⚡ SIGNATURE MOTION
+   ========================= */
+
+.interactive {
+    transition: 
+        transform var(--transition-base),
+        box-shadow var(--transition-base),
+        filter var(--transition-base);
+}
+
+.interactive:hover {
+    transform: translateY(-6px) scale(1.01);
+    filter: brightness(1.05);
+}
+
+/* Entrada mais premium */
+@keyframes smoothFade {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.section {
+    animation: smoothFade 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+
+/* =========================
+   🤖 AI FEEDBACK STATES
+   ========================= */
+
+[data-state="loading"] {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+[data-state="success"] {
+    animation: successPulse 0.4s ease;
+}
+
+@keyframes successPulse {
+    0% { box-shadow: 0 0 0 0 var(--success); }
+    100% { box-shadow: 0 0 0 10px transparent; }
+}
+
+/* =========================
+   ✍️ EDITORIAL TYPOGRAPHY
+   ========================= */
+
+h1, h2, h3 {
+    line-height: 1.2;
+}
+
+h2 {
+    font-size: 2rem;
+    margin-top: 3rem;
+}
+
+p {
+    max-width: 70ch;
+}
