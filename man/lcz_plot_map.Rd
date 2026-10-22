@@ -33,19 +33,11 @@ A visual representation of the LCZ map in ggplot format.
 This function generates a graphical representation of a Local Climate Zone (LCZ) map provided as a \code{SpatRaster} object.
 }
 \examples{
-\dontrun{
-lcz_plot_map(LCZmap)
-}
+lcz_map <- terra::rast(system.file("extdata", "lcz_berlin.tif", package = "LCZ4r"))
+small_map <- terra::crop(lcz_map, terra::ext(13.3, 13.5, 52.45, 52.55))
+lcz_plot_map(small_map)
 
 }
 \seealso{
 See the documentation for \code{lcz_get_map()} to obtain an LCZ map.
 }
-\keyword{Climate}
-\keyword{LCZ,}
-\keyword{Local}
-\keyword{Zone,}
-\keyword{analysis}
-\keyword{climate,}
-\keyword{spatial}
-\keyword{urban}

@@ -16,23 +16,16 @@ lcz_get_map(city = NULL, roi = NULL, isave_map = FALSE, isave_global = FALSE)
 \item{isave_global}{Logical. Set to TRUE if you wish to save the global LCZ map as a raster TIFF file on your local machine.}
 }
 \value{
-A Terra raster TIFF file containing LCZ classes (1-17).
+A Terra raster TIFF file containing LCZ classes (1-17). If the remote resource cannot be reached, a message is shown and \code{NULL} is returned invisibly.
 }
 \description{
 This function retrieves the Local Climate Zone (LCZ) global mapping dataset
 It allows you to obtain the LCZ map for a specific area of interest, which can be a city, state, region, or custom-defined shape.
 }
 \examples{
-\dontrun{
-# Load the LCZ map for a city
-my_lcz_city <- lcz_get_map(city = "your city")
-
-# Get LCZ map for a custom region of interest
-custom_roi <- sf::st_read("custom_roi.shp")
-roi_lcz <- lcz_get_map(roi = custom_roi, isave_map = TRUE)
-
-# Retrieve the LCZ map for a country
-my_lcz_country <- lcz_get_map(city = "Brazil")
+\donttest{
+# Requires internet access
+my_lcz_city <- lcz_get_map(city = "Lisbon")
 }
 
 }
@@ -41,11 +34,3 @@ Demuzere, M., Kittner, J., Martilli, A., Mills, G., Moede, C., Stewart, I. D., v
 Zenodo. https://doi.org/10.5281/zenodo.6364594
 Stewart ID, Oke TR. (2012). Local Climate Zones for Urban Temperature Studies. Bull Am Meteorol Soc. 93(12):1879-1900. doi:10.1175/BAMS-D-11-00019.1
 }
-\keyword{Climate}
-\keyword{LCZ,}
-\keyword{Local}
-\keyword{Zone,}
-\keyword{analysis}
-\keyword{climate,}
-\keyword{spatial}
-\keyword{urban}

@@ -92,14 +92,14 @@ lcz_anomaly(
 A visual representation of the anomalies of air temperature of LCZ in \code{ggplot} or data frame .csv format.
 }
 \description{
-This function generates a graphical representation of thermal anomaly for different Local Climate Zones (LCZs). More details: \url{https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html}
+This function generates a graphical representation of thermal anomaly for different Local Climate Zones (LCZs). More details: \url{https://bymaxanjos.github.io/LCZ4r/en/articles/Introd_local_LCZ4r.html}
 }
 \examples{
-\dontrun{
-# Hourly air temperature values in 2019.
-my_res <- lcz_anomaly(lcz_map, data_frame = lcz_data, var = "airT",
-                       station_id = "station", year = 2020)
-}
+lcz_map <- terra::rast(system.file("extdata", "lcz_berlin.tif", package = "LCZ4r"))
+data("lcz_data", package = "LCZ4r")
+# Hourly thermal anomaly on 2019-09-05
+lcz_anomaly(lcz_map, data_frame = lcz_data, var = "airT",
+            station_id = "station", year = 2019, month = 9, day = 5)
 }
 \seealso{
 See the documentation for \code{lcz_get_map()} to obtain an LCZ map.
@@ -107,11 +107,3 @@ See the documentation for \code{lcz_get_map()} to obtain an LCZ map.
 \author{
 Max Anjos (\url{https://github.com/ByMaxAnjos})
 }
-\keyword{Climate}
-\keyword{LCZ,}
-\keyword{Local}
-\keyword{Zone,}
-\keyword{analysis}
-\keyword{climate,}
-\keyword{spatial}
-\keyword{urban}

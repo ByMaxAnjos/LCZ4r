@@ -13,18 +13,23 @@ Authors@R: c( person("Max", "Anjos", role = c("aut", "cre"),
               comment = c(ORCID = "0009-0007-3844-3869"))
   )
 Maintainer: Max Anjos <maxanjos@campus.ul.pt>
-Description: LCZ4r is a comprehensive R package designed for analyzing
-    and visualizing Local Climate Zones (LCZ) and Urban Heat Islands (UHI) at various spatial and temporal resolutions.
-    It provides a suite of functions to work with LCZ data, perform urban climate analysis, and
-    generate insights into temperature variations within urban areas.
+Description: Tools for analysing and visualising Local Climate Zones (LCZ)
+    and urban heat islands at multiple spatial and temporal resolutions.
+    Provides functions to retrieve LCZ maps from global, European and
+    continental United States datasets and from the 'LCZ Generator',
+    compute LCZ areas and urban canopy parameters, and combine LCZ maps with
+    air temperature observations to analyse time series, thermal anomalies
+    and urban heat island intensity, and to produce and evaluate LCZ-based
+    kriging interpolation maps. Methods follow Stewart and Oke (2012)
+    <doi:10.1175/BAMS-D-11-00019.1> and Demuzere et al. (2022)
+    <doi:10.5194/essd-14-3835-2022>.
 License: MIT + file LICENSE
 URL: https://bymaxanjos.github.io/LCZ4r/
 BugReports: https://github.com/ByMaxAnjos/LCZ4r/issues
 Depends:
-    R (>= 3.2.0)
+    R (>= 4.1.0)
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.3.3
 Imports: 
     dplyr (>= 1.1.2),
     tidyterra (>= 0.3.1),
@@ -43,17 +48,9 @@ Imports:
     automap (>= 1.1.9),
     gstat (>= 2.1.0),
     MetBrewer (>= 0.2.0),
-    lubridate (>= 1.9.2)
-Suggests:
-    knitr,
+    lubridate (>= 1.9.2),
     tidyr,
-    data.table,
-    openssl,
-    httr2,
-    curl,
-    rmarkdown,
-    htmltools,
-    htmlwidgets,
-    covr
-VignetteBuilder: knitr
+    stats,
+    utils
 Roxygen: list(markdown = TRUE)
+Config/roxygen2/version: 8.1.1

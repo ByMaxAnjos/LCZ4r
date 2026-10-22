@@ -54,19 +54,17 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' # Plot the mean Sky View Factor (SVFmean) for your city
-#' lcz_plot_parameters(lcz_map, iselect = "SVFmean")
+#' lcz_map <- terra::rast(system.file("extdata", "lcz_berlin.tif", package = "LCZ4r"))
+#' small_map <- terra::crop(lcz_map, terra::ext(13.3, 13.5, 52.45, 52.55))
+#' lcz_params <- lcz_get_parameters(small_map, istack = TRUE)
 #'
-#' # Plot multiple parameters and save them to the LCZ4r_output directory
-#' lcz_plot_parameters(lcz_map, iselect = c("BSFmean", "AHmean"))
-#' }
+#' # Plot the mean Sky View Factor (SVFmean)
+#' lcz_plot_parameters(lcz_params, iselect = "SVFmean")
 #' @importFrom rlang .data
 #'
 #' @seealso
 #' See the documentation for lcz_get_parameters() to obtain LCZ parameters.
 #'
-#' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis
 
 
 lcz_plot_parameters <- function(x,

@@ -50,32 +50,19 @@
 #' @references
 #' Anjos, M., Targino, A. C., Krecl, P., Oukawa, G. Y. & Braga, R. F. Analysis of the urban heat island under different synoptic patterns using local climate zones. Build. Environ. 185, 107268 (2020).
 #' Fenner, D., Meier, F., Bechtel, B., Otto, M. & Scherer, D. (2017). Intra and inter ‘local climate zone’ variability of air temperature as observed by crowdsourced citizen weather stations in Berlin, Germany. *Meteorol. Z.*, 26, 525–547.
-#' \url{http://www.gstat.org/}
+#' \url{https://r-spatial.github.io/gstat/}
 #'
 #' @examples
-#' \dontrun{
-#' # Load sample data and LCZ map
-#' data("lcz_data")
-#' lcz_map <- lcz_get_map_generator(ID = "8576bde60bfe774e335190f2e8fdd125dd9f4299")
-#'
-#' # Plot the LCZ map
-#' lcz_plot_map(lcz_map)
-#'
-#' # Perform interpolation anomalies for 2020-01-02 at 04:00h
-#' my_interp <- lcz_anomaly_map(
+#' lcz_map <- terra::rast(system.file("extdata", "lcz_berlin.tif", package = "LCZ4r"))
+#' data("lcz_data", package = "LCZ4r")
+#' \donttest{
+#' # Thermal anomaly map for 2019-09-05 at 12:00
+#' my_anomaly <- lcz_anomaly_map(
 #'   lcz_map, data_frame = lcz_data, var = "airT",
-#'   station_id = "station", year = 2020, month = 1, day = 2, hour = 4,
-#'   sp.res = 100, tp.res = "hour", vg.model = "Sph",
-#'   LCZinterp = TRUE, isave = TRUE
+#'   station_id = "station", year = 2019, month = 9, day = 5, hour = 12,
+#'   sp.res = 1000, tp.res = "hour", vg.model = "Sph", LCZinterp = TRUE
 #' )
-#'
-#' # Perform interpolation for an entire day (returns a raster stack of 24 hours)
-#' my_interp <- lcz_anomaly_map(
-#'   lcz_map, data_frame = lcz_data, var = "airT",
-#'   station_id = "station", year = 2020, month = 1, day = 2,
-#'   sp.res = 100, tp.res = "hour", vg.model = "Sph",
-#'   LCZinterp = TRUE, isave = TRUE
-#' )
+#' lcz_plot_interp(my_anomaly)
 #' }
 #'
 #' @importFrom rlang .data
@@ -83,7 +70,6 @@
 #' @seealso
 #' See \code{lcz_anomaly()} for LCZ interpolation evaluation.
 #'
-#' @keywords Local Climate Zone, anomaly, interpolation, kriging.
 
 
 lcz_anomaly_map <- function(x,

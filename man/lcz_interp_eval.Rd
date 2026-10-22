@@ -20,7 +20,8 @@ lcz_interp_eval(
   Anomaly = FALSE,
   impute = NULL,
   isave = FALSE,
-  LCZinterp = TRUE
+  LCZinterp = TRUE,
+  seed = NULL
 )
 }
 \arguments{
@@ -75,6 +76,8 @@ lcz_interp_eval(
 \item{isave}{A logical value. If \code{TRUE}, the plot is saved to the working directory.}
 
 \item{LCZinterp}{A logical value. If \code{TRUE} (default), the LCZ interpolation approach is used. If \code{FALSE}, conventional interpolation without LCZ is used.}
+
+\item{seed}{Optional integer. If provided, it is passed to \code{set.seed()} before the random train/test split so that results are reproducible. The default \code{NULL} leaves the random number generator untouched.}
 }
 \value{
 A summary table in CSV format containing time series of observed values, predicted values, and residuals. It also returns an ESRI shapefile (.gpkg) containing metadata of the interpolation.
@@ -83,24 +86,23 @@ A summary table in CSV format containing time series of observed values, predict
 This function evaluates the variability of a spatial and temporal interpolation of a variable (e.g., air temperature) using LCZ as background. It supports both LCZ-based and conventional interpolation methods. The function allows for flexible time period selection, cross-validation, and station splitting for training and testing.
 }
 \examples{
-\dontrun{
-# Evaluate air temperature interpolation values using Berlin data and LOOCV
-data("lcz_data")
-lcz_map <- lcz_get_map_generator(ID = "8576bde60bfe774e335190f2e8fdd125dd9f4299")
-lcz_plot_map(lcz_map)
-my_interp <- lcz_interp_eval(
+lcz_map <- terra::rast(system.file("extdata", "lcz_berlin.tif", package = "LCZ4r"))
+data("lcz_data", package = "LCZ4r")
+\donttest{
+# Evaluate LCZ-based kriging with leave-one-out cross-validation
+my_eval <- lcz_interp_eval(
   lcz_map, data_frame = lcz_data, var = "airT",
-  station_id = "station", year = 2019, month = 9, day = 5,
-  sp.res = 100, tp.res = "hour", LOOCV = TRUE,
-  vg.model = "Sph", LCZinterp = TRUE, isave = TRUE
+  station_id = "station", year = 2019, month = 9, day = 5, hour = 12,
+  sp.res = 1000, tp.res = "hour", LOOCV = TRUE,
+  vg.model = "Sph", LCZinterp = TRUE
 )
 
-# Evaluate LCZ-based interpolation using split station (80\% training, 20\% testing)
-my_interp <- lcz_interp_eval(
+# Evaluate using a station split (80\% training, 20\% testing)
+my_eval <- lcz_interp_eval(
   lcz_map, data_frame = lcz_data, var = "airT",
-  station_id = "station", tp.res = "hour", sp.res = 100,
-  year = 2019, month = 9, day = 5, LOOCV = FALSE,
-  split.ratio = 0.8, vg.model = "Sph", LCZinterp = TRUE, isave = TRUE
+  station_id = "station", year = 2019, month = 9, day = 5, hour = 12,
+  sp.res = 1000, tp.res = "hour", LOOCV = FALSE, split.ratio = 0.8,
+  vg.model = "Sph", LCZinterp = TRUE, seed = 123
 )
 }
 
@@ -108,13 +110,8 @@ my_interp <- lcz_interp_eval(
 \references{
 Anjos, M., Targino, A. C., Krecl, P., Oukawa, G. Y. & Braga, R. F. Analysis of the urban heat island under different synoptic patterns using local climate zones. Build. Environ. 185, 107268 (2020).
 Fenner, D., Meier, F., Bechtel, B., Otto, M. & Scherer, D. Intra and inter ‘local climate zone’ variability of air temperature as observed by crowdsourced citizen weather stations in Berlin, Germany. Meteorol. Z. 26, 525–547 (2017).
-\url{http://www.gstat.org/}
+\url{https://r-spatial.github.io/gstat/}
 }
 \author{
 Max Anjos (\url{https://github.com/ByMaxAnjos})
 }
-\keyword{Climate}
-\keyword{Local}
-\keyword{Zone,}
-\keyword{interpolation,}
-\keyword{kriging}

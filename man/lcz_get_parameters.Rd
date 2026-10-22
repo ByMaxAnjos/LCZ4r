@@ -66,22 +66,14 @@ scheme developed by Stewart and Oke (2012). LCZs provide valuable information ab
 morphology and are useful for urban climate and environmental studies.
 }
 \examples{
-\dontrun{
-# Load the LCZ map
-lcz_map <- raster::raster("path/to/lcz_map.tif")
+lcz_map <- terra::rast(system.file("extdata", "lcz_berlin.tif", package = "LCZ4r"))
+small_map <- terra::crop(lcz_map, terra::ext(13.3, 13.5, 52.45, 52.55))
 
-# Get LCZ parameters as a raster stack
-lcz_params_stack <- lcz_get_parameters(lcz_map, istack = TRUE)
+# Get LCZ parameters as a multi-layer SpatRaster
+lcz_params <- lcz_get_parameters(small_map, istack = TRUE)
 
-# Get LCZ parameters as a list of individual parameter rasters
-lcz_params_list <- lcz_get_parameters(lcz_map, istack = FALSE)
-
-# Access individual parameters from the list
-specific_param <- lcz_params_list$parameter_name
-
-# Get specific parameters as a raster or shapefile
-selected_params <- lcz_get_parameters(lcz_map, iselect = c("SVFmin"))
-}
+# Get a specific parameter
+svf <- lcz_get_parameters(small_map, iselect = "SVFmean")
 }
 \references{
 Stewart, I., and T. Oke, 2012: Local climate zones for urban temperature studies. Bull. Amer. Meteor. Soc., 93, 1879–1900. https://doi.org/10.1175/BAMS-D-11-00019.1
@@ -89,11 +81,3 @@ Stewart, I., and T. Oke, 2012: Local climate zones for urban temperature studies
 \author{
 Max Anjos (https://github.com/ByMaxAnjos)
 }
-\keyword{Climate}
-\keyword{LCZ,}
-\keyword{Local}
-\keyword{Zone,}
-\keyword{analysis}
-\keyword{climate,}
-\keyword{spatial}
-\keyword{urban}

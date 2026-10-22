@@ -75,22 +75,13 @@ Stewart, I., and T. Oke, 2012: Local climate zones for urban temperature studies
 This function plots the parameters of an Local Climate Zone map.
 }
 \examples{
-\dontrun{
-# Plot the mean Sky View Factor (SVFmean) for your city
-lcz_plot_parameters(lcz_map, iselect = "SVFmean")
+lcz_map <- terra::rast(system.file("extdata", "lcz_berlin.tif", package = "LCZ4r"))
+small_map <- terra::crop(lcz_map, terra::ext(13.3, 13.5, 52.45, 52.55))
+lcz_params <- lcz_get_parameters(small_map, istack = TRUE)
 
-# Plot multiple parameters and save them to the LCZ4r_output directory
-lcz_plot_parameters(lcz_map, iselect = c("BSFmean", "AHmean"))
-}
+# Plot the mean Sky View Factor (SVFmean)
+lcz_plot_parameters(lcz_params, iselect = "SVFmean")
 }
 \seealso{
 See the documentation for lcz_get_parameters() to obtain LCZ parameters.
 }
-\keyword{Climate}
-\keyword{LCZ,}
-\keyword{Local}
-\keyword{Zone,}
-\keyword{analysis}
-\keyword{climate,}
-\keyword{spatial}
-\keyword{urban}

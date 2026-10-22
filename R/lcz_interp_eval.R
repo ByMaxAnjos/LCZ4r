@@ -38,6 +38,7 @@
 #' @param impute A character string specifying the method to impute missing values. Options include `"mean"`, `"median"`, `"knn"`, or `"bag"`.
 #' @param isave A logical value. If `TRUE`, the plot is saved to the working directory.
 #' @param LCZinterp A logical value. If `TRUE` (default), the LCZ interpolation approach is used. If `FALSE`, conventional interpolation without LCZ is used.
+#' @param seed Optional integer. If provided, it is passed to \code{set.seed()} before the random train/test split so that results are reproducible. The default \code{NULL} leaves the random number generator untouched.
 #'
 #' @return A summary table in CSV format containing time series of observed values, predicted values, and residuals. It also returns an ESRI shapefile (.gpkg) containing metadata of the interpolation.
 #'
@@ -47,34 +48,32 @@
 #' @references
 #' Anjos, M., Targino, A. C., Krecl, P., Oukawa, G. Y. & Braga, R. F. Analysis of the urban heat island under different synoptic patterns using local climate zones. Build. Environ. 185, 107268 (2020).
 #' Fenner, D., Meier, F., Bechtel, B., Otto, M. & Scherer, D. Intra and inter ‘local climate zone’ variability of air temperature as observed by crowdsourced citizen weather stations in Berlin, Germany. Meteorol. Z. 26, 525–547 (2017).
-#' \url{http://www.gstat.org/}
+#' \url{https://r-spatial.github.io/gstat/}
 #'
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' # Evaluate air temperature interpolation values using Berlin data and LOOCV
-#' data("lcz_data")
-#' lcz_map <- lcz_get_map_generator(ID = "8576bde60bfe774e335190f2e8fdd125dd9f4299")
-#' lcz_plot_map(lcz_map)
-#' my_interp <- lcz_interp_eval(
+#' lcz_map <- terra::rast(system.file("extdata", "lcz_berlin.tif", package = "LCZ4r"))
+#' data("lcz_data", package = "LCZ4r")
+#' \donttest{
+#' # Evaluate LCZ-based kriging with leave-one-out cross-validation
+#' my_eval <- lcz_interp_eval(
 #'   lcz_map, data_frame = lcz_data, var = "airT",
-#'   station_id = "station", year = 2019, month = 9, day = 5,
-#'   sp.res = 100, tp.res = "hour", LOOCV = TRUE,
-#'   vg.model = "Sph", LCZinterp = TRUE, isave = TRUE
+#'   station_id = "station", year = 2019, month = 9, day = 5, hour = 12,
+#'   sp.res = 1000, tp.res = "hour", LOOCV = TRUE,
+#'   vg.model = "Sph", LCZinterp = TRUE
 #' )
 #'
-#' # Evaluate LCZ-based interpolation using split station (80% training, 20% testing)
-#' my_interp <- lcz_interp_eval(
+#' # Evaluate using a station split (80% training, 20% testing)
+#' my_eval <- lcz_interp_eval(
 #'   lcz_map, data_frame = lcz_data, var = "airT",
-#'   station_id = "station", tp.res = "hour", sp.res = 100,
-#'   year = 2019, month = 9, day = 5, LOOCV = FALSE,
-#'   split.ratio = 0.8, vg.model = "Sph", LCZinterp = TRUE, isave = TRUE
+#'   station_id = "station", year = 2019, month = 9, day = 5, hour = 12,
+#'   sp.res = 1000, tp.res = "hour", LOOCV = FALSE, split.ratio = 0.8,
+#'   vg.model = "Sph", LCZinterp = TRUE, seed = 123
 #' )
 #' }
 #'
 #' @importFrom rlang .data
-#' @keywords Local Climate Zone, interpolation, kriging
 
 lcz_interp_eval <- function(x,
                             data_frame = "",
@@ -91,7 +90,8 @@ lcz_interp_eval <- function(x,
                             Anomaly = FALSE,
                             impute = NULL,
                             isave = FALSE,
-                            LCZinterp = TRUE) {
+                            LCZinterp = TRUE,
+                            seed = NULL) {
   # Check and validate raster inputs -----------------------------------------------
 
   if (missing(x)) {
@@ -333,7 +333,7 @@ lcz_interp_eval <- function(x,
 
     if(LOOCV==FALSE) {
       #Export the metadata
-      base::set.seed(123)
+      if (!is.null(seed)) base::set.seed(seed)
       split_data <- df_interp_mod %>%
         dplyr::distinct(.data$my_id, .data$lcz, .keep_all = T) %>%
         dplyr::group_by(.data$lcz) %>%
@@ -457,7 +457,7 @@ lcz_interp_eval <- function(x,
                 reference_df <- data_model %>%
                   dplyr::filter(.data$station != paste0(input)) %>%
                   dplyr::mutate(reference_value = mean(.data$var_interp))
-                reference_df <- tibble::as.tibble(mean(reference_df$reference_value))
+                reference_df <- tibble::as_tibble(mean(reference_df$reference_value))
 
                 merged_data <- dplyr::bind_cols(mean_df, reference_df) %>%
                   dplyr::rename(reference_value = .data$value) %>%
@@ -474,7 +474,7 @@ lcz_interp_eval <- function(x,
               lcz_anomaly_mod <- sf::st_as_sf(anomaly_cal) %>% sf::st_transform(crs = 3857)
 
               if(LOOCV==FALSE) {
-              base::set.seed(123)
+              if (!is.null(seed)) base::set.seed(seed)
               split_data <- lcz_anomaly_mod %>%
                 dplyr::group_by(.data$lcz) %>%
                 dplyr::mutate(is_train = stats::runif(dplyr::n()) <= split.ratio) %>%
@@ -522,7 +522,7 @@ lcz_interp_eval <- function(x,
                 krige_vgm <- automap::autofitVariogram(anomaly ~ 1, lcz_anomaly_mod, model = vg.model)
                 krige_mod <- gstat::gstat(formula = anomaly ~ 1, model = krige_vgm$var_model, data = lcz_anomaly_mod)
               }
-              set.seed(123)
+              if (!is.null(seed)) base::set.seed(seed)
               lcz_cv <- gstat::gstat.cv(krige_mod, nfold = 5, debug.level = 0)
               lcz_cv <- sf::st_as_sf(lcz_cv)
               lcz_anomaly_mod$geometry <- NULL
@@ -541,7 +541,7 @@ lcz_interp_eval <- function(x,
             } else {
 
               if(LOOCV==FALSE) {
-                base::set.seed(123)
+                if (!is.null(seed)) base::set.seed(seed)
                 split_data <- data_model %>%
                   dplyr::group_by(.data$lcz) %>%
                   dplyr::mutate(is_train = stats::runif(dplyr::n()) <= split.ratio) %>%
@@ -586,7 +586,7 @@ lcz_interp_eval <- function(x,
                   krige_vgm <- automap::autofitVariogram(var_interp ~ 1, data_model, model = vg.model)
                   krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = data_model)
                 }
-                set.seed(123)
+                if (!is.null(seed)) base::set.seed(seed)
                 lcz_cv <- gstat::gstat.cv(krige_mod, nfold = 5, debug.level = 0)
                 lcz_cv <- sf::st_as_sf(lcz_cv)
                 data_model$geometry <- NULL
@@ -706,7 +706,7 @@ lcz_interp_eval <- function(x,
             reference_df <- data_model %>%
               dplyr::filter(.data$station != paste0(input)) %>%
               dplyr::mutate(reference_value = mean(.data$var_interp))
-            reference_df <- tibble::as.tibble(mean(reference_df$reference_value))
+            reference_df <- tibble::as_tibble(mean(reference_df$reference_value))
 
             merged_data <- dplyr::bind_cols(mean_df, reference_df) %>%
               dplyr::rename(reference_value = .data$value) %>%
@@ -723,7 +723,7 @@ lcz_interp_eval <- function(x,
           lcz_anomaly_mod <- sf::st_as_sf(anomaly_cal) %>% sf::st_transform(crs = 3857)
 
           if(LOOCV==FALSE) {
-            base::set.seed(123)
+            if (!is.null(seed)) base::set.seed(seed)
             split_data <- lcz_anomaly_mod %>%
               dplyr::group_by(.data$my_time, .data$lcz) %>%
               dplyr::mutate(is_train = stats::runif(dplyr::n()) <= split.ratio) %>%
@@ -769,7 +769,7 @@ lcz_interp_eval <- function(x,
               krige_vgm <- automap::autofitVariogram(anomaly ~ 1, lcz_anomaly_mod, model = vg.model)
               krige_mod <- gstat::gstat(formula = anomaly ~ 1, model = krige_vgm$var_model, data = lcz_anomaly_mod)
             }
-            set.seed(123)
+            if (!is.null(seed)) base::set.seed(seed)
             lcz_cv <- gstat::gstat.cv(krige_mod, nfold = 5, debug.level = 0)
             lcz_cv <- sf::st_as_sf(lcz_cv)
             lcz_anomaly_mod$geometry <- NULL
@@ -786,7 +786,7 @@ lcz_interp_eval <- function(x,
         } else {
 
           if(LOOCV==FALSE) {
-            base::set.seed(123)
+            if (!is.null(seed)) base::set.seed(seed)
             split_data <- data_model %>%
               dplyr::group_by(.data$my_time, .data$lcz) %>%
               dplyr::mutate(is_train = stats::runif(dplyr::n()) <= split.ratio) %>%
@@ -832,7 +832,7 @@ lcz_interp_eval <- function(x,
               krige_vgm <- automap::autofitVariogram(var_interp ~ 1, data_model, model = vg.model)
               krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = data_model)
             }
-            set.seed(123)  # Ensure reproducibility
+            if (!is.null(seed)) base::set.seed(seed)
             lcz_cv <- gstat::gstat.cv(krige_mod, nfold = 5, debug.level = 0)
             lcz_cv <- sf::st_as_sf(lcz_cv)
             data_model$geometry <- NULL
@@ -928,7 +928,7 @@ lcz_interp_eval <- function(x,
 
         if(LOOCV==FALSE) {
 
-          base::set.seed(123)
+          if (!is.null(seed)) base::set.seed(seed)
           split_data <- data_model %>%
             dplyr::group_by(.data$lcz) %>%
             dplyr::mutate(is_train = stats::runif(dplyr::n()) <= split.ratio) %>%

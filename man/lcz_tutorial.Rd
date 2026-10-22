@@ -16,8 +16,8 @@ Opens the LCZ4r tutorial in a web browser.
 Opens LCZ4r tutorial in a web browser. This function requires an internet connection.
 }
 \examples{
-\dontrun{
-lcz_tutorial("general")
-lcz_tutorial("local")
+if (interactive()) {
+  lcz_tutorial("general")
+  lcz_tutorial("local")
 }
 }
