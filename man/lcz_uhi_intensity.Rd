@@ -89,17 +89,15 @@ lcz_uhi_intensity(
 A visual representation of the time series of UHI in \code{ggplot} or data frame .csv format.
 }
 \description{
-This function calculates the Urban Heat Island (UHI) intensity based on air temperature measurements and Local Climate Zones (LCZ). More details: \url{https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html}
+This function calculates the Urban Heat Island (UHI) intensity based on air temperature measurements and Local Climate Zones (LCZ). More details: \url{https://bymaxanjos.github.io/LCZ4r/en/articles/Introd_local_LCZ4r.html}
 }
 \examples{
-\dontrun{
-# Calculate hourly UHI intensity for 2019 using the LCZ method
-my_uhi <- lcz_uhi_intensity(lcz_map, data_frame = lcz_data, var = "airT",
-                            station_id = "station", year = 2019,
-                            time.freq = "hour", method = "LCZ")
-
-
-}
+lcz_map <- terra::rast(system.file("extdata", "lcz_berlin.tif", package = "LCZ4r"))
+data("lcz_data", package = "LCZ4r")
+# Hourly UHI intensity on 2019-09-05 using the LCZ method
+lcz_uhi_intensity(lcz_map, data_frame = lcz_data, var = "airT",
+                  station_id = "station", year = 2019, month = 9, day = 5,
+                  time.freq = "hour", method = "LCZ")
 
 }
 \seealso{
@@ -108,11 +106,3 @@ See the documentation for \code{lcz_get_map()} to obtain an LCZ map.
 \author{
 Max Anjos (\url{https://github.com/ByMaxAnjos})
 }
-\keyword{Climate}
-\keyword{LCZ,}
-\keyword{Local}
-\keyword{Zone,}
-\keyword{analysis}
-\keyword{climate,}
-\keyword{spatial}
-\keyword{urban}

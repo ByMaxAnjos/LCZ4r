@@ -1,6 +1,6 @@
 #' Assess the Urban Heat Island Intensity
 #'
-#' This function calculates the Urban Heat Island (UHI) intensity based on air temperature measurements and Local Climate Zones (LCZ). More details: \url{https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html}
+#' This function calculates the Urban Heat Island (UHI) intensity based on air temperature measurements and Local Climate Zones (LCZ). More details: \url{https://bymaxanjos.github.io/LCZ4r/en/articles/Introd_local_LCZ4r.html}
 #'
 #' @param x A \code{SpatRaster} object containing the LCZ map. The LCZ map can be obtained using the \code{lcz_get_map()} function.
 #' @param data_frame A data frame containing air temperature measurements and station IDs. The data frame should have a date field in hourly or higher resolution format.
@@ -46,21 +46,18 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' # Calculate hourly UHI intensity for 2019 using the LCZ method
-#' my_uhi <- lcz_uhi_intensity(lcz_map, data_frame = lcz_data, var = "airT",
-#'                             station_id = "station", year = 2019,
-#'                             time.freq = "hour", method = "LCZ")
-#'
-#'
-#' }
+#' lcz_map <- terra::rast(system.file("extdata", "lcz_berlin.tif", package = "LCZ4r"))
+#' data("lcz_data", package = "LCZ4r")
+#' # Hourly UHI intensity on 2019-09-05 using the LCZ method
+#' lcz_uhi_intensity(lcz_map, data_frame = lcz_data, var = "airT",
+#'                   station_id = "station", year = 2019, month = 9, day = 5,
+#'                   time.freq = "hour", method = "LCZ")
 #'
 #' @importFrom rlang .data
 #'
 #' @seealso
 #' See the documentation for \code{lcz_get_map()} to obtain an LCZ map.
 #'
-#' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis
 
 
 lcz_uhi_intensity <- function(x,

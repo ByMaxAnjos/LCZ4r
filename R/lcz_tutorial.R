@@ -9,9 +9,9 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' lcz_tutorial("general")
-#' lcz_tutorial("local")
+#' if (interactive()) {
+#'   lcz_tutorial("general")
+#'   lcz_tutorial("local")
 #' }
 lcz_tutorial <- function(x = "general") {
   if (!is.character(x) || length(x) != 1) {
@@ -24,8 +24,8 @@ lcz_tutorial <- function(x = "general") {
   }
 
   urls <- list(
-    general = "https://bymaxanjos.github.io/LCZ4r/articles/Introd_general_LCZ4r.html",
-    local = "https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html"
+    general = "https://bymaxanjos.github.io/LCZ4r/en/articles/Introd_genera_LCZ4r.html",
+    local = "https://bymaxanjos.github.io/LCZ4r/en/articles/Introd_local_LCZ4r.html"
   )
 
   utils::browseURL(urls[[x]])

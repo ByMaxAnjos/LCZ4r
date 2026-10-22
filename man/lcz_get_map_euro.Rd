@@ -21,7 +21,7 @@ lcz_get_map_euro(
 \item{isave_euro}{Logical. Set to TRUE if you wish to save the European LCZ map as a raster TIFF file on your local machine.}
 }
 \value{
-A Terra raster TIFF file containing LCZ classes (1-17).
+A Terra raster TIFF file containing LCZ classes (1-17). If the remote resource cannot be reached, a message is shown and \code{NULL} is returned invisibly.
 }
 \description{
 This function retrieves the Local Climate Zone (LCZ) European mapping dataset
@@ -29,25 +29,13 @@ created by Demuzere et al. (2019) and available at https://doi.org/10.1371/journ
 It allows you to obtain the LCZ map for a specific area of interest, which can be a city, state, region, or custom-defined shape.
 }
 \examples{
-\dontrun{
-# Example 1: Load the LCZ map for a city
+\donttest{
+# Requires internet access
 my_lcz_city <- lcz_get_map_euro(city = "Berlin")
-
-# Example 2: Get LCZ map for a custom region of interest
-custom_roi <- sf::st_read("custom_roi.shp")
-roi_lcz <- lcz_get_map_euro(roi = custom_roi)
 }
 }
 \references{
 Demuzere, M., Bechtel, B., Middel, A., & Mills, G. (2019). Mapping Europe into local climate zones. PLOS ONE, 14(4), e0214474. DOI:https://doi.org/10.1371/journal.pone.0214474
 Demuzere, M.; Bechtel, B.; Middel, A.; Mills, G. (2019): European LCZ map. Figshare. Dataset. https://doi.org/10.6084/m9.figshare.13322450
-Anjos, M. (2024). LCZ4r Package Dataset. Zenodo. \url{https://doi.org/10.5281/zenodo.10835692}
+Anjos, M. (2024). LCZ4r Package Dataset. Zenodo. \doi{10.5281/zenodo.10835692}
 }
-\keyword{Climate}
-\keyword{LCZ,}
-\keyword{Local}
-\keyword{Zone,}
-\keyword{analysis}
-\keyword{climate,}
-\keyword{spatial}
-\keyword{urban}

@@ -16,7 +16,7 @@ lcz_get_map_usa(city = NULL, roi = NULL, isave_map = FALSE, isave_usa = FALSE)
 \item{isave_usa}{Logical. Set to TRUE if you wish to save the USA LCZ map as a raster TIFF file on your local machine.}
 }
 \value{
-A Terra raster TIFF file containing LCZ classes (1-17).
+A Terra raster TIFF file containing LCZ classes (1-17). If the remote resource cannot be reached, a message is shown and \code{NULL} is returned invisibly.
 }
 \description{
 This function retrieves the Local Climate Zone (LCZ) CONUS LCZ mapping dataset
@@ -24,25 +24,13 @@ created by Demuzere et al. (2020) and available at https://doi.org/10.1038/s4159
 It allows you to obtain the LCZ map for a specific area of interest, which can be a city, state, region, or custom-defined shape.
 }
 \examples{
-\dontrun{
-# Example 1: Load the LCZ map for a city
-my_lcz_city <- lcz_get_map_usa(city = "New York")
-
-# Example 2: Get LCZ map for a custom region of interest
-custom_roi <- sf::st_read("custom_roi.shp")
-roi_lcz <- lcz_get_map_usa(roi = custom_roi)
+\donttest{
+# Requires internet access
+my_lcz_city <- lcz_get_map_usa(city = "Lubbock")
 }
 }
 \references{
 Demuzere, M., Hankey, S., Mills, G., Zhang, W., Lu, T., & Bechtel, B. (2020). Combining expert and crowd-sourced training data to map urban form and functions for the continental US. Scientific Data, 7(1), 264. DOI:https://doi.org/10.1038/s41597-020-00605-z
 Demuzere, M., Hankey, S., Mills, G., Zhang, W., Lu, T., Bechtel B. (2020): CONUS-wide LCZ map and Training Areas. Figshare. Dataset. https://doi.org/10.6084/m9.figshare.11416950
-Anjos, M. (2024). LCZ4r Package Dataset. Zenodo. \url{https://doi.org/10.5281/zenodo.10835692}
+Anjos, M. (2024). LCZ4r Package Dataset. Zenodo. \doi{10.5281/zenodo.10835692}
 }
-\keyword{Climate}
-\keyword{LCZ,}
-\keyword{Local}
-\keyword{Zone,}
-\keyword{analysis}
-\keyword{climate,}
-\keyword{spatial}
-\keyword{urban}

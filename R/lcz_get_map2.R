@@ -14,23 +14,18 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' # Go to https://lcz-generator.rub.de/
-#' my_map <- terra::rast("path/name.tif")
-#' my_lcz_map <- lcz_get_map2(my_map, city = "Name")
-#'
-#' # Load the LCZ map from your PC
-#' my_map <- terra::rast("path/lcz_filter_v3.tif")
-#'
-#' # Get LCZ map for a custom region of interest
-#' custom_roi <- sf::st_read("custom_roi.shp")
-#' roi_lcz <- lcz_get_map2(my_map, roi = custom_roi)
-#'
-#' # Retrieve the LCZ map for a country (no custom ROI specified)
-#' my_lcz_country <- lcz_get_map2(my_map, city = "Lisbon")
+#' # Clip an LCZ map that is already loaded (e.g. downloaded from
+#' # https://lcz-generator.rub.de/) to a custom region of interest
+#' lcz_map <- terra::rast(system.file("extdata", "lcz_berlin.tif", package = "LCZ4r"))
+#' roi <- sf::st_as_sf(terra::as.polygons(
+#'   terra::ext(13.3, 13.5, 52.45, 52.55), crs = "EPSG:4326"
+#' ))
+#' my_lcz_map <- lcz_get_map2(lcz_map, roi = roi)
+#' \donttest{
+#' # Clip by city name (requires internet access to OpenStreetMap)
+#' my_lcz_city <- lcz_get_map2(lcz_map, city = "Berlin")
 #' }
 #'
-#' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis
 
 
 lcz_get_map2 <- function(x, city = NULL, roi = NULL, isave_map = FALSE) {
@@ -58,10 +53,11 @@ lcz_get_map2 <- function(x, city = NULL, roi = NULL, isave_map = FALSE) {
 
   if (!is.null(city)) {
     # Get study area polygon from OpenStreetMap data
-    shp_verify <- osmdata::getbb({{ city }}, format_out = "sf_polygon", limit = 1)
+    shp_verify <- lcz_get_osm_boundary(city)
 
     if (is.null(shp_verify)) {
-      stop(paste0("No polygonal boundary for", city, ".See https://nominatim.openstreetmap.org"))
+      base::message(paste0("No polygonal boundary for", city, ".See https://nominatim.openstreetmap.org"))
+      return(invisible(NULL))
     }
     # Check if polygon was obtained successfully
     if (!is.null(shp_verify$geometry) & !inherits(shp_verify, "list")) {
@@ -76,7 +72,8 @@ lcz_get_map2 <- function(x, city = NULL, roi = NULL, isave_map = FALSE) {
         sf::st_transform(crs = "+proj=longlat +datum=WGS84 +no_defs")
     }
 
-    options(warn = -1)
+    old_opts <- options(warn = -1)
+    on.exit(options(old_opts), add = TRUE)
 
     # Crop the raster to the study area extent
     lcz_ras <- terra::crop(x, terra::ext(study_area))

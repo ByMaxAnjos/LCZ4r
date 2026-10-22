@@ -8,25 +8,20 @@
 #' @param roi Optionally, you can provide a Region of Interest (ROI) in ESRI shapefile format to clip the LCZ map to a custom area.
 #' @param isave_map Logical. Set to TRUE if you wish to save the resulting clipped map as a raster TIFF file on your local machine.
 #' @param isave_euro Logical. Set to TRUE if you wish to save the European LCZ map as a raster TIFF file on your local machine.
-#' @return A Terra raster TIFF file containing LCZ classes (1-17).
+#' @return A Terra raster TIFF file containing LCZ classes (1-17). If the remote resource cannot be reached, a message is shown and \code{NULL} is returned invisibly.
 #'
 #' @export
 #'
 #' @references
 #' Demuzere, M., Bechtel, B., Middel, A., & Mills, G. (2019). Mapping Europe into local climate zones. PLOS ONE, 14(4), e0214474. DOI:https://doi.org/10.1371/journal.pone.0214474
 #' Demuzere, M.; Bechtel, B.; Middel, A.; Mills, G. (2019): European LCZ map. Figshare. Dataset. https://doi.org/10.6084/m9.figshare.13322450
-#' Anjos, M. (2024). LCZ4r Package Dataset. Zenodo. \url{https://doi.org/10.5281/zenodo.10835692}
+#' Anjos, M. (2024). LCZ4r Package Dataset. Zenodo. \doi{10.5281/zenodo.10835692}
 #'
 #' @examples
-#' \dontrun{
-#' # Example 1: Load the LCZ map for a city
+#' \donttest{
+#' # Requires internet access
 #' my_lcz_city <- lcz_get_map_euro(city = "Berlin")
-#'
-#' # Example 2: Get LCZ map for a custom region of interest
-#' custom_roi <- sf::st_read("custom_roi.shp")
-#' roi_lcz <- lcz_get_map_euro(roi = custom_roi)
 #' }
-#' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis
 
 lcz_get_map_euro <- function(city = NULL, roi = NULL, isave_map = FALSE, isave_euro = FALSE) {
   # Validate inputs
@@ -36,10 +31,11 @@ lcz_get_map_euro <- function(city = NULL, roi = NULL, isave_map = FALSE, isave_e
 
   if (!is.null(city)) {
     # Get study area polygon from OpenStreetMap data
-    shp_verify <- osmdata::getbb({{ city }}, format_out = "sf_polygon", limit = 1)
+    shp_verify <- lcz_get_osm_boundary(city)
 
     if (is.null(shp_verify)) {
-      stop(paste0("No polygonal boundary for", city, ".See https://nominatim.openstreetmap.org"))
+      base::message(paste0("No polygonal boundary for", city, ".See https://nominatim.openstreetmap.org"))
+      return(invisible(NULL))
     }
     # Check if polygon was obtained successfully
     if (!is.null(shp_verify$geometry) & !inherits(shp_verify, "list")) {
@@ -53,15 +49,17 @@ lcz_get_map_euro <- function(city = NULL, roi = NULL, isave_map = FALSE, isave_e
         sf::st_as_sf() %>%
         sf::st_transform(crs = 3035)
     }
-    options(warn = -1)
+    old_opts <- options(warn = -1)
+    on.exit(options(old_opts), add = TRUE)
     # Download the European LCZ map
     lcz_url <- "https://zenodo.org/records/10835692/files/EU_LCZ_map.tiff"
-    lcz_download <- terra::rast(base::paste0("/vsicurl/", lcz_url))
+    lcz_download <- lcz_read_remote(lcz_url)
 
     if (base::is.null(lcz_download)) {
-      stop("This error might be due to server restrictions. In such cases, you may need to download the file manually using this link:
+      base::message("This error might be due to server restrictions. In such cases, you may need to download the file manually using this link:
            https://zenodo.org/records/10835692/files/EU_LCZ_map.tiff?download=1.
            Then read it using the terra package, eg., my_map <- rast('path/EU_LCZ_map.tiff'), and use the function lcz_get_map2()")
+      return(invisible(NULL))
     }
 
     lcz_ras <- terra::crop(lcz_download, terra::ext(study_area))
@@ -109,7 +107,10 @@ lcz_get_map_euro <- function(city = NULL, roi = NULL, isave_map = FALSE, isave_e
   } else {
     # Download the European LCZ map
     lcz_url <- "https://zenodo.org/records/10835692/files/EU_LCZ_map.tiff"
-    lcz_download <- terra::rast(base::paste0("/vsicurl/", lcz_url))
+    lcz_download <- lcz_read_remote(lcz_url)
+    if (base::is.null(lcz_download)) {
+      return(invisible(NULL))
+    }
     roi_crs <- roi %>%
       sf::st_as_sf() %>%
       sf::st_make_valid() %>%

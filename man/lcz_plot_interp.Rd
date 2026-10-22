@@ -33,20 +33,13 @@ A plot of the LCZ interpolated map in ggplot2 format.
 This function plots the interpolated LCZ anomaly, LCZ air temperature, or other environmental variables.
 }
 \examples{
-\dontrun{
- # Plot the interpolated map
- lcz_plot_interp(my_interp_map)
- }
+# A small synthetic raster stands in for the output of lcz_interp_map()
+r <- terra::rast(nrows = 10, ncols = 10, xmin = 13.3, xmax = 13.5,
+                 ymin = 52.45, ymax = 52.55, crs = "EPSG:4326")
+terra::values(r) <- seq(15, 25, length.out = 100)
+lcz_plot_interp(r, title = "Air temperature")
 
 }
 \seealso{
 See the documentation for lcz_anomaly_map() to obtain LCZ anomaly rasters and lcz_interp_map() for air temperature rasters.
 }
-\keyword{Climate}
-\keyword{LCZ,}
-\keyword{Local}
-\keyword{Zone,}
-\keyword{analysis}
-\keyword{climate,}
-\keyword{spatial}
-\keyword{urban}

@@ -14,16 +14,15 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' lcz_plot_map(LCZmap)
-#' }
+#' lcz_map <- terra::rast(system.file("extdata", "lcz_berlin.tif", package = "LCZ4r"))
+#' small_map <- terra::crop(lcz_map, terra::ext(13.3, 13.5, 52.45, 52.55))
+#' lcz_plot_map(small_map)
 #'
 #' @importFrom rlang .data
 #'
 #' @seealso
 #' See the documentation for \code{lcz_get_map()} to obtain an LCZ map.
 #'
-#' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis
 
 
 lcz_plot_map <- function(x,
