@@ -89,15 +89,14 @@ lcz_ts(
 A ggplot object representing the time series of air temperature in different LCZs, or a data frame in CSV format if \code{iplot = FALSE}.
 }
 \description{
-This function generates a graphical representation of time series air temperature data across different Local Climate Zones (LCZs). It allows for flexible temporal aggregation, faceting, smoothing, and visualization options including heatmaps, facet_plot line plots, and warming stripes. For more details on LCZ analysis, visit \url{https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html}.
+This function generates a graphical representation of time series air temperature data across different Local Climate Zones (LCZs). It allows for flexible temporal aggregation, faceting, smoothing, and visualization options including heatmaps, facet_plot line plots, and warming stripes. For more details on LCZ analysis, visit \url{https://bymaxanjos.github.io/LCZ4r/en/articles/Introd_local_LCZ4r.html}.
 }
 \examples{
-\dontrun{
-# Hourly air temperature values in 2019.
-my_ts <- lcz_ts(lcz_map, df = lcz_data, var = "airT",
-                 station_id = "station", year = 2020)
-
-}
+lcz_map <- terra::rast(system.file("extdata", "lcz_berlin.tif", package = "LCZ4r"))
+data("lcz_data", package = "LCZ4r")
+# Hourly air temperature on 2019-09-05
+lcz_ts(lcz_map, data_frame = lcz_data, var = "airT",
+       station_id = "station", year = 2019, month = 9, day = 5)
 }
 \seealso{
 See the documentation for \code{lcz_get_map()}, \code{lcz_get_map_euro()}, and \code{lcz_get_map_usa()} to obtain an LCZ map.
@@ -105,11 +104,3 @@ See the documentation for \code{lcz_get_map()}, \code{lcz_get_map_euro()}, and \
 \author{
 Max Anjos (\url{https://github.com/ByMaxAnjos})
 }
-\keyword{Climate}
-\keyword{LCZ,}
-\keyword{Local}
-\keyword{Zone,}
-\keyword{analysis}
-\keyword{climate,}
-\keyword{spatial}
-\keyword{urban}

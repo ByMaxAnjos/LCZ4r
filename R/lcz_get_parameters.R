@@ -61,25 +61,16 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' # Load the LCZ map
-#' lcz_map <- raster::raster("path/to/lcz_map.tif")
+#' lcz_map <- terra::rast(system.file("extdata", "lcz_berlin.tif", package = "LCZ4r"))
+#' small_map <- terra::crop(lcz_map, terra::ext(13.3, 13.5, 52.45, 52.55))
 #'
-#' # Get LCZ parameters as a raster stack
-#' lcz_params_stack <- lcz_get_parameters(lcz_map, istack = TRUE)
+#' # Get LCZ parameters as a multi-layer SpatRaster
+#' lcz_params <- lcz_get_parameters(small_map, istack = TRUE)
 #'
-#' # Get LCZ parameters as a list of individual parameter rasters
-#' lcz_params_list <- lcz_get_parameters(lcz_map, istack = FALSE)
-#'
-#' # Access individual parameters from the list
-#' specific_param <- lcz_params_list$parameter_name
-#'
-#' # Get specific parameters as a raster or shapefile
-#' selected_params <- lcz_get_parameters(lcz_map, iselect = c("SVFmin"))
-#' }
+#' # Get a specific parameter
+#' svf <- lcz_get_parameters(small_map, iselect = "SVFmean")
 #' @importFrom rlang .data
 #'
-#' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis
 
 
 lcz_get_parameters <- function(x,

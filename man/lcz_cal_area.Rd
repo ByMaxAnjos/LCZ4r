@@ -45,19 +45,15 @@ A summary table of LCZ class areas if plot = FALSE, otherwise, the specified plo
 This function calculates the areas of LCZ classes in both percentage and square kilometers.
 }
 \examples{
-\dontrun{
+lcz_map <- terra::rast(system.file("extdata", "lcz_berlin.tif", package = "LCZ4r"))
 # Calculate LCZ area and visualize as bar plot
-lcz_cal_area(my_lcz_map, plot_type = "bar")
+lcz_cal_area(lcz_map, plot_type = "bar")
 
-# Visualize as pie chart
-lcz_cal_area(my_lcz_map, plot_type = "pie")
+# Visualize as donut chart
+lcz_cal_area(lcz_map, plot_type = "donut")
 
-# Save donut chart plot
-lcz_cal_area(my_lcz_map, plot_type = "donut", isave = TRUE)
-
-# Return a dataframe
-lcz_cal_area(my_lcz_map, plot_type = "donut", iplot = FALSE)
-}
+# Return a data frame
+lcz_cal_area(lcz_map, iplot = FALSE)
 }
 \seealso{
 See the documentation for lcz_get_map() to obtain an LCZ map.

@@ -1,6 +1,6 @@
 #' Analyze LCZ Time Series
 #'
-#' This function generates a graphical representation of time series air temperature data across different Local Climate Zones (LCZs). It allows for flexible temporal aggregation, faceting, smoothing, and visualization options including heatmaps, facet_plot line plots, and warming stripes. For more details on LCZ analysis, visit \url{https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html}.
+#' This function generates a graphical representation of time series air temperature data across different Local Climate Zones (LCZs). It allows for flexible temporal aggregation, faceting, smoothing, and visualization options including heatmaps, facet_plot line plots, and warming stripes. For more details on LCZ analysis, visit \url{https://bymaxanjos.github.io/LCZ4r/en/articles/Introd_local_LCZ4r.html}.
 #'
 #' @param x A \code{SpatRaster} object containing the LCZ map. The LCZ map can be obtained using the \code{lcz_get_map()}, \code{lcz_get_map_euro()}, and \code{lcz_get_map_usa()} functions.
 #' @param data_frame A data frame containing air temperature measurements and station IDs. The data frame should have a date field in hourly or higher resolution format.
@@ -46,17 +46,15 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' # Hourly air temperature values in 2019.
-#' my_ts <- lcz_ts(lcz_map, df = lcz_data, var = "airT",
-#'                  station_id = "station", year = 2020)
-#'
-#' }
+#' lcz_map <- terra::rast(system.file("extdata", "lcz_berlin.tif", package = "LCZ4r"))
+#' data("lcz_data", package = "LCZ4r")
+#' # Hourly air temperature on 2019-09-05
+#' lcz_ts(lcz_map, data_frame = lcz_data, var = "airT",
+#'        station_id = "station", year = 2019, month = 9, day = 5)
 #' @importFrom rlang .data
 #' @seealso
 #' See the documentation for \code{lcz_get_map()}, \code{lcz_get_map_euro()}, and \code{lcz_get_map_usa()} to obtain an LCZ map.
 #'
-#' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis
 
 lcz_ts <- function(x,
                    data_frame = "",

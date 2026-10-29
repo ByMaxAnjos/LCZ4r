@@ -1,6 +1,6 @@
 #' Explore LCZ Thermal Anomalies
 #'
-#' This function generates a graphical representation of thermal anomaly for different Local Climate Zones (LCZs). More details: \url{https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html}
+#' This function generates a graphical representation of thermal anomaly for different Local Climate Zones (LCZs). More details: \url{https://bymaxanjos.github.io/LCZ4r/en/articles/Introd_local_LCZ4r.html}
 #'
 #' @param x A \code{SpatRaster} object containing the LCZ map. The LCZ map can be obtained using the \code{lcz_get_map()} function.
 #' @param data_frame A data frame containing air temperature measurements and station IDs. The data frame should have a date field in hourly or higher resolution format.
@@ -51,17 +51,16 @@
 #' @export
 #'
 #' @examples
-#' \dontrun{
-#' # Hourly air temperature values in 2019.
-#' my_res <- lcz_anomaly(lcz_map, data_frame = lcz_data, var = "airT",
-#'                        station_id = "station", year = 2020)
-#' }
+#' lcz_map <- terra::rast(system.file("extdata", "lcz_berlin.tif", package = "LCZ4r"))
+#' data("lcz_data", package = "LCZ4r")
+#' # Hourly thermal anomaly on 2019-09-05
+#' lcz_anomaly(lcz_map, data_frame = lcz_data, var = "airT",
+#'             station_id = "station", year = 2019, month = 9, day = 5)
 #' @importFrom rlang .data
 #'
 #' @seealso
 #' See the documentation for \code{lcz_get_map()} to obtain an LCZ map.
 #'
-#' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis
 
 
 lcz_anomaly <- function(x,
@@ -380,7 +379,7 @@ lcz_anomaly <- function(x,
       reference_df <- lcz_model %>%
         dplyr::filter(.data$station != paste0(input)) %>%
         dplyr::mutate(reference_value = mean(.data$var_interp))
-      reference_df <- tibble::as.tibble(mean(reference_df$reference_value))
+      reference_df <- tibble::as_tibble(mean(reference_df$reference_value))
 
       merged_data <- dplyr::bind_cols(mean_df, reference_df) %>%
         dplyr::rename(reference_value = .data$value) %>%
@@ -406,7 +405,7 @@ lcz_anomaly <- function(x,
       final_graph <-
         ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = stats::reorder(.data$station, .data$anomaly), y = .data$anomaly, fill = .data$lcz)) +
         ggplot2::geom_bar(stat = "identity", width = .5) +
-        ggplot2::geom_hline(data = anomaly_cal$anomaly, yintercept = 0, linetype = "dashed", color = "black") +
+        ggplot2::geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
         ggplot2::geom_text(data = subset_high, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4, check_overlap = TRUE) +
         ggplot2::geom_text(data = subset_low, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4, check_overlap = TRUE) +
         ggplot2::scale_fill_manual(values = color_values, name = "LCZ class", labels = lcz.lables) +
@@ -569,7 +568,7 @@ lcz_anomaly <- function(x,
           ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = stats::reorder(.data$station, .data$anomaly), y = .data$anomaly, fill = .data$lcz)) +
           ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
           ggplot2::geom_bar(stat = "identity", width = .4) +
-          ggplot2::geom_hline(data = anomaly_cal$anomaly, yintercept = 0, linetype = "dashed", color = "black") +
+          ggplot2::geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
           ggplot2::geom_text(data = subset_high, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4, check_overlap = TRUE) +
           ggplot2::geom_text(data = subset_low, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4, check_overlap = TRUE) +
           ggplot2::scale_fill_manual(
@@ -766,7 +765,7 @@ lcz_anomaly <- function(x,
         ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = .data$station, y = .data$anomaly, fill = .data$lcz)) +
         ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
         ggplot2::geom_bar(stat = "identity", width = .5) +
-        ggplot2::geom_hline(data = anomaly_cal$anomaly, yintercept = 0, linetype = "dashed", color = "black") +
+        ggplot2::geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
         ggplot2::geom_text(data = subset_high, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4, check_overlap = TRUE) +
         ggplot2::geom_text(data = subset_low, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4, check_overlap = TRUE) +
         ggplot2::scale_fill_manual(
@@ -796,7 +795,7 @@ lcz_anomaly <- function(x,
           ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = stats::reorder(.data$station, .data$anomaly), y = .data$anomaly, fill = .data$lcz)) +
           ggplot2::scale_x_discrete(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
           ggplot2::geom_bar(stat = "identity", width = .4) +
-          ggplot2::geom_hline(data = anomaly_cal$anomaly, yintercept = 0, linetype = "dashed", color = "black") +
+          ggplot2::geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
           ggplot2::geom_text(data = subset_high, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4, check_overlap = TRUE) +
           ggplot2::geom_text(data = subset_low, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4, check_overlap = TRUE) +
           ggplot2::scale_fill_manual(
@@ -968,7 +967,7 @@ lcz_anomaly <- function(x,
       graph <-
         ggplot2::ggplot(anomaly_cal, ggplot2::aes(x = .data$station, y = .data$anomaly, fill = .data$lcz)) +
         ggplot2::geom_bar(stat = "identity", width = .4) +
-        ggplot2::geom_hline(data = anomaly_cal$anomaly, yintercept = 0, linetype = "dashed", color = "black") +
+        ggplot2::geom_hline(yintercept = 0, linetype = "dashed", color = "black") +
         ggplot2::geom_text(data = subset_high, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = -0.1, size = 4, check_overlap = TRUE) +
         ggplot2::geom_text(data = subset_low, ggplot2::aes(label = round(.data$anomaly, 1)), hjust = 1.1, size = 4, check_overlap = TRUE) +
         ggplot2::scale_fill_manual(

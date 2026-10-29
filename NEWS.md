@@ -1,4 +1,3 @@
-# LCZ4r 0.1.0.0 (development version)
+# LCZ4r 0.1.0
 
-Very coming soon..
-
+* Initial CRAN submission.

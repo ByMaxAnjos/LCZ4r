@@ -8,7 +8,7 @@
 #' @param roi Optionally, you can provide a Region of Interest (ROI) in ESRI shapefile format to clip the LCZ map to a custom area.
 #' @param isave_map Logical. Set to TRUE if you wish to save the resulting clipped map as a raster TIFF file on your local machine.
 #' @param isave_global Logical. Set to TRUE if you wish to save the global LCZ map as a raster TIFF file on your local machine.
-#' @return A Terra raster TIFF file containing LCZ classes (1-17).
+#' @return A Terra raster TIFF file containing LCZ classes (1-17). If the remote resource cannot be reached, a message is shown and \code{NULL} is returned invisibly.
 #'
 #' @export
 #'
@@ -18,19 +18,11 @@
 #' Stewart ID, Oke TR. (2012). Local Climate Zones for Urban Temperature Studies. Bull Am Meteorol Soc. 93(12):1879-1900. doi:10.1175/BAMS-D-11-00019.1
 #'
 #' @examples
-#' \dontrun{
-#' # Load the LCZ map for a city
-#' my_lcz_city <- lcz_get_map(city = "your city")
-#'
-#' # Get LCZ map for a custom region of interest
-#' custom_roi <- sf::st_read("custom_roi.shp")
-#' roi_lcz <- lcz_get_map(roi = custom_roi, isave_map = TRUE)
-#'
-#' # Retrieve the LCZ map for a country
-#' my_lcz_country <- lcz_get_map(city = "Brazil")
+#' \donttest{
+#' # Requires internet access
+#' my_lcz_city <- lcz_get_map(city = "Lisbon")
 #' }
 #'
-#' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis
 
 lcz_get_map <- function(city = NULL, roi = NULL, isave_map = FALSE, isave_global = FALSE) {
   # Validate inputs
@@ -40,10 +32,11 @@ lcz_get_map <- function(city = NULL, roi = NULL, isave_map = FALSE, isave_global
 
   if (!is.null(city)) {
     # Get study area polygon from OpenStreetMap data
-    shp_verify <- osmdata::getbb({{ city }}, format_out = "sf_polygon", limit = 1)
+    shp_verify <- lcz_get_osm_boundary(city)
 
     if (is.null(shp_verify)) {
-      stop(paste0("No polygonal boundary for", city, ".See https://nominatim.openstreetmap.org"))
+      base::message(paste0("No polygonal boundary for", city, ".See https://nominatim.openstreetmap.org"))
+      return(invisible(NULL))
     }
     # Check if polygon was obtained successfully
     if (!is.null(shp_verify$geometry) & !inherits(shp_verify, "list")) {
@@ -57,15 +50,17 @@ lcz_get_map <- function(city = NULL, roi = NULL, isave_map = FALSE, isave_global
         sf::st_as_sf() %>%
         sf::st_transform(crs = "+proj=longlat +datum=WGS84 +no_defs")
     }
-    options(warn = -1)
+    old_opts <- options(warn = -1)
+    on.exit(options(old_opts), add = TRUE)
     # Download the LCZ global map
     lcz_url <- "https://zenodo.org/records/8419340/files/lcz_filter_v3.tif"
-    lcz_download <- terra::rast(base::paste0("/vsicurl/", lcz_url))
+    lcz_download <- lcz_read_remote(lcz_url)
 
     if (base::is.null(lcz_download)) {
-      stop("This error might be due to server restrictions. In such cases, you may need to download the file manually using this link:
+      base::message("This error might be due to server restrictions. In such cases, you may need to download the file manually using this link:
            https://zenodo.org/records/8419340/files/lcz_filter_v3.tif?download=1.
            Then read it using the terra package, eg., my_map <- rast('path/lcz_filter_v3.tif'), and use the function lcz_get_map2()")
+      return(invisible(NULL))
     }
 
     lcz_ras <- terra::crop(lcz_download, terra::ext(study_area))
@@ -113,7 +108,10 @@ lcz_get_map <- function(city = NULL, roi = NULL, isave_map = FALSE, isave_global
   } else {
     # Download the LCZ global map from https://zenodo.org/record/6364594/files/lcz_filter_v1.tif?download=1
     lcz_url <- "https://zenodo.org/records/8419340/files/lcz_filter_v3.tif"
-    lcz_download <- terra::rast(base::paste0("/vsicurl/", lcz_url))
+    lcz_download <- lcz_read_remote(lcz_url)
+    if (base::is.null(lcz_download)) {
+      return(invisible(NULL))
+    }
     roi_crs <- roi %>%
       sf::st_as_sf() %>%
       sf::st_make_valid() %>%
