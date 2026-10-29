@@ -24,8 +24,11 @@
 :::
 
 ```r
+# 从 R-universe 安装(推荐,无需 GitHub 令牌)
+install.packages("LCZ4r", repos = c("https://bymaxanjos.r-universe.dev", "https://cloud.r-project.org"))
+
+# 或直接从 GitHub 安装
 if (!require("remotes")) { install.packages("remotes")}
-# 直接从 GitHub 安装或更新
 remotes::install_github("ByMaxAnjos/LCZ4r", upgrade = "never")
 ```
 

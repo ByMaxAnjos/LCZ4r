@@ -26,8 +26,11 @@ This is the fastest way to get the latest version of the package.
 :::
 
 ```r
+# Install from R-universe (recommended, no GitHub token needed)
+install.packages("LCZ4r", repos = c("https://bymaxanjos.r-universe.dev", "https://cloud.r-project.org"))
+
+# Or install directly from GitHub
 if (!require("remotes")) { install.packages("remotes")}
-# Install or update directly from GitHub
 remotes::install_github("ByMaxAnjos/LCZ4r", upgrade = "never")
 ```
 ::: callout-warning

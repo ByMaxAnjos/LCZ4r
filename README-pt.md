@@ -24,8 +24,11 @@ Esta é a maneira mais rápida de obter a versão mais recente do pacote.
 :::
 
 ```r
+# Instalar pelo R-universe (recomendado, não precisa de token do GitHub)
+install.packages("LCZ4r", repos = c("https://bymaxanjos.r-universe.dev", "https://cloud.r-project.org"))
+
+# Ou instalar diretamente do GitHub
 if (!require("remotes")) { install.packages("remotes")}
-# Instalar ou atualizar diretamente do GitHub
 remotes::install_github("ByMaxAnjos/LCZ4r", upgrade = "never")
 ```
 

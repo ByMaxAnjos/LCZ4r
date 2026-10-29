@@ -22,3 +22,4 @@ Thumbs.db
 /.quarto/
 
 **/*.quarto_ipynb
+!/man/figures/
