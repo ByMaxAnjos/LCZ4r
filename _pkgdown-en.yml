@@ -40,6 +40,7 @@ navbar:
       href: https://clima-urbano.streamlit.app/
       target: "_blank"
     - icon: fa-github
+      aria-label: "GitHub"
       href: https://github.com/ByMaxAnjos/LCZ4r/
     - text: "Português"
       href: ../pt/index.html
@@ -82,6 +83,21 @@ reference:
   - lcz_plot_interp
   - lcz_interp_eval
   - lcz_uhi_intensity
+
+- title: "Languages and Translation"
+  desc: >
+    Translate console messages, axis labels, legends and the 17 LCZ class names.
+  contents:
+  - lcz_langs
+  - lcz_set_lang
+  - lcz_tr
+
+- title: "Publication Figures"
+  desc: >
+    Journal-grade themes and export helpers for maps and charts.
+  contents:
+  - lcz_theme_journal
+  - lcz_save_figure
 
 - title: "LCZ Tutorials and Data Access"
   desc: >

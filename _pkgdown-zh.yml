@@ -38,6 +38,7 @@ navbar:
       href: https://clima-urbano.streamlit.app/
       target: "_blank"
     - icon: fa-github
+      aria-label: "GitHub"
       href: https://github.com/ByMaxAnjos/LCZ4r/
     - text: "English"
       href: ../en/index.html
@@ -76,6 +77,21 @@ reference:
   - lcz_plot_interp
   - lcz_interp_eval
   - lcz_uhi_intensity
+- title: "语言与翻译"
+  desc: >
+    翻译控制台消息、坐标轴标签、图例以及 17 个 LCZ 类别名称。
+  contents:
+  - lcz_langs
+  - lcz_set_lang
+  - lcz_tr
+
+- title: "出版级图形"
+  desc: >
+    用于地图和图表的出版级主题与导出函数。
+  contents:
+  - lcz_theme_journal
+  - lcz_save_figure
+
 - title: "LCZ 教程与数据访问"
   desc: >
     访问详细的教程和示例数据集，以增强您对 LCZ4r 软件包的理解和应用。
