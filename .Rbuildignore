@@ -29,3 +29,9 @@
 
 ^inst$
 ^inst/.*$
+
+^dev$
+^dev/.*$
+^AUDITORIA\.md$
+^\.claude$
+^README-zh\.md$

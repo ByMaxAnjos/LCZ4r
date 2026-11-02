@@ -2,45 +2,45 @@
 % Please edit documentation in R/lcz_get_map2.R
 \name{lcz_get_map2}
 \alias{lcz_get_map2}
-\title{Obtain the LCZ map from LCZ generator or with downloaded global LCZ map}
+\title{Clip a local LCZ map to a city or region of interest}
 \usage{
-lcz_get_map2(x, city = NULL, roi = NULL, isave_map = FALSE)
+lcz_get_map2(x, city = NULL, roi = NULL, isave_map = FALSE, lang = "en")
 }
 \arguments{
-\item{x}{A SpatRaster object containing the LCZ map. It can be download using these links: https://lcz-generator.rub.de/ , https://zenodo.org/records/8419340/files/lcz_filter_v3.tif?download=1".
-Then, it suggested use terra::rast(path/name.tif") to import the raster .tif into R.}
+\item{x}{A \code{SpatRaster} (or path to a raster) with LCZ classes.}
 
-\item{city}{A character string specifying the name of your target area based on the OpenStreetMap project.}
+\item{city}{A character string with the name of the target area, as used by
+OpenStreetMap/Nominatim.}
 
-\item{roi}{Optionally, you can provide a Region of Interest (ROI) in ESRI shapefile format to clip the LCZ map to a custom area.}
+\item{roi}{Optional \code{sf}/\code{sfc} polygon used to clip the map.}
 
-\item{isave_map}{Logical. Set to TRUE if you wish to save the resulting clipped map as a raster TIFF file on your local machine.}
+\item{isave_map}{Logical. Save the clipped map as a GeoTIFF.}
+
+\item{lang}{Language used for console messages and errors. See
+\code{\link[=lcz_langs]{lcz_langs()}}. Defaults to \code{"en"}.}
 }
 \value{
-A Terra raster TIFF file containing LCZ classes for the specified area of interest.
+A \code{SpatRaster} clipped to the requested area.
 }
 \description{
-This function retrieves the Local Climate Zone (LCZ) global mapping dataset
-created by Demuzere et al. (2022) and available at https://doi.org/10.5194/essd-14-3835-2022.
-It allows you to obtain the LCZ map for a specific area of interest, which can be a city, state, region, or custom-defined shape.
+Use this function when you already have the global (or continental) LCZ
+GeoTIFF on disk, e.g. after a manual download from Zenodo.
 }
 \examples{
 \dontrun{
-# Go to https://lcz-generator.rub.de/
-my_map <- terra::rast("path/name.tif")
-my_lcz_map <- lcz_get_map2(my_map, city = "Name")
-
-# Load the LCZ map from your PC
-my_map <- terra::rast("path/lcz_filter_v3.tif")
-
-# Get LCZ map for a custom region of interest
-custom_roi <- sf::st_read("custom_roi.shp")
-roi_lcz <- lcz_get_map2(my_map, roi = custom_roi)
-
-# Retrieve the LCZ map for a country (no custom ROI specified)
+my_map <- terra::rast("lcz_filter_v3.tif")
 my_lcz_country <- lcz_get_map2(my_map, city = "Lisbon")
 }
 
+}
+\references{
+Demuzere, M., Kittner, J., Martilli, A., Mills, G., Moede, C., Stewart, I.
+D., van Vliet, J., and Bechtel, B. (2022). A global map of Local Climate
+Zones. Earth Syst. Sci. Data 14(8) 3835-3873.
+\doi{10.5194/essd-14-3835-2022}
+}
+\seealso{
+\code{\link[=lcz_get_map]{lcz_get_map()}}
 }
 \keyword{Climate}
 \keyword{LCZ,}

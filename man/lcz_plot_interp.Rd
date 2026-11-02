@@ -2,7 +2,7 @@
 % Please edit documentation in R/lcz_plot_interp.R
 \name{lcz_plot_interp}
 \alias{lcz_plot_interp}
-\title{Visualize Interpolated LCZ map}
+\title{Visualise interpolated LCZ maps}
 \usage{
 lcz_plot_interp(
   x,
@@ -10,37 +10,46 @@ lcz_plot_interp(
   direction = 1,
   isave = FALSE,
   save_extension = "png",
-  ...
+  legend_name = NULL,
+  ...,
+  lang = "en"
 )
 }
 \arguments{
-\item{x}{The LCZ map in SpatRaster format, either as a single raster or a raster stack, obtained from functions like lcz_anomaly_map() or lcz_interp_map().}
+\item{x}{A \code{SpatRaster} (single layer or stack).}
 
-\item{palette}{Gradient palettes available in the tidyterra package. Default is "muted". More palettes can be found in the tidyterra documentation: https://dieghernan.github.io/tidyterra/articles/palettes.html#scale_fill_whitebox_}
+\item{palette}{A gradient palette from \pkg{tidyterra}
+(\code{scale_fill_whitebox_c}). Default \code{"muted"}.}
 
-\item{direction}{Sets order of colors. Default palette is 1. If direction is -1, palette color order is reversed}
+\item{direction}{Colour order: \code{1} (default) or \code{-1} (reversed).}
 
-\item{isave}{Logical, indicating whether to save the plot to your directory. Default is FALSE.}
+\item{isave}{Logical. Save the plot in \verb{LCZ4r_output/}.}
 
-\item{save_extension}{File format for saving the plot. Options: "png", "jpg", "jpeg", "tif", "pdf", "svg" (default is "png").}
+\item{save_extension}{Image format: \code{"png"}, \code{"jpg"}, \code{"tif"}, \code{"pdf"} or
+\code{"svg"}.}
 
-\item{...}{Additional arguments to modify axis, legend, and plot labels, including title, subtitle, and caption.}
+\item{legend_name}{Legend title. \code{NULL} (default) uses a translated "Value".}
+
+\item{...}{Passed to \code{\link[ggplot2:labs]{ggplot2::labs()}}.}
+
+\item{lang}{Language used for messages and errors. See \code{\link[=lcz_langs]{lcz_langs()}}.
+Defaults to \code{"en"}.}
 }
 \value{
-A plot of the LCZ interpolated map in ggplot2 format.
+A \code{ggplot} object.
 }
 \description{
-This function plots the interpolated LCZ anomaly, LCZ air temperature, or other environmental variables.
+Plots the rasters produced by \code{\link[=lcz_interp_map]{lcz_interp_map()}} or \code{\link[=lcz_anomaly_map]{lcz_anomaly_map()}}.
 }
 \examples{
 \dontrun{
- # Plot the interpolated map
- lcz_plot_interp(my_interp_map)
- }
+my_interp <- lcz_interp_map(lcz_map, df, var = "airT", station_id = "station")
+lcz_plot_interp(my_interp)
+}
 
 }
 \seealso{
-See the documentation for lcz_anomaly_map() to obtain LCZ anomaly rasters and lcz_interp_map() for air temperature rasters.
+\code{\link[=lcz_interp_map]{lcz_interp_map()}}, \code{\link[=lcz_anomaly_map]{lcz_anomaly_map()}}
 }
 \keyword{Climate}
 \keyword{LCZ,}

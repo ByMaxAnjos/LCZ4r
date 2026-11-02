@@ -1,28 +1,30 @@
-#' Visualize Interpolated LCZ map
+#' Visualise interpolated LCZ maps
 #'
-#' This function plots the interpolated LCZ anomaly, LCZ air temperature, or other environmental variables.
+#' Plots the rasters produced by [lcz_interp_map()] or [lcz_anomaly_map()].
 #'
-#' @param x The LCZ map in SpatRaster format, either as a single raster or a raster stack, obtained from functions like lcz_anomaly_map() or lcz_interp_map().
-#' @param palette Gradient palettes available in the tidyterra package. Default is "muted". More palettes can be found in the tidyterra documentation: https://dieghernan.github.io/tidyterra/articles/palettes.html#scale_fill_whitebox_
-#' @param direction Sets order of colors. Default palette is 1. If direction is -1, palette color order is reversed
-#' @param isave Logical, indicating whether to save the plot to your directory. Default is FALSE.
-#' @param save_extension File format for saving the plot. Options: "png", "jpg", "jpeg", "tif", "pdf", "svg" (default is "png").
-#' @param ... Additional arguments to modify axis, legend, and plot labels, including title, subtitle, and caption.
+#' @param x A `SpatRaster` (single layer or stack).
+#' @param palette A gradient palette from \pkg{tidyterra}
+#'   (`scale_fill_whitebox_c`). Default `"muted"`.
+#' @param direction Colour order: `1` (default) or `-1` (reversed).
+#' @param isave Logical. Save the plot in `LCZ4r_output/`.
+#' @param legend_name Legend title. `NULL` (default) uses a translated "Value".
+#' @param save_extension Image format: `"png"`, `"jpg"`, `"tif"`, `"pdf"` or
+#'   `"svg"`.
+#' @param ... Passed to [ggplot2::labs()].
+#' @param lang Language used for messages and errors. See [lcz_langs()].
+#'   Defaults to `"en"`.
 #'
-#' @return A plot of the LCZ interpolated map in ggplot2 format.
+#' @return A `ggplot` object.
 #'
 #' @export
 #'
 #' @examples
 #' \dontrun{
-#'  # Plot the interpolated map
-#'  lcz_plot_interp(my_interp_map)
-#'  }
+#' my_interp <- lcz_interp_map(lcz_map, df, var = "airT", station_id = "station")
+#' lcz_plot_interp(my_interp)
+#' }
 #'
-#' @importFrom rlang .data
-#'
-#' @seealso
-#' See the documentation for lcz_anomaly_map() to obtain LCZ anomaly rasters and lcz_interp_map() for air temperature rasters.
+#' @seealso [lcz_interp_map()], [lcz_anomaly_map()]
 #'
 #' @keywords LCZ, Local Climate Zone, urban climate, spatial analysis
 
@@ -31,71 +33,51 @@ lcz_plot_interp <- function(x,
                             direction = 1,
                             isave = FALSE,
                             save_extension = "png",
-                            ...) {
-  # Validate inputs more efficiently
+                            legend_name = NULL,
+                            ...,
+                            lang = "en") {
   if (is.null(x)) {
-    stop("The input must be a SpatRaster object. Please use lcz_anomaly_map() or lcz_interp_map() to generate the input.")
+    lcz_abort("err_anomaly_input", lang = lang)
+  }
+  if (!inherits(x, "SpatRaster")) {
+    x <- terra::rast(x)
   }
 
-  # Convert to SpatRaster if needed (only once)
-  x <- if (!inherits(x, "SpatRaster")) terra::rast(x) else x
+  # terra::minmax() streams the raster; terra::values() would copy every cell.
+  mm <- terra::minmax(x)
+  color_limits <- c(floor(min(mm, na.rm = TRUE)), ceiling(max(mm, na.rm = TRUE)))
 
-  min_val_comum <- floor(min(terra::values(x), na.rm = TRUE))
-  max_val_comum <- ceiling(max(terra::values(x), na.rm = TRUE))
-  color_limits <- c(min_val_comum, max_val_comum)
+  if (is.null(legend_name)) legend_name <- lcz_tr("value", lang = lang)
 
-  # Create base plot elements (common to both cases)
-  base_plot <- ggplot2::ggplot() +
-    tidyterra::geom_spatraster(data = x, na.rm = TRUE) +  # Handle NA values
+  final_graph <- ggplot2::ggplot() +
+    tidyterra::geom_spatraster(data = x, na.rm = TRUE) +
     tidyterra::scale_fill_whitebox_c(
       palette = palette,
       direction = direction,
       limits = color_limits,
       na.value = "transparent"
     ) +
-    ggplot2::guides(fill = ggplot2::guide_colorbar(title.position = "top")) +
+    ggplot2::guides(fill = ggplot2::guide_colorbar(
+      title.position = "top", title.hjust = 0.5,
+      barwidth = ggplot2::unit(70, "mm"),
+      barheight = ggplot2::unit(3, "mm"),
+      frame.colour = "grey70", ticks.colour = "grey40"
+    )) +
     ggplot2::coord_sf(expand = FALSE, clip = "off") +
-    ggplot2::labs(...) +
-    ggplot2::theme_void() +
-    ggplot2::theme(
-      legend.position = "right",
-      legend.direction = "vertical",
-      legend.key.height = ggplot2::unit(40L, "pt"),
-      legend.title = ggplot2::element_text(size = 15, hjust = 0.5),
-      strip.text = ggplot2::element_text(hjust = 0, size = 14),
-      legend.text = ggplot2::element_text(size = 12),
-      plot.title = ggplot2::element_text(face = "bold", size = 20),
-      plot.subtitle = ggplot2::element_text(margin = ggplot2::margin(5, 0, 15, 0), size = 17),
-      plot.caption = ggplot2::element_text(color = "grey30", size = 12),
-      plot.margin = ggplot2::margin(0, 10, 0, 10)
-    )
+    do.call(ggplot2::labs, c(list(...), list(fill = legend_name))) +
+    lcz_theme_map(legend_position = "bottom")
 
-  # Add faceting only if multiple layers exist
-  if (terra::nlyr(x) > 1) {
-    final_graph <- base_plot +
-      ggplot2::facet_wrap(~lyr)
-  } else {
-    final_graph <- base_plot
+  if (terra::nlyr(x) > 1L) {
+    final_graph <- final_graph + ggplot2::facet_wrap(~lyr)
   }
 
-  # Handle saving (common to both cases)
-  if (isave) {
-    folder <- "LCZ4r_output/"
-    if (!dir.exists(folder)) dir.create(folder, recursive = TRUE)
-
-    file <- file.path(getwd(), folder, paste0("lcz_interp_map.", save_extension))
-    ggplot2::ggsave(
-      filename = file,
-      plot = final_graph,
-      height = 9,
-      width = 16,
-      units = "in",
-      dpi = 600
+  if (isTRUE(isave)) {
+    lcz_save_figure(
+      final_graph,
+      filename = paste0("lcz_interp_map.", save_extension),
+      width = "double", height = 150, lang = lang
     )
-    message("Looking at your files in the path: ", file.path(getwd(), folder))
   }
 
-  return(final_graph)
+  final_graph
 }
-
-

@@ -2,7 +2,7 @@
 % Please edit documentation in R/lcz_plot_map.R
 \name{lcz_plot_map}
 \alias{lcz_plot_map}
-\title{Visualize the LCZ Map}
+\title{Visualise an LCZ map}
 \usage{
 lcz_plot_map(
   x,
@@ -10,36 +10,59 @@ lcz_plot_map(
   show_legend = TRUE,
   save_extension = "png",
   inclusive = FALSE,
-  ...
+  max_pixels = 1e+06,
+  legend_ncol = 1,
+  scalebar = FALSE,
+  north_arrow = FALSE,
+  ...,
+  lang = "en"
 )
 }
 \arguments{
-\item{x}{A SpatRaster object containing the LCZ map to be plotted.}
+\item{x}{A \code{SpatRaster} (or path) with LCZ classes (1-17).}
 
-\item{isave}{Logical. Set to TRUE to save the plot in your working directory.}
+\item{isave}{Logical. Save the plot in \verb{LCZ4r_output/}.}
 
-\item{show_legend}{Logical. If TRUE, displays the legend on the plot. If FALSE, the legend will be hidden. Default is TRUE.}
+\item{show_legend}{Logical. Show the LCZ legend.}
 
-\item{save_extension}{File format for saving the plot. Options: "png", "jpg", "jpeg", "tif", "pdf", "svg" (default is "png").}
+\item{save_extension}{Image format: \code{"png"}, \code{"jpg"}, \code{"tif"}, \code{"pdf"} or
+\code{"svg"}.}
 
-\item{inclusive}{Logical. Set to TRUE to use a colorblind-friendly palette.}
+\item{inclusive}{Logical. Use the colour-vision-deficiency-safe palette.}
 
-\item{...}{Optional arguments to modify axis labels, legend, plot title, subtitle, and caption.}
+\item{max_pixels}{Maximum number of cells drawn. Larger rasters are
+aggregated with a modal filter first, which keeps memory bounded and the
+plot legible at print resolution.}
+
+\item{legend_ncol}{Number of legend columns. Default \code{1}, which keeps the map
+panel as large as possible; use \code{2} for a shorter, wider legend.}
+
+\item{scalebar}{Logical. Add a scale bar computed from the raster extent.}
+
+\item{north_arrow}{Logical. Add a north arrow.}
+
+\item{...}{Passed to \code{\link[ggplot2:labs]{ggplot2::labs()}} (\code{title}, \code{subtitle}, \code{caption}).}
+
+\item{lang}{Language used for labels, messages and errors. See
+\code{\link[=lcz_langs]{lcz_langs()}}. Defaults to \code{"en"}.}
 }
 \value{
-A visual representation of the LCZ map in ggplot format.
+A \code{ggplot} object.
 }
 \description{
-This function generates a graphical representation of a Local Climate Zone (LCZ) map provided as a \code{SpatRaster} object.
+Produces a publication-ready map of LCZ classes with the official colour
+scheme (or a colour-vision-deficiency-safe alternative).
 }
 \examples{
 \dontrun{
-lcz_plot_map(LCZmap)
+my_lcz_map <- lcz_get_map(city = "Juiz de Fora")
+lcz_plot_map(my_lcz_map, title = "LCZ - Juiz de Fora")
+lcz_plot_map(my_lcz_map, inclusive = TRUE, lang = "pt")
 }
 
 }
 \seealso{
-See the documentation for \code{lcz_get_map()} to obtain an LCZ map.
+\code{\link[=lcz_get_map]{lcz_get_map()}}, \code{\link[=lcz_cal_area]{lcz_cal_area()}}
 }
 \keyword{Climate}
 \keyword{LCZ,}

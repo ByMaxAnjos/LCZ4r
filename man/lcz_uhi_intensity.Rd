@@ -21,11 +21,12 @@ lcz_uhi_intensity(
   iplot = TRUE,
   isave = FALSE,
   save_extension = "png",
-  ylab = "Air temperature [C]",
-  xlab = "Time",
-  ylab2 = "UHI",
-  title = "",
-  caption = "LCZ4r,2024"
+  ylab = NULL,
+  xlab = NULL,
+  ylab2 = NULL,
+  title = NULL,
+  caption = NULL,
+  lang = "en"
 )
 }
 \arguments{
@@ -75,15 +76,19 @@ lcz_uhi_intensity(
 
 \item{save_extension}{A character string indicating the file format for saving the plot. Options include: \dQuote{png}, \dQuote{jpg}, \dQuote{jpeg}, \dQuote{tif}, \dQuote{pdf}, \dQuote{svg}. The default is \dQuote{png}.}
 
-\item{ylab}{The label for the y-axis.}
+\item{ylab}{y-axis label. \code{NULL} (default) uses a translated "Air temperature (°C)".}
 
-\item{xlab}{The label for the x-axis. Default is \dQuote{Time}.}
+\item{xlab}{x-axis label. \code{NULL} (default) uses a translated "Time".}
 
-\item{ylab2}{The label for the right y-axis.}
+\item{ylab2}{Right y-axis label. \code{NULL} (default) uses a translated "UHI intensity (K)".}
 
 \item{title}{The title of the plot. Default is an empty string.}
 
-\item{caption}{The source data caption.}
+\item{caption}{Source caption. \code{NULL} (default) uses a translated "Source: LCZ4r".}
+
+\item{lang}{Language used for labels, messages and errors. Available codes:
+\code{"en"} (default), \code{"pt"}, \code{"es"}, \code{"fr"}, \code{"zh"}, \code{"de"}, \code{"it"}, \code{"ja"},
+\code{"ko"}, \code{"ru"}, \code{"ar"}. See \code{\link[=lcz_langs]{lcz_langs()}}.}
 }
 \value{
 A visual representation of the time series of UHI in \code{ggplot} or data frame .csv format.

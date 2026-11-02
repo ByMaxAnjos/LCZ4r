@@ -2,46 +2,54 @@
 % Please edit documentation in R/lcz_get_map_euro.R
 \name{lcz_get_map_euro}
 \alias{lcz_get_map_euro}
-\title{Download LCZ map from the European}
+\title{Download the European LCZ map}
 \usage{
 lcz_get_map_euro(
   city = NULL,
   roi = NULL,
   isave_map = FALSE,
-  isave_euro = FALSE
+  isave_euro = FALSE,
+  lang = "en"
 )
 }
 \arguments{
-\item{city}{A character string specifying the name of your target area based on the OpenStreetMap project.}
+\item{city}{A character string with the name of the target area, as used by
+OpenStreetMap/Nominatim.}
 
-\item{roi}{Optionally, you can provide a Region of Interest (ROI) in ESRI shapefile format to clip the LCZ map to a custom area.}
+\item{roi}{Optional \code{sf}/\code{sfc} polygon used to clip the LCZ map.}
 
-\item{isave_map}{Logical. Set to TRUE if you wish to save the resulting clipped map as a raster TIFF file on your local machine.}
+\item{isave_map}{Logical. Save the clipped map as a GeoTIFF.}
 
-\item{isave_euro}{Logical. Set to TRUE if you wish to save the European LCZ map as a raster TIFF file on your local machine.}
+\item{isave_euro}{Logical. Save the full European LCZ map as a GeoTIFF.}
+
+\item{lang}{Language used for console messages and errors. See
+\code{\link[=lcz_langs]{lcz_langs()}}. Defaults to \code{"en"}.}
 }
 \value{
-A Terra raster TIFF file containing LCZ classes (1-17).
+A \code{SpatRaster} with LCZ classes (1-17), in EPSG:3035.
 }
 \description{
-This function retrieves the Local Climate Zone (LCZ) European mapping dataset
-created by Demuzere et al. (2019) and available at https://doi.org/10.1371/journal.pone.0214474.
-It allows you to obtain the LCZ map for a specific area of interest, which can be a city, state, region, or custom-defined shape.
+Retrieves the European Local Climate Zone dataset (Demuzere et al., 2019)
+for a city or a custom region of interest.
 }
 \examples{
 \dontrun{
-# Example 1: Load the LCZ map for a city
 my_lcz_city <- lcz_get_map_euro(city = "Berlin")
-
-# Example 2: Get LCZ map for a custom region of interest
 custom_roi <- sf::st_read("custom_roi.shp")
 roi_lcz <- lcz_get_map_euro(roi = custom_roi)
 }
+
 }
 \references{
-Demuzere, M., Bechtel, B., Middel, A., & Mills, G. (2019). Mapping Europe into local climate zones. PLOS ONE, 14(4), e0214474. DOI:https://doi.org/10.1371/journal.pone.0214474
-Demuzere, M.; Bechtel, B.; Middel, A.; Mills, G. (2019): European LCZ map. Figshare. Dataset. https://doi.org/10.6084/m9.figshare.13322450
-Anjos, M. (2024). LCZ4r Package Dataset. Zenodo. \url{https://doi.org/10.5281/zenodo.10835692}
+Demuzere, M., Bechtel, B., Middel, A., and Mills, G. (2019). Mapping Europe
+into local climate zones. PLOS ONE 14(4), e0214474.
+\doi{10.1371/journal.pone.0214474}
+
+Demuzere, M., Bechtel, B., Middel, A., and Mills, G. (2019). European LCZ
+map. Figshare. \doi{10.6084/m9.figshare.13322450}
+}
+\seealso{
+\code{\link[=lcz_get_map]{lcz_get_map()}}, \code{\link[=lcz_get_map_usa]{lcz_get_map_usa()}}
 }
 \keyword{Climate}
 \keyword{LCZ,}

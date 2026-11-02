@@ -10,6 +10,49 @@ The [**LCZ4r package**](https://github.com/ByMaxAnjos/LCZ4r) provides a comprehe
 
 ---
 
+# 0. What's new in 0.2.0
+
+- **11 languages**: every exported function accepts `lang = "en"` (plus `pt`,
+  `es`, `fr`, `zh`, `de`, `it`, `ja`, `ko`, `ru`, `ar`).
+- **Publication-ready figures**: `lcz_theme_journal()` and
+  `lcz_save_figure()` produce 120/190 mm figures at 600 dpi or vector PDF/SVG.
+- **UHI without dual axes**: `group = TRUE` draws two aligned panels,
+  (a) urban/rural temperature and (b) UHI intensity.
+- **Much faster**: `lcz_get_parameters()` ~83×, `two.step` extraction ~16×.
+- **Clear diagnostics** when stations do not match the LCZ map.
+- **Reviewed LCZ terminology** against published national nomenclatures.
+
+# 0.1 Languages
+
+Every exported function accepts a `lang` argument. Messages, error text, axis
+labels, legends and the 17 LCZ class names are translated into **11 languages**:
+`en` (default), `pt`, `es`, `fr`, `zh`, `de`, `it`, `ja`, `ko`, `ru`, `ar`.
+
+# 0.2 Publication-ready figures
+
+All maps and charts share one editorial system: left-aligned titles, no
+top/right spines, colour-blind-safe palettes and a single-column LCZ legend so
+the map keeps its area.
+
+```r
+library(LCZ4r)
+
+my_map <- lcz_get_map(city = "Berlin", lang = "en")
+
+p <- lcz_plot_map(my_map, lang = "en", title = "Local Climate Zones",
+                  scalebar = TRUE, north_arrow = TRUE)
+lcz_save_figure(p, "fig_map.pdf", width = "double", height = 150)
+
+data(lcz_data)
+p_uhi <- lcz_uhi_intensity(my_map, lcz_data, var = "airT",
+                           station_id = "station", group = TRUE, lang = "en")
+lcz_save_figure(p_uhi, "fig_uhi.pdf", width = "double", height = 165)
+```
+
+Full specification: `dev/design-system.md`.
+
+---
+
 # 1. Installation
 
 The `LCZ4r` package is available on GitHub and can be installed in two ways.  

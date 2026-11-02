@@ -39,6 +39,10 @@
 #' @param isave A logical value. If `TRUE`, the plot is saved to the working directory.
 #' @param LCZinterp A logical value. If `TRUE` (default), the LCZ interpolation approach is used. If `FALSE`, conventional interpolation without LCZ is used.
 #'
+#' @param lang Language used for labels, messages and errors. Available codes:
+#'   `"en"` (default), `"pt"`, `"es"`, `"fr"`, `"zh"`, `"de"`, `"it"`, `"ja"`,
+#'   `"ko"`, `"ru"`, `"ar"`. See [lcz_langs()].
+#'
 #' @return A summary table in CSV format containing time series of observed values, predicted values, and residuals. It also returns an ESRI shapefile (.gpkg) containing metadata of the interpolation.
 #'
 #' @author
@@ -91,66 +95,34 @@ lcz_interp_eval <- function(x,
                             Anomaly = FALSE,
                             impute = NULL,
                             isave = FALSE,
-                            LCZinterp = TRUE) {
+                            LCZinterp = TRUE,
+                            lang = "en") {
   # Check and validate raster inputs -----------------------------------------------
 
-  if (missing(x)) {
-    stop("The input must be raster object. Please, use the lcz_get_map* functions")
-  }
-  if (!inherits(x, "SpatRaster")) {
-    warning("The input 'x' is not a SpatRaster object. Attempting to convert it using terra::rast()")
-    x <- try(terra::rast(x), silent = TRUE)
-    if (inherits(x, "try-error")) {
-      stop("Failed to convert input 'x' to SpatRaster. Please provide a valid SpatRaster object.")
-    }
-  }
-  if (terra::nlyr(x) > 1) {
-    x <- x[[2]]
+  x <- lcz_check_raster(x, lang = lang)
+
+  # Check data inputs -------------------------------------------------------
+  lcz_check_data_frame(data_frame, var, station_id, lang = lang)
+
+  if (!(vg.model %in% c("Sph", "Exp", "Gau", "Ste"))) {
+    lcz_abort("err_variogram", lang = lang)
   }
 
-  target_crs_lonlat <- "EPSG:4326"  # WGS84
-
-  if (terra::crs(x, proj = TRUE) != terra::crs(target_crs_lonlat, proj = TRUE)) {
-    warning("Reprojecting input raster to WGS84 (EPSG:4326)")
-    x <- terra::project(x, target_crs_lonlat)
+  if (!(extract.method %in% c("simple", "bilinear", "two.step"))) {
+    lcz_abort("err_extract_method", lang = lang)
   }
 
-  if (is.na(terra::crs(x))) {
-    terra::crs(x) <- target_crs_lonlat
-  }
+  target_crs_lonlat <- "EPSG:4326"
 
-  #Proj for interpolation
+  # Projection used for interpolation: UTM zone of the raster centre
   bbox <- terra::ext(x)
   lon <- (bbox[1] + bbox[2]) / 2
   lat <- (bbox[3] + bbox[4]) / 2
   utm_zone <- floor((lon + 180) / 6) + 1
-
-  if (lat >= 0) {
-    epsg_code <- paste0("EPSG:326", utm_zone) #Hemisphere North
+  target_crs <- if (lat >= 0) {
+    paste0("EPSG:326", utm_zone)
   } else {
-    epsg_code <- paste0("EPSG:327", utm_zone) #Hemisphere South
-  }
-  target_crs <- epsg_code
-
-  # Check data inputs -------------------------------------------------------
-  if (!is.data.frame(data_frame)) {
-    stop("The 'data_frame' input must be a data frame containing air temperature measurements,station IDs, latitude, and longitude.")
-  }
-
-  if (missing(var) || !var %in% colnames(data_frame)) {
-    stop("The 'var' input must be a column name in 'data_frame' representing air temperature.")
-  }
-
-  if (missing(station_id) || !station_id %in% colnames(data_frame)) {
-    stop("The 'station_id' input must be a column name in 'data_frame' representing stations.")
-  }
-
-  if (!(vg.model %in% c("Sph", "Exp", "Gau", "Ste"))) {
-    stop("Invalid viogram model. Choose from 'Sph', 'Exp', 'Gau', or 'Ste'.")
-  }
-
-  if (!(extract.method %in% c("simple", "bilinear", "two.step"))) {
-    stop("Invalid extract-based pixel model. Choose from 'simple', 'bilinear', or 'two.step'.")
+    paste0("EPSG:327", utm_zone)
   }
   # Pre-processing time series ----------------------------------------------
 
@@ -166,11 +138,11 @@ lcz_interp_eval <- function(x,
   df_variable$longitude <- base::as.numeric(df_variable$longitude)
 
   if (!("Latitude" %in% tolower(colnames(df_variable)) || "latitude" %in% tolower(colnames(df_variable)))) {
-    stop("The 'latitude' input must be a column name in 'data_frame' representing each station's latitude.")
+    lcz_abort("err_col", lang = lang, arg = "latitude")
   }
 
   if (!("Longitude" %in% tolower(colnames(df_variable)) || "longitude" %in% tolower(colnames(df_variable)))) {
-    stop("The 'longitude' input must be a column name in 'data_frame' representing each station's longitude")
+    lcz_abort("err_col", lang = lang, arg = "longitude")
   }
 
   # Rename and define my_id for each lat and long
@@ -197,7 +169,7 @@ lcz_interp_eval <- function(x,
   if (!is.null(impute)) {
     impute_methods <- c("mean", "median", "knn", "bag")
     if (!(impute %in% impute_methods)) {
-      stop("Invalid impute method. Choose from 'mean', 'median', 'knn', or 'bag'.")
+      lcz_abort("err_impute", lang = lang)
     }
     impute_function <- switch(impute,
                               "mean" = recipes::step_impute_mean,
@@ -210,7 +182,7 @@ lcz_interp_eval <- function(x,
     df_variable <- lcz_recipe %>%
       recipes::prep(df_variable) %>%
       recipes::bake(new_data = NULL)
-    base::message("The missing values have been imputed with ", impute)
+    lcz_msg("msg_imputed", lang = lang, method = impute)
   }
 
   # Define the period
@@ -264,33 +236,10 @@ lcz_interp_eval <- function(x,
   if (extract.method == "two.step") {
     # Step 2: Define a function to filter stations based on LCZ homogeneity
     filter_homogeneous_lcz <- function(df, raster, kernel_size = 5, threshold = 0.8) {
-      # Convert stations to SpatVector
-      stations_vect <- terra::vect(df)
-
-      # Create a moving kernel to analyze LCZ homogeneity
-      kernel <- matrix(1, nrow = kernel_size, ncol = kernel_size)
-
-      # Extract LCZ values in the kernel around each station
-      lcz_homogeneity <- terra::focal(raster, w = kernel, fun = function(values) {
-        # Compute percentage of pixels matching the center pixel
-        center_pixel <- values[ceiling(length(values) / 2)]
-        if (is.na(center_pixel)) {
-          return(NA)
-        }
-        mean(values == center_pixel, na.rm = TRUE)
-      })
-
-      # Extract homogeneity values at station locations
-      homogeneity_values <- terra::extract(lcz_homogeneity, stations_vect)
-
-      # Add homogeneity values to the station data frame
-      df$homogeneity <- homogeneity_values[, 2]  # Second column contains the homogeneity value
-
-      # Filter stations where homogeneity meets or exceeds the threshold
-      df_filtered <- df %>%
-        dplyr::filter(.data$homogeneity >= threshold)
-
-      return(df_filtered)
+      # Homogeneity is evaluated only at station locations (exact k x k window)
+      # instead of running an R callback over every raster cell with terra::focal().
+      df$homogeneity <- lcz_homogeneity(raster, df, kernel_size = kernel_size)
+      df[!is.na(df$homogeneity) & df$homogeneity >= threshold, , drop = FALSE]
     }
 
     # Step 3: Apply the function to filter stations
@@ -373,7 +322,7 @@ lcz_interp_eval <- function(x,
     file1 <- base::paste0(getwd(), "/", folder, "lcz4r_interp_eval_meta.gpkg")
     sf::st_write(eval_result_meta, file1, append = FALSE, quiet = TRUE)
 
-    base::message("Looking at your metadata in the path:", base::paste0(getwd(), "/", folder))
+    lcz_msg("msg_files_saved", lang = lang, path = base::file.path(getwd(), folder))
 
   }
 
@@ -457,7 +406,7 @@ lcz_interp_eval <- function(x,
                 reference_df <- data_model %>%
                   dplyr::filter(.data$station != paste0(input)) %>%
                   dplyr::mutate(reference_value = mean(.data$var_interp))
-                reference_df <- tibble::as.tibble(mean(reference_df$reference_value))
+                reference_df <- tibble::as_tibble(mean(reference_df$reference_value))
 
                 merged_data <- dplyr::bind_cols(mean_df, reference_df) %>%
                   dplyr::rename(reference_value = .data$value) %>%
@@ -483,10 +432,10 @@ lcz_interp_eval <- function(x,
               testing_set <- dplyr::filter(split_data, !.data$is_train)
 
               if (LCZinterp == TRUE) {
-                krige_vgm <- automap::autofitVariogram(anomaly ~ lcz, training_set, model = vg.model)
+                krige_vgm <- lcz_fit_variogram(anomaly ~ lcz, training_set, vg.model, lang = lang)
                 krige_mod <- gstat::gstat(formula = anomaly ~ lcz, model = krige_vgm$var_model, data = training_set)
               } else {
-                krige_vgm <- automap::autofitVariogram(anomaly ~ 1, training_set, model = vg.model)
+                krige_vgm <- lcz_fit_variogram(anomaly ~ 1, training_set, vg.model, lang = lang)
                 krige_mod <- gstat::gstat(formula = anomaly ~ 1, model = krige_vgm$var_model, data = training_set)
               }
 
@@ -516,14 +465,14 @@ lcz_interp_eval <- function(x,
             } else {
 
               if (LCZinterp == TRUE) {
-                krige_vgm <- automap::autofitVariogram(anomaly ~ lcz, lcz_anomaly_mod, model = vg.model)
+                krige_vgm <- lcz_fit_variogram(anomaly ~ lcz, lcz_anomaly_mod, vg.model, lang = lang)
                 krige_mod <- gstat::gstat(formula = anomaly ~ lcz, model = krige_vgm$var_model, data = lcz_anomaly_mod)
               } else {
-                krige_vgm <- automap::autofitVariogram(anomaly ~ 1, lcz_anomaly_mod, model = vg.model)
+                krige_vgm <- lcz_fit_variogram(anomaly ~ 1, lcz_anomaly_mod, vg.model, lang = lang)
                 krige_mod <- gstat::gstat(formula = anomaly ~ 1, model = krige_vgm$var_model, data = lcz_anomaly_mod)
               }
               set.seed(123)
-              lcz_cv <- gstat::gstat.cv(krige_mod, nfold = 5, debug.level = 0)
+              lcz_cv <- gstat::gstat.cv(krige_mod, nfold = min(5L, NROW(krige_mod$data[[1L]])), debug.level = 0)
               lcz_cv <- sf::st_as_sf(lcz_cv)
               lcz_anomaly_mod$geometry <- NULL
               lcz_cv_result <- dplyr::bind_cols(lcz_anomaly_mod, lcz_cv) %>%
@@ -550,10 +499,10 @@ lcz_interp_eval <- function(x,
                 testing_set <- dplyr::filter(split_data, !.data$is_train)
 
                 if (LCZinterp == TRUE) {
-                  krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, training_set, model = vg.model)
+                  krige_vgm <- lcz_fit_variogram(var_interp ~ lcz, training_set, vg.model, lang = lang)
                   krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = training_set)
                 } else {
-                  krige_vgm <- automap::autofitVariogram(var_interp ~ 1, training_set, model = vg.model)
+                  krige_vgm <- lcz_fit_variogram(var_interp ~ 1, training_set, vg.model, lang = lang)
                   krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = training_set)
                 }
 
@@ -580,14 +529,14 @@ lcz_interp_eval <- function(x,
               } else {
 
                 if (LCZinterp == TRUE) {
-                  krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, data_model, model = vg.model)
+                  krige_vgm <- lcz_fit_variogram(var_interp ~ lcz, data_model, vg.model, lang = lang)
                   krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = data_model)
                 } else {
-                  krige_vgm <- automap::autofitVariogram(var_interp ~ 1, data_model, model = vg.model)
+                  krige_vgm <- lcz_fit_variogram(var_interp ~ 1, data_model, vg.model, lang = lang)
                   krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = data_model)
                 }
                 set.seed(123)
-                lcz_cv <- gstat::gstat.cv(krige_mod, nfold = 5, debug.level = 0)
+                lcz_cv <- gstat::gstat.cv(krige_mod, nfold = min(5L, NROW(krige_mod$data[[1L]])), debug.level = 0)
                 lcz_cv <- sf::st_as_sf(lcz_cv)
                 data_model$geometry <- NULL
                 lcz_cv_result <- dplyr::bind_cols(data_model, lcz_cv) %>%
@@ -635,7 +584,7 @@ lcz_interp_eval <- function(x,
       # Save as .csv
       file <- base::paste0(getwd(), "/", folder, "lcz4r_interp_eval_result.csv")
       utils::write.csv(interp_year, file)
-      base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
+      lcz_msg("msg_files_saved", lang = lang, path = base::file.path(getwd(), folder))
     }
 
     return(interp_year)
@@ -643,7 +592,7 @@ lcz_interp_eval <- function(x,
 
   if (!is.null(by)) {
     if (by %in% "day") {
-      stop("The 'day' does not work with the argument by")
+      lcz_abort("err_by_day", lang = lang)
     }
 
     if (length(by) < 2 && any(c("hour", "daylight", "month", "monthyear", "year", "season", "seasonyear", "yearseason") %in% by)) {
@@ -653,21 +602,7 @@ lcz_interp_eval <- function(x,
           sf::st_intersection(lcz_shp) %>%
           sf::st_transform(crs = target_crs)
 
-      extract_hemisphere <- function(raster) {
-        # Get the extent of the raster
-        extent <- raster::extent(raster::raster(raster))
-        # Check the ymin value of the extent
-        if (extent@ymin >= 0) {
-          hemisphere <- "northern"
-        } else {
-          hemisphere <- "southern"
-        }
-
-        return(hemisphere)
-      }
-
-      # Extract the hemisphere
-      hemisphere <- extract_hemisphere(raster = {{ x }})
+      hemisphere <- lcz_hemisphere(x)
       my_latitude <- df_processed$latitude[1]
       my_longitude <- df_processed$longitude[1]
       df_interp_mod$geometry <- NULL
@@ -706,7 +641,7 @@ lcz_interp_eval <- function(x,
             reference_df <- data_model %>%
               dplyr::filter(.data$station != paste0(input)) %>%
               dplyr::mutate(reference_value = mean(.data$var_interp))
-            reference_df <- tibble::as.tibble(mean(reference_df$reference_value))
+            reference_df <- tibble::as_tibble(mean(reference_df$reference_value))
 
             merged_data <- dplyr::bind_cols(mean_df, reference_df) %>%
               dplyr::rename(reference_value = .data$value) %>%
@@ -732,10 +667,10 @@ lcz_interp_eval <- function(x,
             testing_set <- dplyr::filter(split_data, !.data$is_train)
 
             if (LCZinterp == TRUE) {
-              krige_vgm <- automap::autofitVariogram(anomaly ~ lcz, training_set, model = vg.model)
+              krige_vgm <- lcz_fit_variogram(anomaly ~ lcz, training_set, vg.model, lang = lang)
               krige_mod <- gstat::gstat(formula = anomaly ~ lcz, model = krige_vgm$var_model, data = training_set)
             } else {
-              krige_vgm <- automap::autofitVariogram(anomaly ~ 1, training_set, model = vg.model)
+              krige_vgm <- lcz_fit_variogram(anomaly ~ 1, training_set, vg.model, lang = lang)
               krige_mod <- gstat::gstat(formula = anomaly ~ 1, model = krige_vgm$var_model, data = training_set)
             }
 
@@ -763,14 +698,14 @@ lcz_interp_eval <- function(x,
           } else {
 
             if (LCZinterp == TRUE) {
-              krige_vgm <- automap::autofitVariogram(anomaly ~ lcz, lcz_anomaly_mod, model = vg.model)
+              krige_vgm <- lcz_fit_variogram(anomaly ~ lcz, lcz_anomaly_mod, vg.model, lang = lang)
               krige_mod <- gstat::gstat(formula = anomaly ~ lcz, model = krige_vgm$var_model, data = lcz_anomaly_mod)
             } else {
-              krige_vgm <- automap::autofitVariogram(anomaly ~ 1, lcz_anomaly_mod, model = vg.model)
+              krige_vgm <- lcz_fit_variogram(anomaly ~ 1, lcz_anomaly_mod, vg.model, lang = lang)
               krige_mod <- gstat::gstat(formula = anomaly ~ 1, model = krige_vgm$var_model, data = lcz_anomaly_mod)
             }
             set.seed(123)
-            lcz_cv <- gstat::gstat.cv(krige_mod, nfold = 5, debug.level = 0)
+            lcz_cv <- gstat::gstat.cv(krige_mod, nfold = min(5L, NROW(krige_mod$data[[1L]])), debug.level = 0)
             lcz_cv <- sf::st_as_sf(lcz_cv)
             lcz_anomaly_mod$geometry <- NULL
             lcz_cv_result <- dplyr::bind_cols(lcz_anomaly_mod, lcz_cv) %>%
@@ -795,10 +730,10 @@ lcz_interp_eval <- function(x,
             testing_set <- dplyr::filter(split_data, !.data$is_train)
 
             if (LCZinterp == TRUE) {
-              krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, training_set, model = vg.model)
+              krige_vgm <- lcz_fit_variogram(var_interp ~ lcz, training_set, vg.model, lang = lang)
               krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = training_set)
             } else {
-              krige_vgm <- automap::autofitVariogram(var_interp ~ 1, training_set, model = vg.model)
+              krige_vgm <- lcz_fit_variogram(var_interp ~ 1, training_set, vg.model, lang = lang)
               krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = training_set)
             }
 
@@ -826,14 +761,14 @@ lcz_interp_eval <- function(x,
           } else {
 
             if (LCZinterp == TRUE) {
-              krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, data_model, model = vg.model)
+              krige_vgm <- lcz_fit_variogram(var_interp ~ lcz, data_model, vg.model, lang = lang)
               krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = data_model)
             } else {
-              krige_vgm <- automap::autofitVariogram(var_interp ~ 1, data_model, model = vg.model)
+              krige_vgm <- lcz_fit_variogram(var_interp ~ 1, data_model, vg.model, lang = lang)
               krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = data_model)
             }
             set.seed(123)  # Ensure reproducibility
-            lcz_cv <- gstat::gstat.cv(krige_mod, nfold = 5, debug.level = 0)
+            lcz_cv <- gstat::gstat.cv(krige_mod, nfold = min(5L, NROW(krige_mod$data[[1L]])), debug.level = 0)
             lcz_cv <- sf::st_as_sf(lcz_cv)
             data_model$geometry <- NULL
             lcz_cv_result <- dplyr::bind_cols(data_model, lcz_cv) %>%
@@ -867,7 +802,7 @@ lcz_interp_eval <- function(x,
         file <- base::paste0(getwd(), "/", folder, "lcz4r_interp_eval_result.csv")
         utils::write.csv(interp_by, file)
 
-        base::message("Looking at your results in the path:", base::paste0(getwd(), "/", folder))
+        lcz_msg("msg_results_saved", lang = lang, path = base::file.path(getwd(), folder))
       }
       return(interp_by)
     }
@@ -879,21 +814,7 @@ lcz_interp_eval <- function(x,
         sf::st_intersection(lcz_shp) %>%
         sf::st_transform(crs = target_crs)
 
-      extract_hemisphere <- function(raster) {
-        # Get the extent of the raster
-        extent <- raster::extent(raster::raster(raster))
-        # Check the ymin value of the extent
-        if (extent@ymin >= 0) {
-          hemisphere <- "northern"
-        } else {
-          hemisphere <- "southern"
-        }
-
-        return(hemisphere)
-      }
-
-      # Extract the hemisphere
-      hemisphere <- extract_hemisphere(raster = {{ x }})
+      hemisphere <- lcz_hemisphere(x)
 
       my_latitude <- df_processed$latitude[1]
       my_longitude <- df_processed$longitude[1]
@@ -937,10 +858,10 @@ lcz_interp_eval <- function(x,
           testing_set <- dplyr::filter(split_data, !.data$is_train)
 
           if (LCZinterp == TRUE) {
-            krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, training_set, model = vg.model)
+            krige_vgm <- lcz_fit_variogram(var_interp ~ lcz, training_set, vg.model, lang = lang)
             krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = training_set)
           } else {
-            krige_vgm <- automap::autofitVariogram(var_interp ~ 1, training_set, model = vg.model)
+            krige_vgm <- lcz_fit_variogram(var_interp ~ 1, training_set, vg.model, lang = lang)
             krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = training_set)
           }
 
@@ -967,14 +888,14 @@ lcz_interp_eval <- function(x,
         } else {
 
           if (LCZinterp == TRUE) {
-            krige_vgm <- automap::autofitVariogram(var_interp ~ lcz, data_model, model = vg.model)
+            krige_vgm <- lcz_fit_variogram(var_interp ~ lcz, data_model, vg.model, lang = lang)
             krige_mod <- gstat::gstat(formula = var_interp ~ lcz, model = krige_vgm$var_model, data = data_model)
           } else {
-            krige_vgm <- automap::autofitVariogram(var_interp ~ 1, data_model, model = vg.model)
+            krige_vgm <- lcz_fit_variogram(var_interp ~ 1, data_model, vg.model, lang = lang)
             krige_mod <- gstat::gstat(formula = var_interp ~ 1, model = krige_vgm$var_model, data = data_model)
           }
 
-          lcz_cv <- gstat::gstat.cv(krige_mod, nfold = 5, debug.level = 0)
+          lcz_cv <- gstat::gstat.cv(krige_mod, nfold = min(5L, NROW(krige_mod$data[[1L]])), debug.level = 0)
           lcz_cv <- sf::st_as_sf(lcz_cv)
           data_model$geometry <- NULL
           lcz_cv_result <- dplyr::bind_cols(data_model, lcz_cv) %>%
@@ -1005,7 +926,7 @@ lcz_interp_eval <- function(x,
         file <- base::paste0(getwd(), "/", folder, "lcz4r_interp_eval_result.csv")
         utils::write.csv(interp_by, file)
 
-        base::message("Looking at your results in the path:", base::paste0(getwd(), "/", folder))
+        lcz_msg("msg_results_saved", lang = lang, path = base::file.path(getwd(), folder))
       }
 
       return(interp_by)

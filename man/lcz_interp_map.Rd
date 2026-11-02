@@ -17,7 +17,8 @@ lcz_interp_map(
   by = NULL,
   impute = NULL,
   isave = FALSE,
-  LCZinterp = TRUE
+  LCZinterp = TRUE,
+  lang = "en"
 )
 }
 \arguments{
@@ -68,6 +69,10 @@ Available models:
 \item{isave}{Logical. If \code{TRUE}, saves the plot to the working directory.}
 
 \item{LCZinterp}{Logical. If \code{TRUE} (default), applies LCZ-based interpolation.}
+
+\item{lang}{Language used for labels, messages and errors. Available codes:
+\code{"en"} (default), \code{"pt"}, \code{"es"}, \code{"fr"}, \code{"zh"}, \code{"de"}, \code{"it"}, \code{"ja"},
+\code{"ko"}, \code{"ru"}, \code{"ar"}. See \code{\link[=lcz_langs]{lcz_langs()}}.}
 }
 \value{
 A spatially interpolated map in \code{terra raster GeoTIFF} format.

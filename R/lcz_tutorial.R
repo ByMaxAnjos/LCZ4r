@@ -1,29 +1,29 @@
-#' LCZ4r Tutorials
+#' LCZ4r tutorials
 #'
-#' Opens LCZ4r tutorial in a web browser. This function requires an internet connection.
+#' Opens an LCZ4r tutorial in your default browser. Requires an internet
+#' connection.
 #'
-#' @param x Character string. Either "general" for general functions or "local" for local functions. Default is "general".
+#' @param x `"general"` (default) for general functions or `"local"` for local
+#'   functions.
+#' @param lang Language used for console messages and errors. See
+#'   [lcz_langs()]. Defaults to `"en"`.
 #'
-#' @return Opens the LCZ4r tutorial in a web browser.
+#' @return Invisibly, `NULL`. Called for its side effect (opening a browser).
 #'
 #' @export
 #'
 #' @examples
 #' \dontrun{
 #' lcz_tutorial("general")
-#' lcz_tutorial("local")
+#' lcz_tutorial("local", lang = "pt")
 #' }
-lcz_tutorial <- function(x = "general") {
-  if (!is.character(x) || length(x) != 1) {
-    stop("Argument 'x' must be a single character string: either 'general' or 'local'.")
+lcz_tutorial <- function(x = "general", lang = "en") {
+  if (!is.character(x) || length(x) != 1L) {
+    lcz_abort("err_tutorial", lang = lang)
   }
+  x <- match.arg(x, c("general", "local"))
 
-  valid_values <- c("general", "local")
-  if (!(x %in% valid_values)) {
-    stop("Invalid value for argument 'x'. Choose either 'general' or 'local'.")
-  }
-
-  urls <- list(
+  urls <- c(
     general = "https://bymaxanjos.github.io/LCZ4r/articles/Introd_general_LCZ4r.html",
     local = "https://bymaxanjos.github.io/LCZ4r/articles/Introd_local_LCZ4r.html"
   )

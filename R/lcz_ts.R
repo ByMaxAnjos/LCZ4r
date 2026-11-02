@@ -31,12 +31,16 @@
 #' @param iplot Set to \code{TRUE} to return a plot. If \code{FALSE}, a data frame is returned.
 #' @param isave Set to \code{TRUE} to save all results (plot, time-series) into your directory.
 #' @param save_extension A character string indicating the file format for saving the plot. Options include: \dQuote{png}, \dQuote{jpg}, \dQuote{jpeg}, \dQuote{tif}, \dQuote{pdf}, \dQuote{svg}. The default is \dQuote{png}.
-#' @param palette A character string specifying the color palette to use. The default is \dQuote{VanGogh2}. You can choose from palettes available in \code{MetBrewer}: \url{https://github.com/BlakeRMills/MetBrewer?tab=readme-ov-file#palettes}.
-#' @param ylab A character string for the y-axis label. The default is the variable name.
-#' @param xlab A character string for the x-axis label. The default is \dQuote{Time}.
-#' @param title A character string for the plot title. The default is \dQuote{""}.
-#' @param caption source data. Default can be \dQuote{Source:LCZ4r,2024"}.
-#' @param legend_name Legend name for heatmap and warming stripes plots. Default is "Temperature (°C)".
+#' @param palette Categorical palette. `"okabe"` (default) uses the colour-blind-safe Okabe-Ito palette; any \pkg{MetBrewer} palette name is also accepted.
+#' @param ylab y-axis label. `NULL` (default) uses a translated "Air temperature (°C)".
+#' @param xlab x-axis label. `NULL` (default) uses a translated "Time".
+#' @param title Plot title. `NULL` (default) leaves it empty.
+#' @param caption Source caption. `NULL` (default) uses a translated "Source: LCZ4r".
+#' @param legend_name Legend name for heatmap and warming stripes. `NULL` (default) uses a translated "Temperature (°C)".
+#'
+#' @param lang Language used for labels, messages and errors. Available codes:
+#'   `"en"` (default), `"pt"`, `"es"`, `"fr"`, `"zh"`, `"de"`, `"it"`, `"ja"`,
+#'   `"ko"`, `"ru"`, `"ar"`. See [lcz_langs()].
 #'
 #' @return A ggplot object representing the time series of air temperature in different LCZs, or a data frame in CSV format if \code{iplot = FALSE}.
 #'
@@ -73,50 +77,27 @@ lcz_ts <- function(x,
                    iplot = TRUE,
                    isave = FALSE,
                    save_extension = "png",
-                   palette = "VanGogh2",
-                   ylab = "Air temperature [Degree Celsius]",
-                   xlab = "Time",
-                   title = "LCZ - Timeseries",
-                   caption = "LCZ4r, 2024.",
-                   legend_name = "Temperature (C)") {
-  # Check and validate raster inputs -----------------------------------------------
+                   palette = "okabe",
+                   ylab = NULL,
+                   xlab = NULL,
+                   title = NULL,
+                   caption = NULL,
+                   legend_name = NULL,
+                   lang = "en") {
+  # Resolve language-dependent defaults once --------------------------------
+  if (is.null(ylab)) ylab <- lcz_tr("air_temp", lang = lang)
+  if (is.null(xlab)) xlab <- lcz_tr("time", lang = lang)
+  if (is.null(caption)) caption <- lcz_caption(lang)
+  if (is.null(legend_name)) legend_name <- lcz_tr("temperature", lang = lang)
+  if (is.null(title)) title <- ""
+  # Check and validate raster inputs -----------------------------------------
+  x <- lcz_check_raster(x, lang = lang)
 
-  if (missing(x)) {
-    stop("The input must be raster object. Please, use the lcz_get_map* functions")
-  }
-  if (!inherits(x, "SpatRaster")) {
-    warning("The input 'x' is not a SpatRaster object. Attempting to convert it using terra::rast()")
-    x <- try(terra::rast(x), silent = TRUE)
-    if (inherits(x, "try-error")) {
-      stop("Failed to convert input 'x' to SpatRaster. Please provide a valid SpatRaster object.")
-    }
-  }
-
-  if (terra::nlyr(x) > 1) {
-    x <- x[[2]]
-  }
-
-  if (terra::crs(x, proj = TRUE) != "+proj=longlat +datum=WGS84 +no_defs") {
-    warning("The input 'x' is not in WGS84 projection. Reprojecting to WGS84.")
-    x <- terra::project(x, "+proj=longlat +datum=WGS84 +no_defs")
-  }
-
-
-  # Check data inputs -------------------------------------------------------
-  if (!is.data.frame(data_frame)) {
-    stop("The 'data_frame' input must be a data frame containing air temperature measurements,station IDs, latitude, and longitude.")
-  }
-
-  if (missing(var) || !var %in% colnames(data_frame)) {
-    stop("The 'var' input must be a column name in 'data_frame' representing air temperature.")
-  }
-
-  if (missing(station_id) || !station_id %in% colnames(data_frame)) {
-    stop("The 'station_id' input must be a column name in 'data_frame' representing stations.")
-  }
+  # Check data inputs --------------------------------------------------------
+  lcz_check_data_frame(data_frame, var, station_id, lang = lang)
 
   if (!(extract.method %in% c("simple", "bilinear", "two.step"))) {
-    stop("Invalid extract-based pixel model. Choose from 'simple', 'bilinear', or 'two.step'.")
+    lcz_abort("err_extract_method", lang = lang)
   }
 
   # Pre-processing time series ----------------------------------------------
@@ -133,11 +114,11 @@ lcz_ts <- function(x,
   df_processed$longitude <- base::as.numeric(df_processed$longitude)
 
   if (!("Latitude" %in% tolower(colnames(df_processed)) || "latitude" %in% tolower(colnames(df_processed)))) {
-    stop("The 'latitude' input must be a column name in 'data_frame' representing each station's latitude.")
+    lcz_abort("err_col", lang = lang, arg = "latitude")
   }
 
   if (!("Longitude" %in% tolower(colnames(df_processed)) || "longitude" %in% tolower(colnames(df_processed)))) {
-    stop("The 'longitude' input must be a column name in 'data_frame' representing each station's longitude")
+    lcz_abort("err_col", lang = lang, arg = "longitude")
   }
 
   # Rename and define lcz_id for each lat and long
@@ -165,7 +146,7 @@ lcz_ts <- function(x,
   if (!is.null(impute)) {
     impute_methods <- c("mean", "median", "knn", "bag")
     if (!(impute %in% impute_methods)) {
-      stop("Invalid impute method. Choose from 'mean', 'median', 'knn', or 'bag'.")
+      lcz_abort("err_impute", lang = lang)
     }
     impute_function <- switch(impute,
       "mean" = recipes::step_impute_mean,
@@ -178,7 +159,7 @@ lcz_ts <- function(x,
     df_processed <- lcz_recipe %>%
       recipes::prep(df_processed) %>%
       recipes::bake(new_data = NULL)
-    base::message("The missing values have been imputed with ", impute)
+    lcz_msg("msg_imputed", lang = lang, method = impute)
   }
 
   # Geospatial operations ---------------------------------------------------
@@ -234,33 +215,9 @@ lcz_ts <- function(x,
   if (extract.method == "two.step") {
     # Step 2: Define a function to filter stations based on LCZ homogeneity
     filter_homogeneous_lcz <- function(df, raster, kernel_size = 5, threshold = 0.8) {
-      # Convert stations to SpatVector
-      stations_vect <- terra::vect(df)
-
-      # Create a moving kernel to analyze LCZ homogeneity
-      kernel <- matrix(1, nrow = kernel_size, ncol = kernel_size)
-
-      # Extract LCZ values in the kernel around each station
-      lcz_homogeneity <- terra::focal(raster, w = kernel, fun = function(values) {
-        # Compute percentage of pixels matching the center pixel
-        center_pixel <- values[ceiling(length(values) / 2)]
-        if (is.na(center_pixel)) {
-          return(NA)
-        }
-        mean(values == center_pixel, na.rm = TRUE)
-      })
-
-      # Extract homogeneity values at station locations
-      homogeneity_values <- terra::extract(lcz_homogeneity, stations_vect)
-
-      # Add homogeneity values to the station data frame
-      df$homogeneity <- homogeneity_values[, 2]  # Second column contains the homogeneity value
-
-      # Filter stations where homogeneity meets or exceeds the threshold
-      df_filtered <- df %>%
-        dplyr::filter(.data$homogeneity >= threshold)
-
-      return(df_filtered)
+      # Exact k x k homogeneity at station locations (no per-cell R callback).
+      df$homogeneity <- lcz_homogeneity(raster, df, kernel_size = kernel_size)
+      df[!is.na(df$homogeneity) & df$homogeneity >= threshold, , drop = FALSE]
     }
 
     # Step 3: Apply the function to filter stations
@@ -280,92 +237,39 @@ lcz_ts <- function(x,
   }
 
 
+  if (nrow(lcz_model) == 0L) {
+    lcz_abort("err_no_stations", lang = lang)
+  }
+
   # Settings for plots ------------------------------------------------------
 
   # Get id stations
   my_stations <- lcz_model %>%
     dplyr::distinct(.data$lcz_id, .data$lcz, .data$station)
 
-  lcz <- tibble::as_tibble(c(seq(1, 10, 1), seq(11, 17))) %>%
-    dplyr::rename(lcz= .data$value)
-
-  lcz.name <- tibble::as_tibble(c(
-    "Compact highrise", "Compact midrise", "Compact lowrise",
-    "Open highrise", "Open midrise", "Open lowrise",
-    "Lightweight low-rise", "Large lowrise", "Sparsely built",
-    "Heavy Industry", "Dense trees", "Scattered trees",
-    "Bush, scrub", "Low plants", "Bare rock or paved",
-    "Bare soil or sand", "Water"
-  )) %>%
-    dplyr::rename(lcz.name= .data$value)
-
-  lcz.col <- c(
-   "1"= "#910613",
-   "2"=  "#D9081C",
-   "3"=  "#FF0A22",
-   "4"= "#C54F1E",
-   "5"= "#FF6628",
-   "6"=  "#FF985E",
-   "7"= "#FDED3F",
-   "8"= "#BBBBBB",
-   "9"= "#FFCBAB",
-   "10"= "#565656",
-   "11"= "#006A18",
-   "12"= "#00A926",
-   "13"= "#628432",
-   "14"= "#B5DA7F",
-   "15"= "#000000",
-   "16"= "#FCF7B1",
-   "17"= "#656BFA"
+  lcz_df <- dplyr::inner_join(
+    tibble::tibble(
+      lcz = as.character(c(1:10, 11:17)),
+      lcz.name = lcz_class_names(lang),
+      lcz.col = unname(lcz_palette())
+    ),
+    dplyr::mutate(my_stations, lcz = as.character(.data$lcz)),
+    by = "lcz"
   )
-
-  lcz_df <- dplyr::bind_cols(lcz, lcz.name) %>%
-    dplyr::mutate(lcz = base::as.factor(.data$lcz)) %>%
-    dplyr::inner_join(my_stations, by = "lcz")
-
 
   # Define LCZ labels
   lcz.lables <- lcz_df$station
-  nb.cols <- base::length(my_stations$station)
-  mycolors <- MetBrewer::met.brewer(name = palette, nb.cols)
-
-  lcz_theme <-
-    ggplot2::theme_bw() +
-    ggplot2::theme(
-      plot.title = ggplot2::element_text(color = "black", size = 18, face = "bold", hjust = 0.5),
-      plot.subtitle = ggplot2::element_text(color = "black", size = 16, hjust = 0.5),
-      plot.background = ggplot2::element_rect(fill="transparent", color=NA),
-      legend.background = ggplot2::element_rect(fill="transparent", color=NA),
-      panel.grid.minor = ggplot2::element_line(color = "white"),
-      panel.grid.major.y = ggplot2::element_line(color = "grey90"),
-      axis.text.x = ggplot2::element_text(size = ggplot2::rel(1.5)),
-      axis.title.x = ggplot2::element_text(size = 14, face = "bold"),
-      axis.text.y = ggplot2::element_text(size = ggplot2::rel(1.5)),
-      axis.title.y = ggplot2::element_text(size = 14, face = "bold"),
-      legend.text = ggplot2::element_text(size = 13),
-      legend.title = ggplot2::element_text(size = 13, face = "bold"),
-      legend.key = ggplot2::element_blank(),
-      legend.spacing.y = ggplot2::unit(0.02, "cm"),
-      plot.margin = ggplot2::margin(25, 25, 10, 25),
-      plot.caption = ggplot2::element_text(color = "grey40", hjust = 1, size = 10)
-    )
-
-  # Define hemisphere
-  extract_hemisphere <- function(raster) {
-    # Get the extent of the raster
-    extent <- raster::extent(raster::raster(raster))
-    # Check the ymin value of the extent
-    if (extent@ymin >= 0) {
-      hemisphere <- "northern"
-    } else {
-      hemisphere <- "southern"
-    }
-
-    return(hemisphere)
+  nb.cols <- base::length(unique(my_stations$station))
+  mycolors <- if (identical(palette, "okabe")) lcz_pal_categorical(nb.cols) else MetBrewer::met.brewer(name = palette, nb.cols)
+  # A legend with dozens of stations would leave no room for the data.
+  legend_pos <- if (nb.cols > 20L) "none" else "top"
+  if (nb.cols > 20L) {
+    lcz_warn("warn_many_stations", lang = lang)
   }
+  lcz_theme <- lcz_theme_series(legend_position = legend_pos)
 
-  # Extract the hemisphere
-  hemisphere <- extract_hemisphere(raster = {{ x }})
+  # Extract the hemisphere (terra-only; no raster:: round-trip)
+  hemisphere <- lcz_hemisphere(x)
 
   my_latitude <- lcz_model$latitude[1]
   my_longitude <- lcz_model$longitude[1]
@@ -401,15 +305,19 @@ lcz_ts <- function(x,
           y = .data$var_interp,
           color = .data$station
         )) +
-        ggplot2::geom_line(lwd = 1, alpha =if(smooth==TRUE) 0.3 else 1) +
-        ggplot2::scale_x_datetime(expand = c(0, 0)) +
+        ggplot2::geom_line(linewidth = 0.55, alpha = if (smooth) 0.3 else 1) +
+        ggplot2::scale_x_datetime(
+          expand = c(0, 0),
+          date_labels = lcz_date_labels(mydata$date),
+          guide = ggplot2::guide_axis(check.overlap = TRUE)
+        ) +
         ggplot2::scale_color_manual(
-          name = "Station (LCZ)",
+          name = lcz_tr("station_lcz", lang = lang),
           values = mycolors,
           labels = lcz.lables,
           guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
         ) +
-        ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption) +
+        ggplot2::labs(title = title, x = xlab, y = ylab, color = lcz_tr("station_lcz", lang = lang), caption = caption) +
         lcz_theme
 
       if(smooth==TRUE) {
@@ -427,15 +335,19 @@ lcz_ts <- function(x,
           y = .data$var_interp,
           color = if(facet_plot=="LCZ") .data$station else .data$lcz
         )) +
-        ggplot2::geom_line(lwd = 1, alpha = if(smooth==TRUE) 0.3 else 1) +
-        ggplot2::scale_x_datetime(expand = c(0, 0)) +
+        ggplot2::geom_line(linewidth = 0.55, alpha = if (smooth) 0.3 else 1) +
+        ggplot2::scale_x_datetime(
+          expand = c(0, 0),
+          date_labels = lcz_date_labels(mydata$date),
+          guide = ggplot2::guide_axis(check.overlap = TRUE)
+        ) +
         ggplot2::scale_color_manual(
-          name = if(facet_plot == "station") "LCZ class" else "Station (LCZ)",
+          name = if (facet_plot == "station") lcz_tr("lcz_class", lang = lang) else lcz_tr("station_lcz", lang = lang),
           values = if(facet_plot == "LCZ") mycolors else lcz.col,
           labels = lcz.lables,
           guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
         ) +
-        ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption) +
+        ggplot2::labs(title = title, x = xlab, y = ylab, color = lcz_tr("station_lcz", lang = lang), caption = caption) +
         lcz_theme +
         ggplot2::theme(
           legend.box.spacing = ggplot2::unit(20, "pt"),
@@ -453,7 +365,14 @@ lcz_ts <- function(x,
 
       # Apply faceting and hide legend if faceting by "station"
       final_graph <- final_graph +
-        ggplot2::facet_wrap(ggplot2::vars(!!rlang::sym(facet_var)))
+        ggplot2::facet_wrap(
+          ggplot2::vars(!!rlang::sym(facet_var)),
+          labeller = if (facet_var == "lcz") {
+            ggplot2::labeller(lcz = function(v) paste("LCZ", v))
+          } else {
+            "label_value"
+          }
+        )
 
       if(smooth==TRUE) {
         final_graph <- final_graph +
@@ -469,15 +388,25 @@ lcz_ts <- function(x,
         y = 1,  # Use station on the y-axis for clarity
         fill = .data$var_interp)) +
         ggplot2::geom_tile() +  # Add thin gridlines between tiles
-        ggplot2::scale_x_datetime(expand = c(0, 0)) +
+        ggplot2::scale_x_datetime(
+          expand = c(0, 0),
+          date_labels = lcz_date_labels(mydata$date),
+          guide = ggplot2::guide_axis(check.overlap = TRUE)
+        ) +
         ggplot2::scale_y_continuous(expand = c(0, 0)) +
-        MetBrewer::scale_fill_met_c(name = palette, direction = -1) +
+        lcz_scale_fill_sequential(
+          name = legend_name, option = "magma", direction = -1,
+          guide = ggplot2::guide_colorbar(
+            barwidth = ggplot2::unit(55, "mm"),
+            barheight = ggplot2::unit(2.5, "mm"),
+            title.position = "top", title.hjust = 0.5,
+            frame.colour = "grey70", ticks.colour = "grey40"
+          )
+        ) +
         ggplot2::labs(title = title, x = xlab, y = "", fill = legend_name, caption = caption) +
         lcz_theme +
         ggplot2::theme(
           legend.position = "bottom",  # Position legend at the bottom
-          legend.title = ggplot2::element_text(size = 14, face = "bold"),
-          legend.text = ggplot2::element_text(size = 12),
           legend.box.spacing = ggplot2::unit(13, "pt"),  # Adjust legend spacing
           panel.spacing = ggplot2::unit(2, "lines"),  # Adjust spacing between panels
           axis.ticks.x = ggplot2::element_blank(),
@@ -494,7 +423,14 @@ lcz_ts <- function(x,
 
       # Apply faceting and hide legend if faceting by "station"
       final_graph <- final_graph +
-        ggplot2::facet_wrap(ggplot2::vars(!!rlang::sym(facet_var)))
+        ggplot2::facet_wrap(
+          ggplot2::vars(!!rlang::sym(facet_var)),
+          labeller = if (facet_var == "lcz") {
+            ggplot2::labeller(lcz = function(v) paste("LCZ", v))
+          } else {
+            "label_value"
+          }
+        )
 
     }
 
@@ -505,43 +441,33 @@ lcz_ts <- function(x,
         y = 1,  # Use station on the y-axis for clarity
         fill = .data$var_interp)) +
         ggplot2::geom_tile() +  # Add thin gridlines between tiles
-        ggplot2::scale_x_datetime(expand = c(0, 0)) +
-        ggplot2::geom_tile()+
-        ggplot2::scale_fill_stepsn(colors = c("#08306B", "white", "#67000D"),
-                                   values =scales::rescale(c(base::min(mydata$var_interp), 0, base::max(mydata$var_interp))),
-                                   guide = ggplot2::guide_colorsteps(  # Corrected the usage of guide_colorsteps
-                                     barwidth = 16,
-                                     barheight = 1,
-                                     title.position = "top",
-                                     title.hjust = 0.5
-                                   )
-                                   ) +
+        ggplot2::scale_x_datetime(
+          expand = c(0, 0),
+          date_labels = lcz_date_labels(mydata$date),
+          guide = ggplot2::guide_axis(check.overlap = TRUE)
+        ) +
+        lcz_scale_stripes(mydata$var_interp, legend_name) +
         ggplot2::coord_cartesian(expand = FALSE)+
         ggplot2::labs(title = title, x = xlab, y = "", fill = legend_name, caption = caption) +
-        ggplot2::theme_bw() +
         ggplot2::theme(
-          plot.title = ggplot2::element_text(size = 22, face = "bold", lineheight = 0.8),
-          legend.position = "bottom",  # Position legend at the bottom
-          legend.title = ggplot2::element_text(size = 14, face = "bold"),
-          legend.text = ggplot2::element_text(size = 12),
-          legend.box.spacing = ggplot2::unit(13, "pt"),  # Adjust legend spacing
-          panel.spacing = ggplot2::unit(2, "lines"),  # Adjust spacing between panels
-          axis.ticks.x = ggplot2::element_blank(),
-          axis.ticks.y = ggplot2::element_blank(),
-          axis.text.x = ggplot2::element_text(size = ggplot2::rel(1.5), margin = ggplot2::margin(t=5, b=10, unit = "pt"), hjust=0.1),
-          axis.title.x = ggplot2::element_text(size = 14, face = "bold"),
-          axis.text.y = ggplot2::element_blank(),  # Customize y-axis text for stations
-          strip.text = ggplot2::element_text(face = "bold", size = 12, hjust = 0.5),  # Centered strip text
-          strip.background = ggplot2::element_rect(fill = "grey90", color = NA, linetype = "solid"),  # Improved facet strip background
-          panel.grid.major = ggplot2::element_line(size = 0.1, color = "grey90"),
-          panel.grid.minor = ggplot2::element_blank()
+          legend.position = "bottom",
+          panel.grid = ggplot2::element_blank(),
+          axis.text.y = ggplot2::element_blank(),
+          axis.ticks.y = ggplot2::element_blank()
         )
 
       facet_var <- base::ifelse(facet_plot == "LCZ", "lcz", "station")
 
       # Apply faceting and hide legend if faceting by "station"
       final_graph <- final_graph +
-        ggplot2::facet_wrap(ggplot2::vars(!!rlang::sym(facet_var)))
+        ggplot2::facet_wrap(
+          ggplot2::vars(!!rlang::sym(facet_var)),
+          labeller = if (facet_var == "lcz") {
+            ggplot2::labeller(lcz = function(v) paste("LCZ", v))
+          } else {
+            "label_value"
+          }
+        )
 
     }
 
@@ -561,7 +487,7 @@ lcz_ts <- function(x,
       utils::write.csv(mydata, file.2)
       file.3 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_stations.csv")
       utils::write.csv(lcz_df, file.3)
-      base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
+      lcz_msg("msg_files_saved", lang = lang, path = base::file.path(getwd(), folder))
 
       }
 
@@ -576,7 +502,7 @@ lcz_ts <- function(x,
 
   if (!is.null(by)) {
     if ("day" %in% by) {
-      stop("The 'day' does not work with the argument by")
+      lcz_abort("err_by_day", lang = lang)
     }
 
     if (length(by) < 2 && any(c("month", "year", "season", "seasonyear", "yearseason") %in% by)) {
@@ -606,7 +532,7 @@ lcz_ts <- function(x,
       )
 
       if (plot_type == "facet_line") {
-        message("The 'facet_line' plot does not work with the active 'by' argument. Switching to 'basic_line' plot.")
+        lcz_warn("warn_switch_line", lang = lang)
         plot_type <- "basic_line"
       }
 
@@ -628,15 +554,15 @@ lcz_ts <- function(x,
             labels = function(x) base::format(lubridate::as_datetime(x), paste0(label_format)),
             guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90)
           ) +
-          ggplot2::geom_line(lwd =if(smooth==TRUE) 0.6 else 1, alpha=if(smooth==TRUE) 0.3 else 1) +
+          ggplot2::geom_line(linewidth = if (smooth) 0.45 else 0.55, alpha = if (smooth) 0.3 else 1) +
           ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
           ggplot2::scale_color_manual(
-            name = "Station (LCZ)",
+            name = lcz_tr("station_lcz", lang = lang),
             values = mycolors,
             labels = lcz.lables,
             guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
           ) +
-          ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption)+
+          ggplot2::labs(title = title, x = xlab, y = ylab, color = lcz_tr("station_lcz", lang = lang), caption = caption)+
           ggplot2::facet_wrap(ggplot2::vars(my_time), scales = "free_x") +
           lcz_theme +
           ggplot2::theme(
@@ -676,7 +602,15 @@ lcz_ts <- function(x,
           ) +
           ggplot2::geom_tile() +  # Add thin gridlines between tiles
           ggplot2::scale_y_continuous(expand = c(0, 0)) +
-          MetBrewer::scale_fill_met_c(name = palette, direction = -1) +
+          lcz_scale_fill_sequential(
+          name = legend_name, option = "magma", direction = -1,
+          guide = ggplot2::guide_colorbar(
+            barwidth = ggplot2::unit(55, "mm"),
+            barheight = ggplot2::unit(2.5, "mm"),
+            title.position = "top", title.hjust = 0.5,
+            frame.colour = "grey70", ticks.colour = "grey40"
+          )
+        ) +
           ggplot2::labs(title = title, x = xlab, y = "", fill = legend_name, caption = caption) +
           lcz_theme +
           ggplot2::facet_wrap(ggplot2::vars(my_time), scales = "free_x") +
@@ -714,33 +648,16 @@ lcz_ts <- function(x,
             labels = function(x) base::format(lubridate::as_datetime(x), paste0(label_format)),
             guide = ggplot2::guide_axis(check.overlap = TRUE, angle = 90)
           ) +
-          ggplot2::geom_tile()+
-          ggplot2::scale_fill_stepsn(colors = c("#08306B", "white", "#67000D"),
-                                     values =scales::rescale(c(base::min(mydata$var_interp), 0, base::max(mydata$var_interp))),
-                                     guide = ggplot2::guide_colorsteps(  # Corrected the usage of guide_colorsteps
-                                       barwidth = 16,
-                                       barheight = 1,
-                                       title.position = "top",
-                                       title.hjust = 0.5
-                                     )
-          ) +
+          lcz_scale_stripes(mydata$var_interp, legend_name) +
           ggplot2::coord_cartesian(expand = FALSE)+
           ggplot2::labs(title = title, x = xlab, y = "", fill = legend_name, caption = caption) +
           lcz_theme +
           ggplot2::facet_wrap(ggplot2::vars(my_time), scales = "free_x") +
           ggplot2::theme(
             legend.position = "bottom",
-            legend.box.spacing = ggplot2::unit(20, "pt"),
-            panel.spacing = ggplot2::unit(3, "lines"),
-            axis.ticks.x = ggplot2::element_blank(),
-            axis.ticks.y = ggplot2::element_blank(),
+            panel.grid = ggplot2::element_blank(),
             axis.text.y = ggplot2::element_blank(),
-            strip.text = ggplot2::element_text(
-              face = "bold",
-              hjust = 0,
-              size = 10
-            ),
-            strip.background = ggplot2::element_rect(linetype = "dotted")
+            axis.ticks.y = ggplot2::element_blank()
           )
       }
 
@@ -760,7 +677,7 @@ lcz_ts <- function(x,
         utils::write.csv(mydata, file.2)
         file.3 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_stations.csv")
         utils::write.csv(lcz_df, file.3)
-        base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
+        lcz_msg("msg_files_saved", lang = lang, path = base::file.path(getwd(), folder))
       }
 
       if (iplot == FALSE) {
@@ -820,15 +737,15 @@ lcz_ts <- function(x,
             labels = scales::date_format("%H"),
             guide = ggplot2::guide_axis(check.overlap = TRUE)
           ) +
-          ggplot2::geom_line(lwd = 1) +
+          ggplot2::geom_line(linewidth = 0.55) +
           ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
           ggplot2::scale_color_manual(
-            name = "Station (LCZ)",
+            name = lcz_tr("station_lcz", lang = lang),
             values = mycolors,
             labels = lcz.lables,
             guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
           ) +
-          ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption) +
+          ggplot2::labs(title = title, x = xlab, y = ylab, color = lcz_tr("station_lcz", lang = lang), caption = caption) +
           lcz_theme
 
 
@@ -858,15 +775,15 @@ lcz_ts <- function(x,
             labels = scales::date_format("%H"),
             guide = ggplot2::guide_axis(check.overlap = TRUE)
           ) +
-          ggplot2::geom_line(lwd = 1) +
+          ggplot2::geom_line(linewidth = 0.55) +
           ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
           ggplot2::scale_color_manual(
-            name = if(facet_plot == "station") "LCZ class" else "Station (LCZ)",
+            name = if (facet_plot == "station") lcz_tr("lcz_class", lang = lang) else lcz_tr("station_lcz", lang = lang),
             values = if(facet_plot == "LCZ") mycolors else lcz.col,
             labels = lcz.lables,
             guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
           ) +
-          ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption) +
+          ggplot2::labs(title = title, x = xlab, y = ylab, color = lcz_tr("station_lcz", lang = lang), caption = caption) +
           lcz_theme +
           ggplot2::theme(
             legend.box.spacing = ggplot2::unit(20, "pt"),
@@ -884,13 +801,20 @@ lcz_ts <- function(x,
 
         # Apply faceting and hide legend if faceting by "station"
         final_graph <- final_graph +
-          ggplot2::facet_wrap(ggplot2::vars(!!rlang::sym(facet_var)))
+          ggplot2::facet_wrap(
+          ggplot2::vars(!!rlang::sym(facet_var)),
+          labeller = if (facet_var == "lcz") {
+            ggplot2::labeller(lcz = function(v) paste("LCZ", v))
+          } else {
+            "label_value"
+          }
+        )
 
 
       }
 
       if (plot_type == "warming_stripes") {
-        message("The 'warming_stripes' plot does not work with the active by='daylight' argument. Switching to 'heatmap' plot.")
+        lcz_warn("warn_switch_heatmap", lang = lang)
         plot_type <- "heatmap"
       }
 
@@ -923,7 +847,15 @@ lcz_ts <- function(x,
           ggplot2::scale_y_discrete(expand = c(0, 0)) +
 
           # Fill scale for heatmap using MetBrewer palette
-          MetBrewer::scale_fill_met_c(name = palette, direction = -1) +
+          lcz_scale_fill_sequential(
+          name = legend_name, option = "magma", direction = -1,
+          guide = ggplot2::guide_colorbar(
+            barwidth = ggplot2::unit(55, "mm"),
+            barheight = ggplot2::unit(2.5, "mm"),
+            title.position = "top", title.hjust = 0.5,
+            frame.colour = "grey70", ticks.colour = "grey40"
+          )
+        ) +
 
           # Add daylight start (solid line) using geom_segment
           ggplot2::geom_segment(
@@ -956,7 +888,7 @@ lcz_ts <- function(x,
           ggplot2::labs(
             title = title,
             x = xlab,
-            y = if(facet_plot == "LCZ") "LCZ class" else "Station (LCZ)",
+            y = if (facet_plot == "LCZ") lcz_tr("lcz_class", lang = lang) else lcz_tr("station_lcz", lang = lang),
             fill = legend_name,
             caption = caption
           ) +
@@ -989,7 +921,7 @@ lcz_ts <- function(x,
         utils::write.csv(mydata, file.2)
         file.3 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_stations.csv")
         utils::write.csv(lcz_df, file.3)
-        base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
+        lcz_msg("msg_files_saved", lang = lang, path = base::file.path(getwd(), folder))
       }
 
       if (iplot == FALSE) {
@@ -1044,7 +976,7 @@ lcz_ts <- function(x,
       by_formula <- stats::as.formula(base::paste("~", base::paste(by[2], collapse = " + ")))
 
       if (plot_type == "facet_line") {
-        message("The 'facet_line' plot does not work with the active 'by' argument. Switching to 'basic_line' plot.")
+        lcz_warn("warn_switch_line", lang = lang)
         plot_type <- "basic_line"
       }
 
@@ -1062,15 +994,15 @@ lcz_ts <- function(x,
           ) +
           ggplot2::scale_fill_manual(name = "", values = c("lightblue", "grey")) +
           ggplot2::scale_x_continuous(expand = c(0, 0), guide = ggplot2::guide_axis(check.overlap = TRUE)) +
-          ggplot2::geom_line(lwd = 1) +
+          ggplot2::geom_line(linewidth = 0.55) +
           ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
           ggplot2::scale_color_manual(
-            name = "Station (LCZ)",
+            name = lcz_tr("station_lcz", lang = lang),
             values = mycolors,
             labels = lcz.lables,
             guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
           ) +
-          ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption)
+          ggplot2::labs(title = title, x = xlab, y = ylab, color = lcz_tr("station_lcz", lang = lang), caption = caption)
         final_graph <-
           graph + ggplot2::facet_wrap(by_formula, scales = "free_y") +
           lcz_theme +
@@ -1090,7 +1022,7 @@ lcz_ts <- function(x,
 
 
       if (plot_type == "warming_stripes") {
-        message("The 'warming_stripes' plot does not work with the active by='daylight' argument. Switching to 'heatmap' plot.")
+        lcz_warn("warn_switch_heatmap", lang = lang)
         plot_type <- "heatmap"
       }
 
@@ -1118,7 +1050,15 @@ lcz_ts <- function(x,
           ggplot2::scale_y_discrete(expand = c(0, 0), guide = ggplot2::guide_axis(check.overlap = TRUE)) +
 
           # Fill scale for heatmap using MetBrewer palette
-          MetBrewer::scale_fill_met_c(name = palette, direction = -1) +
+          lcz_scale_fill_sequential(
+          name = legend_name, option = "magma", direction = -1,
+          guide = ggplot2::guide_colorbar(
+            barwidth = ggplot2::unit(55, "mm"),
+            barheight = ggplot2::unit(2.5, "mm"),
+            title.position = "top", title.hjust = 0.5,
+            frame.colour = "grey70", ticks.colour = "grey40"
+          )
+        ) +
 
           # Add daylight start (solid line) using geom_segment
           ggplot2::geom_segment(
@@ -1151,7 +1091,7 @@ lcz_ts <- function(x,
           ggplot2::labs(
             title = title,
             x = xlab,
-            y = if(facet_plot == "LCZ") "LCZ class" else "Station (LCZ)",
+            y = if (facet_plot == "LCZ") lcz_tr("lcz_class", lang = lang) else lcz_tr("station_lcz", lang = lang),
             fill = legend_name,
             caption = caption
           ) +
@@ -1196,7 +1136,7 @@ lcz_ts <- function(x,
         utils::write.csv(mydata2, file.2)
         file.3 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_stations.csv")
         utils::write.csv(lcz_df, file.3)
-        base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
+        lcz_msg("msg_files_saved", lang = lang, path = base::file.path(getwd(), folder))
       }
 
       if (iplot == FALSE) {
@@ -1232,16 +1172,16 @@ lcz_ts <- function(x,
           y = .data$var_interp,
           color = .data$station
         )) +
-        ggplot2::geom_line(lwd = 1) +
+        ggplot2::geom_line(linewidth = 0.55) +
         ggplot2::scale_x_datetime(expand = c(0, 0), guide = ggplot2::guide_axis(check.overlap = TRUE)) +
         ggplot2::scale_y_continuous(guide = ggplot2::guide_axis(check.overlap = TRUE)) +
         ggplot2::scale_color_manual(
-          name = "Station (LCZ)",
+          name = lcz_tr("station_lcz", lang = lang),
           values = mycolors,
           labels = lcz.lables,
           guide = ggplot2::guide_legend(reverse = FALSE, title.position = "top")
         ) +
-        ggplot2::labs(title = title, x = xlab, y = ylab, fill = "LCZ", caption = caption)
+        ggplot2::labs(title = title, x = xlab, y = ylab, color = lcz_tr("station_lcz", lang = lang), caption = caption)
 
       final_graph <-
         graph + ggplot2::facet_wrap(ggplot2::vars(my_time), scales = "free_x") +
@@ -1274,7 +1214,7 @@ lcz_ts <- function(x,
         utils::write.csv(mydata, file.2)
         file.3 <- base::paste0(getwd(), "/", folder, "lcz4r_ts_stations.csv")
         utils::write.csv(lcz_df, file.3)
-        base::message("Looking at your files in the path:", base::paste0(getwd(), "/", folder))
+        lcz_msg("msg_files_saved", lang = lang, path = base::file.path(getwd(), folder))
       }
 
       if (iplot == FALSE) {

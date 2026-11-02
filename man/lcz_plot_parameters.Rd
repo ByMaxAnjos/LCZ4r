@@ -2,89 +2,87 @@
 % Please edit documentation in R/lcz_plot_parameters.R
 \name{lcz_plot_parameters}
 \alias{lcz_plot_parameters}
-\title{Visualize LCZ parameters}
+\title{Visualise LCZ parameters}
 \usage{
 lcz_plot_parameters(
   x,
-  iselect = "",
+  iselect = NULL,
   all = FALSE,
   inclusive = FALSE,
   isave = FALSE,
   save_extension = "png",
-  ...
+  max_pixels = 1e+06,
+  ...,
+  lang = "en"
 )
 }
 \arguments{
-\item{x}{The LCZ map in SpatRaster in a stack format.}
+\item{x}{The raster stack returned by
+\code{lcz_get_parameters(istack = TRUE)} (the first layer, the LCZ class, is
+dropped automatically).}
 
-\item{iselect}{Code vector. Specify one or more parameter:
-\itemize{
-\item \strong{SVFmean}: Mean Sky View Factor
-\item \strong{SVFmax}: Maximum Sky View Factor
-\item \strong{SVFmin}: Minimum Sky View Factor
-\item \strong{ARmean}: Mean Aspect Ratio
-\item \strong{ARmax}: Maximum Aspect Ratio
-\item \strong{ARmin}: Minimum Aspect Ratio
-\item \strong{BSFmean}: Mean Building Surface Fraction
-\item \strong{BSFmax}: Maximum Building Surface Fraction
-\item \strong{BSFmin}: Minimum Building Surface Fraction
-\item \strong{ISFmean}: Mean Impervious Surface Fraction
-\item \strong{ISFmax}: Maximum Impervious Surface Fraction
-\item \strong{ISFmin}: Minimum Impervious Surface Fraction
-\item \strong{PSFmean}: Mean Vegetation Surface Fraction
-\item \strong{PSFmax}: Maximum Vegetation Surface Fraction
-\item \strong{PSFmin}: Minimum Vegetation Surface Fraction
-\item \strong{TSFmean}: Mean Tree Surface Fraction
-\item \strong{TSFmax}: Maximum Tree Surface Fraction
-\item \strong{TSFmin}: Minimum Tree Surface Fraction
-\item \strong{HREmean}: Mean Height Roughness Elements
-\item \strong{HREmax}: Maximum Height Roughness Elements
-\item \strong{HREmin}: Minimum Height Roughness Elements
-\item \strong{TRCmean}: Mean Terrain Roughness class
-\item \strong{TRCmax}: Maximum Terrain Roughness class
-\item \strong{TRCmin}: Minimum Terrain Roughness class
-\item \strong{SADmean}: Mean Surface Admittance
-\item \strong{SADmax}: Maximum Surface Admittance
-\item \strong{SADmin}: Minimum Surface Admittance
-\item \strong{SALmean}: Mean Surface Albedo
-\item \strong{SALmax}: Maximum Surface Albedo
-\item \strong{SALmin}: Minimum Surface Albedo
-\item \strong{AHmean}: Mean Anthropogenic Heat Output
-\item \strong{AHmax}: Maximum Anthropogenic Heat Output
-\item \strong{AHmin}: Minimum Anthropogenic Heat Output
-\item \strong{z0}: Roughness Length class
-}}
+\item{iselect}{Character vector with one or more parameter codes. See the
+parameter list below.}
 
-\item{all}{Logical, specifying whether to save all selected parameters into LCZ4r_output. Default is FALSE.}
+\item{all}{Logical. Plot every parameter in the stack.}
 
-\item{inclusive}{Set to TRUE to a colorblind-friendly palette.}
+\item{inclusive}{Logical. Use colour-vision-deficiency-safe palettes.}
 
-\item{isave}{Logical, indicating whether to save the plot to your directory. Default is FALSE.}
+\item{isave}{Logical. Save each plot in \verb{LCZ4r_output/}.}
 
-\item{save_extension}{File format for saving the plot. Options: "png", "jpg", "jpeg", "tif", "pdf", "svg" (default is "png").}
+\item{save_extension}{Image format: \code{"png"}, \code{"jpg"}, \code{"tif"}, \code{"pdf"} or
+\code{"svg"}.}
 
-\item{...}{An optional modify axis, legend, and plot labels: subtitle, and caption. It does not work with title.}
+\item{max_pixels}{Maximum number of cells per plot; larger rasters are
+aggregated (mean) first.}
+
+\item{...}{Passed to \code{\link[ggplot2:labs]{ggplot2::labs()}} (\code{subtitle}, \code{caption}, ...). The
+title is generated from the parameter name.}
+
+\item{lang}{Language used for titles, messages and errors. See
+\code{\link[=lcz_langs]{lcz_langs()}}. Defaults to \code{"en"}.}
 }
 \value{
-A plot of the selected LCZ parameters in ggplot2 format
-
-#'@references
-Stewart, I., and T. Oke, 2012: Local climate zones for urban temperature studies. Bull. Amer. Meteor. Soc., 93, 1879–1900. https://doi.org/10.1175/BAMS-D-11-00019.1
+A \code{ggplot} object (the last plot when several parameters are drawn).
 }
 \description{
-This function plots the parameters of an Local Climate Zone map.
+Maps one or more physical parameters of the LCZ scheme (sky view factor,
+building surface fraction, anthropogenic heat, ...) as rasters.
 }
+\section{Parameter codes}{
+
+\code{SVFmin}, \code{SVFmax}, \code{SVFmean} (sky view factor);
+\code{ARmin}, \code{ARmax}, \code{ARmean} (aspect ratio);
+\code{BSFmin}, \code{BSFmax}, \code{BSFmean} (building surface fraction);
+\code{ISFmin}, \code{ISFmax}, \code{ISFmean} (impervious surface fraction);
+\code{PSFmin}, \code{PSFmax}, \code{PSFmean} (pervious surface fraction);
+\code{TSFmin}, \code{TSFmax}, \code{TSFmean} (tree surface fraction);
+\code{HREmin}, \code{HREmax}, \code{HREmean} (height of roughness elements);
+\code{TRCmin}, \code{TRCmax}, \code{TRCmean} (terrain roughness class);
+\code{SADmin}, \code{SADmax}, \code{SADmean} (surface admittance);
+\code{SALmin}, \code{SALmax}, \code{SALmean} (surface albedo);
+\code{AHmin}, \code{AHmax}, \code{AHmean} (anthropogenic heat output);
+\code{z0} (roughness length).
+}
+
 \examples{
 \dontrun{
-# Plot the mean Sky View Factor (SVFmean) for your city
-lcz_plot_parameters(lcz_map, iselect = "SVFmean")
+lcz_map <- lcz_get_map(city = "Juiz de Fora")
+params <- lcz_get_parameters(lcz_map, istack = TRUE)
 
-# Plot multiple parameters and save them to the LCZ4r_output directory
-lcz_plot_parameters(lcz_map, iselect = c("BSFmean", "AHmean"))
+lcz_plot_parameters(params, iselect = "SVFmean")
+lcz_plot_parameters(params, iselect = c("BSFmean", "AHmean"), lang = "pt")
+lcz_plot_parameters(params, all = TRUE, isave = TRUE)
 }
+
+}
+\references{
+Stewart, I. D., and Oke, T. R. (2012). Local Climate Zones for urban
+temperature studies. Bull. Amer. Meteor. Soc. 93(12) 1879-1900.
+\doi{10.1175/BAMS-D-11-00019.1}
 }
 \seealso{
-See the documentation for lcz_get_parameters() to obtain LCZ parameters.
+\code{\link[=lcz_get_parameters]{lcz_get_parameters()}}, \code{\link[=lcz_plot_map]{lcz_plot_map()}}
 }
 \keyword{Climate}
 \keyword{LCZ,}

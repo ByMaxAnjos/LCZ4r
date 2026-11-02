@@ -20,7 +20,8 @@ lcz_interp_eval(
   Anomaly = FALSE,
   impute = NULL,
   isave = FALSE,
-  LCZinterp = TRUE
+  LCZinterp = TRUE,
+  lang = "en"
 )
 }
 \arguments{
@@ -75,6 +76,10 @@ lcz_interp_eval(
 \item{isave}{A logical value. If \code{TRUE}, the plot is saved to the working directory.}
 
 \item{LCZinterp}{A logical value. If \code{TRUE} (default), the LCZ interpolation approach is used. If \code{FALSE}, conventional interpolation without LCZ is used.}
+
+\item{lang}{Language used for labels, messages and errors. Available codes:
+\code{"en"} (default), \code{"pt"}, \code{"es"}, \code{"fr"}, \code{"zh"}, \code{"de"}, \code{"it"}, \code{"ja"},
+\code{"ko"}, \code{"ru"}, \code{"ar"}. See \code{\link[=lcz_langs]{lcz_langs()}}.}
 }
 \value{
 A summary table in CSV format containing time series of observed values, predicted values, and residuals. It also returns an ESRI shapefile (.gpkg) containing metadata of the interpolation.

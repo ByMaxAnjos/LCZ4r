@@ -2,92 +2,67 @@
 % Please edit documentation in R/lcz_get_parameters.R
 \name{lcz_get_parameters}
 \alias{lcz_get_parameters}
-\title{Retrieve urban canopy LCZ parameters}
+\title{Get LCZ parameters}
 \usage{
-lcz_get_parameters(x, iselect = "", istack = TRUE, ishp = FALSE, isave = FALSE)
+lcz_get_parameters(
+  x,
+  iselect = NULL,
+  istack = TRUE,
+  ishp = FALSE,
+  isave = FALSE,
+  lang = "en"
+)
 }
 \arguments{
-\item{x}{A LCZ map in .tiff format SpatRaster object containing LCZ classes.}
+\item{x}{A \code{SpatRaster} (or path) with LCZ classes (1-17). It can be obtained
+with \code{\link[=lcz_get_map]{lcz_get_map()}}, \code{\link[=lcz_get_map_euro]{lcz_get_map_euro()}} or \code{\link[=lcz_get_map_usa]{lcz_get_map_usa()}}.}
 
-\item{iselect}{Code vector. Specify one or more parameter:
-\itemize{
-\item \strong{SVFmean}: Mean Sky View Factor
-\item \strong{SVFmax}: Maximum Sky View Factor
-\item \strong{SVFmin}: Minimum Sky View Factor
-\item \strong{ARmean}: Mean Aspect Ratio
-\item \strong{ARmax}: Maximum Aspect Ratio
-\item \strong{ARmin}: Minimum Aspect Ratio
-\item \strong{BSFmean}: Mean Building Surface Fraction
-\item \strong{BSFmax}: Maximum Building Surface Fraction
-\item \strong{BSFmin}: Minimum Building Surface Fraction
-\item \strong{ISFmean}: Mean Impervious Surface Fraction
-\item \strong{ISFmax}: Maximum Impervious Surface Fraction
-\item \strong{ISFmin}: Minimum Impervious Surface Fraction
-\item \strong{PSFmean}: Mean Vegetation Surface Fraction
-\item \strong{PSFmax}: Maximum Vegetation Surface Fraction
-\item \strong{PSFmin}: Minimum Vegetation Surface Fraction
-\item \strong{TSFmean}: Mean Tree Surface Fraction
-\item \strong{TSFmax}: Maximum Tree Surface Fraction
-\item \strong{TSFmin}: Minimum Tree Surface Fraction
-\item \strong{HREmean}: Mean Height Roughness Elements
-\item \strong{HREmax}: Maximum Height Roughness Elements
-\item \strong{HREmin}: Minimum Height Roughness Elements
-\item \strong{TRCmean}: Mean Terrain Roughness class
-\item \strong{TRCmax}: Maximum Terrain Roughness class
-\item \strong{TRCmin}: Minimum Terrain Roughness class
-\item \strong{SADmean}: Mean Surface Admittance
-\item \strong{SADmax}: Maximum Surface Admittance
-\item \strong{SADmin}: Minimum Surface Admittance
-\item \strong{SALmean}: Mean Surface Albedo
-\item \strong{SALmax}: Maximum Surface Albedo
-\item \strong{SALmin}: Minimum Surface Albedo
-\item \strong{AHmean}: Mean Anthropogenic Heat Outupt
-\item \strong{AHmax}: Maximum Anthropogenic Heat Outupt
-\item \strong{AHmin}: Minimum Anthropogenic Heat Outupt
-\item \strong{z0}: Roughness Lenght class
-}}
+\item{iselect}{Character vector with the parameter(s) to return, e.g.
+\code{"SVFmean"}. When supplied, only the selected layers are returned,
+independently of \code{istack}.}
 
-\item{istack}{Logical. If TRUE, returns all parameters as a raster stack.
-If FALSE, returns a list of individual parameter rasters.}
+\item{istack}{Logical. If \code{TRUE} (default), return all parameters as a raster
+stack.}
 
-\item{ishp}{Logical. If TRUE, returns all parameters as an ESRI shapefile.}
+\item{ishp}{Logical. If \code{TRUE}, return all parameters as an \code{sf} polygon
+layer. Takes precedence over \code{istack} and \code{iselect}.}
 
-\item{isave}{Set to TRUE if you want to save the your clipped resulting map as a raster.tiff or .shp file on your local machine.}
+\item{isave}{Logical. Save the result in \verb{LCZ4r_output/}.}
+
+\item{lang}{Language used for console messages, errors and plot labels. See
+\code{\link[=lcz_langs]{lcz_langs()}}. Defaults to \code{"en"}.}
 }
 \value{
-If 'istack' is TRUE, it returns a raster stack containing 34 LCZ-related parameters.
-If 'istack' is FALSE, it returns a list of individual parameter rasters.
-If 'ishp' is TRUE, it returns an ESRI shapefile containing all parameters.
-If 'iselect' is specified, it returns the selected parameter(s) as a raster(s).
+Depending on the arguments: an \code{sf} object (\code{ishp = TRUE}), a
+\code{SpatRaster} stack (\code{istack = TRUE} or \code{iselect}), or a list of
+\code{SpatRaster} layers (\code{istack = FALSE}).
 }
 \description{
-This function extracts 34 LCZ parameters based on the classification
-scheme developed by Stewart and Oke (2012). LCZs provide valuable information about urban
-morphology and are useful for urban climate and environmental studies.
+Maps the 17 LCZ classes to their physical parameters (Stewart and Oke, 2012),
+returning either an \code{sf} polygon layer, a raster stack or a list of rasters.
 }
 \examples{
 \dontrun{
-# Load the LCZ map
-lcz_map <- raster::raster("path/to/lcz_map.tif")
+lcz_map <- lcz_get_map(city = "Juiz de Fora")
 
-# Get LCZ parameters as a raster stack
-lcz_params_stack <- lcz_get_parameters(lcz_map, istack = TRUE)
+# Full stack (34 layers)
+lcz_params <- lcz_get_parameters(lcz_map, istack = TRUE)
 
-# Get LCZ parameters as a list of individual parameter rasters
-lcz_params_list <- lcz_get_parameters(lcz_map, istack = FALSE)
+# Only the parameters you need (faster and lighter)
+lcz_params <- lcz_get_parameters(lcz_map, iselect = c("SVFmean", "AHmean"))
 
-# Access individual parameters from the list
-specific_param <- lcz_params_list$parameter_name
-
-# Get specific parameters as a raster or shapefile
-selected_params <- lcz_get_parameters(lcz_map, iselect = c("SVFmin"))
+# Polygons
+lcz_poly <- lcz_get_parameters(lcz_map, ishp = TRUE)
 }
+
 }
 \references{
-Stewart, I., and T. Oke, 2012: Local climate zones for urban temperature studies. Bull. Amer. Meteor. Soc., 93, 1879–1900. https://doi.org/10.1175/BAMS-D-11-00019.1
+Stewart, I. D., and Oke, T. R. (2012). Local Climate Zones for urban
+temperature studies. Bull. Amer. Meteor. Soc. 93(12) 1879-1900.
+\doi{10.1175/BAMS-D-11-00019.1}
 }
-\author{
-Max Anjos (https://github.com/ByMaxAnjos)
+\seealso{
+\code{\link[=lcz_get_map]{lcz_get_map()}}, \code{\link[=lcz_plot_parameters]{lcz_plot_parameters()}}
 }
 \keyword{Climate}
 \keyword{LCZ,}

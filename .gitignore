@@ -1,25 +1,39 @@
-.Rproj.user
+# --- OS / editor -------------------------------------------------------------
+.DS_Store
+**/.DS_Store
+Thumbs.db
+.Rproj.user/
 .Rhistory
 .RData
 .httr-oauth
-.DS_Store
-.quarto
-# R build artifacts
+.quarto/
+**/*.quarto_ipynb
+
+# --- R build / check ---------------------------------------------------------
 *.Rproj
 *.tar.gz
+*.Rcheck/
 *.check/
 *.log
 
-# Package directories
+# --- Generated outputs -------------------------------------------------------
+# pkgdown build artifacts other than the published index.html
+docs/
+pkgdown/_site/
+# function outputs
+LCZ4r_output/
+output/
+
+# --- Local development material (kept on disk, not shipped) ------------------
+dev/
+AUDITORIA.md
+
+# --- Man: keep Rd sources and figures ---------------------------------------
 /man/*
 !/man/*.Rd
+!/man/figures/
+!/man/figures/**
+
+# --- Vignette outputs --------------------------------------------------------
 /vignettes/*.html
 /vignettes/*.pdf
-
-# Misc
-.DS_Store
-Thumbs.db
-/.quarto/
-
-**/*.quarto_ipynb
-!/man/figures/

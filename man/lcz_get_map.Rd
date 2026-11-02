@@ -4,30 +4,43 @@
 \alias{lcz_get_map}
 \title{Download the LCZ map}
 \usage{
-lcz_get_map(city = NULL, roi = NULL, isave_map = FALSE, isave_global = FALSE)
+lcz_get_map(
+  city = NULL,
+  roi = NULL,
+  isave_map = FALSE,
+  isave_global = FALSE,
+  lang = "en"
+)
 }
 \arguments{
-\item{city}{A character string specifying the name of your target area based on the OpenStreetMap project.}
+\item{city}{A character string with the name of the target area, as used by
+OpenStreetMap/Nominatim.}
 
-\item{roi}{Optionally, you can provide a Region of Interest (ROI) in ESRI shapefile format to clip the LCZ map to a custom area.}
+\item{roi}{Optional \code{sf}/\code{sfc} polygon used to clip the LCZ map to a custom
+area. Ignored when \code{city} is supplied.}
 
-\item{isave_map}{Logical. Set to TRUE if you wish to save the resulting clipped map as a raster TIFF file on your local machine.}
+\item{isave_map}{Logical. Save the clipped map as a GeoTIFF in
+\verb{LCZ4r_output/}.}
 
-\item{isave_global}{Logical. Set to TRUE if you wish to save the global LCZ map as a raster TIFF file on your local machine.}
+\item{isave_global}{Logical. Save the full global LCZ map as a GeoTIFF.}
+
+\item{lang}{Language used for console messages and errors. One of
+\code{"en"}, \code{"pt"}, \code{"es"}, \code{"fr"}, \code{"zh"}, \code{"de"}, \code{"it"}, \code{"ja"}, \code{"ko"},
+\code{"ru"}, \code{"ar"}. Defaults to \code{"en"}.}
 }
 \value{
-A Terra raster TIFF file containing LCZ classes (1-17).
+A \code{SpatRaster} with LCZ classes (1-17).
 }
 \description{
-This function retrieves the Local Climate Zone (LCZ) global mapping dataset
-It allows you to obtain the LCZ map for a specific area of interest, which can be a city, state, region, or custom-defined shape.
+Retrieves the global Local Climate Zone (LCZ) mapping dataset (Demuzere et
+al., 2022) for a city name or a custom region of interest.
 }
 \examples{
 \dontrun{
 # Load the LCZ map for a city
-my_lcz_city <- lcz_get_map(city = "your city")
+my_lcz_city <- lcz_get_map(city = "Juiz de Fora")
 
-# Get LCZ map for a custom region of interest
+# Get the LCZ map for a custom region of interest
 custom_roi <- sf::st_read("custom_roi.shp")
 roi_lcz <- lcz_get_map(roi = custom_roi, isave_map = TRUE)
 
@@ -37,9 +50,18 @@ my_lcz_country <- lcz_get_map(city = "Brazil")
 
 }
 \references{
-Demuzere, M., Kittner, J., Martilli, A., Mills, G., Moede, C., Stewart, I. D., van Vliet, J., and Bechtel, B. (2022). A global map of Local Climate Zones to support earth system modelling and urban scale environmental science, Earth Syst. Sci. Data 14(8) 3835-3873. DOI:https://doi.org/10.5194/essd-14-3835-2022
-Zenodo. https://doi.org/10.5281/zenodo.6364594
-Stewart ID, Oke TR. (2012). Local Climate Zones for Urban Temperature Studies. Bull Am Meteorol Soc. 93(12):1879-1900. doi:10.1175/BAMS-D-11-00019.1
+Demuzere, M., Kittner, J., Martilli, A., Mills, G., Moede, C., Stewart, I.
+D., van Vliet, J., and Bechtel, B. (2022). A global map of Local Climate
+Zones to support earth system modelling and urban scale environmental
+science. Earth Syst. Sci. Data 14(8) 3835-3873.
+\doi{10.5194/essd-14-3835-2022}
+
+Stewart, I. D., and Oke, T. R. (2012). Local Climate Zones for urban
+temperature studies. Bull. Amer. Meteor. Soc. 93(12) 1879-1900.
+\doi{10.1175/BAMS-D-11-00019.1}
+}
+\seealso{
+\code{\link[=lcz_get_map_euro]{lcz_get_map_euro()}}, \code{\link[=lcz_get_map_usa]{lcz_get_map_usa()}}, \code{\link[=lcz_plot_map]{lcz_plot_map()}}
 }
 \keyword{Climate}
 \keyword{LCZ,}

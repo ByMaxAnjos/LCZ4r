@@ -6,59 +6,74 @@
 \usage{
 lcz_cal_area(
   x,
-  plot_type = "bar",
+  plot_type = c("bar", "pie", "donut"),
   iplot = TRUE,
   isave = FALSE,
   save_extension = "png",
   show_legend = TRUE,
   inclusive = FALSE,
-  xlab = "LCZ code",
-  ylab = "Area [km2]",
-  ...
+  xlab = NULL,
+  ylab = NULL,
+  ...,
+  lang = "en"
 )
 }
 \arguments{
-\item{x}{A raster SpatRaster layer containing LCZ classes.}
+\item{x}{A \code{SpatRaster} (or path) with LCZ classes (1-17).}
 
-\item{plot_type}{Type of plot to generate: "bar", "pie", or "donut". Default is "bar".}
+\item{plot_type}{One of \code{"bar"} (default), \code{"pie"} or \code{"donut"}.}
 
-\item{iplot}{Logical, indicating whether to create a plot (default is TRUE).}
+\item{iplot}{Logical. Return the plot (\code{TRUE}) or the summary table
+(\code{FALSE}).}
 
-\item{isave}{Logical, whether to save the plot to your directory (default is FALSE).}
+\item{isave}{Logical. Save the plot and the summary table in
+\verb{LCZ4r_output/}.}
 
-\item{save_extension}{File format for saving the plot. Options: "png", "jpg", "jpeg", "tif", "pdf", "svg" (default is "png").}
+\item{save_extension}{Image format: \code{"png"}, \code{"jpg"}, \code{"tif"}, \code{"pdf"} or
+\code{"svg"}.}
 
-\item{show_legend}{Logical. If TRUE, displays the legend on the plot. If FALSE, the legend will be hidden. Default is TRUE.}
+\item{show_legend}{Logical. Show the legend.}
 
-\item{inclusive}{Logical. If TRUE, use a colorblind-friendly palette. Default is FALSE.}
+\item{inclusive}{Logical. Use the colour-vision-deficiency-safe palette.}
 
-\item{xlab}{Character, label for the x-axis (default is "LCZ code").}
+\item{xlab, ylab}{Axis labels. Sensible translated defaults are used when
+\code{NULL}.}
 
-\item{ylab}{Character, label for the y-axis (default is "Area (km2)").}
+\item{...}{Passed to \code{\link[ggplot2:labs]{ggplot2::labs()}} (e.g. \code{title}, \code{subtitle},
+\code{caption}).}
 
-\item{...}{Additional arguments to modify axis, legend, and plot labels, including title, subtitle, and caption.}
+\item{lang}{Language used for labels, messages and errors. See
+\code{\link[=lcz_langs]{lcz_langs()}}. Defaults to \code{"en"}.}
 }
 \value{
-A summary table of LCZ class areas if plot = FALSE, otherwise, the specified plot in ggplot format.
+A summary tibble (\code{iplot = FALSE}) or a \code{ggplot} object.
 }
 \description{
-This function calculates the areas of LCZ classes in both percentage and square kilometers.
+Computes the area (km²) and the relative share (\%) of each LCZ class, and
+optionally draws a bar, pie or donut chart.
 }
 \examples{
 \dontrun{
-# Calculate LCZ area and visualize as bar plot
+my_lcz_map <- lcz_get_map(city = "Juiz de Fora")
 lcz_cal_area(my_lcz_map, plot_type = "bar")
-
-# Visualize as pie chart
-lcz_cal_area(my_lcz_map, plot_type = "pie")
-
-# Save donut chart plot
-lcz_cal_area(my_lcz_map, plot_type = "donut", isave = TRUE)
-
-# Return a dataframe
-lcz_cal_area(my_lcz_map, plot_type = "donut", iplot = FALSE)
+lcz_cal_area(my_lcz_map, plot_type = "donut", lang = "pt")
+lcz_cal_area(my_lcz_map, iplot = FALSE)
 }
+
+}
+\references{
+Stewart, I. D., and Oke, T. R. (2012). Local Climate Zones for urban
+temperature studies. Bull. Amer. Meteor. Soc. 93(12) 1879-1900.
+\doi{10.1175/BAMS-D-11-00019.1}
 }
 \seealso{
-See the documentation for lcz_get_map() to obtain an LCZ map.
+\code{\link[=lcz_get_map]{lcz_get_map()}}, \code{\link[=lcz_plot_map]{lcz_plot_map()}}
 }
+\keyword{Climate}
+\keyword{LCZ,}
+\keyword{Local}
+\keyword{Zone,}
+\keyword{analysis}
+\keyword{climate,}
+\keyword{spatial}
+\keyword{urban}

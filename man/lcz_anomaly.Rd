@@ -19,12 +19,13 @@ lcz_anomaly(
   isave = FALSE,
   save_extension = "png",
   inclusive = FALSE,
-  palette = "OKeeffe1",
-  ylab = "Air temperature anomaly",
-  xlab = "Stations",
-  title = "",
-  caption = "",
-  legend_name = "Anomaly"
+  palette = "okabe",
+  ylab = NULL,
+  xlab = NULL,
+  title = NULL,
+  caption = NULL,
+  legend_name = NULL,
+  lang = "en"
 )
 }
 \arguments{
@@ -78,15 +79,19 @@ lcz_anomaly(
 
 \item{palette}{A character string specifying the color palette to use. The default is \dQuote{OKeeffe1}. You can choose from palettes available in \code{MetBrewer}: \url{https://github.com/BlakeRMills/MetBrewer?tab=readme-ov-file#palettes}.}
 
-\item{ylab}{y-axis name.}
+\item{ylab}{y-axis label. \code{NULL} (default) uses a translated "Temperature anomaly (K)".}
 
-\item{xlab}{y-axis name. Default is \dQuote{Station}}
+\item{xlab}{x-axis label. \code{NULL} (default) uses a translated "Stations".}
 
 \item{title}{y-axis name. Default is \dQuote{" "}.}
 
 \item{caption}{source data. Default can be \dQuote{Source: LCZ4r, Stewart and Oke, 2012; Demuzere et al.2022."}.}
 
-\item{legend_name}{Legend name for dot plot. Default is "Anomaly".}
+\item{legend_name}{Legend name. \code{NULL} (default) uses a translated "Temperature anomaly (K)".}
+
+\item{lang}{Language used for labels, messages and errors. Available codes:
+\code{"en"} (default), \code{"pt"}, \code{"es"}, \code{"fr"}, \code{"zh"}, \code{"de"}, \code{"it"}, \code{"ja"},
+\code{"ko"}, \code{"ru"}, \code{"ar"}. See \code{\link[=lcz_langs]{lcz_langs()}}.}
 }
 \value{
 A visual representation of the anomalies of air temperature of LCZ in \code{ggplot} or data frame .csv format.

@@ -2,41 +2,56 @@
 % Please edit documentation in R/lcz_get_map_usa.R
 \name{lcz_get_map_usa}
 \alias{lcz_get_map_usa}
-\title{Download your LCZ map from the Continental United States}
+\title{Download the CONUS LCZ map}
 \usage{
-lcz_get_map_usa(city = NULL, roi = NULL, isave_map = FALSE, isave_usa = FALSE)
+lcz_get_map_usa(
+  city = NULL,
+  roi = NULL,
+  isave_map = FALSE,
+  isave_usa = FALSE,
+  lang = "en"
+)
 }
 \arguments{
-\item{city}{A character string specifying the name of your target area based on the OpenStreetMap project.}
+\item{city}{A character string with the name of the target area, as used by
+OpenStreetMap/Nominatim.}
 
-\item{roi}{Optionally, you can provide a Region of Interest (ROI) in ESRI shapefile format to clip the LCZ map to a custom area.}
+\item{roi}{Optional \code{sf}/\code{sfc} polygon used to clip the LCZ map.}
 
-\item{isave_map}{Logical. Set to TRUE if you wish to save the resulting clipped map as a raster TIFF file on your local machine.}
+\item{isave_map}{Logical. Save the clipped map as a GeoTIFF.}
 
-\item{isave_usa}{Logical. Set to TRUE if you wish to save the USA LCZ map as a raster TIFF file on your local machine.}
+\item{isave_usa}{Logical. Save the full CONUS LCZ map as a GeoTIFF.}
+
+\item{lang}{Language used for console messages and errors. See
+\code{\link[=lcz_langs]{lcz_langs()}}. Defaults to \code{"en"}.}
 }
 \value{
-A Terra raster TIFF file containing LCZ classes (1-17).
+A \code{SpatRaster} with LCZ classes (1-17).
 }
 \description{
-This function retrieves the Local Climate Zone (LCZ) CONUS LCZ mapping dataset
-created by Demuzere et al. (2020) and available at https://doi.org/10.1038/s41597-020-00605-z.
-It allows you to obtain the LCZ map for a specific area of interest, which can be a city, state, region, or custom-defined shape.
+Retrieves the Local Climate Zone map for the Continental United States
+(Demuzere et al., 2020) for a city or a custom region of interest.
 }
 \examples{
 \dontrun{
-# Example 1: Load the LCZ map for a city
 my_lcz_city <- lcz_get_map_usa(city = "New York")
-
-# Example 2: Get LCZ map for a custom region of interest
 custom_roi <- sf::st_read("custom_roi.shp")
 roi_lcz <- lcz_get_map_usa(roi = custom_roi)
 }
+
 }
 \references{
-Demuzere, M., Hankey, S., Mills, G., Zhang, W., Lu, T., & Bechtel, B. (2020). Combining expert and crowd-sourced training data to map urban form and functions for the continental US. Scientific Data, 7(1), 264. DOI:https://doi.org/10.1038/s41597-020-00605-z
-Demuzere, M., Hankey, S., Mills, G., Zhang, W., Lu, T., Bechtel B. (2020): CONUS-wide LCZ map and Training Areas. Figshare. Dataset. https://doi.org/10.6084/m9.figshare.11416950
-Anjos, M. (2024). LCZ4r Package Dataset. Zenodo. \url{https://doi.org/10.5281/zenodo.10835692}
+Demuzere, M., Hankey, S., Mills, G., Zhang, W., Lu, T., and Bechtel, B.
+(2020). Combining expert and crowd-sourced training data to map urban form
+and functions for the continental US. Scientific Data 7(1), 264.
+\doi{10.1038/s41597-020-00605-z}
+
+Demuzere, M., Hankey, S., Mills, G., Zhang, W., Lu, T., and Bechtel, B.
+(2020). CONUS-wide LCZ map and training areas. Figshare.
+\doi{10.6084/m9.figshare.11416950}
+}
+\seealso{
+\code{\link[=lcz_get_map]{lcz_get_map()}}, \code{\link[=lcz_get_map_euro]{lcz_get_map_euro()}}
 }
 \keyword{Climate}
 \keyword{LCZ,}

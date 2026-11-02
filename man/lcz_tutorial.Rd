@@ -2,22 +2,27 @@
 % Please edit documentation in R/lcz_tutorial.R
 \name{lcz_tutorial}
 \alias{lcz_tutorial}
-\title{LCZ4r Tutorials}
+\title{LCZ4r tutorials}
 \usage{
-lcz_tutorial(x = "general")
+lcz_tutorial(x = "general", lang = "en")
 }
 \arguments{
-\item{x}{Character string. Either "general" for general functions or "local" for local functions. Default is "general".}
+\item{x}{\code{"general"} (default) for general functions or \code{"local"} for local
+functions.}
+
+\item{lang}{Language used for console messages and errors. See
+\code{\link[=lcz_langs]{lcz_langs()}}. Defaults to \code{"en"}.}
 }
 \value{
-Opens the LCZ4r tutorial in a web browser.
+Invisibly, \code{NULL}. Called for its side effect (opening a browser).
 }
 \description{
-Opens LCZ4r tutorial in a web browser. This function requires an internet connection.
+Opens an LCZ4r tutorial in your default browser. Requires an internet
+connection.
 }
 \examples{
 \dontrun{
 lcz_tutorial("general")
-lcz_tutorial("local")
+lcz_tutorial("local", lang = "pt")
 }
 }

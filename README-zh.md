@@ -10,6 +10,48 @@
 
 ---
 
+# 0. 0.2.0 新功能
+
+- **11 种语言**：所有导出函数均支持 `lang = "en"`（以及 `pt`、`es`、`fr`、
+  `zh`、`de`、`it`、`ja`、`ko`、`ru`、`ar`）。
+- **出版级图形**：`lcz_theme_journal()` 与 `lcz_save_figure()` 可输出
+  120/190 mm、600 dpi 或 PDF/SVG 矢量图。
+- **无双轴热岛图**：`group = TRUE` 现在绘制两个对齐面板：
+  (a) 城市/乡村气温，(b) 热岛强度。
+- **性能大幅提升**：`lcz_get_parameters()` 约 83×，`two.step` 约 16×。
+- **清晰诊断**：站点与 LCZ 地图不匹配时给出明确提示。
+- **LCZ 术语已按各国发表文献修订**。
+
+# 0.1 语言
+
+所有导出函数均接受 `lang` 参数。消息、错误、坐标轴标签、图例以及 17 个
+LCZ 类别名称已翻译为 **11 种语言**：`en`（默认）、`pt`、`es`、`fr`、`zh`、
+`de`、`it`、`ja`、`ko`、`ru`、`ar`。
+
+# 0.2 出版级图形
+
+所有地图和图表使用统一的编辑规范：标题左对齐、无上/右边框、色盲安全
+配色，LCZ 图例默认单列以保留地图面积。
+
+```r
+library(LCZ4r)
+
+my_map <- lcz_get_map(city = "Berlin", lang = "zh")
+
+p <- lcz_plot_map(my_map, lang = "zh", title = "局地气候区",
+                  scalebar = TRUE, north_arrow = TRUE)
+lcz_save_figure(p, "fig_map.pdf", width = "double", height = 150)
+
+data(lcz_data)
+p_uhi <- lcz_uhi_intensity(my_map, lcz_data, var = "airT",
+                           station_id = "station", group = TRUE, lang = "zh")
+lcz_save_figure(p_uhi, "fig_uhi.pdf", width = "double", height = 165)
+```
+
+完整规范见 `dev/design-system.md`。
+
+---
+
 # 1. 安装说明
 
 `LCZ4r` 包托管于 GitHub，可通过两种方式安装。  

@@ -20,12 +20,13 @@ lcz_ts(
   iplot = TRUE,
   isave = FALSE,
   save_extension = "png",
-  palette = "VanGogh2",
-  ylab = "Air temperature [Degree Celsius]",
-  xlab = "Time",
-  title = "LCZ - Timeseries",
-  caption = "LCZ4r, 2024.",
-  legend_name = "Temperature (C)"
+  palette = "okabe",
+  ylab = NULL,
+  xlab = NULL,
+  title = NULL,
+  caption = NULL,
+  legend_name = NULL,
+  lang = "en"
 )
 }
 \arguments{
@@ -73,17 +74,21 @@ lcz_ts(
 
 \item{save_extension}{A character string indicating the file format for saving the plot. Options include: \dQuote{png}, \dQuote{jpg}, \dQuote{jpeg}, \dQuote{tif}, \dQuote{pdf}, \dQuote{svg}. The default is \dQuote{png}.}
 
-\item{palette}{A character string specifying the color palette to use. The default is \dQuote{VanGogh2}. You can choose from palettes available in \code{MetBrewer}: \url{https://github.com/BlakeRMills/MetBrewer?tab=readme-ov-file#palettes}.}
+\item{palette}{Categorical palette. \code{"okabe"} (default) uses the colour-blind-safe Okabe-Ito palette; any \pkg{MetBrewer} palette name is also accepted.}
 
-\item{ylab}{A character string for the y-axis label. The default is the variable name.}
+\item{ylab}{y-axis label. \code{NULL} (default) uses a translated "Air temperature (°C)".}
 
-\item{xlab}{A character string for the x-axis label. The default is \dQuote{Time}.}
+\item{xlab}{x-axis label. \code{NULL} (default) uses a translated "Time".}
 
-\item{title}{A character string for the plot title. The default is \dQuote{""}.}
+\item{title}{Plot title. \code{NULL} (default) leaves it empty.}
 
-\item{caption}{source data. Default can be \dQuote{Source:LCZ4r,2024"}.}
+\item{caption}{Source caption. \code{NULL} (default) uses a translated "Source: LCZ4r".}
 
-\item{legend_name}{Legend name for heatmap and warming stripes plots. Default is "Temperature (°C)".}
+\item{legend_name}{Legend name for heatmap and warming stripes. \code{NULL} (default) uses a translated "Temperature (°C)".}
+
+\item{lang}{Language used for labels, messages and errors. Available codes:
+\code{"en"} (default), \code{"pt"}, \code{"es"}, \code{"fr"}, \code{"zh"}, \code{"de"}, \code{"it"}, \code{"ja"},
+\code{"ko"}, \code{"ru"}, \code{"ar"}. See \code{\link[=lcz_langs]{lcz_langs()}}.}
 }
 \value{
 A ggplot object representing the time series of air temperature in different LCZs, or a data frame in CSV format if \code{iplot = FALSE}.

@@ -10,6 +10,83 @@ O [**pacote LCZ4r**](https://github.com/ByMaxAnjos/LCZ4r) oferece um conjunto ab
 
 ---
 
+# 0. Novidades na 0.2.0
+
+- **11 idiomas**: todas as funções aceitam `lang = "en"` (e `pt`, `es`, `fr`,
+  `zh`, `de`, `it`, `ja`, `ko`, `ru`, `ar`).
+- **Figuras prontas para publicação**: `lcz_theme_journal()` e
+  `lcz_save_figure()` geram figuras de 120/190 mm a 600 dpi ou PDF/SVG vetorial.
+- **ICU sem eixo duplo**: `group = TRUE` agora desenha dois painéis alinhados,
+  (a) temperatura urbana/rural e (b) intensidade da ICU.
+- **Muito mais rápido**: `lcz_get_parameters()` ~83×, extração `two.step` ~16×,
+  mapa ~3,6×.
+- **Diagnóstico claro** quando as estações não coincidem com o mapa LCZ.
+- **Terminologia LCZ revisada** com nomenclaturas nacionais publicadas.
+
+# 0.1 Idiomas
+
+Todas as funções exportadas aceitam o argumento `lang`. Mensagens, erros,
+rótulos de eixo, legendas e os nomes das 17 classes LCZ são traduzidos para
+**11 idiomas**: `en` (padrão), `pt`, `es`, `fr`, `zh`, `de`, `it`, `ja`, `ko`,
+`ru`, `ar`.
+
+```r
+library(LCZ4r)
+
+lcz_langs()                     # idiomas disponíveis
+lcz_set_lang("pt")              # padrão da sessão
+
+meu_mapa <- lcz_get_map(city = "Juiz de Fora", lang = "pt")
+lcz_plot_map(meu_mapa, lang = "pt", title = "Zonas Climáticas Locais")
+lcz_cal_area(meu_mapa, lang = "pt")
+```
+
+Códigos regionais são aceitos (`pt-BR`, `zh-Hans`, `es-419`). Um código inválido
+cai para o inglês com um único aviso, sem interromper a análise.
+
+---
+
+# 0.2 Figuras prontas para publicação
+
+Mapas e gráficos compartilham um único sistema editorial: títulos à esquerda,
+sem molduras superior/direita, paletas seguras para daltonismo e legenda LCZ em
+uma coluna para o mapa manter sua área.
+
+| Elemento | Padrão |
+|---|---|
+| Largura | 120 mm (uma coluna) / 190 mm (duas) |
+| Texto | 11 pt no tamanho de desenho |
+| Raster | 600 dpi (PNG/TIFF) |
+| Vetor | PDF (cairo) ou SVG |
+| Legenda LCZ | 1 coluna (`legend_ncol = 2` opcional) |
+| Escala contínua | viridis / magma |
+| Anomalia | azul–branco–vermelho simétrica |
+
+```r
+library(LCZ4r)
+
+meu_mapa <- lcz_get_map(city = "Berlin", lang = "pt")
+
+p <- lcz_plot_map(meu_mapa, lang = "pt", title = "Zonas Climáticas Locais",
+                  scalebar = TRUE, north_arrow = TRUE)
+lcz_save_figure(p, "fig_mapa.pdf", width = "double", height = 150)
+
+data(lcz_data)
+p_uhi <- lcz_uhi_intensity(meu_mapa, lcz_data, var = "airT",
+                           station_id = "station", group = TRUE, lang = "pt")
+lcz_save_figure(p_uhi, "fig_icu.pdf", width = "double", height = 165)
+```
+
+Para a coluna estrita de 89 mm, use largura numérica:
+
+```r
+lcz_save_figure(p, "fig_mapa_89mm.pdf", width = 89, height = 110)
+```
+
+A especificação completa está em `dev/design-system.md`.
+
+---
+
 # 1. Instalação
 
 O pacote `LCZ4r` está disponível no GitHub e pode ser instalado de duas maneiras.  

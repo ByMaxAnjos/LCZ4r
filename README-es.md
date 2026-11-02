@@ -10,6 +10,50 @@ El [**paquete LCZ4r**](https://github.com/ByMaxAnjos/LCZ4r) proporciona un conju
 
 ---
 
+# 0. Novedades en 0.2.0
+
+- **11 idiomas**: todas las funciones aceptan `lang = "en"` (y `pt`, `es`, `fr`,
+  `zh`, `de`, `it`, `ja`, `ko`, `ru`, `ar`).
+- **Figuras listas para publicación**: `lcz_theme_journal()` y
+  `lcz_save_figure()` generan figuras de 120/190 mm a 600 dpi o PDF/SVG.
+- **Isla de calor sin eje doble**: `group = TRUE` dibuja dos paneles alineados,
+  (a) temperatura urbana/rural y (b) intensidad de la isla de calor.
+- **Mucho más rápido**: `lcz_get_parameters()` ~83×, extracción `two.step` ~16×.
+- **Diagnóstico claro** cuando las estaciones no coinciden con el mapa LCZ.
+- **Terminología LCZ revisada** con nomenclaturas nacionales publicadas.
+
+# 0.1 Idiomas
+
+Todas las funciones exportadas aceptan el argumento `lang`. Mensajes, errores,
+rótulos de ejes, leyendas y los nombres de las 17 clases LCZ están traducidos a
+**11 idiomas**: `en` (predeterminado), `pt`, `es`, `fr`, `zh`, `de`, `it`, `ja`,
+`ko`, `ru`, `ar`.
+
+# 0.2 Figuras listas para publicación
+
+Mapas y gráficos comparten un sistema editorial único: títulos a la izquierda,
+sin bordes superior/derecho, paletas seguras para daltonismo y leyenda LCZ en
+una columna para que el mapa conserve su área.
+
+```r
+library(LCZ4r)
+
+mi_mapa <- lcz_get_map(city = "Berlin", lang = "es")
+
+p <- lcz_plot_map(mi_mapa, lang = "es", title = "Zonas Climáticas Locales",
+                  scalebar = TRUE, north_arrow = TRUE)
+lcz_save_figure(p, "fig_mapa.pdf", width = "double", height = 150)
+
+data(lcz_data)
+p_uhi <- lcz_uhi_intensity(mi_mapa, lcz_data, var = "airT",
+                           station_id = "station", group = TRUE, lang = "es")
+lcz_save_figure(p_uhi, "fig_isla.pdf", width = "double", height = 165)
+```
+
+Especificación completa: `dev/design-system.md`.
+
+---
+
 # 1. Instalación
 
 El paquete `LCZ4r` está disponible en GitHub y se puede instalar de dos formas.  
