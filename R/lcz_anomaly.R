@@ -175,7 +175,10 @@ lcz_anomaly <- function(x,
 
   # Get shp LCZ stations from lat and long
   stations_mod <- df_processed %>%
-    dplyr::distinct(.data$longitude, .data$latitude, .keep_all = T) %>%
+    # ponytail: keep only location columns so NAs in the measured variable
+    # (or any other column) at a station's first row don't drop the station.
+    dplyr::select(.data$station, .data$lcz_id, .data$longitude, .data$latitude) %>%
+    dplyr::distinct(.data$longitude, .data$latitude, .keep_all = TRUE) %>%
     stats::na.omit() %>%
     sf::st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
 
@@ -294,13 +297,12 @@ lcz_anomaly <- function(x,
     anomlay_lcz <- function(input = NULL) {
       mean_df <- lcz_model %>%
         dplyr::filter(.data$station == paste0(input)) %>%
-        dplyr::group_by(.data$lcz_id, .data$lcz) %>%
-        dplyr::summarise(mean_value = mean(.data$var_interp), .groups = "drop")
+        dplyr::group_by(.data$station, .data$lcz) %>%
+        dplyr::summarise(mean_value = mean(.data$var_interp, na.rm = TRUE), .groups = "drop")
 
       reference_df <- lcz_model %>%
-        dplyr::filter(.data$station != paste0(input)) %>%
-        dplyr::mutate(reference_value = mean(.data$var_interp))
-      reference_df <- tibble::as_tibble(mean(reference_df$reference_value))
+        dplyr::filter(.data$station != paste0(input))
+      reference_df <- tibble::as_tibble(mean(reference_df$var_interp, na.rm = TRUE))
 
       merged_data <- dplyr::bind_cols(mean_df, reference_df) %>%
         dplyr::rename(reference_value = .data$value) %>%
@@ -308,14 +310,9 @@ lcz_anomaly <- function(x,
 
       return(merged_data)
     }
-    anomaly_job <- base::lapply(1:length(lcz_df$station), FUN = function(i) {
-      anomlay_lcz(input = lcz_df$station[i])
-    })
+    anomaly_job <- base::lapply(base::unique(lcz_df$station), anomlay_lcz)
 
     anomaly_cal <- do.call(rbind.data.frame, anomaly_job)
-
-    anomaly_cal <- anomaly_cal %>%
-      dplyr::left_join(lcz_df %>% dplyr::select(.data$lcz_id, .data$station), by = "lcz_id")
 
     # Subset the data outside the ggplot call for clarity
     subset_high <- anomaly_cal %>% dplyr::filter(.data$anomaly > 0)
@@ -400,14 +397,12 @@ lcz_anomaly <- function(x,
 
         return(merged_data)
       }
-      anomaly_job <- base::lapply(1:length(lcz_df$station), FUN = function(i) {
-        anomlay_lcz(input = lcz_df$station[i])
-      })
+      anomaly_job <- base::lapply(base::unique(lcz_df$station), anomlay_lcz)
 
       anomaly_cal <- do.call(rbind.data.frame, anomaly_job)
 
       anomaly_cal <- anomaly_cal %>%
-        dplyr::left_join(lcz_df %>% dplyr::select(.data$lcz, .data$station), by = "station")
+        dplyr::left_join(dplyr::distinct(lcz_df, .data$lcz, .data$station), by = "station")
       # Subset the data outside the ggplot call for clarity
       subset_high <- anomaly_cal %>% dplyr::filter(.data$anomaly > 0)
       subset_low <- anomaly_cal %>% dplyr::filter(.data$anomaly < 0)
@@ -488,14 +483,12 @@ lcz_anomaly <- function(x,
         return(merged_data)
       }
 
-      anomaly_job <- base::lapply(1:length(lcz_df$station), FUN = function(i) {
-        anomlay_lcz(input = lcz_df$station[i])
-      })
+      anomaly_job <- base::lapply(base::unique(lcz_df$station), anomlay_lcz)
 
       anomaly_cal <- do.call(rbind.data.frame, anomaly_job)
 
       anomaly_cal <- anomaly_cal %>%
-        dplyr::left_join(lcz_df %>% dplyr::select(.data$lcz, .data$station), by = "station")
+        dplyr::left_join(dplyr::distinct(lcz_df, .data$lcz, .data$station), by = "station")
 
       # Subset the data outside the ggplot call for clarity
       subset_high <- anomaly_cal %>% dplyr::filter(.data$anomaly > 0)
@@ -566,14 +559,12 @@ lcz_anomaly <- function(x,
 
         return(merged_data)
       }
-      anomaly_job <- base::lapply(1:length(lcz_df$station), FUN = function(i) {
-        anomlay_lcz(input = lcz_df$station[i])
-      })
+      anomaly_job <- base::lapply(base::unique(lcz_df$station), anomlay_lcz)
 
       anomaly_cal <- do.call(rbind.data.frame, anomaly_job)
 
       anomaly_cal <- anomaly_cal %>%
-        dplyr::left_join(lcz_df %>% dplyr::select(.data$lcz, .data$station), by = "station")
+        dplyr::left_join(dplyr::distinct(lcz_df, .data$lcz, .data$station), by = "station")
 
       # Subset the data outside the ggplot call for clarity
       subset_high <- anomaly_cal %>% dplyr::filter(.data$anomaly > 0)

@@ -172,7 +172,10 @@ lcz_ts <- function(x,
 
   # Get shp LCZ stations from lat and long
   stations_mod <- df_processed %>%
-    dplyr::distinct(.data$longitude, .data$latitude, .keep_all = T) %>%
+    # ponytail: keep only location columns so NAs in the measured variable
+    # (or any other column) at a station's first row don't drop the station.
+    dplyr::select(.data$station, .data$lcz_id, .data$longitude, .data$latitude) %>%
+    dplyr::distinct(.data$longitude, .data$latitude, .keep_all = TRUE) %>%
     stats::na.omit() %>%
     sf::st_as_sf(coords = c("longitude", "latitude"), crs = 4326)
 
